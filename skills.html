@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas · Skills</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-base: #0a0a14;
+    --panel: rgba(22, 22, 42, 0.72);
+    --border: rgba(129, 140, 248, 0.18);
+    --border-hi: rgba(129, 140, 248, 0.45);
+    --text: #e8e8f0;
+    --muted: #8a8aa8;
+    --accent: #818cf8;
+    --accent2: #22d3ee;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(129,140,248,0.28); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(129,140,248,0.55); }
+  body {
+    background:
+      radial-gradient(ellipse 90% 70% at 30% -10%, #21214d 0%, #0a0a14 62%),
+      var(--bg-base);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.2px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 44px 28px 80px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .brand .title {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background: linear-gradient(95deg, #818cf8 0%, #22d3ee 60%, #a78bfa 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .brand .subtitle {
+    font-size: 13px; color: var(--muted); margin-top: 8px; letter-spacing: 0.03em;
+  }
+  .back-link {
+    color: var(--muted); text-decoration: none; font-size: 12px;
+    padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px;
+    transition: all 0.14s;
+  }
+  .back-link:hover { color: var(--text); border-color: var(--border-hi); background: rgba(129,140,248,0.1); }
+  #search-bar {
+    position: sticky; top: 0; z-index: 5;
+    background: linear-gradient(180deg, rgba(10,10,20,0.95), rgba(10,10,20,0.85));
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    padding: 14px 0;
+    margin: 0 0 8px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  #search {
+    flex: 1; min-width: 260px;
+    background: rgba(15,15,30,0.85);
+    border: 1px solid var(--border);
+    color: var(--text); padding: 10px 14px; border-radius: 9px;
+    font-size: 14px; outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  #search::placeholder { color: #5a5a78; }
+  #search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(129,140,248,0.16); }
+  .cat-jump {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .cat-jump a {
+    font-size: 11px; color: var(--muted); text-decoration: none;
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 999px;
+    transition: all 0.14s; white-space: nowrap;
+  }
+  .cat-jump a:hover { color: var(--text); border-color: var(--border-hi); background: rgba(129,140,248,0.12); }
+  .category {
+    margin-top: 36px;
+  }
+  .category-header {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .category-header::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(129,140,248,0.22), transparent);
+  }
+  .category-count {
+    color: #6a6a88; font-size: 11px; font-weight: 600;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 14px;
+  }
+  .skill {
+    position: relative;
+    background: var(--panel);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px 16px;
+    overflow: hidden;
+    transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+  }
+  .skill::before {
+    content: ''; position: absolute; inset: 0 0 auto 0; height: 2px;
+    background: linear-gradient(90deg, var(--cat-color, var(--accent)), transparent);
+    opacity: 0.8;
+  }
+  .skill:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-hi);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+  }
+  .skill-name {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
+    margin-bottom: 6px; color: var(--text);
+    font-family: 'SF Mono', 'Consolas', monospace;
+  }
+  .skill-purpose {
+    font-size: 12.5px; color: #b4b4c8; line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .try-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 7px;
+  }
+  .prompt {
+    display: block;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 7px 10px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: #c8c8d8;
+    cursor: pointer;
+    transition: all 0.14s;
+    line-height: 1.45;
+    position: relative;
+  }
+  .prompt:hover {
+    background: rgba(129,140,248,0.14);
+    border-color: rgba(129,140,248,0.25);
+    color: #fff;
+  }
+  .prompt.copied {
+    background: rgba(52,211,153,0.18);
+    border-color: rgba(52,211,153,0.4);
+    color: #34d399;
+  }
+  .prompt.copied::after {
+    content: ' ✓ copied'; font-size: 10px; color: #34d399; font-weight: 600;
+  }
+  .skill.hidden { display: none; }
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--muted); font-size: 14px;
+  }
+  footer {
+    margin-top: 56px;
+    text-align: center;
+    color: #4a4a66;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 28px 16px 60px; }
+    .brand .title { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="title">Skills</div>
+      <div class="subtitle">49 skills · auto-triggered from chat or invoked with slash commands</div>
+    </div>
+    <a class="back-link" href="index.html">← Atlas</a>
+  </header>
+
+  <div id="search-bar">
+    <input id="search" type="text" placeholder="Search skills or example prompts..." autocomplete="off">
+    <div class="cat-jump" id="cat-jump"></div>
+  </div>
+
+  <div id="skills-root"></div>
+
+  <footer>click any example prompt to copy &middot; paste it into Claude to trigger the skill</footer>
+</div>
+
+<script>
+const CATEGORIES = [
+  { id: 'foundations', name: 'Foundations & Math', color: '#a78bfa' },
+  { id: 'risk', name: 'Risk', color: '#ef4444' },
+  { id: 'performance', name: 'Performance', color: '#22d3ee' },
+  { id: 'valuation', name: 'Valuation', color: '#fbbf24' },
+  { id: 'portfolio', name: 'Portfolio Construction', color: '#818cf8' },
+  { id: 'asset-classes', name: 'Asset Classes', color: '#34d399' },
+  { id: 'personal', name: 'Personal Finance', color: '#f472b6' },
+  { id: 'code-review', name: 'Code Review & Quality', color: '#f97316' },
+  { id: 'project-setup', name: 'Project Setup', color: '#14b8a6' },
+  { id: 'config', name: 'Claude Code Config', color: '#94a3b8' },
+  { id: 'automation', name: 'Automation', color: '#84cc16' },
+  { id: 'specialized', name: 'Specialized Tools', color: '#d946ef' },
+];
+
+const SKILLS = [
+  // ────── Foundations ──────
+  { cat: 'foundations', name: 'return-calculations',
+    purpose: 'Compute TWR, MWR/IRR, CAGR, and annualized returns. Compare time-weighted vs money-weighted; link sub-period returns.',
+    prompts: [
+      'What was my time-weighted return last year given these monthly values?',
+      'Compute the IRR of these cash flows: -100, 20, 30, 60',
+      'Convert this 5-year cumulative return to CAGR',
+    ]
+  },
+  { cat: 'foundations', name: 'time-value-of-money',
+    purpose: 'PV, FV, NPV, IRR, loan payments, amortization across compounding conventions.',
+    prompts: [
+      'What is the present value of $1,000 received in 10 years at 6% discount rate?',
+      'Build a monthly amortization table for a $300k mortgage at 7% for 30 years',
+      'Compare a lump sum of $50k vs $5k/year for 12 years at 5%',
+    ]
+  },
+  { cat: 'foundations', name: 'statistics-fundamentals',
+    purpose: 'Descriptive stats, covariance, CAPM regression, hypothesis tests, bootstrap, shrinkage.',
+    prompts: [
+      'Build a covariance matrix from these monthly returns',
+      'Run a CAPM regression of AAPL vs SPY and test if alpha is significant',
+      'Bootstrap a 95% confidence interval for this Sharpe ratio',
+    ]
+  },
+
+  // ────── Risk ──────
+  { cat: 'risk', name: 'historical-risk',
+    purpose: 'Realized volatility (close-to-close, Parkinson, Yang-Zhang), drawdown, historical VaR, downside deviation, tracking error.',
+    prompts: [
+      'Compute annualized volatility and max drawdown from these prices',
+      'Calculate historical VaR at 95% confidence',
+      'Use the Yang-Zhang estimator on these OHLC bars',
+    ]
+  },
+  { cat: 'risk', name: 'forward-risk',
+    purpose: 'Forward-looking VaR, CVaR / Expected Shortfall, Monte Carlo simulation, stress tests, component & marginal VaR.',
+    prompts: [
+      'Run a Monte Carlo VaR at 99% confidence for a 60/40 portfolio',
+      'Compute component VaR for each asset in this portfolio',
+      'Stress test my portfolio under a 2008-style shock',
+    ]
+  },
+  { cat: 'risk', name: 'volatility-modeling',
+    purpose: 'EWMA, GARCH, implied vol, vol surfaces, term structure, VIX. Forecast future volatility.',
+    prompts: [
+      'Fit a GARCH(1,1) to SPY returns and forecast next-month volatility',
+      'Explain the volatility smile in equity index options',
+      'Compute EWMA volatility with a 0.94 decay factor',
+    ]
+  },
+  { cat: 'risk', name: 'bet-sizing',
+    purpose: 'Kelly criterion, fractional Kelly, risk budgeting, conviction weighting. How much to put in one position.',
+    prompts: [
+      'Compute the Kelly fraction for a bet with 55% win rate and 1.2 payout',
+      'Why use half-Kelly instead of full-Kelly?',
+      'Scale this position size with realized volatility',
+    ]
+  },
+  { cat: 'risk', name: 'diversification',
+    purpose: 'Correlation effects, efficient frontier, minimum-variance portfolios, risk contributions, why diversification fails in crises.',
+    prompts: [
+      'How many stocks do I need to capture most of the diversification benefit?',
+      'Build the efficient frontier from this expected-return and covariance input',
+      'Decompose my portfolio variance by risk contribution',
+    ]
+  },
+
+  // ────── Performance ──────
+  { cat: 'performance', name: 'performance-metrics',
+    purpose: 'Sharpe, Sortino, Information Ratio, Treynor, Calmar, Omega; upside/downside capture; M-squared.',
+    prompts: [
+      'Compute Sharpe and Sortino for these monthly returns',
+      'What is the Information Ratio of this fund vs its benchmark?',
+      'Compare upside vs downside capture for two managers',
+    ]
+  },
+  { cat: 'performance', name: 'performance-attribution',
+    purpose: 'Brinson attribution, allocation vs selection effects, factor-based attribution, multi-period linking.',
+    prompts: [
+      'Run a Brinson attribution for these sector weights and returns vs benchmark',
+      'Was the outperformance from stock picking or sector bets?',
+      'Link single-period attribution effects across 12 months',
+    ]
+  },
+  { cat: 'performance', name: 'performance-reporting',
+    purpose: 'Portfolio performance reports with benchmarks, attribution, risk dashboards, GIPS-compliant formats.',
+    prompts: [
+      'Generate a quarterly performance report from this returns history',
+      'Compare time-weighted vs money-weighted return for this portfolio',
+      'Build a rolling Sharpe ratio chart',
+    ]
+  },
+
+  // ────── Valuation ──────
+  { cat: 'valuation', name: 'quantitative-valuation',
+    purpose: 'DCF, DDM, comparable multiples, residual income, WACC, terminal value, sum-of-the-parts.',
+    prompts: [
+      'Build a DCF for AAPL with 8% WACC and 3% terminal growth',
+      'Use the Gordon growth model to value a dividend stock',
+      'Run sensitivity analysis on terminal multiple and growth rate',
+    ]
+  },
+  { cat: 'valuation', name: 'qualitative-valuation',
+    purpose: 'Economic moats, Porter\'s Five Forces, management quality, ESG, business model durability.',
+    prompts: [
+      'Does this company have a durable moat?',
+      'Apply Porter\'s Five Forces to the airline industry',
+      'What red flags should I look for in management capital allocation?',
+    ]
+  },
+
+  // ────── Portfolio Construction ──────
+  { cat: 'portfolio', name: 'asset-allocation',
+    purpose: 'Mean-variance optimization, Black-Litterman, risk parity, glide paths, target-date strategies.',
+    prompts: [
+      'Build a mean-variance optimized portfolio from these expected returns',
+      'How should I think about a 60/40 portfolio in a high-rate environment?',
+      'Set up a target-date glide path for someone retiring in 2050',
+    ]
+  },
+  { cat: 'portfolio', name: 'rebalancing',
+    purpose: 'Calendar vs threshold rebalancing, transaction costs, tax-efficient rebalancing, vol harvesting.',
+    prompts: [
+      'My 60/40 has drifted to 68/32 — should I rebalance?',
+      'Compare calendar vs 5% threshold rebalancing for a tax-deferred account',
+      'Use cash flows to rebalance instead of selling',
+    ]
+  },
+  { cat: 'portfolio', name: 'investment-policy',
+    purpose: 'Build an IPS: return objectives, risk tolerance, constraints, rebalancing rules, benchmarks.',
+    prompts: [
+      'Draft an IPS for a 35-year-old saving for retirement',
+      'How do I distinguish risk capacity from risk willingness?',
+      'What should the spending rate be for a $10M endowment?',
+    ]
+  },
+
+  // ────── Asset Classes ──────
+  { cat: 'asset-classes', name: 'equities',
+    purpose: 'Stocks, factor models, valuation ratios, index construction, Fama-French, CAPM.',
+    prompts: [
+      'Explain Fama-French 5-factor model and how to estimate the loadings',
+      'Compare P/E, EV/EBITDA, and PEG for valuing this stock',
+      'How does market-cap weighting differ from equal-weighting?',
+    ]
+  },
+  { cat: 'asset-classes', name: 'fixed-income-sovereign',
+    purpose: 'Treasuries, yield curves, duration, convexity, TIPS, real yields, spot/forward rates.',
+    prompts: [
+      'Compute duration and convexity for a 10-year Treasury at 4.5% YTM',
+      'Bootstrap a spot rate curve from these Treasury yields',
+      'What does an inverted yield curve signal historically?',
+    ]
+  },
+  { cat: 'asset-classes', name: 'fixed-income-corporate',
+    purpose: 'Investment grade & high yield, credit spreads (OAS, Z, G), defaults, callable bonds, private credit.',
+    prompts: [
+      'Decompose a corporate bond yield into Treasury + credit spread',
+      'How do I estimate default probability from CDS spreads?',
+      'Evaluate this BB-rated bond for downgrade risk to CCC',
+    ]
+  },
+  { cat: 'asset-classes', name: 'fixed-income-municipal',
+    purpose: 'Munis, tax-equivalent yield, GO vs revenue, AMT, muni credit.',
+    prompts: [
+      'Compute tax-equivalent yield for a 3.5% muni in the 32% bracket',
+      'Compare GO vs revenue bond credit risk',
+      'Do munis make sense in a Roth IRA?',
+    ]
+  },
+  { cat: 'asset-classes', name: 'fixed-income-structured',
+    purpose: 'MBS, ABS, CLOs, prepayment risk, tranching, negative convexity.',
+    prompts: [
+      'Explain negative convexity in agency MBS',
+      'How do prepayment speeds (PSA) affect cash flows?',
+      'Walk through the waterfall in a CLO structure',
+    ]
+  },
+  { cat: 'asset-classes', name: 'commodities',
+    purpose: 'Futures curves, roll yield, contango/backwardation, GSCI/BCOM indices, inflation hedging.',
+    prompts: [
+      'Why does USO underperform crude oil spot prices?',
+      'Explain contango vs backwardation with roll yield math',
+      'Are commodities a reliable inflation hedge historically?',
+    ]
+  },
+  { cat: 'asset-classes', name: 'real-assets',
+    purpose: 'REITs, direct property, cap rates, NOI, FFO/AFFO, infrastructure.',
+    prompts: [
+      'Compute cap rate, NOI, and cash-on-cash return for this rental property',
+      'Compare FFO and AFFO for two REITs',
+      'Should I invest in real estate directly or through REITs?',
+    ]
+  },
+  { cat: 'asset-classes', name: 'currencies-and-fx',
+    purpose: 'Exchange rates, interest rate parity, carry trades, FX hedging, currency overlays.',
+    prompts: [
+      'Should I hedge the currency exposure of my international stock fund?',
+      'Explain covered interest rate parity with USD/JPY',
+      'Walk through a yen carry trade and its risks',
+    ]
+  },
+  { cat: 'asset-classes', name: 'digital-assets',
+    purpose: 'Crypto fundamentals, blockchain mechanics, DeFi yields, on-chain metrics, NVT, TVL.',
+    prompts: [
+      'How should I think about Bitcoin allocation in a traditional portfolio?',
+      'Explain impermanent loss in a Uniswap LP position',
+      'What does the NVT ratio tell me about Bitcoin valuation?',
+    ]
+  },
+  { cat: 'asset-classes', name: 'alternatives',
+    purpose: 'Hedge funds, PE/VC, IRR/TVPI/DPI, 2-and-20 fees, J-curve, illiquidity premium.',
+    prompts: [
+      'Explain the J-curve in private equity returns',
+      'How do I evaluate a hedge fund offering 2-and-20?',
+      'Compare TVPI, DPI, and RVPI for a vintage 2018 fund',
+    ]
+  },
+  { cat: 'asset-classes', name: 'fund-vehicles',
+    purpose: 'ETF vs mutual fund, expense ratios, tax efficiency, creation/redemption, share classes.',
+    prompts: [
+      'Compare ETF vs mutual fund tax efficiency for the same index',
+      'What are 12b-1 fees and how do they compound over 30 years?',
+      'When does an SMA make more sense than an ETF?',
+    ]
+  },
+
+  // ────── Personal Finance ──────
+  { cat: 'personal', name: 'emergency-fund',
+    purpose: 'Sizing and structuring emergency savings by income stability and expense profile.',
+    prompts: [
+      'How big should my emergency fund be if I freelance with variable income?',
+      'Where should I park 6 months of expenses?',
+      'Should I count my Roth IRA as part of the emergency fund?',
+    ]
+  },
+  { cat: 'personal', name: 'savings-goals',
+    purpose: 'Required savings rates, 529 plans, retirement targets, FIRE math, down payments.',
+    prompts: [
+      'Am I on track to retire at 55 if I save $30k/year starting at 28?',
+      'How much should I put in a 529 for a kid born today?',
+      'What savings rate hits FIRE in 15 years?',
+    ]
+  },
+  { cat: 'personal', name: 'debt-management',
+    purpose: 'Avalanche vs snowball, refinancing, debt-to-income, opportunity cost of paying off vs investing.',
+    prompts: [
+      'Should I pay off my 6% student loan or invest in S&P 500?',
+      'Avalanche vs snowball for these 4 debts: ...',
+      'Is refinancing worth it if I plan to move in 4 years?',
+    ]
+  },
+  { cat: 'personal', name: 'lending',
+    purpose: 'Mortgages (fixed vs ARM), amortization, points, HELOCs, APR vs interest rate.',
+    prompts: [
+      'Compare 15-year vs 30-year mortgage on a $500k loan',
+      'Is it worth buying down the rate by 0.5% for 2 points?',
+      'How much house can I afford on $150k income?',
+    ]
+  },
+  { cat: 'personal', name: 'liquidity-management',
+    purpose: 'Cash flow forecasting, T-bill / CD ladders, liquidity tiers, sweep strategies.',
+    prompts: [
+      'Build a 6-month T-bill ladder for $60k of cash',
+      'Where to park money for a house down payment in 18 months?',
+      'How do I budget with lumpy freelance income?',
+    ]
+  },
+  { cat: 'personal', name: 'tax-efficiency',
+    purpose: 'Asset location, tax-loss harvesting, Roth conversions, withdrawal sequencing, lot selection.',
+    prompts: [
+      'Which account should hold my bond fund — taxable, Roth, or traditional IRA?',
+      'Should I do a Roth conversion this year?',
+      'Optimize the withdrawal sequence between taxable, Roth, and traditional in retirement',
+    ]
+  },
+  { cat: 'personal', name: 'tax-loss-harvesting',
+    purpose: 'TLH workflow: candidate ID, gain budget, replacement security, wash-sale, monitoring.',
+    prompts: [
+      'Find tax-loss harvest candidates in this portfolio',
+      'Suggest a replacement ETF that avoids wash-sale issues with VTI',
+      'Estimate the tax savings from harvesting $40k of losses at 32% marginal',
+    ]
+  },
+  { cat: 'personal', name: 'finance-psychology',
+    purpose: 'Cognitive biases, loss aversion, money scripts, lifestyle creep, behavioral coaching.',
+    prompts: [
+      'Why do I panic sell during drawdowns?',
+      'How do I stop lifestyle creep after a raise?',
+      'My partner and I fight about money — what frameworks help?',
+    ]
+  },
+
+  // ────── Code Review & Quality ──────
+  { cat: 'code-review', name: 'code-review',
+    purpose: 'Review the current diff for bugs and cleanups. Effort levels: low/medium/high/max; "ultra" runs multi-agent cloud review.',
+    prompts: [
+      'Review my current diff',
+      '/code-review high',
+      'Review my changes and post inline comments to the PR',
+    ]
+  },
+  { cat: 'code-review', name: 'simplify',
+    purpose: 'Review the current diff and apply the cleanup fixes automatically. Same as /code-review --fix.',
+    prompts: [
+      '/simplify',
+      'Simplify my current diff',
+      'Apply review fixes to my working tree',
+    ]
+  },
+  { cat: 'code-review', name: 'review',
+    purpose: 'Review a specific pull request and report findings.',
+    prompts: [
+      'Review PR #42',
+      '/review https://github.com/owner/repo/pull/123',
+      'Review the latest open PR on this repo',
+    ]
+  },
+  { cat: 'code-review', name: 'security-review',
+    purpose: 'Security-focused review of the pending changes on the current branch.',
+    prompts: [
+      '/security-review',
+      'Check my current diff for security issues',
+      'Security review before I open this PR',
+    ]
+  },
+
+  // ────── Project Setup ──────
+  { cat: 'project-setup', name: 'init',
+    purpose: 'Initialize a new CLAUDE.md with project documentation tailored to this codebase.',
+    prompts: [
+      '/init',
+      'Set up CLAUDE.md for this project',
+      'Generate Claude project instructions from the codebase',
+    ]
+  },
+  { cat: 'project-setup', name: 'run',
+    purpose: 'Launch and drive the project app to see a change working. Falls back to built-in patterns per project type.',
+    prompts: [
+      'Run the app',
+      'Start the app and screenshot it',
+      'Launch this project so I can see the new feature',
+    ]
+  },
+  { cat: 'project-setup', name: 'verify',
+    purpose: 'Verify a code change actually works by running the app and observing behavior — not just tests.',
+    prompts: [
+      'Verify my fix actually works',
+      'Confirm the new feature works in the real app',
+      'Validate these changes before I push',
+    ]
+  },
+
+  // ────── Claude Code Config ──────
+  { cat: 'config', name: 'update-config',
+    purpose: 'Configure Claude Code via settings.json — permissions, env vars, hooks ("when X, do Y" automations).',
+    prompts: [
+      'Allow all npm commands without prompting',
+      'Whenever I run tests, show a desktop notification',
+      'Set DEBUG=true for this project',
+    ]
+  },
+  { cat: 'config', name: 'keybindings-help',
+    purpose: 'Customize keyboard shortcuts and chord bindings in ~/.claude/keybindings.json.',
+    prompts: [
+      'Rebind Ctrl+S to save and format',
+      'Add a chord shortcut for opening Atlas',
+      'Change the submit key in Claude Code',
+    ]
+  },
+  { cat: 'config', name: 'fewer-permission-prompts',
+    purpose: 'Scan transcripts for safe read-only Bash/MCP calls, then add an allowlist to project .claude/settings.json.',
+    prompts: [
+      'Reduce permission prompts in this project',
+      'Allowlist common safe commands from my history',
+      'Stop interrupting me about read-only ls/cat commands',
+    ]
+  },
+
+  // ────── Automation ──────
+  { cat: 'automation', name: 'loop',
+    purpose: 'Run a prompt or slash command on a recurring interval (e.g. /loop 5m /foo). Omit the interval to let Claude self-pace.',
+    prompts: [
+      '/loop 5m check the deploy status',
+      '/loop /babysit-prs',
+      'Loop /code-review every hour until tests pass',
+    ]
+  },
+  { cat: 'automation', name: 'schedule',
+    purpose: 'Create / manage scheduled remote agents that run on a cron schedule. Also for one-time future runs.',
+    prompts: [
+      'Run /babysit-prs every weekday at 9am',
+      'Schedule a daily project status report',
+      'Remind me to check CI tomorrow at 3pm',
+    ]
+  },
+
+  // ────── Specialized Tools ──────
+  { cat: 'specialized', name: 'graphify',
+    purpose: 'Turn any input (code, docs, papers, images) into a clustered knowledge graph — HTML + JSON + audit report.',
+    prompts: [
+      '/graphify',
+      'Build a knowledge graph of this codebase',
+      'Generate the architecture map and audit report',
+    ]
+  },
+  { cat: 'specialized', name: 'claude-api',
+    purpose: 'Build / debug / optimize Anthropic SDK apps. Adds prompt caching; handles model-version migrations (4.5→4.6→4.7).',
+    prompts: [
+      'Add prompt caching to my Claude API code',
+      'Migrate this Anthropic SDK code from Claude 4.6 to 4.7',
+      'Debug my Claude API tool-use loop',
+    ]
+  },
+];
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+const catMap = {}; CATEGORIES.forEach(c => catMap[c.id] = c);
+
+// Build category jump nav
+const jumpEl = document.getElementById('cat-jump');
+CATEGORIES.forEach(c => {
+  const a = document.createElement('a');
+  a.href = '#' + c.id;
+  a.textContent = c.name;
+  a.style.borderColor = c.color + '55';
+  jumpEl.appendChild(a);
+});
+
+// Group skills by category
+const root = document.getElementById('skills-root');
+CATEGORIES.forEach(c => {
+  const skillsInCat = SKILLS.filter(s => s.cat === c.id);
+  if (!skillsInCat.length) return;
+  const section = document.createElement('section');
+  section.className = 'category';
+  section.id = c.id;
+  section.innerHTML = `
+    <div class="category-header">
+      <span style="color:${c.color}">${esc(c.name)}</span>
+      <span class="category-count">${skillsInCat.length} skill${skillsInCat.length===1?'':'s'}</span>
+    </div>
+    <div class="grid"></div>
+  `;
+  const grid = section.querySelector('.grid');
+  skillsInCat.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'skill';
+    card.dataset.name = s.name;
+    card.dataset.search = (s.name + ' ' + s.purpose + ' ' + s.prompts.join(' ')).toLowerCase();
+    card.style.setProperty('--cat-color', c.color);
+    card.innerHTML = `
+      <div class="skill-name">${esc(s.name)}</div>
+      <div class="skill-purpose">${esc(s.purpose)}</div>
+      <div class="try-label">Try saying</div>
+      ${s.prompts.map(p => `<div class="prompt" data-prompt="${esc(p)}">${esc(p)}</div>`).join('')}
+    `;
+    grid.appendChild(card);
+  });
+  root.appendChild(section);
+});
+
+// Click-to-copy on prompts
+document.addEventListener('click', e => {
+  const p = e.target.closest('.prompt');
+  if (!p) return;
+  const text = p.dataset.prompt;
+  navigator.clipboard.writeText(text).then(() => {
+    p.classList.add('copied');
+    setTimeout(() => p.classList.remove('copied'), 1200);
+  }).catch(() => {});
+});
+
+// Search filter
+const searchEl = document.getElementById('search');
+searchEl.addEventListener('input', () => {
+  const q = searchEl.value.toLowerCase().trim();
+  let anyVisible = false;
+  document.querySelectorAll('.skill').forEach(card => {
+    const match = !q || card.dataset.search.includes(q);
+    card.classList.toggle('hidden', !match);
+    if (match) anyVisible = true;
+  });
+  // Hide empty category sections
+  document.querySelectorAll('.category').forEach(sec => {
+    const hasVisible = sec.querySelector('.skill:not(.hidden)');
+    sec.style.display = hasVisible ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>

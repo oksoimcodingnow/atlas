@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-base: #0a0a14;
+    --panel: rgba(22, 22, 42, 0.72);
+    --border: rgba(129, 140, 248, 0.18);
+    --border-hi: rgba(129, 140, 248, 0.45);
+    --text: #e8e8f0;
+    --muted: #8a8aa8;
+    --accent: #818cf8;
+    --accent2: #22d3ee;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --slate: #6b7280;
+  }
+  html, body { height: 100%; }
+  body {
+    background:
+      radial-gradient(ellipse 90% 70% at 30% -10%, #21214d 0%, #0a0a14 62%),
+      var(--bg-base);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.2px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 28px 80px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 44px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .brand .title {
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    background: linear-gradient(95deg, #818cf8 0%, #22d3ee 60%, #a78bfa 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .brand .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+  }
+  .meta {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.6;
+  }
+  .meta #clock {
+    font-size: 24px;
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 18px;
+  }
+  .tile {
+    position: relative;
+    background: var(--panel);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 22px 18px;
+    overflow: hidden;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  }
+  .tile::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--tile-color, var(--accent)), transparent);
+    opacity: 0.85;
+  }
+  .tile:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-hi);
+    box-shadow: 0 14px 38px rgba(0,0,0,0.45), 0 0 0 1px rgba(129,140,248,0.08);
+  }
+  .tile.planned { opacity: 0.72; }
+  .tile-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .tile-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .tile-name .icon {
+    color: var(--tile-color, var(--accent));
+    margin-right: 7px;
+    font-weight: 400;
+  }
+  .pill {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+  }
+  .pill.live { color: var(--green); border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.08); box-shadow: 0 0 14px rgba(52,211,153,0.18); }
+  .pill.planned { color: var(--amber); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.06); }
+  .pill.local { color: var(--accent2); border-color: rgba(34,211,238,0.35); background: rgba(34,211,238,0.06); }
+  .tile-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 16px;
+    min-height: 36px;
+  }
+  .tile-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    text-decoration: none;
+    transition: background 0.14s, border-color 0.14s, transform 0.14s;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background: rgba(129,140,248,0.18);
+    border-color: var(--border-hi);
+    transform: translateY(-1px);
+  }
+  .btn.primary {
+    background: linear-gradient(135deg, rgba(129,140,248,0.22), rgba(34,211,238,0.18));
+    border-color: rgba(129,140,248,0.5);
+    color: #fff;
+  }
+  .btn.primary:hover {
+    background: linear-gradient(135deg, rgba(129,140,248,0.35), rgba(34,211,238,0.28));
+  }
+  .btn[aria-disabled="true"] {
+    opacity: 0.4; cursor: not-allowed; pointer-events: none;
+  }
+  .tile.add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 168px;
+    border-style: dashed;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: transparent;
+  }
+  .tile.add:hover { color: var(--accent); border-color: var(--accent); }
+  .section-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 32px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(129,140,248,0.18), transparent);
+  }
+  .section-header:first-child { margin-top: 0; }
+  footer {
+    margin-top: 56px;
+    text-align: center;
+    color: #4a4a66;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 36px 18px 60px; }
+    .brand .title { font-size: 38px; }
+    header { align-items: flex-start; }
+    .meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="title">ATLAS</div>
+      <div class="subtitle">your projects &middot; your stuff</div>
+    </div>
+    <div class="meta">
+      <div id="clock">--:--</div>
+      <div id="date">&nbsp;</div>
+    </div>
+  </header>
+
+  <div id="sections"></div>
+
+  <footer>v1 &middot; built locally</footer>
+</div>
+
+<script>
+const ITEMS = [
+  {
+    section: 'Projects',
+    name: 'RoShop',
+    icon: '❖',
+    color: '#818cf8',
+    status: 'live',
+    desc: 'Roblox item shop — MM2 knives, Adopt Me pets, Robux packages. Firebase backend.',
+    actions: [
+      { label: 'Open Shop', href: 'https://roshop-642dd.web.app', primary: true },
+      { label: 'Admin', href: 'https://roshop-642dd.web.app/admin.html' },
+      { label: 'GitHub', href: 'https://github.com/oksoimcodingnow/roshop' },
+    ],
+  },
+  {
+    section: 'Projects',
+    name: 'Schedule',
+    icon: '◆',
+    color: '#fbbf24',
+    status: 'planned',
+    desc: 'Daily / weekly planner for tasks, deadlines, and study blocks. Lives here in Atlas.',
+    actions: [
+      { label: 'Coming soon', disabled: true },
+    ],
+  },
+  {
+    section: 'Projects',
+    name: 'Knowledge Graph',
+    icon: '◎',
+    color: '#22d3ee',
+    status: 'local',
+    desc: 'Interactive map of RoShop’s codebase — nodes, communities, hyperedges. Desktop only.',
+    actions: [
+      { label: 'Open', href: 'file:///C:/Users/HOME/graphify-roshop/graph.html', primary: true },
+      { label: 'Report', href: 'file:///C:/Users/HOME/graphify-roshop/GRAPH_REPORT.md' },
+    ],
+  },
+  {
+    section: 'AI Tools',
+    name: 'Claude',
+    icon: '✦',
+    color: '#d97757',
+    status: 'live',
+    desc: 'Coding + reasoning assistant. Use for RoShop dev, fin-eng questions, anything heavy.',
+    actions: [
+      { label: 'Open Claude', href: 'https://claude.ai', primary: true },
+      { label: 'Claude Code', href: 'https://claude.ai/code' },
+    ],
+  },
+  {
+    section: 'AI Tools',
+    name: 'NotebookLM',
+    icon: '▤',
+    color: '#4285f4',
+    status: 'live',
+    desc: 'Upload sources (PDFs, notes, papers), then chat with grounded citations. Great for study.',
+    actions: [
+      { label: 'Open NotebookLM', href: 'https://notebooklm.google.com', primary: true },
+    ],
+  },
+  {
+    section: 'AI Tools',
+    name: 'Skills Library',
+    icon: '✧',
+    color: '#a78bfa',
+    status: 'live',
+    desc: '49 skills indexed — finance/quant (VaR, GARCH, DCF, Sharpe), code review, project setup, automation, graphify. Searchable, click-to-copy.',
+    actions: [
+      { label: 'Browse skills', href: 'skills.html', primary: true },
+    ],
+  },
+  {
+    section: 'Utilities',
+    name: 'PDF Tools',
+    icon: '▣',
+    color: '#ef4444',
+    status: 'live',
+    desc: 'Convert PDF ↔ Word / Excel / PPT, merge, split, compress, OCR. Free, no signup. Files deleted server-side after processing.',
+    actions: [
+      { label: 'Open PDF24', href: 'https://tools.pdf24.org/en/', primary: true },
+      { label: 'PDF → Word', href: 'https://tools.pdf24.org/en/pdf-to-word' },
+      { label: 'Word → PDF', href: 'https://tools.pdf24.org/en/word-to-pdf' },
+    ],
+  },
+  {
+    section: 'Utilities',
+    name: 'CloudConvert',
+    icon: '◫',
+    color: '#22c55e',
+    status: 'live',
+    desc: 'Any format → any format (200+). Use when PDF24 doesn’t cover what you need — images, audio, video, archives.',
+    actions: [
+      { label: 'Open', href: 'https://cloudconvert.com/', primary: true },
+    ],
+  },
+];
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function makeTile(p) {
+  const tile = document.createElement('div');
+  tile.className = 'tile' + (p.status === 'planned' ? ' planned' : '');
+  tile.style.setProperty('--tile-color', p.color);
+  const actionsHtml = p.actions.map(a => {
+    const cls = 'btn' + (a.primary ? ' primary' : '');
+    if (a.disabled) return `<span class="${cls}" aria-disabled="true">${esc(a.label)}</span>`;
+    const target = a.href && a.href.startsWith('http') ? ' target="_blank" rel="noopener"' : '';
+    return `<a class="${cls}" href="${esc(a.href)}"${target}>${esc(a.label)}</a>`;
+  }).join('');
+  tile.innerHTML = `
+    <div class="tile-head">
+      <div class="tile-name"><span class="icon">${esc(p.icon)}</span>${esc(p.name)}</div>
+      <span class="pill ${esc(p.status)}">${esc(p.status)}</span>
+    </div>
+    <div class="tile-desc">${esc(p.desc)}</div>
+    <div class="tile-actions">${actionsHtml}</div>
+  `;
+  return tile;
+}
+
+const sectionsEl = document.getElementById('sections');
+const grouped = {};
+const order = [];
+ITEMS.forEach(i => {
+  if (!grouped[i.section]) { grouped[i.section] = []; order.push(i.section); }
+  grouped[i.section].push(i);
+});
+order.forEach(name => {
+  const header = document.createElement('div');
+  header.className = 'section-header';
+  header.innerHTML = `<span>${esc(name)}</span>`;
+  sectionsEl.appendChild(header);
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  grouped[name].forEach(p => grid.appendChild(makeTile(p)));
+  if (name === 'Projects') {
+    const addTile = document.createElement('div');
+    addTile.className = 'tile add';
+    addTile.textContent = '+  add project';
+    addTile.title = 'Edit index.html and add to the ITEMS array';
+    grid.appendChild(addTile);
+  }
+  sectionsEl.appendChild(grid);
+});
+
+function tick() {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('clock').textContent = `${hh}:${mm}`;
+  document.getElementById('date').textContent = now.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+}
+tick();
+setInterval(tick, 30000);
+</script>
+</body>
+</html>
