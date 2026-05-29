@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atlas · Skills</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#21214d">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -28,14 +32,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     min-height: 100vh;
   }
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.2px);
-    background-size: 28px 28px;
-    pointer-events: none;
-    z-index: 0;
-  }
+  /* 3D background canvas + animations are injected by lib/atlas-fx.js */
   .wrap {
     position: relative; z-index: 1;
     max-width: 1200px;
@@ -214,6 +211,7 @@
 
   <footer>click any example prompt to copy &middot; paste it into Claude to trigger the skill</footer>
 </div>
+<script src="lib/atlas-fx.js"></script>
 
 <script>
 const CATEGORIES = [

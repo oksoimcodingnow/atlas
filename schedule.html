@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atlas · Schedule</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#21214d">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -30,12 +34,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     min-height: 100vh;
   }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.2px);
-    background-size: 28px 28px;
-    pointer-events: none; z-index: 0;
-  }
+  /* 3D background canvas + animations are injected by lib/atlas-fx.js */
   .wrap {
     position: relative; z-index: 1;
     max-width: 900px;
@@ -476,5 +475,6 @@ document.getElementById('add-form').addEventListener('submit', e => {
 
 renderAll();
 </script>
+<script src="lib/atlas-fx.js"></script>
 </body>
 </html>
