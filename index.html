@@ -38,7 +38,16 @@
   }
   @media (prefers-reduced-motion: reduce) {
     #bg-canvas { display: none; }
+    .tile, .section-header { opacity: 1 !important; animation: none !important; }
   }
+  @keyframes atlasEntry {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section-header { opacity: 0; animation: atlasEntry 0.45s ease-out forwards; }
+  .tile { opacity: 0; animation: atlasEntry 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+  /* JS-driven tilt overrides hover transform once cursor enters */
+  .tile { transform-style: preserve-3d; will-change: transform; }
   .wrap {
     position: relative; z-index: 1;
     max-width: 1100px;
@@ -382,23 +391,52 @@ ITEMS.forEach(i => {
   if (!grouped[i.section]) { grouped[i.section] = []; order.push(i.section); }
   grouped[i.section].push(i);
 });
+let _delay = 0.04;
+const STEP_HEADER = 0.10, STEP_TILE = 0.07;
 order.forEach(name => {
   const header = document.createElement('div');
   header.className = 'section-header';
+  header.style.animationDelay = _delay.toFixed(2) + 's';
   header.innerHTML = `<span>${esc(name)}</span>`;
   sectionsEl.appendChild(header);
+  _delay += STEP_HEADER;
+
   const grid = document.createElement('div');
   grid.className = 'grid';
-  grouped[name].forEach(p => grid.appendChild(makeTile(p)));
+  grouped[name].forEach(p => {
+    const t = makeTile(p);
+    t.style.animationDelay = _delay.toFixed(2) + 's';
+    _delay += STEP_TILE;
+    grid.appendChild(t);
+  });
   if (name === 'Projects') {
     const addTile = document.createElement('div');
     addTile.className = 'tile add';
+    addTile.style.animationDelay = _delay.toFixed(2) + 's';
+    _delay += STEP_TILE;
     addTile.textContent = '+  add project';
     addTile.title = 'Edit index.html and add to the ITEMS array';
     grid.appendChild(addTile);
   }
   sectionsEl.appendChild(grid);
 });
+
+// Tile 3D tilt on cursor — subtle perspective rotation
+(function attachTilt() {
+  const MAX_DEG = 5;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  document.querySelectorAll('.tile').forEach(tile => {
+    if (tile.classList.contains('add')) return;
+    tile.addEventListener('mousemove', (e) => {
+      const r = tile.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      tile.style.transform = `perspective(700px) rotateY(${x * MAX_DEG}deg) rotateX(${-y * MAX_DEG}deg) translateY(-3px)`;
+    });
+    tile.addEventListener('mouseleave', () => { tile.style.transform = ''; });
+  });
+})();
 
 function tick() {
   const now = new Date();
@@ -502,7 +540,12 @@ setInterval(tick, 30000);
     camera.position.y = -mouse.y * 2;
     camera.lookAt(0, 0, 0);
 
-    // drift particles + wrap inside box
+    // approximate mouse position in world space (camera at z=50, FOV 60)
+    const mouseWX = mouse.x * 50;
+    const mouseWY = -mouse.y * 28;
+    const ATTRACT_R = 18, ATTRACT_F = 0.055;
+
+    // drift particles + wrap inside box, with subtle mouse attraction
     const pos = pointGeom.attributes.position.array;
     for (let i = 0; i < N; i++) {
       pos[i*3]   += velocities[i*3];
@@ -511,6 +554,16 @@ setInterval(tick, 30000);
       if (Math.abs(pos[i*3])   > RANGE_X/2) velocities[i*3]   *= -1;
       if (Math.abs(pos[i*3+1]) > RANGE_Y/2) velocities[i*3+1] *= -1;
       if (Math.abs(pos[i*3+2]) > RANGE_Z/2) velocities[i*3+2] *= -1;
+
+      // gentle, non-cumulative pull toward cursor (only while close)
+      const dx = mouseWX - pos[i*3];
+      const dy = mouseWY - pos[i*3+1];
+      const d  = Math.sqrt(dx*dx + dy*dy);
+      if (d < ATTRACT_R && d > 0.5) {
+        const k = (1 - d / ATTRACT_R) * ATTRACT_F;
+        pos[i*3]   += (dx / d) * k;
+        pos[i*3+1] += (dy / d) * k;
+      }
     }
     pointGeom.attributes.position.needsUpdate = true;
 
