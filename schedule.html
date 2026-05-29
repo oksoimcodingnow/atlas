@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas · Schedule</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-base: #0a0a14;
+    --panel: rgba(22, 22, 42, 0.72);
+    --border: rgba(129, 140, 248, 0.18);
+    --border-hi: rgba(129, 140, 248, 0.45);
+    --text: #e8e8f0;
+    --muted: #8a8aa8;
+    --accent: #818cf8;
+    --accent2: #22d3ee;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #ef4444;
+    --slate: #6b7280;
+  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(129,140,248,0.28); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(129,140,248,0.55); }
+  body {
+    background: radial-gradient(ellipse 90% 70% at 30% -10%, #21214d 0%, #0a0a14 62%), var(--bg-base);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    min-height: 100vh;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1.2px);
+    background-size: 28px 28px;
+    pointer-events: none; z-index: 0;
+  }
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 44px 24px 80px;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 14px; margin-bottom: 28px;
+  }
+  .brand .title {
+    font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 1;
+    background: linear-gradient(95deg, #fbbf24 0%, #f97316 50%, #ef4444 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .brand .subtitle {
+    font-size: 13px; color: var(--muted); margin-top: 8px; letter-spacing: 0.03em;
+  }
+  .back-link {
+    color: var(--muted); text-decoration: none; font-size: 12px;
+    padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px;
+    transition: all 0.14s;
+  }
+  .back-link:hover { color: var(--text); border-color: var(--border-hi); background: rgba(129,140,248,0.1); }
+
+  /* Stats row */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 22px;
+  }
+  .stat {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  .stat .label { font-size: 10px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; font-weight: 600; }
+  .stat .value { font-size: 26px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .stat.today .value { color: var(--accent2); }
+  .stat.week .value { color: var(--accent); }
+  .stat.overdue .value { color: var(--red); }
+  .stat.done .value { color: var(--green); }
+  .stat.overdue.zero .value, .stat.done.zero .value, .stat.today.zero .value, .stat.week.zero .value { color: var(--muted); }
+
+  /* Add form */
+  .add-form {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px; margin-bottom: 22px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center;
+  }
+  .add-form input[type="text"], .add-form input[type="date"], .add-form select {
+    background: rgba(10,10,20,0.85);
+    border: 1px solid var(--border);
+    color: var(--text); padding: 9px 12px; border-radius: 7px;
+    font-size: 13px; outline: none; font-family: inherit;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .add-form input[type="text"]::placeholder { color: #5a5a78; }
+  .add-form input:focus, .add-form select:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(129,140,248,0.16);
+  }
+  .add-form input[type="date"] { color-scheme: dark; }
+  .add-form button {
+    background: linear-gradient(135deg, rgba(129,140,248,0.32), rgba(34,211,238,0.22));
+    border: 1px solid rgba(129,140,248,0.5);
+    color: #fff; padding: 9px 16px; border-radius: 7px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.14s; font-family: inherit;
+  }
+  .add-form button:hover { background: linear-gradient(135deg, rgba(129,140,248,0.5), rgba(34,211,238,0.35)); transform: translateY(-1px); }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .tab {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.14s; font-family: inherit;
+  }
+  .tab .count {
+    color: #6a6a88; font-size: 11px; margin-left: 5px;
+  }
+  .tab:hover { color: var(--text); border-color: var(--border-hi); }
+  .tab.active {
+    background: linear-gradient(135deg, rgba(129,140,248,0.25), rgba(34,211,238,0.18));
+    border-color: var(--accent); color: #fff;
+  }
+  .tab.active .count { color: rgba(255,255,255,0.8); }
+
+  /* Task list */
+  .tasks { display: flex; flex-direction: column; gap: 8px; }
+  .task {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 12px; align-items: center;
+    transition: all 0.14s;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    position: relative;
+    overflow: hidden;
+  }
+  .task::before {
+    content: ''; position: absolute; inset: 0 auto 0 0; width: 3px;
+    background: var(--priority-color, var(--slate));
+  }
+  .task:hover { border-color: var(--border-hi); transform: translateX(2px); }
+  .task.done { opacity: 0.55; }
+  .task.done .task-text { text-decoration: line-through; color: var(--muted); }
+  .task.overdue:not(.done) { border-color: rgba(239,68,68,0.35); }
+  .task.overdue:not(.done) .due-chip { color: var(--red); border-color: rgba(239,68,68,0.4); }
+
+  .task-check {
+    appearance: none; -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border: 1.5px solid rgba(129,140,248,0.4);
+    border-radius: 5px; background: rgba(10,10,20,0.5);
+    cursor: pointer; position: relative; flex-shrink: 0;
+    transition: all 0.14s;
+  }
+  .task-check:hover { border-color: var(--accent); }
+  .task-check:checked {
+    background: linear-gradient(135deg, var(--green), #22c55e);
+    border-color: var(--green);
+  }
+  .task-check:checked::after {
+    content: ''; position: absolute; left: 5px; top: 1px;
+    width: 5px; height: 9px;
+    border: solid #fff; border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .task-body { min-width: 0; }
+  .task-text {
+    font-size: 14px; color: var(--text); line-height: 1.35;
+    cursor: text;
+    word-break: break-word;
+  }
+  .task-text[contenteditable="true"] {
+    outline: 1px solid var(--accent);
+    background: rgba(10,10,20,0.5);
+    padding: 2px 4px; border-radius: 3px;
+  }
+  .task-meta {
+    display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap;
+  }
+  .due-chip {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+    padding: 2px 7px; border-radius: 999px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+  }
+  .due-chip.today { color: var(--accent2); border-color: rgba(34,211,238,0.35); background: rgba(34,211,238,0.08); }
+  .due-chip.tomorrow { color: var(--accent); border-color: rgba(129,140,248,0.35); background: rgba(129,140,248,0.08); }
+
+  .task-actions {
+    display: flex; gap: 4px; opacity: 0.4; transition: opacity 0.14s;
+  }
+  .task:hover .task-actions { opacity: 1; }
+  .icon-btn {
+    background: transparent; border: 1px solid transparent;
+    color: var(--muted); cursor: pointer;
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: all 0.14s; font-family: inherit;
+  }
+  .icon-btn:hover { color: var(--text); background: rgba(129,140,248,0.18); border-color: var(--border); }
+  .icon-btn.delete:hover { color: var(--red); background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3); }
+
+  .empty {
+    text-align: center; padding: 40px 20px;
+    color: var(--muted); font-size: 13px;
+  }
+  .empty .big { font-size: 36px; opacity: 0.4; margin-bottom: 10px; }
+
+  footer {
+    margin-top: 40px; text-align: center;
+    color: #4a4a66; font-size: 11px; letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 28px 16px 60px; }
+    .brand .title { font-size: 32px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .add-form { grid-template-columns: 1fr; }
+    .add-form button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="title">Schedule</div>
+      <div class="subtitle">tasks &middot; deadlines &middot; saved locally</div>
+    </div>
+    <a class="back-link" href="index.html">← Atlas</a>
+  </header>
+
+  <div class="stats">
+    <div class="stat today" id="stat-today"><div class="label">Today</div><div class="value">0</div></div>
+    <div class="stat week" id="stat-week"><div class="label">This Week</div><div class="value">0</div></div>
+    <div class="stat overdue" id="stat-overdue"><div class="label">Overdue</div><div class="value">0</div></div>
+    <div class="stat done" id="stat-done"><div class="label">Done</div><div class="value">0</div></div>
+  </div>
+
+  <form class="add-form" id="add-form" autocomplete="off">
+    <input type="text" id="task-input" placeholder="What needs doing?" required>
+    <input type="date" id="due-input" title="Due date (optional)">
+    <select id="priority-input" title="Priority">
+      <option value="low">Low</option>
+      <option value="med" selected>Med</option>
+      <option value="high">High</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="tasks" id="tasks"></div>
+
+  <footer>data lives in your browser &middot; export with: localStorage.getItem('atlas_tasks')</footer>
+</div>
+
+<script>
+const STORAGE_KEY = 'atlas_tasks';
+const PRIORITY_COLOR = { high: '#ef4444', med: '#fbbf24', low: '#6b7280' };
+const TABS = [
+  { id: 'today', label: 'Today' },
+  { id: 'week', label: 'This Week' },
+  { id: 'all', label: 'All open' },
+  { id: 'done', label: 'Done' },
+];
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+function save(tasks) { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); }
+
+function ymd(date) {
+  const d = (date instanceof Date) ? date : new Date(date);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+function today() { return ymd(new Date()); }
+function weekEnd() {
+  const d = new Date();
+  d.setDate(d.getDate() + 7);
+  return ymd(d);
+}
+function isOverdue(t) { return t.due && t.due < today() && !t.done; }
+function isToday(t) { return t.due === today(); }
+function isThisWeek(t) { return t.due && t.due >= today() && t.due <= weekEnd(); }
+
+let activeTab = 'today';
+let tasks = load();
+
+function counts() {
+  const t = today(), we = weekEnd();
+  return {
+    today: tasks.filter(x => !x.done && isToday(x)).length,
+    week: tasks.filter(x => !x.done && isThisWeek(x)).length,
+    overdue: tasks.filter(x => isOverdue(x)).length,
+    done: tasks.filter(x => x.done).length,
+    all: tasks.filter(x => !x.done).length,
+  };
+}
+
+function filterFor(tab) {
+  switch (tab) {
+    case 'today': return tasks.filter(x => !x.done && isToday(x));
+    case 'week':  return tasks.filter(x => !x.done && isThisWeek(x));
+    case 'all':   return tasks.filter(x => !x.done);
+    case 'done':  return tasks.filter(x => x.done);
+  }
+  return [];
+}
+
+function dueLabel(t) {
+  if (!t.due) return null;
+  const d = t.due;
+  if (d === today()) return { text: 'Today', cls: 'today' };
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  if (d === ymd(tomorrow)) return { text: 'Tomorrow', cls: 'tomorrow' };
+  const dt = new Date(d + 'T00:00:00');
+  const label = dt.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  return { text: label, cls: '' };
+}
+
+function renderStats() {
+  const c = counts();
+  for (const k of ['today', 'week', 'overdue', 'done']) {
+    const el = document.getElementById('stat-' + k);
+    el.querySelector('.value').textContent = c[k];
+    el.classList.toggle('zero', c[k] === 0);
+  }
+}
+
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  const c = counts();
+  el.innerHTML = '';
+  TABS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (t.id === activeTab ? ' active' : '');
+    const n = t.id === 'all' ? c.all : c[t.id];
+    b.innerHTML = `${esc(t.label)} <span class="count">${n}</span>`;
+    b.onclick = () => { activeTab = t.id; renderAll(); };
+    el.appendChild(b);
+  });
+}
+
+function renderTasks() {
+  const list = document.getElementById('tasks');
+  list.innerHTML = '';
+  const visible = filterFor(activeTab).slice().sort((a, b) => {
+    // Sort: overdue first, then by due date, then by priority
+    const aOv = isOverdue(a) ? 0 : 1, bOv = isOverdue(b) ? 0 : 1;
+    if (aOv !== bOv) return aOv - bOv;
+    if ((a.due || '9999') !== (b.due || '9999')) return (a.due || '9999').localeCompare(b.due || '9999');
+    const prio = { high: 0, med: 1, low: 2 };
+    return prio[a.priority] - prio[b.priority];
+  });
+
+  if (!visible.length) {
+    const msgs = {
+      today: { big: '☼', text: 'Nothing due today. Nice.' },
+      week: { big: '◷', text: 'Nothing due this week.' },
+      all: { big: '✓', text: 'No open tasks. Inbox zero.' },
+      done: { big: '◇', text: 'No completed tasks yet.' },
+    };
+    const m = msgs[activeTab];
+    list.innerHTML = `<div class="empty"><div class="big">${esc(m.big)}</div>${esc(m.text)}</div>`;
+    return;
+  }
+
+  visible.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'task' + (t.done ? ' done' : '') + (isOverdue(t) ? ' overdue' : '');
+    el.style.setProperty('--priority-color', PRIORITY_COLOR[t.priority] || PRIORITY_COLOR.med);
+    const due = dueLabel(t);
+    el.innerHTML = `
+      <input type="checkbox" class="task-check" ${t.done ? 'checked' : ''} data-id="${t.id}">
+      <div class="task-body">
+        <div class="task-text" data-id="${t.id}">${esc(t.text)}</div>
+        ${due ? `<div class="task-meta"><span class="due-chip ${due.cls}">${esc(due.text)}</span></div>` : ''}
+      </div>
+      <div class="task-actions">
+        <button class="icon-btn edit" data-id="${t.id}" title="Edit">✎</button>
+        <button class="icon-btn delete" data-id="${t.id}" title="Delete">×</button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+function renderAll() { renderStats(); renderTabs(); renderTasks(); }
+
+// Actions
+function addTask(text, due, priority) {
+  tasks.push({
+    id: Date.now() + Math.random().toString(36).slice(2, 6),
+    text: text.trim(),
+    due: due || null,
+    priority: priority || 'med',
+    done: false,
+    created: Date.now(),
+  });
+  save(tasks); renderAll();
+}
+function toggleDone(id) {
+  const t = tasks.find(x => x.id == id);
+  if (t) { t.done = !t.done; save(tasks); renderAll(); }
+}
+function deleteTask(id) {
+  tasks = tasks.filter(x => x.id != id);
+  save(tasks); renderAll();
+}
+function editTaskInline(id) {
+  const el = document.querySelector(`.task-text[data-id="${id}"]`);
+  if (!el) return;
+  el.setAttribute('contenteditable', 'true');
+  el.focus();
+  // Move cursor to end
+  const r = document.createRange(); r.selectNodeContents(el); r.collapse(false);
+  const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  const finish = () => {
+    el.removeAttribute('contenteditable');
+    const t = tasks.find(x => x.id == id);
+    const newText = el.textContent.trim();
+    if (t && newText && newText !== t.text) { t.text = newText; save(tasks); renderAll(); }
+    else { renderAll(); }
+  };
+  el.addEventListener('blur', finish, { once: true });
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+    if (e.key === 'Escape') { el.textContent = tasks.find(x => x.id == id)?.text || ''; el.blur(); }
+  });
+}
+
+// Event delegation
+document.getElementById('tasks').addEventListener('click', e => {
+  const cb = e.target.closest('.task-check');
+  if (cb) { toggleDone(cb.dataset.id); return; }
+  const del = e.target.closest('.icon-btn.delete');
+  if (del) { deleteTask(del.dataset.id); return; }
+  const edit = e.target.closest('.icon-btn.edit');
+  if (edit) { editTaskInline(edit.dataset.id); return; }
+  const text = e.target.closest('.task-text');
+  if (text && !text.getAttribute('contenteditable')) { editTaskInline(text.dataset.id); }
+});
+
+// Add form
+document.getElementById('add-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const text = document.getElementById('task-input').value;
+  const due = document.getElementById('due-input').value;
+  const priority = document.getElementById('priority-input').value;
+  if (!text.trim()) return;
+  addTask(text, due, priority);
+  document.getElementById('task-input').value = '';
+  document.getElementById('due-input').value = '';
+  document.getElementById('priority-input').value = 'med';
+  document.getElementById('task-input').focus();
+});
+
+renderAll();
+</script>
+</body>
+</html>
