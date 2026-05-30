@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Here · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:    #0a0a14;
+    --bg-2:  #11112a;
+    --text:  #f1efe6;
+    --muted: #8a8aa8;
+    --rule:  rgba(241, 239, 230, 0.16);
+    --accent:   #b8c0ff;
+    --accent-2: #f3d59a;
+    --green: #34d399;
+    --red:   #ef4444;
+    --max:    980px;
+    --gutter: clamp(22px, 5vw, 56px);
+    --serif:  'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+    --sans:   'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono:   'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: var(--sans);
+    font-size: 17px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgba(184, 192, 255, 0.25); }
+
+  /* ─── Chrome ─── */
+  .top-bar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px var(--gutter);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, rgba(10,10,20,0.88), rgba(10,10,20,0.55));
+    border-bottom: 1px solid var(--rule);
+  }
+  .brand {
+    font-family: var(--serif); font-style: italic; font-size: 17px;
+    letter-spacing: 0.01em; color: var(--text);
+  }
+  .brand small {
+    display: block; font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    font-family: var(--sans); font-weight: 600; font-style: normal;
+    margin-top: 2px;
+  }
+  .back {
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
+    color: var(--muted); text-decoration: none; letter-spacing: 0.04em;
+    padding: 8px 16px; border: 1px solid var(--rule); border-radius: 999px;
+    transition: all 0.2s;
+  }
+  .back:hover { color: var(--text); border-color: var(--accent); background: rgba(184, 192, 255, 0.08); }
+
+  /* ─── Layout ─── */
+  .wrap {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(60px, 9vw, 110px) var(--gutter) 100px;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .eyebrow::before {
+    content: ''; width: 28px; height: 1px; background: var(--accent);
+  }
+
+  /* ─── Hero ─── */
+  .hero h1 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(54px, 10vw, 124px);
+    line-height: 0.95; letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .hero h1 .it { font-style: italic; color: var(--accent); }
+  .hero p.lede {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.1vw, 24px);
+    line-height: 1.5;
+    color: var(--text);
+    max-width: 640px; margin-bottom: 18px;
+  }
+  .hero .footnote {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 60px;
+  }
+
+  /* ─── Step cards ─── */
+  .step {
+    position: relative;
+    border-top: 1px solid var(--rule);
+    padding: 56px 0 56px 0;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 36px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .step { grid-template-columns: 1fr; gap: 16px; padding: 40px 0; }
+  }
+  .step .n {
+    font-family: var(--serif); font-style: italic;
+    font-size: 92px; font-weight: 400; line-height: 0.85;
+    color: var(--accent);
+    letter-spacing: -0.04em;
+  }
+  .step .body h2 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1.1; letter-spacing: -0.01em;
+    margin-bottom: 18px;
+  }
+  .step .body h2 em { color: var(--accent); font-style: italic; }
+  .step .body p {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.5vw, 20px);
+    line-height: 1.55; color: var(--text);
+    max-width: 620px;
+    margin-bottom: 16px;
+  }
+  .step .body p strong { font-weight: 600; }
+  .step .body p em { color: var(--accent-2); font-style: italic; }
+
+  /* Inline command block */
+  pre.cmd {
+    font-family: var(--mono);
+    font-size: 14px; line-height: 1.6;
+    background: rgba(184, 192, 255, 0.06);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: var(--accent);
+    margin: 12px 0;
+    position: relative;
+    overflow-x: auto;
+  }
+  pre.cmd::before {
+    content: 'paste';
+    position: absolute; top: 10px; right: 14px;
+    font-family: var(--sans); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  pre.cmd code { color: inherit; font-family: inherit; }
+  .one-time pre.cmd::before { content: 'once'; color: var(--accent-2); }
+  .tip {
+    margin-top: 14px;
+    font-family: var(--serif); font-style: italic;
+    font-size: 15px; color: var(--muted);
+    border-left: 2px solid var(--accent-2);
+    padding-left: 14px;
+    max-width: 620px;
+  }
+
+  /* Verdict box at the end */
+  .verdicts {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+  }
+  .verdict {
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 18px;
+    background: rgba(17, 17, 42, 0.5);
+  }
+  .verdict .label {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.06em; font-weight: 500;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .verdict.pass .label { color: var(--green); }
+  .verdict.fail .label { color: var(--red); }
+  .verdict.note .label { color: var(--accent-2); }
+  .verdict p {
+    font-family: var(--serif); font-size: 15px;
+    line-height: 1.5; color: var(--text); opacity: 0.9;
+  }
+
+  /* Closing */
+  .closer {
+    margin-top: 80px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+    padding-top: 56px;
+  }
+  .closer h2 {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1.05; margin-bottom: 18px;
+  }
+  .closer h2 .accent { color: var(--accent); font-style: normal; }
+  .closer p {
+    font-family: var(--serif);
+    font-size: 17px; line-height: 1.5;
+    color: var(--muted); max-width: 500px;
+    margin: 0 auto 36px;
+  }
+  .closer a {
+    display: inline-block;
+    font-family: var(--sans); font-size: 13px;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 13px 26px;
+    border: 1px solid var(--rule); border-radius: 999px;
+    transition: all 0.25s;
+    margin: 0 6px;
+  }
+  .closer a:hover { color: var(--text); border-color: var(--accent); background: rgba(184, 192, 255, 0.08); }
+
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(20px);
+    transition: opacity 0.75s ease-out, transform 0.75s ease-out; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+  /* Ambient film grain */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9  0 0 0 0 0.9  0 0 0 0 1  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.5; mix-blend-mode: overlay;
+  }
+  .top-bar, .wrap { position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="brand">
+    Atlas · <span style="font-style: italic;">Start Here</span>
+    <small>Run the handshake — step by step</small>
+  </div>
+  <a class="back" href="../index.html">← Atlas</a>
+</div>
+
+<div class="wrap">
+
+<!-- Hero -->
+<section class="hero">
+  <div class="eyebrow reveal">Quickstart · 5 minutes</div>
+  <h1 class="reveal">Run the <span class="it">handshake.</span></h1>
+  <p class="lede reveal">
+    The Claude × Codex review protocol, as the keystrokes you actually type.
+    No theory — that's in the <a href="handshake.html" style="color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule);">Field Manual</a>.
+  </p>
+  <div class="footnote reveal">Done once per repo, then once per commit. That's it.</div>
+</section>
+
+<!-- ─── ONE-TIME SETUP ─── -->
+<section class="step one-time">
+  <div class="n reveal">00</div>
+  <div class="body">
+    <div class="eyebrow reveal">One-time setup</div>
+    <h2 class="reveal">Wire the <em>commit template</em>.</h2>
+    <p class="reveal">
+      Tells git to open the editor with the <em>### Verify</em> block
+      pre-filled. Do this once per cloned repo and never again.
+    </p>
+<pre class="cmd reveal"><code>cd C:\Users\HOME\atlas
+git config commit.template .gitmessage
+
+cd C:\Users\HOME\quant
+git config commit.template .gitmessage</code></pre>
+    <p class="tip reveal">If you only use these repos from inside Claude Code (where commits use full inline messages), you can skip this. The template is for manual commits.</p>
+  </div>
+</section>
+
+<!-- ─── STEP 1 ─── -->
+<section class="step">
+  <div class="n reveal">01</div>
+  <div class="body">
+    <div class="eyebrow reveal">Claude builds</div>
+    <h2 class="reveal">A commit lands with a <em>### Verify</em> block.</h2>
+    <p class="reveal">
+      Either Claude (or you) ships a commit. The message ends with a block of
+      3–6 falsifiable checks — concrete things that can be true or false.
+    </p>
+<pre class="cmd reveal"><code>### Verify
+- [ ] No look-ahead bias — entries shift(1) before signal
+- [ ] Fees + slippage present in Portfolio.from_signals
+- [ ] No new deps in requirements.txt</code></pre>
+    <p class="tip reveal">Bad checks: "looks good", "performant", "well-documented." Good checks are testable from the diff alone.</p>
+  </div>
+</section>
+
+<!-- ─── STEP 2 ─── -->
+<section class="step">
+  <div class="n reveal">02</div>
+  <div class="body">
+    <div class="eyebrow reveal">You run the script</div>
+    <h2 class="reveal">A prompt prints, <em>ready to paste</em>.</h2>
+    <p class="reveal">
+      Open PowerShell, <strong>cd into the repo</strong> the commit landed in,
+      and run <em>scripts\review.bat</em>. It reads the latest commit's
+      subject + SHA, builds a Codex-ready prompt, and prints it.
+    </p>
+<pre class="cmd reveal"><code>cd C:\Users\HOME\atlas
+scripts\review.bat</code></pre>
+    <p class="tip reveal">The <em>.bat</em> bypasses Windows' default PowerShell execution policy so the script just runs — no setup needed.</p>
+  </div>
+</section>
+
+<!-- ─── STEP 3 ─── -->
+<section class="step">
+  <div class="n reveal">03</div>
+  <div class="body">
+    <div class="eyebrow reveal">Hand to Codex</div>
+    <h2 class="reveal">Copy. Paste. <em>Wait.</em></h2>
+    <p class="reveal">
+      Copy everything between the <em>───</em> separator lines. Open your
+      Codex session in another window or tab. Paste. Send.
+    </p>
+    <p class="reveal">
+      Codex reads the diff with <em>git show &lt;sha&gt;</em>, walks each
+      <em>### Verify</em> item, and replies with a verdict per item plus any
+      issues it spots outside the checklist.
+    </p>
+  </div>
+</section>
+
+<!-- ─── STEP 4 ─── -->
+<section class="step">
+  <div class="n reveal">04</div>
+  <div class="body">
+    <div class="eyebrow reveal">Read the verdicts</div>
+    <h2 class="reveal">Three things you might see.</h2>
+    <p class="reveal">Codex returns one of three verdicts per item:</p>
+    <div class="verdicts">
+      <div class="verdict pass reveal">
+        <div class="label">PASS</div>
+        <p>Check confirmed in the diff. No action needed.</p>
+      </div>
+      <div class="verdict fail reveal">
+        <div class="label">FAIL</div>
+        <p>Check violated. Real bug, fix required. Tell Claude.</p>
+      </div>
+      <div class="verdict note reveal">
+        <div class="label">NOTE</div>
+        <p>True but minor — Codex is flagging context, not blocking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STEP 5 ─── -->
+<section class="step">
+  <div class="n reveal">05</div>
+  <div class="body">
+    <div class="eyebrow reveal">Decide</div>
+    <h2 class="reveal">You are the <em>only</em> merger.</h2>
+    <p class="reveal">
+      <strong>All PASS?</strong> Push / merge. Move on. No file needs to be saved.
+    </p>
+    <p class="reveal">
+      <strong>Any FAIL?</strong> Save Codex's output to
+      <em>REVIEWS/2026-05-30-1430-&lt;subject&gt;.md</em> and tell Claude
+      <em>"fix item 2 and 4 from REVIEWS/..."</em>. Claude addresses each in a
+      <strong>new</strong> commit — never amends.
+    </p>
+    <p class="tip reveal">Neither agent touches main on its own. Both write code; you alone push.</p>
+  </div>
+</section>
+
+<!-- ─── STEP 6 ─── -->
+<section class="step">
+  <div class="n reveal">06</div>
+  <div class="body">
+    <div class="eyebrow reveal">When to skip</div>
+    <h2 class="reveal">Discipline beats <em>ceremony</em>.</h2>
+    <p class="reveal">Use the handshake on:</p>
+    <ul style="font-family: var(--serif); font-size: 18px; line-height: 1.7; margin: 12px 0 18px 22px; max-width: 620px;">
+      <li>alpha logic, risk math, anything money-handling</li>
+      <li>security code, auth flows, anything with credentials</li>
+      <li>contract changes (API shape, schema, config keys)</li>
+    </ul>
+    <p class="reveal">Skip on:</p>
+    <ul style="font-family: var(--serif); font-size: 18px; line-height: 1.7; margin: 12px 0 0 22px; max-width: 620px;">
+      <li>typos, docs, comment-only edits</li>
+      <li>hotfix one-liners you're confident about</li>
+      <li>WIP commits inside a feature branch (run it on the branch tip)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── CLOSER ─── -->
+<div class="closer">
+  <h2 class="reveal">That's the <span class="accent">workflow.</span></h2>
+  <p class="reveal">Repeat for every meaningful commit. The discipline compounds; the ceremony fades.</p>
+  <a class="reveal" href="handshake.html">Read the manual</a>
+  <a class="reveal" href="../index.html">← Atlas</a>
+</div>
+
+</div>
+
+<script>
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+  });
+}, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+</script>
+</body>
+</html>
