@@ -69,3 +69,47 @@ User has 49 Claude Code skills installed at `~/.claude/skills/`:
 - 1 graphify: codebase knowledge-graph builder.
 
 Don't install more by default — diminishing returns at 49.
+
+## Agent Handshake Protocol
+
+This repo uses a **builder / checker** pattern when multiple agents collaborate:
+
+- **Builder (Claude)** — writes code, commits with a `### Verify` block in the message
+- **Checker (Codex)** — reviews HEAD, writes findings into `REVIEWS/`
+- **Owner (the user)** — decides what merges to main
+
+### Workflow
+
+1. **Build.** Commit with a `### Verify` block listing 3–6 specific, falsifiable checks. Use the `.gitmessage` template:
+   ```
+   git config commit.template .gitmessage    # one-time setup per clone
+   ```
+
+2. **Review.** Run `scripts/review.ps1` (Win) or `scripts/review.sh` (Unix). It prints a prompt for Codex. Codex writes its findings to a new `REVIEWS/YYYY-MM-DD-HHMM-<subject>.md`.
+
+3. **Decide.** Owner reads the review. Either merges/pushes, or hands back to Claude: *"fix items 2 and 4 from REVIEWS/..."*.
+
+4. **Re-build.** Claude addresses feedback in a **new commit** (never amend). Audit trail stays clean.
+
+### `### Verify` block — what makes a good check
+
+Good (falsifiable):
+- `[ ] No new external dependencies in package.json`
+- `[ ] sw.js CACHE_VERSION bumped`
+- `[ ] All <script src=> paths are relative, not absolute`
+
+Bad (subjective):
+- `[ ] Looks good`
+- `[ ] Performant`
+- `[ ] Well-documented`
+
+### When to skip the handshake
+
+- Typos, docs-only changes, hotfix one-liners — just commit
+- WIP commits inside a feature branch (review only on the branch tip)
+
+### Anti-patterns
+
+- **Codex auto-merging** if it says PASS. No — owner merges.
+- **Claude editing `REVIEWS/`.** Append-only by Codex only.
+- **Asking "is this good?"** — agents will say yes. Always pose falsifiable checks.

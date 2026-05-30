@@ -1,0 +1,16 @@
+
+
+# Short subject under 70 chars on the line above.
+# Wrap body at 72. Explain WHY, not WHAT (diff already shows what).
+
+# ### Verify
+# - [ ] specific, falsifiable check 1
+# - [ ] specific, falsifiable check 2
+# - [ ] specific, falsifiable check 3
+#
+# Lines starting with `#` are stripped. Fill in the Verify block with
+# 3-6 things Codex should check on this commit. Delete the block
+# entirely for trivial commits (typos, docs, hotfix one-liners).
+#
+# One-time setup so this template loads on every commit:
+#   git config commit.template .gitmessage

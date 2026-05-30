@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas · Book</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#21214d">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-base: #0a0a14;
+    --text: #e8e8f0;
+    --muted: #8a8aa8;
+    --accent: #818cf8;
+    --accent2: #22d3ee;
+  }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: radial-gradient(ellipse 90% 70% at 30% -10%, #21214d 0%, #0a0a14 62%), var(--bg-base);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  /* 3D background + entrance animation are injected by lib/atlas-fx.js */
+
+  #book-canvas {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    z-index: 1;
+  }
+
+  .ui {
+    position: fixed; z-index: 3;
+    pointer-events: none;
+  }
+  .ui > * { pointer-events: auto; }
+
+  .top {
+    top: 0; left: 0; right: 0;
+    padding: 28px 32px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .brand .title {
+    font-size: 26px; font-weight: 800; letter-spacing: -0.01em;
+    background: linear-gradient(95deg, #818cf8 0%, #22d3ee 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .brand .subtitle {
+    font-size: 11px; color: var(--muted); margin-top: 4px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .back {
+    color: var(--muted); text-decoration: none; font-size: 12px;
+    padding: 7px 12px; border: 1px solid rgba(129,140,248,0.18); border-radius: 8px;
+    transition: all 0.18s; backdrop-filter: blur(8px);
+    background: rgba(15,15,30,0.4);
+  }
+  .back:hover { color: var(--text); border-color: rgba(129,140,248,0.45); background: rgba(129,140,248,0.12); }
+
+  .bottom {
+    bottom: 0; left: 0; right: 0;
+    padding: 28px 32px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    font-size: 11px; color: #555570; letter-spacing: 0.08em;
+  }
+  .hint { text-transform: uppercase; }
+  .controls { display: flex; gap: 8px; }
+  .controls button {
+    background: rgba(15,15,30,0.55);
+    border: 1px solid rgba(129,140,248,0.22);
+    color: var(--muted); padding: 7px 14px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    transition: all 0.14s; font-family: inherit;
+    backdrop-filter: blur(8px);
+  }
+  .controls button:hover { color: var(--text); border-color: var(--accent); background: rgba(129,140,248,0.18); }
+  .controls button.active { color: #fff; border-color: var(--accent); background: rgba(129,140,248,0.28); }
+
+  @media (max-width: 600px) {
+    .top, .bottom { padding: 18px 18px; }
+    .brand .title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="book-canvas"></canvas>
+
+<div class="ui top">
+  <div class="brand">
+    <div class="title">A Three-Dimensional Page</div>
+    <div class="subtitle">A book · opening on its own</div>
+  </div>
+  <a class="back" href="../index.html">← Atlas</a>
+</div>
+
+<div class="ui bottom">
+  <div class="hint">drag to spin · scroll to zoom</div>
+  <div class="controls">
+    <button type="button" id="auto-btn" class="active">Auto-loop</button>
+    <button type="button" id="open-btn">Open</button>
+    <button type="button" id="close-btn">Close</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ── Three.js setup ───────────────────────────────────────────────
+const canvas = document.getElementById('book-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 100);
+const camTarget = new THREE.Vector3(0, 0, 0);
+camera.position.set(0, 0.6, 4.6);
+camera.lookAt(camTarget);
+
+// ── Lights ───────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+const keyLight = new THREE.DirectionalLight(0xc4cdff, 1.3);
+keyLight.position.set(2.5, 4, 4);
+scene.add(keyLight);
+const rim = new THREE.PointLight(0x22d3ee, 1.5, 9);
+rim.position.set(-2.5, -0.5, 2);
+scene.add(rim);
+const fill = new THREE.PointLight(0x818cf8, 0.9, 8);
+fill.position.set(0.5, 2, -2);
+scene.add(fill);
+
+// ── Book geometry ────────────────────────────────────────────────
+// Spine at x=0. Cover hinges open by rotating around y-axis at x=0,
+// from rotation.y = 0 (closed, lying flat right side) to -π (open).
+const W = 1.45;        // page/cover width
+const H = 1.95;        // page/cover height
+const COVER_T = 0.025; // visual half-thickness
+const PAGE_GAP = 0.0025;
+const N_PAGES = 9;
+
+const book = new THREE.Group();
+scene.add(book);
+
+// Helper: build a plane whose pivot is on its left edge.
+function hingedPlane(w, h, material) {
+  const geom = new THREE.PlaneGeometry(w, h, 1, 1);
+  geom.translate(w / 2, 0, 0); // shift so pivot is at left
+  const mesh = new THREE.Mesh(geom, material);
+  return mesh;
+}
+
+const coverMat = new THREE.MeshPhongMaterial({
+  color: 0x21214d,
+  shininess: 70,
+  specular: 0x818cf8,
+  side: THREE.DoubleSide,
+});
+
+const accentEdge = new THREE.MeshPhongMaterial({
+  color: 0x141432,
+  shininess: 30,
+});
+
+// Front cover (top)
+const frontCover = hingedPlane(W, H, coverMat);
+frontCover.position.set(0, 0, COVER_T);
+book.add(frontCover);
+
+// Back cover (bottom) — also hinged so book can open evenly
+const backCover = hingedPlane(W, H, coverMat);
+backCover.position.set(0, 0, -COVER_T);
+book.add(backCover);
+
+// Spine — thin box along the y-axis
+const spineGeom = new THREE.BoxGeometry(0.04, H, COVER_T * 2 + N_PAGES * PAGE_GAP);
+const spine = new THREE.Mesh(spineGeom, accentEdge);
+spine.position.set(-0.02, 0, 0);
+book.add(spine);
+
+// Pages — alternating slightly-off-white sheets
+const pageMatA = new THREE.MeshPhongMaterial({
+  color: 0xf2efe8, shininess: 14, side: THREE.DoubleSide,
+});
+const pageMatB = new THREE.MeshPhongMaterial({
+  color: 0xece8de, shininess: 14, side: THREE.DoubleSide,
+});
+
+const pages = [];
+for (let i = 0; i < N_PAGES; i++) {
+  const p = hingedPlane(W * 0.985, H * 0.985, i % 2 === 0 ? pageMatA : pageMatB);
+  // Stack between covers: i=0 just under front cover, i=N-1 just above back cover
+  const t = (i + 1) / (N_PAGES + 1);
+  const z = COVER_T - PAGE_GAP - t * (COVER_T * 2 - PAGE_GAP * 2);
+  p.position.set(0, 0, z);
+  book.add(p);
+  pages.push(p);
+}
+
+// Slight initial tilt — book looks more "alive" not perfectly axis-aligned
+book.rotation.x = -0.18;
+book.rotation.y = 0.18;
+
+// ── Interaction state ────────────────────────────────────────────
+let mode = 'auto';                     // 'auto' | 'open' | 'close'
+let openness = 0;                      // 0 closed, 1 fully open
+let openTarget = 0;
+let userYaw = 0;
+let userPitch = 0;
+let userYawTarget = 0;
+let userPitchTarget = 0;
+let zoom = 1.0;
+let zoomTarget = 1.0;
+
+let dragging = false;
+let lastX = 0, lastY = 0;
+canvas.addEventListener('mousedown', (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+canvas.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  const dx = e.clientX - lastX;
+  const dy = e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  userYawTarget += dx * 0.008;
+  userPitchTarget = Math.max(-1.2, Math.min(1.2, userPitchTarget + dy * 0.006));
+});
+addEventListener('mouseup', () => { dragging = false; });
+addEventListener('mouseleave', () => { dragging = false; });
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  zoomTarget = Math.max(0.5, Math.min(2.0, zoomTarget * (1 + e.deltaY * 0.0015)));
+}, { passive: false });
+
+// Touch (mobile)
+let touchId = null;
+canvas.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 1) {
+    touchId = e.touches[0].identifier;
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+    dragging = true;
+  }
+});
+canvas.addEventListener('touchmove', (e) => {
+  if (!dragging) return;
+  for (const t of e.touches) {
+    if (t.identifier === touchId) {
+      const dx = t.clientX - lastX;
+      const dy = t.clientY - lastY;
+      lastX = t.clientX; lastY = t.clientY;
+      userYawTarget += dx * 0.008;
+      userPitchTarget = Math.max(-1.2, Math.min(1.2, userPitchTarget + dy * 0.006));
+    }
+  }
+});
+canvas.addEventListener('touchend', () => { dragging = false; touchId = null; });
+
+// Buttons
+const autoBtn = document.getElementById('auto-btn');
+const openBtn = document.getElementById('open-btn');
+const closeBtn = document.getElementById('close-btn');
+function setMode(m) {
+  mode = m;
+  autoBtn.classList.toggle('active', m === 'auto');
+  openBtn.classList.toggle('active', m === 'open');
+  closeBtn.classList.toggle('active', m === 'close');
+  if (m === 'open') openTarget = 1;
+  if (m === 'close') openTarget = 0;
+}
+autoBtn.addEventListener('click', () => setMode('auto'));
+openBtn.addEventListener('click', () => setMode('open'));
+closeBtn.addEventListener('click', () => setMode('close'));
+
+// ── Resize ───────────────────────────────────────────────────────
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+resize();
+
+// ── Animation ────────────────────────────────────────────────────
+const clock = new THREE.Clock();
+let t = 0;
+const PERIOD = 8.0;   // total seconds of one open→hold→close cycle
+const OPEN_FRAC = 0.32;
+const HOLD_FRAC = 0.36;
+const CLOSE_FRAC = 0.32;
+
+function smoothstep(x) { return x * x * (3 - 2 * x); }
+
+let visible = true;
+document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (!visible) return;
+  const dt = Math.min(clock.getDelta(), 0.05);
+  t += dt;
+
+  // Auto-loop openness
+  if (mode === 'auto') {
+    const phase = (t % PERIOD) / PERIOD;
+    if (phase < OPEN_FRAC) {
+      openTarget = smoothstep(phase / OPEN_FRAC);
+    } else if (phase < OPEN_FRAC + HOLD_FRAC) {
+      openTarget = 1;
+    } else {
+      openTarget = 1 - smoothstep((phase - OPEN_FRAC - HOLD_FRAC) / CLOSE_FRAC);
+    }
+  }
+  // Smoothly approach the target
+  openness += (openTarget - openness) * Math.min(1, dt * 5);
+
+  // Smooth user yaw/pitch + zoom
+  userYaw   += (userYawTarget   - userYaw)   * Math.min(1, dt * 6);
+  userPitch += (userPitchTarget - userPitch) * Math.min(1, dt * 6);
+  zoom      += (zoomTarget      - zoom)      * Math.min(1, dt * 6);
+
+  // Base book pose: slow ambient drift + user yaw/pitch
+  book.rotation.y = 0.18 + Math.sin(t * 0.22) * 0.18 + userYaw;
+  book.rotation.x = -0.18 + Math.sin(t * 0.17) * 0.06 + userPitch;
+  book.position.y = Math.sin(t * 0.55) * 0.05;
+
+  // Covers
+  frontCover.rotation.y = -openness * Math.PI;
+  backCover.rotation.y  = openness * 0.04;
+
+  // Pages fan: page i opens with a stagger
+  for (let i = 0; i < N_PAGES; i++) {
+    const stagger = (i + 1) / (N_PAGES + 2);
+    const denom = 1 - stagger;
+    const pageOpen = denom > 0 ? Math.max(0, Math.min(1, (openness - stagger) / denom)) : 0;
+    pages[i].rotation.y = -pageOpen * Math.PI;
+  }
+
+  // Camera zoom
+  camera.position.z = 4.6 / zoom;
+
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>
