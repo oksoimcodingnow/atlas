@@ -113,14 +113,15 @@ This appears on every editorial section. It anchors the eye and signals "this is
 - Less editorial flourish, more dashboard.
 - Still respects the palette and typography.
 
-### 3D / WebGL pages (e.g. `demos/book.html`)
+### 3D / WebGL pages
 - Reserved for cases where motion *is* the medium.
 - Always include a back link, always have controls (Auto / Open / Close).
 - Background should be transparent — let `lib/atlas-fx.js` handle ambient.
+- *None currently in the repo — `demos/book.html` was removed pending better references for 3D editorial.*
 
 ## When NOT to use 3D
 
-- Anything instructional. Editorial > 3D for "here's how X works" — proven by the handshake A/B (the editorial version reads in 90 seconds, the book takes 4 minutes and most readers don't wait).
+- Anything instructional. Editorial > 3D for "here's how X works" — proven by an early A/B (a 3D book reads in ~4 minutes and most users don't wait; the editorial version reads in ~90 seconds).
 - Anywhere the user needs to *act* (forms, dashboards, lists). 3D is for ambience or showcase.
 - Anywhere mobile users need to be productive. WebGL kills phone batteries.
 
