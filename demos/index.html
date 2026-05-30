@@ -301,7 +301,55 @@
     </div>
   </div>
 
-  <!-- ─── Demo 3: Network ─── -->
+  <!-- ─── Demo 3: Study Flow ─── -->
+  <div class="demo">
+    <div class="preview">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="sf-bg" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#1c1c44"/>
+            <stop offset="1" stop-color="#0a0a14"/>
+          </linearGradient>
+          <linearGradient id="sf-text" x1="0" x2="1">
+            <stop offset="0" stop-color="#f3d59a"/>
+            <stop offset="1" stop-color="#b8c0ff"/>
+          </linearGradient>
+        </defs>
+        <rect width="320" height="200" fill="url(#sf-bg)"/>
+        <text x="160" y="96" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="48" font-style="italic" fill="url(#sf-text)" font-weight="500">Study Flow</text>
+        <line x1="100" y1="120" x2="220" y2="120" stroke="#f3d59a" stroke-width="0.6" opacity="0.55"/>
+        <text x="160" y="148" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" fill="#8a8aa8" letter-spacing="3">CAPTURE · SOURCE · ASK · CODE · LOG · CYCLE</text>
+        <!-- 6 dots showing loop -->
+        <g fill="#f3d59a">
+          <circle cx="80"  cy="178" r="2"/>
+          <circle cx="112" cy="178" r="2"/>
+          <circle cx="144" cy="178" r="2"/>
+          <circle cx="176" cy="178" r="2"/>
+          <circle cx="208" cy="178" r="2"/>
+          <circle cx="240" cy="178" r="2.5"/>
+        </g>
+        <text x="160" y="32" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" fill="#8a8aa8" letter-spacing="3">VOL. II</text>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="tag">Editorial · Scrollytelling</div>
+      <h3>The <em>Study Flow.</em></h3>
+      <p>
+        Field Manual Vol. II — the 6-move loop for turning curiosity into
+        competence: capture, source, ask, code, log, cycle. Same editorial
+        treatment as the Handshake; gold accent instead of periwinkle.
+      </p>
+      <div class="tech">
+        <span>HTML</span><span>CSS</span><span>IntersectionObserver</span><span>Cormorant</span>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="study-flow.html">Read</a>
+        <a class="btn secondary" href="https://github.com/oksoimcodingnow/atlas/blob/main/demos/study-flow.html" target="_blank" rel="noopener">Source</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Demo 4: Network (placeholder, kept for honesty) ─── -->
   <div class="demo">
     <div class="preview">
       <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
@@ -312,7 +360,6 @@
           </radialGradient>
         </defs>
         <rect width="320" height="200" fill="url(#net-bg)"/>
-        <!-- 3 nodes in a triangle -->
         <line x1="80" y1="80" x2="240" y2="80" stroke="#b8c0ff" stroke-width="1" opacity="0.4" stroke-dasharray="3 4"/>
         <line x1="80" y1="80" x2="160" y2="150" stroke="#b8c0ff" stroke-width="1" opacity="0.4" stroke-dasharray="3 4"/>
         <line x1="240" y1="80" x2="160" y2="150" stroke="#b8c0ff" stroke-width="1" opacity="0.4" stroke-dasharray="3 4"/>
@@ -329,9 +376,9 @@
       <div class="tag">Concept · Coming soon</div>
       <h3>The <em>Network.</em></h3>
       <p>
-        The handshake as a live node graph — claude, codex, owner. Watch the
-        message flow between agents on each commit, color-coded by review
-        verdict. Animated SVG + IntersectionObserver, no Three.js needed.
+        The handshake as a live node graph — claude, codex, owner. Watch
+        the message flow on each commit, colored by review verdict.
+        Animated SVG + IntersectionObserver, no Three.js needed.
       </p>
       <div class="tech">
         <span>SVG</span><span>CSS animations</span><span>concept</span>
