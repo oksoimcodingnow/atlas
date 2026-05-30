@@ -1,12 +1,16 @@
 /* Atlas service worker — cache-first with on-the-fly population.
  * Bump CACHE_VERSION to force a refresh after deploying changes.
  */
-const CACHE_VERSION = 'atlas-v3';
+const CACHE_VERSION = 'atlas-v4';
 const ASSETS = [
   './',
   './index.html',
   './skills.html',
   './schedule.html',
+  './demos/',
+  './demos/index.html',
+  './demos/handshake.html',
+  './demos/book.html',
   './lib/atlas-fx.js',
   './manifest.json',
   './icons/atlas-192.png',
@@ -16,7 +20,10 @@ const ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_VERSION).then((cache) =>
+      // Use addAll best-effort; if one asset fails, others should still cache
+      Promise.allSettled(ASSETS.map((a) => cache.add(a)))
+    )
   );
   self.skipWaiting();
 });

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas · Demos</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a14;
+    --panel: rgba(20, 20, 38, 0.6);
+    --border: rgba(184, 192, 255, 0.16);
+    --border-hi: rgba(184, 192, 255, 0.45);
+    --text: #f1efe6;
+    --muted: #8a8aa8;
+    --accent: #b8c0ff;
+    --accent-2: #f3d59a;
+    --serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: var(--sans);
+    font-size: 16px; line-height: 1.55;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgba(184, 192, 255, 0.25); }
+
+  /* Subtle ambient bg */
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% -10%, rgba(184, 192, 255, 0.10), transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(243, 213, 154, 0.05), transparent 50%);
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9  0 0 0 0 0.9  0 0 0 0 1  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.5; mix-blend-mode: overlay;
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    padding: clamp(40px, 6vw, 80px) clamp(22px, 5vw, 56px) 80px;
+  }
+
+  /* ─── Header ─── */
+  header {
+    margin-bottom: 56px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    flex-wrap: wrap; gap: 20px;
+  }
+  .brand {
+    font-family: var(--serif);
+    font-style: italic; font-weight: 500;
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: 1; letter-spacing: -0.01em;
+  }
+  .brand .accent { color: var(--accent); font-style: normal; }
+  .subtitle {
+    font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin-top: 12px;
+  }
+  .back {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    padding: 9px 18px; border: 1px solid var(--border); border-radius: 999px;
+    letter-spacing: 0.05em;
+    transition: all 0.22s;
+  }
+  .back:hover { color: var(--text); border-color: var(--accent); background: rgba(184, 192, 255, 0.08); }
+
+  /* ─── Demos grid ─── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px;
+  }
+  .demo {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0;
+    overflow: hidden;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    display: flex; flex-direction: column;
+  }
+  .demo:hover {
+    border-color: var(--border-hi);
+    transform: translateY(-3px);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+  }
+  .preview {
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #1a1a3e, #0a0a14);
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .preview svg { width: 100%; height: 100%; display: block; }
+  .meta {
+    padding: 22px 24px 24px;
+    flex: 1; display: flex; flex-direction: column;
+  }
+  .meta .tag {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 600; color: var(--muted); margin-bottom: 10px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .meta .tag::before {
+    content: ''; width: 18px; height: 1px; background: var(--accent);
+  }
+  .meta h3 {
+    font-family: var(--serif);
+    font-weight: 500; font-size: 26px;
+    line-height: 1.1; letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .meta h3 em { color: var(--accent); font-style: italic; font-weight: 500; }
+  .meta p {
+    font-size: 14px; color: var(--text);
+    opacity: 0.78; line-height: 1.55; margin-bottom: 18px;
+  }
+  .meta .tech {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .meta .tech span {
+    font-size: 10px; padding: 3px 8px;
+    background: rgba(184, 192, 255, 0.08);
+    border: 1px solid rgba(184, 192, 255, 0.18);
+    color: var(--accent);
+    border-radius: 4px;
+    font-family: 'SF Mono', Consolas, monospace;
+    letter-spacing: 0.04em;
+  }
+  .meta .actions { margin-top: auto; display: flex; gap: 10px; }
+  .meta a.btn {
+    flex: 1;
+    text-align: center;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: all 0.18s;
+  }
+  .meta a.btn.primary {
+    background: linear-gradient(135deg, rgba(184, 192, 255, 0.30), rgba(243, 213, 154, 0.18));
+    border: 1px solid rgba(184, 192, 255, 0.5);
+    color: #fff;
+  }
+  .meta a.btn.primary:hover { background: linear-gradient(135deg, rgba(184, 192, 255, 0.45), rgba(243, 213, 154, 0.3)); }
+  .meta a.btn.secondary {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .meta a.btn.secondary:hover { color: var(--text); border-color: var(--accent); }
+
+  footer {
+    margin-top: 72px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px; letter-spacing: 0.06em;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+
+  /* Reveal on load */
+  .demo { opacity: 0; transform: translateY(20px); animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+  .demo:nth-of-type(1) { animation-delay: 0.06s; }
+  .demo:nth-of-type(2) { animation-delay: 0.16s; }
+  .demo:nth-of-type(3) { animation-delay: 0.26s; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .demo { opacity: 1; transform: none; animation: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="brand">Demos <span class="accent">·</span> <em style="font-style: italic;">a small gallery</em></div>
+    <div class="subtitle">Atlas · Field Manual annexes</div>
+  </div>
+  <a class="back" href="../index.html">← Atlas</a>
+</header>
+
+<div class="grid">
+
+  <!-- ─── Demo 1: Handshake editorial ─── -->
+  <div class="demo">
+    <div class="preview">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="hs-bg" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#1a1a3e"/>
+            <stop offset="1" stop-color="#0a0a14"/>
+          </linearGradient>
+          <linearGradient id="hs-text" x1="0" x2="1">
+            <stop offset="0" stop-color="#b8c0ff"/>
+            <stop offset="1" stop-color="#f3d59a"/>
+          </linearGradient>
+        </defs>
+        <rect width="320" height="200" fill="url(#hs-bg)"/>
+        <text x="160" y="92" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="54" font-style="italic" fill="url(#hs-text)" font-weight="500">Handshake</text>
+        <line x1="100" y1="120" x2="220" y2="120" stroke="#b8c0ff" stroke-width="0.6" opacity="0.55"/>
+        <text x="160" y="148" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" fill="#8a8aa8" letter-spacing="3">SIX STEPS · TWO AGENTS · ONE OWNER</text>
+        <circle cx="40" cy="180" r="2" fill="#b8c0ff" opacity="0.5"/>
+        <circle cx="160" cy="180" r="2" fill="#b8c0ff"/>
+        <circle cx="280" cy="180" r="2" fill="#b8c0ff" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="tag">Editorial · Scrollytelling</div>
+      <h3>The <em>Handshake.</em></h3>
+      <p>
+        A field-manual presentation of the Claude × Codex review protocol.
+        Six full-bleed sections, oversized serif typography, scroll-triggered
+        reveals, left-rail progress nav. Pure HTML/CSS/JS — no framework, no Three.js.
+      </p>
+      <div class="tech">
+        <span>HTML</span><span>CSS</span><span>IntersectionObserver</span><span>Cormorant</span><span>Inter Tight</span>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="handshake.html">Read</a>
+        <a class="btn secondary" href="https://github.com/oksoimcodingnow/atlas/blob/main/demos/handshake.html" target="_blank" rel="noopener">Source</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Demo 2: 3D book ─── -->
+  <div class="demo">
+    <div class="preview">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="bk-bg" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#21214d"/>
+            <stop offset="1" stop-color="#0a0a14"/>
+          </linearGradient>
+          <linearGradient id="bk-cover" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#2c2c5e"/>
+            <stop offset="1" stop-color="#15153a"/>
+          </linearGradient>
+        </defs>
+        <rect width="320" height="200" fill="url(#bk-bg)"/>
+        <!-- pages -->
+        <g transform="translate(160, 100) rotate(-3)">
+          <rect x="-2" y="-58" width="68" height="118" fill="#ece8de" opacity="0.95"/>
+          <rect x="-3" y="-58" width="64" height="118" fill="#f4f0e6"/>
+          <line x1="14" y1="-32" x2="50" y2="-32" stroke="#21214d" stroke-width="1" opacity="0.4"/>
+          <line x1="14" y1="-22" x2="44" y2="-22" stroke="#21214d" stroke-width="0.5" opacity="0.3"/>
+          <line x1="14" y1="-14" x2="50" y2="-14" stroke="#21214d" stroke-width="0.5" opacity="0.3"/>
+        </g>
+        <!-- cover flipped open to left -->
+        <g transform="translate(160, 100) rotate(-78)">
+          <rect x="-4" y="-58" width="68" height="118" fill="url(#bk-cover)" opacity="0.95"/>
+          <text x="30" y="0" text-anchor="middle" font-family="Georgia, serif" font-size="10" font-weight="700" fill="#b8c0ff" transform="rotate(78 30 0)">HAND</text>
+          <text x="30" y="14" text-anchor="middle" font-family="Georgia, serif" font-size="10" font-weight="700" fill="#b8c0ff" transform="rotate(78 30 14)">SHAKE</text>
+        </g>
+        <!-- spine -->
+        <rect x="156" y="42" width="3" height="116" fill="#141432"/>
+        <!-- floating sparkles -->
+        <circle cx="60" cy="40" r="1.5" fill="#b8c0ff" opacity="0.7"/>
+        <circle cx="270" cy="60" r="1.2" fill="#22d3ee" opacity="0.6"/>
+        <circle cx="50" cy="160" r="1" fill="#b8c0ff" opacity="0.5"/>
+        <circle cx="290" cy="150" r="1.3" fill="#b8c0ff" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="tag">3D · Skeuomorphic</div>
+      <h3>The <em>Book.</em></h3>
+      <p>
+        Same six steps, presented as a physical book that opens itself. Hinged
+        front + back covers, nine fanning pages, CanvasTexture for each
+        page's typography. Drag to spin, scroll to zoom, click to pause.
+      </p>
+      <div class="tech">
+        <span>Three.js</span><span>CanvasTexture</span><span>WebGL</span><span>MeshPhong</span>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="book.html">Open</a>
+        <a class="btn secondary" href="https://github.com/oksoimcodingnow/atlas/blob/main/demos/book.html" target="_blank" rel="noopener">Source</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Demo 3: Network ─── -->
+  <div class="demo">
+    <div class="preview">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="net-bg" cx="0.5" cy="0.4" r="0.7">
+            <stop offset="0" stop-color="#1c1c44"/>
+            <stop offset="1" stop-color="#0a0a14"/>
+          </radialGradient>
+        </defs>
+        <rect width="320" height="200" fill="url(#net-bg)"/>
+        <!-- 3 nodes in a triangle -->
+        <line x1="80" y1="80" x2="240" y2="80" stroke="#b8c0ff" stroke-width="1" opacity="0.4" stroke-dasharray="3 4"/>
+        <line x1="80" y1="80" x2="160" y2="150" stroke="#b8c0ff" stroke-width="1" opacity="0.4" stroke-dasharray="3 4"/>
+        <line x1="240" y1="80" x2="160" y2="150" stroke="#b8c0ff" stroke-width="1" opacity="0.4" stroke-dasharray="3 4"/>
+        <circle cx="80" cy="80" r="20" fill="#21214d" stroke="#b8c0ff" stroke-width="1.5"/>
+        <circle cx="240" cy="80" r="20" fill="#21214d" stroke="#f3d59a" stroke-width="1.5"/>
+        <circle cx="160" cy="150" r="22" fill="#21214d" stroke="#fff" stroke-width="1.5"/>
+        <text x="80" y="84" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="10" font-weight="700" fill="#b8c0ff">claude</text>
+        <text x="240" y="84" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="10" font-weight="700" fill="#f3d59a">codex</text>
+        <text x="160" y="154" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="10" font-weight="700" fill="#fff">you</text>
+        <text x="160" y="180" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" fill="#8a8aa8" letter-spacing="2">SOON</text>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="tag">Concept · Coming soon</div>
+      <h3>The <em>Network.</em></h3>
+      <p>
+        The handshake as a live node graph — claude, codex, owner. Watch the
+        message flow between agents on each commit, color-coded by review
+        verdict. Animated SVG + IntersectionObserver, no Three.js needed.
+      </p>
+      <div class="tech">
+        <span>SVG</span><span>CSS animations</span><span>concept</span>
+      </div>
+      <div class="actions">
+        <a class="btn primary" style="opacity: 0.5; pointer-events: none;">In progress</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>Atlas Demos · curated</div>
+  <div>each demo is a single self-contained file in <code style="font-family: 'SF Mono', monospace; color: var(--accent);">demos/</code></div>
+</footer>
+
+</div>
+
+</body>
+</html>

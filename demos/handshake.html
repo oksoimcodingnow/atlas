@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Handshake · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter+Tight:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:    #0a0a14;
+    --bg-2:  #11112a;
+    --text:  #f1efe6;
+    --muted: #8a8aa8;
+    --rule:  rgba(241, 239, 230, 0.16);
+    --accent:    #b8c0ff;
+    --accent-2:  #f3d59a;
+    --max:   1100px;
+    --gutter: clamp(22px, 5vw, 56px);
+    --serif: 'Cormorant Garamond', 'Iowan Old Style', 'Apple Garamond', Georgia, serif;
+    --sans:  'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgba(184, 192, 255, 0.25); }
+
+  /* ─── Persistent UI chrome ─────────────────────────────── */
+  .chrome {
+    position: fixed; z-index: 50;
+    pointer-events: none;
+    inset: 0;
+  }
+  .chrome > * { pointer-events: auto; }
+
+  .top-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 26px var(--gutter);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    background: linear-gradient(180deg, rgba(10,10,20,0.65), rgba(10,10,20,0));
+  }
+  .brand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: 0.01em;
+    color: var(--text);
+  }
+  .brand small {
+    display: block; font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    font-family: var(--sans); font-weight: 600; font-style: normal;
+    margin-top: 2px;
+  }
+  .top-bar a.back {
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: 0.04em;
+    padding: 8px 16px;
+    border: 1px solid var(--rule); border-radius: 999px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .top-bar a.back:hover {
+    color: var(--text); border-color: var(--accent);
+    background: rgba(184, 192, 255, 0.08);
+  }
+
+  /* Progress rail down the left edge */
+  .rail {
+    position: fixed; left: 28px; top: 50%;
+    transform: translateY(-50%); z-index: 40;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .rail-dot {
+    width: 8px; height: 8px;
+    border-radius: 999px;
+    background: var(--rule);
+    transition: background 0.4s, transform 0.4s;
+    cursor: pointer;
+  }
+  .rail-dot:hover { background: var(--accent); transform: scale(1.4); }
+  .rail-dot.active { background: var(--accent); transform: scale(1.6); }
+  @media (max-width: 760px) { .rail { display: none; } }
+
+  /* Subtle scroll hint */
+  .scroll-hint {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    font-family: var(--sans); font-size: 10px; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--muted);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    pointer-events: none; animation: pulse 2.6s ease-in-out infinite;
+  }
+  .scroll-hint::after {
+    content: ''; width: 1px; height: 28px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+    50%      { opacity: 1;   transform: translateX(-50%) translateY(4px); }
+  }
+
+  /* ─── Section scaffolding ──────────────────────────────── */
+  section {
+    min-height: 100vh;
+    padding: 120px var(--gutter) 80px;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    width: 100%;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+    margin-bottom: 24px;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before {
+    content: ''; width: 28px; height: 1px;
+    background: var(--accent); display: inline-block;
+  }
+
+  /* ─── Hero ─────────────────────────────────────────────── */
+  .hero { padding-top: 0; }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(58px, 12vw, 168px);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .hero h1 .it {
+    font-style: italic; font-weight: 500;
+    color: var(--accent);
+  }
+  .hero p.lede {
+    font-family: var(--serif);
+    font-size: clamp(20px, 2.4vw, 28px);
+    line-height: 1.4;
+    color: var(--text);
+    max-width: 640px;
+    margin-bottom: 38px;
+  }
+  .hero .meta {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    font-size: 12px; color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .hero .meta span strong {
+    display: block;
+    font-family: var(--serif); font-size: 16px;
+    color: var(--text); text-transform: none; letter-spacing: 0;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  /* ─── Step sections ────────────────────────────────────── */
+  .step .inner {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 2fr;
+    gap: clamp(40px, 8vw, 96px);
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .step .inner { grid-template-columns: 1fr; gap: 30px; }
+  }
+  .step .num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(120px, 18vw, 240px);
+    line-height: 0.85;
+    color: var(--accent);
+    letter-spacing: -0.04em;
+    position: relative;
+  }
+  .step .num::after {
+    content: '';
+    position: absolute; left: 0; bottom: -18px;
+    width: 64px; height: 1px;
+    background: var(--accent-2);
+  }
+  .step h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(38px, 5.5vw, 76px);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin-bottom: 28px;
+  }
+  .step .body {
+    font-family: var(--serif);
+    font-size: clamp(18px, 1.55vw, 22px);
+    line-height: 1.55;
+    color: var(--text);
+    max-width: 580px;
+    margin-bottom: 22px;
+  }
+  .step .body em {
+    color: var(--accent);
+    font-style: italic;
+  }
+  .step .code {
+    display: inline-block;
+    font-family: 'SF Mono', Consolas, Menlo, monospace;
+    font-size: 13px;
+    padding: 7px 13px;
+    background: rgba(184, 192, 255, 0.08);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--accent);
+    margin-top: 6px;
+  }
+  .step .glyph {
+    margin-top: 18px;
+    font-size: 22px;
+    color: var(--accent-2);
+    letter-spacing: 0.5em;
+  }
+
+  /* Alternating layout — even-numbered steps mirror */
+  .step:nth-of-type(even) .inner { direction: rtl; }
+  .step:nth-of-type(even) .inner > * { direction: ltr; }
+
+  /* ─── Outro ────────────────────────────────────────────── */
+  .outro {
+    text-align: center;
+  }
+  .outro h2 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(54px, 9vw, 130px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .outro h2 .accent { color: var(--accent); font-style: normal; }
+  .outro .lede {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2vw, 24px);
+    color: var(--muted);
+    max-width: 540px;
+    margin: 0 auto 50px;
+    line-height: 1.5;
+  }
+  .outro .pillars {
+    display: flex; justify-content: center; gap: clamp(20px, 5vw, 72px);
+    flex-wrap: wrap;
+    font-family: var(--sans);
+  }
+  .outro .pillars div {
+    text-align: center; min-width: 120px;
+  }
+  .outro .pillars .label {
+    font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .outro .pillars .v {
+    font-family: var(--serif);
+    font-size: 26px; font-style: italic; font-weight: 500;
+    color: var(--text);
+  }
+  .outro .return {
+    margin-top: 80px;
+    display: inline-block;
+    font-family: var(--sans); font-size: 13px;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 14px 26px;
+    border: 1px solid var(--rule); border-radius: 999px;
+    transition: all 0.25s;
+  }
+  .outro .return:hover {
+    color: var(--text); border-color: var(--accent);
+    background: rgba(184, 192, 255, 0.08);
+  }
+
+  /* ─── Reveal animation (driven by IntersectionObserver) ── */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s ease-out, transform 0.9s ease-out; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal.delay-1 { transition-delay: 0.08s; }
+  .reveal.delay-2 { transition-delay: 0.18s; }
+  .reveal.delay-3 { transition-delay: 0.28s; }
+  .reveal.delay-4 { transition-delay: 0.38s; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  /* Ambient noise / film grain via a tiled SVG data-URL */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9  0 0 0 0 0.9  0 0 0 0 1  0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.6; mix-blend-mode: overlay;
+  }
+</style>
+</head>
+<body>
+
+<!-- Fixed chrome -->
+<div class="chrome">
+  <div class="top-bar">
+    <div class="brand">
+      Atlas · <span style="font-style: italic;">Field Manual</span>
+      <small>Volume I — Agent Handshake</small>
+    </div>
+    <a href="../index.html" class="back">← Atlas</a>
+  </div>
+</div>
+
+<!-- Left rail (clickable section dots) -->
+<nav class="rail" id="rail" aria-label="Section progress"></nav>
+
+<!-- ─── HERO ───────────────────────────────────────────── -->
+<section class="hero" id="sec-0">
+  <div class="inner">
+    <div class="eyebrow reveal">Field Manual · Vol. I</div>
+    <h1 class="reveal delay-1">The<br>Hand<span class="it">shake.</span></h1>
+    <p class="lede reveal delay-2">
+      A working protocol for two agents and one owner.
+      Claude builds. Codex checks. You decide what merges.
+    </p>
+    <div class="meta reveal delay-3">
+      <span>Six<strong>steps</strong></span>
+      <span>Two<strong>agents</strong></span>
+      <span>One<strong>owner</strong></span>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- ─── STEPS ──────────────────────────────────────────── -->
+<section class="step" id="sec-1">
+  <div class="inner">
+    <div class="num reveal">01</div>
+    <div>
+      <div class="eyebrow reveal">Build</div>
+      <h2 class="reveal delay-1">Commit with a <em>checklist</em>.</h2>
+      <p class="body reveal delay-2">
+        Claude writes the code and ships a commit. The message includes a
+        <em>### Verify</em> block — three to six specific, falsifiable
+        checks. Not “looks good.” Things that can be true or false.
+      </p>
+      <p class="code reveal delay-3">git config commit.template .gitmessage</p>
+      <div class="glyph reveal delay-3">◆ ◇ ◆</div>
+    </div>
+  </div>
+</section>
+
+<section class="step" id="sec-2">
+  <div class="inner">
+    <div class="num reveal">02</div>
+    <div>
+      <div class="eyebrow reveal">Open the prompt</div>
+      <h2 class="reveal delay-1">A single line, then a script.</h2>
+      <p class="body reveal delay-2">
+        From inside the repo, run the wrapper. It prints a Codex-ready
+        prompt — already filled with the commit SHA, the subject, and the
+        path the review should be written to. No retyping.
+      </p>
+      <p class="code reveal delay-3">scripts\review.bat</p>
+      <div class="glyph reveal delay-3">◯ → ◉</div>
+    </div>
+  </div>
+</section>
+
+<section class="step" id="sec-3">
+  <div class="inner">
+    <div class="num reveal">03</div>
+    <div>
+      <div class="eyebrow reveal">Hand to Codex</div>
+      <h2 class="reveal delay-1">Paste. Wait. Read.</h2>
+      <p class="body reveal delay-2">
+        Codex reads the diff, walks each item, and answers
+        <em>PASS · FAIL · NOTE</em> with one sentence of evidence per call.
+        No essays. No politeness. Just verdicts you can act on.
+      </p>
+      <div class="glyph reveal delay-3">⌘ ⌥ ⏎</div>
+    </div>
+  </div>
+</section>
+
+<section class="step" id="sec-4">
+  <div class="inner">
+    <div class="num reveal">04</div>
+    <div>
+      <div class="eyebrow reveal">Decide</div>
+      <h2 class="reveal delay-1">You are the <em>only</em> merger.</h2>
+      <p class="body reveal delay-2">
+        Read the review. All PASS — merge it. Any FAIL — hand back to
+        Claude with the specific items to fix. Neither agent touches the
+        main branch on its own. Authority stays with the owner.
+      </p>
+      <div class="glyph reveal delay-3">▲ ▼</div>
+    </div>
+  </div>
+</section>
+
+<section class="step" id="sec-5">
+  <div class="inner">
+    <div class="num reveal">05</div>
+    <div>
+      <div class="eyebrow reveal">Re-build</div>
+      <h2 class="reveal delay-1">A <em>new</em> commit, never an amend.</h2>
+      <p class="body reveal delay-2">
+        Claude addresses every FAIL in a fresh commit. The audit trail
+        stays clean — anyone can read the conversation between agent and
+        checker in the git log.
+      </p>
+      <div class="glyph reveal delay-3">→ → →</div>
+    </div>
+  </div>
+</section>
+
+<section class="step" id="sec-6">
+  <div class="inner">
+    <div class="num reveal">06</div>
+    <div>
+      <div class="eyebrow reveal">Loop</div>
+      <h2 class="reveal delay-1">Use it where it <em>matters</em>.</h2>
+      <p class="body reveal delay-2">
+        Risky work — alpha logic, money handling, security boundaries —
+        gets the full handshake. Cosmetic commits, docs, one-line hotfixes
+        don't. Discipline beats ceremony.
+      </p>
+      <div class="glyph reveal delay-3">◌ ○ ◉</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── OUTRO ──────────────────────────────────────────── -->
+<section class="outro" id="sec-7">
+  <div class="inner">
+    <div class="eyebrow reveal" style="justify-content: center;">Coda</div>
+    <h2 class="reveal delay-1">That's the <span class="accent">protocol.</span></h2>
+    <p class="lede reveal delay-2">
+      Two specialists. One judge. No accidents on the main branch.
+    </p>
+    <div class="pillars reveal delay-3">
+      <div><div class="label">Builder</div><div class="v">Claude</div></div>
+      <div><div class="label">Checker</div><div class="v">Codex</div></div>
+      <div><div class="label">Decider</div><div class="v">You</div></div>
+    </div>
+    <a href="../index.html" class="return reveal delay-4">← Back to Atlas</a>
+  </div>
+</section>
+
+<script>
+// ─── Build the progress rail ─────────────────────────────
+const SECTIONS = Array.from(document.querySelectorAll('section'));
+const rail = document.getElementById('rail');
+SECTIONS.forEach((s, i) => {
+  const d = document.createElement('div');
+  d.className = 'rail-dot';
+  d.title = s.id;
+  d.addEventListener('click', () => s.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  rail.appendChild(d);
+});
+const dots = Array.from(rail.children);
+
+// ─── Reveal-on-scroll for .reveal elements ───────────────
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ─── Highlight active section in rail ────────────────────
+const sectionObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const i = SECTIONS.indexOf(e.target);
+    dots.forEach((d, idx) => d.classList.toggle('active', idx === i));
+  });
+}, { threshold: [0.5] });
+SECTIONS.forEach(s => sectionObs.observe(s));
+
+// ─── Hide the "scroll" hint after the first scroll ───────
+let scrolled = false;
+addEventListener('scroll', () => {
+  if (scrolled || scrollY < 60) return;
+  scrolled = true;
+  const hint = document.querySelector('.scroll-hint');
+  if (hint) { hint.style.opacity = 0; hint.style.pointerEvents = 'none'; }
+}, { passive: true });
+</script>
+</body>
+</html>
