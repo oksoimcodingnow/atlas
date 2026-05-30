@@ -220,6 +220,26 @@
     margin-top: 40px; text-align: center;
     color: #4a4a66; font-size: 11px; letter-spacing: 0.08em;
   }
+  .data-controls {
+    margin-top: 32px; padding-top: 18px;
+    border-top: 1px solid rgba(129,140,248,0.10);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .data-controls button {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(129,140,248,0.22);
+    color: var(--muted); padding: 6px 12px; border-radius: 6px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    transition: all 0.14s; font-family: inherit;
+  }
+  .data-controls button:hover {
+    color: var(--text); border-color: var(--accent);
+    background: rgba(129,140,248,0.12);
+  }
+  #data-msg { font-size: 11px; color: var(--muted); }
+  #data-msg.ok { color: var(--green); }
+  #data-msg.err { color: var(--red); }
 
   @media (max-width: 600px) {
     .wrap { padding: 28px 16px 60px; }
@@ -261,7 +281,14 @@
   <div class="tabs" id="tabs"></div>
   <div class="tasks" id="tasks"></div>
 
-  <footer>data lives in your browser &middot; export with: localStorage.getItem('atlas_tasks')</footer>
+  <div class="data-controls">
+    <button type="button" id="export-btn" title="Download all tasks as JSON">Export</button>
+    <button type="button" id="import-btn" title="Replace all tasks with JSON from file">Import</button>
+    <input type="file" id="import-file" accept="application/json" hidden>
+    <span id="data-msg"></span>
+  </div>
+
+  <footer>data lives in your browser &middot; back it up with Export</footer>
 </div>
 
 <script>
@@ -474,6 +501,63 @@ document.getElementById('add-form').addEventListener('submit', e => {
 });
 
 renderAll();
+
+// ── Export / Import JSON ─────────────────────────────────────
+const dataMsg = document.getElementById('data-msg');
+function flashMsg(text, cls = 'ok', ms = 2500) {
+  dataMsg.textContent = text;
+  dataMsg.className = cls;
+  setTimeout(() => { dataMsg.textContent = ''; dataMsg.className = ''; }, ms);
+}
+
+document.getElementById('export-btn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url; a.download = `atlas-tasks-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  flashMsg(`Exported ${tasks.length} tasks`);
+});
+
+document.getElementById('import-btn').addEventListener('click', () => {
+  document.getElementById('import-file').click();
+});
+
+document.getElementById('import-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = (ev) => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      if (!Array.isArray(parsed)) throw new Error('not an array');
+      // Light validation
+      const cleaned = parsed.filter(x => x && typeof x.text === 'string').map(x => ({
+        id: x.id ?? (Date.now() + Math.random().toString(36).slice(2, 6)),
+        text: String(x.text),
+        due: x.due || null,
+        priority: ['low', 'med', 'high'].includes(x.priority) ? x.priority : 'med',
+        done: !!x.done,
+        created: x.created ?? Date.now(),
+      }));
+      if (!cleaned.length) throw new Error('no valid tasks in file');
+      if (!confirm(`Replace your current ${tasks.length} tasks with ${cleaned.length} from the file?`)) {
+        flashMsg('Import cancelled', 'err'); return;
+      }
+      tasks = cleaned; save(tasks); renderAll();
+      flashMsg(`Imported ${cleaned.length} tasks`);
+    } catch (err) {
+      flashMsg(`Import failed: ${err.message}`, 'err', 4000);
+    }
+    e.target.value = '';
+  };
+  r.readAsText(file);
+});
+
+// Auto-focus the task input on page load
+document.getElementById('task-input').focus();
 </script>
 <script src="lib/atlas-fx.js"></script>
 </body>
