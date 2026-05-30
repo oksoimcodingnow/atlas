@@ -85,7 +85,7 @@ This repo uses a **builder / checker** pattern when multiple agents collaborate:
    git config commit.template .gitmessage    # one-time setup per clone
    ```
 
-2. **Review.** Run `scripts/review.ps1` (Win) or `scripts/review.sh` (Unix). It prints a prompt for Codex. Codex writes its findings to a new `REVIEWS/YYYY-MM-DD-HHMM-<subject>.md`.
+2. **Review.** Run `scripts\review.bat` (Win, recommended) or `scripts/review.sh` (Unix). It prints a prompt for Codex. Codex writes its findings to a new `REVIEWS/YYYY-MM-DD-HHMM-<subject>.md`. The `.bat` exists to bypass Windows' default PowerShell execution-policy block on unsigned `.ps1` files.
 
 3. **Decide.** Owner reads the review. Either merges/pushes, or hands back to Claude: *"fix items 2 and 4 from REVIEWS/..."*.
 

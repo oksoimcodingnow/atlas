@@ -14,7 +14,7 @@ Read `CLAUDE.md` next for the full conventions, known issues, and "don't do this
 ## Handshake (builder = Claude, checker = Codex, decider = owner)
 
 1. Commits include a `### Verify` block (3–6 falsifiable checks). Use `.gitmessage`.
-2. Run `scripts/review.ps1` (Win) or `scripts/review.sh` (Unix) — prints a prompt to paste into Codex.
+2. Run `scripts\review.bat` (Win, recommended — handles execution-policy block) or `scripts/review.sh` (Unix) — prints a prompt to paste into Codex.
 3. Codex writes findings to `REVIEWS/YYYY-MM-DD-HHMM-<subject>.md`. Append-only.
 4. Owner reads + decides merge. If FAILs, Claude addresses in a *new* commit (not amend).
 

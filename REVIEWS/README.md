@@ -28,11 +28,13 @@ YYYY-MM-DD-HHMM-<commit-subject-slug>.md
 
 ## How to generate a review
 
-```bash
-scripts/review.sh        # Unix
-scripts/review.ps1       # Windows
+```
+scripts\review.bat       # Windows (recommended — bypasses script-execution policy)
+scripts/review.sh        # Unix / macOS
 ```
 
 These print a prompt to paste into Codex. Codex writes the review file here.
+
+> The `.bat` is a one-line wrapper around `review.ps1` that runs PowerShell with `-ExecutionPolicy Bypass`. It avoids the "running scripts is disabled" error that Windows shows on unsigned `.ps1` files by default. You can also run `review.ps1` directly if you've set `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
 
 See `CLAUDE.md` / `AGENTS.md` for the full handshake protocol.
