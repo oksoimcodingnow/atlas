@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Showcase · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:    #0a0a14;
+    --bg-2:  #11112a;
+    --text:  #f1efe6;
+    --muted: #8a8aa8;
+    --rule:  rgba(241, 239, 230, 0.16);
+    --accent:   #b8c0ff;
+    --accent-2: #f3d59a;
+    --max:    1100px;
+    --gutter: clamp(22px, 5vw, 56px);
+    --serif:  'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+    --sans:   'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono:   'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: var(--sans);
+    font-size: 17px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgba(184, 192, 255, 0.25); }
+
+  /* Top bar */
+  .top-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px var(--gutter);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, rgba(10,10,20,0.85), rgba(10,10,20,0.4));
+  }
+  .brand {
+    font-family: var(--serif); font-style: italic; font-size: 17px;
+    color: var(--text);
+  }
+  .brand small {
+    display: block; font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    font-family: var(--sans); font-weight: 600; font-style: normal;
+    margin-top: 2px;
+  }
+  .back {
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
+    color: var(--muted); text-decoration: none; letter-spacing: 0.04em;
+    padding: 8px 16px; border: 1px solid var(--rule); border-radius: 999px;
+    transition: all 0.2s; background: rgba(10,10,20,0.5);
+  }
+  .back:hover { color: var(--text); border-color: var(--accent); background: rgba(184, 192, 255, 0.1); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    padding: 140px var(--gutter) 80px;
+    display: flex; flex-direction: column; justify-content: center;
+    max-width: var(--max); margin: 0 auto;
+  }
+  .eyebrow {
+    font-family: var(--sans); font-size: 11px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+    margin-bottom: 24px;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--accent); }
+  .hero h1 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(54px, 11vw, 138px);
+    line-height: 0.92; letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .hero h1 .it { font-style: italic; color: var(--accent); }
+  .hero p.lede {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.1vw, 24px);
+    line-height: 1.5; color: var(--text);
+    max-width: 600px; margin-bottom: 12px;
+  }
+  .hero .footnote {
+    font-size: 13px; color: var(--muted);
+    max-width: 520px;
+  }
+  .scroll-hint {
+    margin-top: 60px;
+    font-family: var(--sans); font-size: 10px;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .scroll-hint::after {
+    content: ''; width: 30px; height: 1px;
+    background: linear-gradient(to right, var(--accent), transparent);
+  }
+
+  /* ─── The scroll-driven showcase ─────────────────────────── */
+  /* A tall section that pins its inner content. As the user
+     scrolls through the section, the frame index advances. */
+  .showcase {
+    position: relative;
+    height: 400vh;    /* 4× viewport = ~4 viewports of scroll for the sequence */
+    background: var(--bg);
+  }
+  .showcase .pin {
+    position: sticky; top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #frame-canvas {
+    width: 100%; height: 100%;
+    display: block;
+  }
+  /* Editorial text overlays — fade based on scroll progress */
+  .overlay {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.4s ease, transform 0.6s ease;
+    opacity: 0;
+  }
+  .overlay.in { opacity: 1; }
+  .overlay-tl { top: 12vh; left: 7vw; }
+  .overlay-tr { top: 12vh; right: 7vw; text-align: right; }
+  .overlay-bl { bottom: 14vh; left: 7vw; }
+  .overlay-br { bottom: 14vh; right: 7vw; text-align: right; }
+
+  .overlay .label {
+    font-family: var(--sans); font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--accent-2); font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .overlay .copy {
+    font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 32px);
+    line-height: 1.15; color: var(--text);
+    max-width: 380px;
+  }
+
+  /* Progress rail (bottom of pinned area) */
+  .progress {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    width: min(380px, 60vw); height: 2px;
+    background: rgba(241, 239, 230, 0.12);
+    border-radius: 999px; overflow: hidden;
+    pointer-events: none; z-index: 2;
+  }
+  .progress-fill {
+    width: 0%; height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.08s linear;
+  }
+  .progress-num {
+    position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 11px;
+    color: var(--muted); letter-spacing: 0.08em;
+    pointer-events: none; z-index: 2;
+  }
+
+  /* ─── After-showcase docs section ────────────────────────── */
+  .docs {
+    padding: 120px var(--gutter) 80px;
+    max-width: var(--max); margin: 0 auto;
+  }
+  .docs h2 {
+    font-family: var(--serif); font-weight: 500;
+    font-size: clamp(38px, 5.5vw, 64px);
+    line-height: 1.1; letter-spacing: -0.015em;
+    margin-bottom: 28px;
+  }
+  .docs h2 em { color: var(--accent); font-style: italic; }
+  .docs p {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.5vw, 20px);
+    line-height: 1.55;
+    color: var(--text); max-width: 620px;
+    margin-bottom: 18px;
+  }
+  .docs p strong { font-weight: 600; }
+  .docs p em { color: var(--accent-2); font-style: italic; }
+
+  pre.cmd {
+    font-family: var(--mono);
+    font-size: 13px; line-height: 1.6;
+    background: rgba(184, 192, 255, 0.06);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: var(--accent);
+    margin: 14px 0;
+    overflow-x: auto;
+  }
+
+  .ol {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.5vw, 19px);
+    line-height: 1.65;
+    color: var(--text); max-width: 620px;
+    margin: 18px 0 24px 22px;
+  }
+  .ol li { margin-bottom: 8px; }
+
+  /* Outro */
+  .outro {
+    text-align: center;
+    padding: 80px var(--gutter) 100px;
+    border-top: 1px solid var(--rule);
+    margin-top: 60px;
+  }
+  .outro p {
+    font-family: var(--serif); font-style: italic; font-size: 18px;
+    color: var(--muted); margin-bottom: 24px;
+  }
+  .outro a {
+    display: inline-block; font-family: var(--sans); font-size: 13px;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 13px 26px;
+    border: 1px solid var(--rule); border-radius: 999px;
+    transition: all 0.25s;
+  }
+  .outro a:hover { color: var(--text); border-color: var(--accent); background: rgba(184, 192, 255, 0.08); }
+
+  /* Film grain */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9  0 0 0 0 0.9  0 0 0 0 1  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.45; mix-blend-mode: overlay;
+  }
+  .top-bar, .hero, .showcase, .docs, .outro { position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="brand">
+    Atlas · <span style="font-style: italic;">Showcase</span>
+    <small>Scroll-driven frame sequence</small>
+  </div>
+  <a href="../index.html" class="back">← Atlas</a>
+</div>
+
+<!-- ─── HERO ────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="eyebrow">Demo · Frame Sequence</div>
+  <h1>Scroll to <span class="it">unfold.</span></h1>
+  <p class="lede">240 pre-rendered frames. Swapped as you scroll. The same trick Apple uses on every product page.</p>
+  <p class="footnote">Right now it's running a procedural placeholder — circles exploding and reforming. Drop your Veo-generated frames into <code style="font-family: var(--mono); font-size: 13px; color: var(--accent);">demos/frames/</code> and it becomes your product.</p>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- ─── PINNED SHOWCASE ─────────────────────────────────── -->
+<section class="showcase" id="showcase">
+  <div class="pin">
+    <canvas id="frame-canvas"></canvas>
+
+    <div class="overlay overlay-tl" data-from="0.02" data-to="0.22">
+      <div class="label">01 / Intake</div>
+      <div class="copy">Pre-rendered, not real-time.</div>
+    </div>
+    <div class="overlay overlay-tr" data-from="0.24" data-to="0.46">
+      <div class="label">02 / Mechanism</div>
+      <div class="copy">One JPG per scroll position.</div>
+    </div>
+    <div class="overlay overlay-bl" data-from="0.50" data-to="0.72">
+      <div class="label">03 / Cost</div>
+      <div class="copy">Zero WebGL. Runs anywhere.</div>
+    </div>
+    <div class="overlay overlay-br" data-from="0.76" data-to="0.98">
+      <div class="label">04 / Result</div>
+      <div class="copy">Identical to native 3D, in the user's eye.</div>
+    </div>
+
+    <div class="progress-num"><span id="progress-num">000 / 240</span></div>
+    <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+</section>
+
+<!-- ─── DOCS ────────────────────────────────────────────── -->
+<section class="docs">
+  <div class="eyebrow">How to drop in your frames</div>
+  <h2>Swap the <em>placeholder</em>.</h2>
+  <p>You just watched a placeholder — a canvas drawing 240 procedural frames so you can verify the scroll mechanic works. To swap in your real Veo-generated frames:</p>
+  <ol class="ol">
+    <li>Extract your video to <strong>240 sequential JPGs</strong> via EZGif (or any frame extractor) at 30 FPS.</li>
+    <li>Name them <code style="font-family: var(--mono); color: var(--accent);">frame-001.jpg</code> through <code style="font-family: var(--mono); color: var(--accent);">frame-240.jpg</code> (zero-padded to 3 digits).</li>
+    <li>Drop the folder into <code style="font-family: var(--mono); color: var(--accent);">demos/frames/</code> in this repo.</li>
+    <li>Open <code style="font-family: var(--mono); color: var(--accent);">showcase.html</code>, find the config block at the top of the script, change <code style="font-family: var(--mono); color: var(--accent);">MODE = 'procedural'</code> to <code style="font-family: var(--mono); color: var(--accent);">MODE = 'frames'</code>.</li>
+    <li>Reload. Done.</li>
+  </ol>
+  <p>If your sequence is more or fewer than 240 frames, change <em>TOTAL_FRAMES</em> too. Everything else (preload, draw, progress bar, overlays) adapts.</p>
+
+  <h2 style="margin-top: 60px;">A few notes on <em>weight</em>.</h2>
+  <p>240 JPGs at ~300 KB each is <strong>~70 MB</strong>. That's a long first paint. Two cures: (1) re-encode the frames smaller — most product shots compress to 150–200 KB with no visible loss; (2) progressive preload — already wired in, frames load as needed first, then in the background.</p>
+
+  <h2 style="margin-top: 60px;">Why not real <em>3D</em>?</h2>
+  <p>Real-time 3D (Three.js, WebGL) sounds prestigious but for product shots it gives you worse fidelity than pre-rendered for an order of magnitude more code. Apple, Tesla, every premium product page uses pre-rendered frame sequences. Be honest about what wins.</p>
+</section>
+
+<div class="outro">
+  <p>The trick is the scroll. The work is the frames.</p>
+  <a href="../index.html">← back to Atlas</a>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  showcase.html — scroll-driven frame sequence
+//
+//  CONFIG: when your real frames are ready, change MODE to 'frames'.
+// ════════════════════════════════════════════════════════════
+const MODE = 'procedural';        // 'procedural' (placeholder) | 'frames' (your real JPGs)
+const TOTAL_FRAMES = 240;
+const FRAME_PATH = (n) => `frames/frame-${String(n).padStart(3, '0')}.jpg`;
+// ════════════════════════════════════════════════════════════
+
+const canvas = document.getElementById('frame-canvas');
+const ctx = canvas.getContext('2d');
+const showcase = document.getElementById('showcase');
+const progressFill = document.getElementById('progress-fill');
+const progressNum = document.getElementById('progress-num');
+const overlays = Array.from(document.querySelectorAll('.overlay'));
+
+// Resize canvas to device pixel ratio for crisp drawing
+function resizeCanvas() {
+  const dpr = Math.min(devicePixelRatio, 2);
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ─── Frame loading (only used when MODE === 'frames') ────
+const frames = new Array(TOTAL_FRAMES).fill(null);
+let loadedCount = 0;
+function loadFrame(i) {
+  if (frames[i]) return;
+  const img = new Image();
+  img.src = FRAME_PATH(i + 1);
+  img.onload = () => { loadedCount++; };
+  img.onerror = () => {
+    console.warn(`[showcase] missing frame ${i + 1}, falling back to procedural for this index`);
+  };
+  frames[i] = img;
+}
+if (MODE === 'frames') {
+  // Eagerly load the first ~30 frames, then the rest lazily as the user scrolls.
+  for (let i = 0; i < Math.min(30, TOTAL_FRAMES); i++) loadFrame(i);
+}
+
+// ─── Procedural placeholder (used until real frames exist) ───
+function drawProcedural(idx) {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  const cx = w / 2, cy = h / 2;
+  const t = idx / (TOTAL_FRAMES - 1);          // 0..1 through the scroll
+  const explode = Math.sin(t * Math.PI);       // 0 at ends, 1 at middle
+  const rot = t * Math.PI * 2;
+
+  // Background — radial dark
+  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+  bg.addColorStop(0, '#1a1a3e');
+  bg.addColorStop(1, '#06060e');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, w, h);
+
+  // Concentric layers of orbiting circles ("exploding product")
+  const LAYERS = 8;
+  for (let i = 0; i < LAYERS; i++) {
+    const baseR = 70 + i * 22;
+    const r = baseR + explode * 120;
+    const segs = 8;
+    for (let j = 0; j < segs; j++) {
+      const ang = (j / segs) * Math.PI * 2 + rot + i * 0.4;
+      const x = cx + Math.cos(ang) * r;
+      const y = cy + Math.sin(ang) * r;
+      const size = 14 - i * 1.1 + (1 - explode) * 6;
+      const hue = (i / LAYERS) * 280 + t * 60;
+      ctx.fillStyle = `hsla(${hue}, 65%, ${60 - i * 3}%, ${0.85 - i * 0.06})`;
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(1, size), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Inner glow that pulses opposite of explode
+  const innerR = 50 + (1 - explode) * 60;
+  const inner = ctx.createRadialGradient(cx, cy, 0, cx, cy, innerR);
+  inner.addColorStop(0, 'rgba(184, 192, 255, 0.55)');
+  inner.addColorStop(1, 'rgba(184, 192, 255, 0)');
+  ctx.fillStyle = inner;
+  ctx.beginPath();
+  ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// ─── Main render ─────────────────────────────────────────
+function frameIndex(progress) {
+  return Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.floor(progress * TOTAL_FRAMES)));
+}
+
+function getProgress() {
+  const rect = showcase.getBoundingClientRect();
+  const total = showcase.offsetHeight - innerHeight;
+  if (total <= 0) return 0;
+  const scrolled = -rect.top;
+  return Math.max(0, Math.min(1, scrolled / total));
+}
+
+function render() {
+  const progress = getProgress();
+  const idx = frameIndex(progress);
+
+  // Update progress UI
+  progressFill.style.width = `${(progress * 100).toFixed(1)}%`;
+  progressNum.textContent = `${String(idx + 1).padStart(3, '0')} / ${TOTAL_FRAMES}`;
+
+  // Overlay fades by data-from / data-to thresholds
+  overlays.forEach(o => {
+    const from = parseFloat(o.dataset.from);
+    const to = parseFloat(o.dataset.to);
+    o.classList.toggle('in', progress >= from && progress <= to);
+  });
+
+  // Draw the current frame
+  if (MODE === 'frames') {
+    // Lazy-load nearby frames
+    for (let off = -2; off <= 5; off++) {
+      const i = idx + off;
+      if (i >= 0 && i < TOTAL_FRAMES) loadFrame(i);
+    }
+    const img = frames[idx];
+    if (img && img.complete && img.naturalWidth > 0) {
+      // Cover-fit draw
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      const imgRatio = img.naturalWidth / img.naturalHeight;
+      const canvasRatio = w / h;
+      let dw, dh, dx, dy;
+      if (imgRatio > canvasRatio) {
+        dh = h; dw = h * imgRatio; dx = (w - dw) / 2; dy = 0;
+      } else {
+        dw = w; dh = w / imgRatio; dx = 0; dy = (h - dh) / 2;
+      }
+      ctx.fillStyle = '#06060e';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, dx, dy, dw, dh);
+    } else {
+      // Loading fallback — draw procedural so something animates
+      drawProcedural(idx);
+    }
+  } else {
+    drawProcedural(idx);
+  }
+}
+
+// requestAnimationFrame loop (smooth scroll → smooth draw)
+let ticking = false;
+function tick() {
+  render();
+  ticking = false;
+}
+addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(tick);
+    ticking = true;
+  }
+}, { passive: true });
+
+// Initial render
+render();
+
+// Also re-render on resize after the canvas resize
+addEventListener('resize', () => { resizeCanvas(); render(); });
+</script>
+</body>
+</html>
