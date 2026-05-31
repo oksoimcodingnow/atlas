@@ -98,31 +98,62 @@
     padding: 14px; margin-bottom: 22px;
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     box-shadow: 0 2px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04);
-    display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center;
+    display: flex; flex-direction: column; gap: 13px;
     transition: box-shadow 0.3s var(--glide), border-color 0.3s var(--glide);
   }
   .add-form:focus-within { border-color: var(--border-hi); box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(129,140,248,0.12); }
-  .add-form input[type="text"], .add-form input[type="date"], .add-form select {
+  .form-row-main { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .form-row-opts { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: center; }
+  #task-input {
     background: rgba(10,10,20,0.85);
     border: 1px solid var(--border);
-    color: var(--text); padding: 9px 12px; border-radius: 7px;
-    font-size: 13px; outline: none; font-family: inherit;
+    color: var(--text); padding: 10px 13px; border-radius: 8px;
+    font-size: 14px; outline: none; font-family: inherit;
     transition: border-color 0.18s var(--glide), box-shadow 0.18s var(--glide);
   }
-  .add-form input[type="text"]::placeholder { color: #5a5a78; }
-  .add-form input:focus, .add-form select:focus {
-    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(129,140,248,0.16);
-  }
-  .add-form input[type="date"] { color-scheme: dark; }
-  .add-form button {
+  #task-input::placeholder { color: #5a5a78; }
+  #task-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(129,140,248,0.16); }
+  .form-row-main button {
     background: linear-gradient(135deg, rgba(129,140,248,0.32), rgba(34,211,238,0.22));
     border: 1px solid rgba(129,140,248,0.5);
-    color: #fff; padding: 9px 18px; border-radius: 7px;
-    font-size: 13px; font-weight: 600; cursor: pointer;
+    color: #fff; padding: 9px 22px; border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
     transition: transform 0.2s var(--spring), background 0.2s var(--glide), box-shadow 0.2s var(--glide);
   }
-  .add-form button:hover { background: linear-gradient(135deg, rgba(129,140,248,0.5), rgba(34,211,238,0.35)); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(129,140,248,0.25); }
-  .add-form button:active { transform: translateY(0) scale(0.97); }
+  .form-row-main button:hover { background: linear-gradient(135deg, rgba(129,140,248,0.5), rgba(34,211,238,0.35)); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(129,140,248,0.25); }
+  .form-row-main button:active { transform: translateY(0) scale(0.97); }
+
+  /* Chip pickers (date + priority) */
+  .chip-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .chip-label {
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-right: 4px;
+  }
+  .dchip, .pchip {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: transform 0.2s var(--spring), background 0.18s var(--glide), color 0.18s, border-color 0.18s, box-shadow 0.18s;
+  }
+  .dchip:hover, .pchip:hover { color: var(--text); border-color: var(--border-hi); transform: translateY(-1px); }
+  .dchip:active, .pchip:active { transform: scale(0.94); }
+  .dchip.active {
+    background: linear-gradient(135deg, rgba(129,140,248,0.30), rgba(34,211,238,0.20));
+    border-color: var(--accent); color: #fff;
+    box-shadow: 0 4px 12px rgba(129,140,248,0.22);
+  }
+  .dchip.cal { padding: 6px 11px; }
+  .custom-date {
+    background: rgba(10,10,20,0.85); border: 1px solid var(--accent);
+    color: var(--text); padding: 6px 10px; border-radius: 8px;
+    font-size: 12px; outline: none; font-family: inherit; color-scheme: dark;
+  }
+  .pchip[data-prio="low"].active  { background: rgba(107,114,128,0.38); border-color: var(--slate); color: #fff; box-shadow: 0 4px 12px rgba(107,114,128,0.2); }
+  .pchip[data-prio="med"].active  { background: rgba(251,191,36,0.22); border-color: var(--amber); color: #fff; box-shadow: 0 4px 12px rgba(251,191,36,0.18); }
+  .pchip[data-prio="high"].active { background: rgba(239,68,68,0.22); border-color: var(--red); color: #fff; box-shadow: 0 4px 12px rgba(239,68,68,0.2); }
+  .due-chip.soon { color: var(--accent); border-color: rgba(129,140,248,0.3); background: rgba(129,140,248,0.06); }
 
   /* Tabs */
   .tabs {
@@ -283,8 +314,7 @@
     .wrap { padding: 28px 16px 60px; }
     .brand .title { font-size: 32px; }
     .stats { grid-template-columns: repeat(2, 1fr); }
-    .add-form { grid-template-columns: 1fr; }
-    .add-form button { width: 100%; }
+    .form-row-opts { gap: 12px 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
@@ -309,14 +339,28 @@
   </div>
 
   <form class="add-form" id="add-form" autocomplete="off">
-    <input type="text" id="task-input" placeholder="What needs doing?" required>
-    <input type="date" id="due-input" title="Due date (optional)">
-    <select id="priority-input" title="Priority">
-      <option value="low">Low</option>
-      <option value="med" selected>Med</option>
-      <option value="high">High</option>
-    </select>
-    <button type="submit">Add</button>
+    <div class="form-row-main">
+      <input type="text" id="task-input" placeholder="What needs doing?" required>
+      <button type="submit">Add</button>
+    </div>
+    <div class="form-row-opts">
+      <div class="chip-group" id="when-group">
+        <span class="chip-label">When</span>
+        <button type="button" class="dchip active" data-when="none">None</button>
+        <button type="button" class="dchip" data-when="today">Today</button>
+        <button type="button" class="dchip" data-when="tomorrow">Tomorrow</button>
+        <button type="button" class="dchip" data-when="weekend">Weekend</button>
+        <button type="button" class="dchip" data-when="nextweek">Next wk</button>
+        <button type="button" class="dchip cal" data-when="custom" title="Pick a date">&#128197;</button>
+        <input type="date" id="due-input" class="custom-date" hidden>
+      </div>
+      <div class="chip-group" id="prio-group">
+        <span class="chip-label">Priority</span>
+        <button type="button" class="pchip" data-prio="low">Low</button>
+        <button type="button" class="pchip active" data-prio="med">Med</button>
+        <button type="button" class="pchip" data-prio="high">High</button>
+      </div>
+    </div>
   </form>
 
   <div class="tabs" id="tabs"></div>
@@ -405,13 +449,14 @@ function sortVisible(arr) {
 
 function dueLabel(t) {
   if (!t.due) return null;
-  const d = t.due;
-  if (d === today()) return { text: 'Today', cls: 'today' };
-  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
-  if (d === ymd(tomorrow)) return { text: 'Tomorrow', cls: 'tomorrow' };
-  const dt = new Date(d + 'T00:00:00');
-  const label = dt.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-  return { text: label, cls: '' };
+  const t0 = new Date(today() + 'T00:00:00');
+  const td = new Date(t.due + 'T00:00:00');
+  const diff = Math.round((td - t0) / 86400000);
+  if (diff < 0)   return { text: diff === -1 ? '1d ago' : `${-diff}d ago`, cls: 'overdue' };
+  if (diff === 0) return { text: 'Today', cls: 'today' };
+  if (diff === 1) return { text: 'Tomorrow', cls: 'tomorrow' };
+  if (diff <= 6)  return { text: td.toLocaleDateString(undefined, { weekday: 'short' }), cls: 'soon' };
+  return { text: td.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), cls: '' };
 }
 
 // ── Stats with count-up ──────────────────────────────────────
@@ -635,18 +680,90 @@ document.getElementById('tasks').addEventListener('click', e => {
   if (text && !text.getAttribute('contenteditable')) { editTaskInline(text.dataset.id); }
 });
 
+// ── Date + priority chip pickers ─────────────────────────────
+let selectedWhen = 'none';
+let selectedCustomDate = null;
+let selectedPrio = 'med';
+
+const dueInput = document.getElementById('due-input');
+const whenGroup = document.getElementById('when-group');
+const prioGroup = document.getElementById('prio-group');
+
+function offsetDays(n) { const d = new Date(); d.setDate(d.getDate() + n); return ymd(d); }
+function comingSaturday() {
+  const d = new Date();
+  const add = (6 - d.getDay() + 7) % 7;   // 0 if today is already Saturday
+  d.setDate(d.getDate() + add);
+  return ymd(d);
+}
+function computeDue() {
+  switch (selectedWhen) {
+    case 'today':    return today();
+    case 'tomorrow': return offsetDays(1);
+    case 'weekend':  return comingSaturday();
+    case 'nextweek': return offsetDays(7);
+    case 'custom':   return selectedCustomDate;
+    default:         return null;
+  }
+}
+function shortDate(ds) {
+  return new Date(ds + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+function setWhen(when) {
+  selectedWhen = when;
+  whenGroup.querySelectorAll('.dchip').forEach(c => c.classList.toggle('active', c.dataset.when === when));
+  if (when !== 'custom') {
+    dueInput.hidden = true;
+    selectedCustomDate = null;
+    whenGroup.querySelector('.dchip.cal').innerHTML = '&#128197;';
+  }
+}
+
+whenGroup.addEventListener('click', e => {
+  const chip = e.target.closest('.dchip');
+  if (!chip) return;
+  if (chip.dataset.when === 'custom') {
+    dueInput.hidden = false;
+    selectedWhen = 'custom';
+    whenGroup.querySelectorAll('.dchip').forEach(c => c.classList.toggle('active', c === chip));
+    try { dueInput.showPicker ? dueInput.showPicker() : dueInput.focus(); } catch (_) { dueInput.focus(); }
+  } else {
+    setWhen(chip.dataset.when);
+  }
+});
+
+dueInput.addEventListener('change', () => {
+  if (dueInput.value) {
+    selectedWhen = 'custom';
+    selectedCustomDate = dueInput.value;
+    whenGroup.querySelector('.dchip.cal').innerHTML = '&#128197; ' + shortDate(dueInput.value);
+    whenGroup.querySelectorAll('.dchip').forEach(c => c.classList.toggle('active', c.classList.contains('cal')));
+  }
+});
+
+prioGroup.addEventListener('click', e => {
+  const chip = e.target.closest('.pchip');
+  if (!chip) return;
+  selectedPrio = chip.dataset.prio;
+  prioGroup.querySelectorAll('.pchip').forEach(c => c.classList.toggle('active', c === chip));
+});
+
+function resetForm() {
+  document.getElementById('task-input').value = '';
+  dueInput.value = '';
+  setWhen('none');
+  selectedPrio = 'med';
+  prioGroup.querySelectorAll('.pchip').forEach(c => c.classList.toggle('active', c.dataset.prio === 'med'));
+  document.getElementById('task-input').focus();
+}
+
 // Add form
 document.getElementById('add-form').addEventListener('submit', e => {
   e.preventDefault();
   const text = document.getElementById('task-input').value;
-  const due = document.getElementById('due-input').value;
-  const priority = document.getElementById('priority-input').value;
   if (!text.trim()) return;
-  addTask(text, due, priority);
-  document.getElementById('task-input').value = '';
-  document.getElementById('due-input').value = '';
-  document.getElementById('priority-input').value = 'med';
-  document.getElementById('task-input').focus();
+  addTask(text, computeDue(), selectedPrio);
+  resetForm();
 });
 
 renderAll();
