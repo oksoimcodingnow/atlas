@@ -86,6 +86,8 @@ This appears on every editorial section. It anchors the eye and signals "this is
 3. **Tile tilt**: max 5° rotation on hover, perspective `700px`. Subtle, not amusement-park.
 4. **3D / Three.js**: cycles should be ≥ 20s so the user can read what's happening. Faster than that feels like a screensaver.
 5. **Scroll-driven** beats time-driven. Use `IntersectionObserver` for reveals when possible — fires when content is genuinely visible, not just after a timer.
+6. **List changes use FLIP.** When items add / remove / reorder (e.g. Schedule tasks), animate with First-Last-Invert-Play: record `getBoundingClientRect()` before the DOM change, re-append in new order, then `el.animate()` the position delta back to zero. Items glide instead of snapping. Removed items lift to `position: absolute` so survivors can FLIP into the gap. Spring easing for this: `cubic-bezier(0.34, 1.3, 0.64, 1)`. See `schedule.html` for the reference implementation.
+7. **Spring vs glide easing.** Two reusable curves: `--spring: cubic-bezier(0.34, 1.56, 0.64, 1)` for playful entrances / button presses (slight overshoot), `--glide: cubic-bezier(0.4, 0, 0.2, 1)` for calm state transitions (hover, color). Don't spring everything — overshoot on every transition feels cheap.
 
 ## Surfaces
 
