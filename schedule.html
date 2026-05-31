@@ -465,10 +465,12 @@ function load() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
   catch { return []; }
 }
-let syncDoc = null;   // Firestore doc ref while signed in (cloud sync)
+let syncDoc = null;      // Firestore doc ref while signed in (cloud sync)
+let syncReady = false;   // true only AFTER the first snapshot has merged — blocks a
+                         // pre-merge save() from clobbering the other device's cloud tasks
 function save(t) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(t));
-  if (syncDoc) {
+  if (syncDoc && syncReady) {
     syncDoc.set({ tasks: t, updated: Date.now() })
       .catch(() => flashMsg('Sync failed — saved locally', 'err', 3000));
   }
@@ -1027,23 +1029,31 @@ checkReminders();
   const syncForm = document.getElementById('sync-form');
   const syncDot = document.querySelector('.sync-dot');
 
-  if (typeof firebase === 'undefined') {
+  // Guard total-missing AND partial SDK load (e.g. app loads but auth/firestore didn't)
+  if (typeof firebase === 'undefined' || !firebase.auth || !firebase.firestore) {
     syncText.textContent = 'Sync unavailable (offline)';
     syncBtn.hidden = true;
     return;
   }
 
-  firebase.initializeApp({
-    apiKey: "AIzaSyCBbbpJISOKiO582v7psfFU3Rhj7c8mINQ",
-    authDomain: "roshop-642dd.firebaseapp.com",
-    projectId: "roshop-642dd",
-    storageBucket: "roshop-642dd.firebasestorage.app",
-    messagingSenderId: "865641860399",
-    appId: "1:865641860399:web:c6488dcecc9c828611e5da",
-  });
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+  let auth, db;
+  try {
+    firebase.initializeApp({
+      apiKey: "AIzaSyCBbbpJISOKiO582v7psfFU3Rhj7c8mINQ",
+      authDomain: "roshop-642dd.firebaseapp.com",
+      projectId: "roshop-642dd",
+      storageBucket: "roshop-642dd.firebasestorage.app",
+      messagingSenderId: "865641860399",
+      appId: "1:865641860399:web:c6488dcecc9c828611e5da",
+    });
+    auth = firebase.auth();
+    db = firebase.firestore();
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+  } catch (e) {
+    syncText.textContent = 'Sync unavailable';
+    syncBtn.hidden = true;
+    return;
+  }
 
   let unsub = null;
   let firstSnap = true;
@@ -1085,10 +1095,12 @@ checkReminders();
       syncDot.classList.add('on');
       document.getElementById('sync-pass').value = '';
       firstSnap = true;
+      syncReady = false;                       // block cloud writes until the first merge
       syncDoc = db.collection('schedule').doc(user.uid);
       unsub = syncDoc.onSnapshot(snap => {
         if (snap.metadata.hasPendingWrites) return;   // ignore our own echo
         if (!snap.exists) {                            // first device seeds the cloud
+          syncReady = true;                            // doc is empty, nothing to clobber
           if (tasks.length) save(tasks);
           firstSnap = false;
           return;
@@ -1100,8 +1112,9 @@ checkReminders();
           const extra = tasks.filter(x => !ids.has(String(x.id)));
           tasks = cloud.concat(extra);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-          if (extra.length) save(tasks);
           firstSnap = false;
+          syncReady = true;                            // merge done — safe to write cloud now
+          if (extra.length) save(tasks);
         } else {
           tasks = cloud;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
@@ -1112,6 +1125,7 @@ checkReminders();
     } else {
       if (unsub) { unsub(); unsub = null; }
       syncDoc = null;
+      syncReady = false;
       syncBtn.textContent = 'Sign in to sync';
       syncText.textContent = 'Local only — not synced';
       syncDot.classList.remove('on');
