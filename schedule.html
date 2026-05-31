@@ -309,6 +309,7 @@
   #data-msg { font-size: 11px; color: var(--muted); transition: color 0.2s; }
   #data-msg.ok { color: var(--green); }
   #data-msg.err { color: var(--red); }
+  #remind-btn.on { color: var(--green); border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.08); }
 
   @media (max-width: 600px) {
     .wrap { padding: 28px 16px 60px; }
@@ -354,6 +355,15 @@
         <button type="button" class="dchip cal" data-when="custom" title="Pick a date">&#128197;</button>
         <input type="date" id="due-input" class="custom-date" hidden>
       </div>
+      <div class="chip-group" id="time-group">
+        <span class="chip-label">Time</span>
+        <button type="button" class="dchip active" data-time="none">No time</button>
+        <button type="button" class="dchip" data-time="09:00">9:00</button>
+        <button type="button" class="dchip" data-time="12:00">12:00</button>
+        <button type="button" class="dchip" data-time="18:00">18:00</button>
+        <button type="button" class="dchip clock" data-time="custom" title="Pick a time">&#128340;</button>
+        <input type="time" id="time-input" class="custom-date" hidden>
+      </div>
       <div class="chip-group" id="prio-group">
         <span class="chip-label">Priority</span>
         <button type="button" class="pchip" data-prio="low">Low</button>
@@ -367,6 +377,7 @@
   <div class="tasks" id="tasks"></div>
 
   <div class="data-controls">
+    <button type="button" id="remind-btn" title="Get a desktop notification when a timed task is due">&#128276; Reminders: off</button>
     <button type="button" id="export-btn" title="Download all tasks as JSON">Export</button>
     <button type="button" id="import-btn" title="Replace all tasks with JSON from file">Import</button>
     <input type="file" id="import-file" accept="application/json" hidden>
@@ -447,16 +458,22 @@ function sortVisible(arr) {
   });
 }
 
+function fmtTime(hhmm) {
+  return new Date('2000-01-01T' + hhmm + ':00').toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
 function dueLabel(t) {
   if (!t.due) return null;
   const t0 = new Date(today() + 'T00:00:00');
   const td = new Date(t.due + 'T00:00:00');
   const diff = Math.round((td - t0) / 86400000);
-  if (diff < 0)   return { text: diff === -1 ? '1d ago' : `${-diff}d ago`, cls: 'overdue' };
-  if (diff === 0) return { text: 'Today', cls: 'today' };
-  if (diff === 1) return { text: 'Tomorrow', cls: 'tomorrow' };
-  if (diff <= 6)  return { text: td.toLocaleDateString(undefined, { weekday: 'short' }), cls: 'soon' };
-  return { text: td.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }), cls: '' };
+  let base, cls;
+  if (diff < 0)        { base = diff === -1 ? '1d ago' : `${-diff}d ago`; cls = 'overdue'; }
+  else if (diff === 0) { base = 'Today'; cls = 'today'; }
+  else if (diff === 1) { base = 'Tomorrow'; cls = 'tomorrow'; }
+  else if (diff <= 6)  { base = td.toLocaleDateString(undefined, { weekday: 'short' }); cls = 'soon'; }
+  else                 { base = td.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); cls = ''; }
+  if (t.time) base += ' · ' + fmtTime(t.time);
+  return { text: base, cls };
 }
 
 // ── Stats with count-up ──────────────────────────────────────
@@ -628,11 +645,12 @@ function renderTasks() {
 function renderAll() { renderStats(); renderTabs(); renderTasks(); }
 
 // Actions
-function addTask(text, due, priority) {
+function addTask(text, due, time, priority) {
   tasks.push({
     id: Date.now() + Math.random().toString(36).slice(2, 6),
     text: text.trim(),
     due: due || null,
+    time: (due && time) ? time : null,   // a time is only meaningful with a date
     priority: priority || 'med',
     done: false,
     created: Date.now(),
@@ -748,10 +766,53 @@ prioGroup.addEventListener('click', e => {
   prioGroup.querySelectorAll('.pchip').forEach(c => c.classList.toggle('active', c === chip));
 });
 
+// Time chips
+let selectedTime = 'none';
+let selectedCustomTime = null;
+const timeInput = document.getElementById('time-input');
+const timeGroup = document.getElementById('time-group');
+
+function computeTime() {
+  if (selectedTime === 'custom') return selectedCustomTime;
+  if (selectedTime === 'none') return null;
+  return selectedTime;
+}
+function setTimeSel(val) {
+  selectedTime = val;
+  timeGroup.querySelectorAll('.dchip').forEach(c => c.classList.toggle('active', c.dataset.time === val));
+  if (val !== 'custom') {
+    timeInput.hidden = true;
+    selectedCustomTime = null;
+    timeGroup.querySelector('.dchip.clock').innerHTML = '&#128340;';
+  }
+}
+timeGroup.addEventListener('click', e => {
+  const chip = e.target.closest('.dchip');
+  if (!chip) return;
+  if (chip.dataset.time === 'custom') {
+    timeInput.hidden = false;
+    selectedTime = 'custom';
+    timeGroup.querySelectorAll('.dchip').forEach(c => c.classList.toggle('active', c === chip));
+    try { timeInput.showPicker ? timeInput.showPicker() : timeInput.focus(); } catch (_) { timeInput.focus(); }
+  } else {
+    setTimeSel(chip.dataset.time);
+  }
+});
+timeInput.addEventListener('change', () => {
+  if (timeInput.value) {
+    selectedTime = 'custom';
+    selectedCustomTime = timeInput.value;
+    timeGroup.querySelector('.dchip.clock').innerHTML = '&#128340; ' + fmtTime(timeInput.value);
+    timeGroup.querySelectorAll('.dchip').forEach(c => c.classList.toggle('active', c.classList.contains('clock')));
+  }
+});
+
 function resetForm() {
   document.getElementById('task-input').value = '';
   dueInput.value = '';
   setWhen('none');
+  timeInput.value = '';
+  setTimeSel('none');
   selectedPrio = 'med';
   prioGroup.querySelectorAll('.pchip').forEach(c => c.classList.toggle('active', c.dataset.prio === 'med'));
   document.getElementById('task-input').focus();
@@ -762,7 +823,7 @@ document.getElementById('add-form').addEventListener('submit', e => {
   e.preventDefault();
   const text = document.getElementById('task-input').value;
   if (!text.trim()) return;
-  addTask(text, computeDue(), selectedPrio);
+  addTask(text, computeDue(), computeTime(), selectedPrio);
   resetForm();
 });
 
@@ -803,6 +864,7 @@ document.getElementById('import-file').addEventListener('change', (e) => {
         id: x.id ?? (Date.now() + Math.random().toString(36).slice(2, 6)),
         text: String(x.text),
         due: x.due || null,
+        time: x.time || null,
         priority: ['low', 'med', 'high'].includes(x.priority) ? x.priority : 'med',
         done: !!x.done,
         created: x.created ?? Date.now(),
@@ -822,6 +884,72 @@ document.getElementById('import-file').addEventListener('change', (e) => {
   };
   r.readAsText(file);
 });
+
+// ── Reminders (desktop notifications for timed tasks) ────────
+// Works while Atlas is open. Since Atlas autostarts on login and runs
+// in an app window, this is a practical accurate reminder. For
+// always-on cross-device reminders, export to a calendar instead.
+const remindBtn = document.getElementById('remind-btn');
+let notifiedIds = new Set(JSON.parse(localStorage.getItem('atlas_notified') || '[]'));
+
+function remindersActive() {
+  return ('Notification' in window)
+    && Notification.permission === 'granted'
+    && localStorage.getItem('atlas_reminders') === 'on';
+}
+function setRemindBtn() {
+  const on = remindersActive();
+  remindBtn.classList.toggle('on', on);
+  remindBtn.innerHTML = on ? '&#128276; Reminders: on' : '&#128276; Reminders: off';
+  return on;
+}
+
+remindBtn.addEventListener('click', () => {
+  if (!('Notification' in window)) { flashMsg('Notifications not supported here', 'err', 4000); return; }
+  if (Notification.permission === 'granted') {
+    const on = localStorage.getItem('atlas_reminders') === 'on';
+    localStorage.setItem('atlas_reminders', on ? 'off' : 'on');
+    flashMsg(on ? 'Reminders paused' : 'Reminders on');
+    setRemindBtn();
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') {
+        localStorage.setItem('atlas_reminders', 'on');
+        flashMsg('Reminders on — keep Atlas open');
+        try { new Notification('Atlas reminders enabled', { body: 'You’ll be notified when a timed task is due.', icon: 'icons/atlas-192.png' }); } catch (_) {}
+      } else { flashMsg('Permission denied', 'err'); }
+      setRemindBtn();
+    });
+  } else {
+    flashMsg('Notifications are blocked in your browser settings', 'err', 4500);
+  }
+});
+
+function checkReminders() {
+  if (!setRemindBtn()) return;
+  const now = Date.now();
+  let changed = false;
+  tasks.forEach(t => {
+    if (t.done || !t.due || !t.time) return;
+    const when = new Date(t.due + 'T' + t.time + ':00').getTime();
+    // Fire once, within an hour after the due time (avoids spamming old overdue tasks)
+    if (now >= when && (now - when) < 3600000 && !notifiedIds.has(String(t.id))) {
+      try {
+        new Notification('Task due: ' + t.text, {
+          body: (dueLabel(t) || {}).text || '',
+          icon: 'icons/atlas-192.png',
+          tag: 'atlas-' + t.id,
+        });
+      } catch (_) {}
+      notifiedIds.add(String(t.id));
+      changed = true;
+    }
+  });
+  if (changed) localStorage.setItem('atlas_notified', JSON.stringify([...notifiedIds]));
+}
+setRemindBtn();
+setInterval(checkReminders, 30000);
+checkReminders();
 
 // Auto-focus the task input on page load
 document.getElementById('task-input').focus();
