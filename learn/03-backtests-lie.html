@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3 · How backtests lie · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,72px);line-height:1;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout.warn{border-color:rgba(240,133,125,0.35);} .callout.warn .tag{color:var(--down);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(18px,3vw,28px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px;} .sim-hint{font-size:13px;color:var(--muted);margin-bottom:18px;}
+  .sim canvas{width:100%;height:240px;display:block;border-radius:10px;}
+  .sim-readout{display:flex;gap:24px;flex-wrap:wrap;margin:18px 0 14px;} .ro .k{font-size:11px;color:var(--muted);} .ro .v{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;margin-top:3px;font-variant-numeric:tabular-nums;}
+  .ro .v.up{color:var(--up);} .ro .v.down{color:var(--down);} .ro .v.flat{color:var(--muted);} .ro .v.win{color:var(--accent);}
+  .legend{display:flex;gap:18px;font-size:12px;color:var(--muted);margin-bottom:14px;} .legend .li{display:flex;align-items:center;gap:6px;} .legend .sw{width:12px;height:12px;border-radius:3px;} .legend .sw.tr{background:var(--accent);} .legend .sw.te{background:transparent;border:1.5px solid var(--accent-2);}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--up),var(--muted) 45%,var(--down));outline:none;} input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:999px;background:var(--text);border:3px solid var(--accent);cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.4);} input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:999px;background:var(--text);border:3px solid var(--accent);cursor:grab;}
+  .slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  .verdict-line{margin-top:14px;font-size:14px;font-weight:500;}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .nextnav{margin-top:60px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);} .nextnav a.next{color:var(--accent);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 3 of the path</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 3 · The big trap</div>
+  <h1>How backtests <em>lie.</em></h1>
+  <p class="standfirst">Give a smart person a dataset and a few hours, and they can produce a backtest that looks like a money printer and means absolutely nothing. This lesson is how to not be that person.</p>
+  <div class="meta-line">~7 min · interactive · the most important lesson here</div>
+
+  <p>You felt this one already. Your SMA(25/30) crossover had an in-sample Sharpe of <strong>1.5</strong> — gorgeous. Out-of-sample it collapsed to <strong>−0.25</strong>. The backtest didn't lie by accident; backtests lie <em class="it">by default</em>, and you have to actively fight it.</p>
+
+  <h2>The terms, defined</h2>
+  <dl class="terms">
+    <dt>in-sample / out-of-sample</dt>
+    <dd>In-sample is the data you used to <em class="it">build and tune</em> the strategy. Out-of-sample (OOS) is fresh data it has never seen. Performance in-sample is almost meaningless; only OOS counts. It's the difference between acing a test you wrote yourself and acing one you didn't.</dd>
+    <dt>overfitting</dt>
+    <dd>When your model memorizes the <em class="it">noise</em> in the past instead of the real pattern. An overfit strategy fits history perfectly and predicts the future terribly. The more knobs you tune, the easier it is to do by accident.</dd>
+    <dt>look-ahead bias</dt>
+    <dd>Accidentally using information you couldn't have had at the time — like using today's closing price to decide a trade you'd have to make before the close. It makes a strategy look psychic. The #1 silent bug in quant code.</dd>
+    <dt>data leakage</dt>
+    <dd>The broader family of look-ahead: any way future information sneaks into a past decision. In ML it's everywhere and devastating.</dd>
+    <dt>walk-forward validation</dt>
+    <dd>The cure. Split your history in time: tune on the early part, test on the later part it never saw. If the edge survives the unseen part, it might be real. You built exactly this in <span class="mono">walk_forward.py</span>.</dd>
+    <dt>data snooping / p-hacking</dt>
+    <dd>Trying 500 strategies, keeping the one that looked best, and reporting only that. With enough tries, something looks brilliant by pure luck. The fix: count your attempts, and distrust the winner.</dd>
+  </dl>
+
+  <h2>Feel it: the moment a fit goes <em>wrong</em></h2>
+  <p>Below are some noisy data points. The <span style="color:var(--accent)">filled dots</span> are your training data; the <span style="color:var(--accent-2)">hollow dots</span> are held-out future data the model never sees. Drag <strong>complexity</strong> up and watch the curve stop finding the trend and start chasing every wiggle.</p>
+
+  <div class="sim">
+    <div class="sim-title">Drag the model complexity</div>
+    <div class="legend"><div class="li"><span class="sw tr"></span>train (what it learns from)</div><div class="li"><span class="sw te"></span>test (unseen future)</div></div>
+    <canvas id="sim-canvas" width="640" height="240"></canvas>
+    <div class="sim-readout">
+      <div class="ro"><div class="k">Complexity</div><div class="v win" id="ro-c">5</div></div>
+      <div class="ro"><div class="k">Train error</div><div class="v" id="ro-tr">—</div></div>
+      <div class="ro"><div class="k">Test error (real)</div><div class="v" id="ro-te">—</div></div>
+    </div>
+    <input type="range" id="sim-slider" min="1" max="10" value="3" step="1">
+    <div class="slider-labels"><span>1 · underfit</span><span>good fit</span><span>10 · overfit</span></div>
+    <div class="verdict-line" id="verdict"></div>
+  </div>
+
+  <p>Watch the two error numbers. <span class="hl">Train error always falls</span> as complexity rises — the curve hugs the dots harder. But <span class="hl-2">test error makes a U</span>: it drops, hits a sweet spot, then climbs as the model starts memorizing noise it can't generalize. The backtest only shows you the train number. Reality grades you on the test one.</p>
+
+  <p class="pull">Any strategy can be made to look perfect on the past. The only question that matters is whether it works on data it has never seen.</p>
+
+  <div class="callout warn">
+    <div class="tag">The discipline that protects you</div>
+    <p>1. <strong>Hold out the future.</strong> Never tune on the data you test on. 2. <strong>Count your attempts.</strong> The 30th strategy you tried "winning" is probably luck. 3. <strong>Shift your signals.</strong> Trade on <span class="mono">yesterday's</span> close, never today's — that one <span class="mono">.shift(1)</span> is the difference between a real edge and look-ahead fantasy. 4. <strong>Distrust beauty.</strong> A Sharpe over ~3 or accuracy over ~60% on price direction is a bug until proven otherwise.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>The past can be fit perfectly and predict nothing. Overfitting memorizes noise; look-ahead bias steals from the future; data snooping rewards luck. Walk-forward validation is your defense — and a strategy that <em class="it">survives</em> it is worth more than a hundred that only shine in-sample.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">You tried 40 parameter combos and the best one has an in-sample Sharpe of 2.5. What's the honest next step?</div>
+    <button class="opt" data-correct="true">Test that combo on out-of-sample data it never saw. If it holds up, maybe it's real; if it collapses, it was luck from 40 tries.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Ship it — 2.5 Sharpe is excellent, what more do you need.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Try 400 more combos to find an even higher Sharpe.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="02-risk.html">← Lesson 2</a><a class="next" href="04-sizing.html">Lesson 4: Sizing the bet →</a></div>
+</div>
+<script>
+const cv=document.getElementById('sim-canvas'),ctx=cv.getContext('2d');
+// deterministic noisy data over x in [0,5]
+function lcg(seed){return ()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};}
+const rnd=lcg(20260602);
+const TRUE=x=>0.5+0.34*Math.sin(1.15*x)-0.06*x;
+const pts=[];for(let i=0;i<16;i++){const x=i/3;const y=TRUE(x)+(rnd()-0.5)*0.34;pts.push({x,y,test:i%3===2});}
+const train=pts.filter(p=>!p.test),test=pts.filter(p=>p.test);
+function dpr(){return Math.min(window.devicePixelRatio||1,2);}
+function resize(){const r=dpr();cv.width=cv.clientWidth*r;cv.height=cv.clientHeight*r;ctx.setTransform(r,0,0,r,0,0);draw();}
+function bw(c){return 2.4*Math.exp(-0.46*(c-1));} // wide -> narrow
+function predict(x,band){let num=0,den=0;for(const p of train){const w=Math.exp(-((x-p.x)*(x-p.x))/(2*band*band));num+=w*p.y;den+=w;}return den?num/den:0;}
+function rmse(set,band){let s=0;for(const p of set){const d=p.y-predict(p.x,band);s+=d*d;}return Math.sqrt(s/set.length);}
+function draw(){
+  const c=Number(document.getElementById('sim-slider').value);const band=bw(c);
+  const w=cv.clientWidth,h=cv.clientHeight,pl=14,pr=14,pt=16,pb=16;ctx.clearRect(0,0,w,h);
+  const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);const xmin=0,xmax=5;let ymin=Math.min(...ys)-0.1,ymax=Math.max(...ys)+0.1;
+  const X=x=>pl+((x-xmin)/(xmax-xmin))*(w-pl-pr);const Y=y=>pt+(1-(y-ymin)/(ymax-ymin))*(h-pt-pb);
+  // fit curve
+  ctx.strokeStyle=getCss('--accent');ctx.lineWidth=2.4;ctx.lineJoin='round';ctx.beginPath();
+  for(let i=0;i<=160;i++){const x=xmin+(i/160)*(xmax-xmin);const y=predict(x,band);i?ctx.lineTo(X(x),Y(y)):ctx.moveTo(X(x),Y(y));}ctx.stroke();
+  // points
+  for(const p of train){ctx.fillStyle=getCss('--accent');ctx.beginPath();ctx.arc(X(p.x),Y(p.y),3.6,0,7);ctx.fill();}
+  for(const p of test){ctx.strokeStyle=getCss('--accent-2');ctx.lineWidth=1.6;ctx.beginPath();ctx.arc(X(p.x),Y(p.y),4.2,0,7);ctx.stroke();}
+  const tr=rmse(train,band),te=rmse(test,band);
+  document.getElementById('ro-c').textContent=c;
+  const trEl=document.getElementById('ro-tr');trEl.textContent=tr.toFixed(3);trEl.className='v '+(tr<0.12?'up':'flat');
+  const teEl=document.getElementById('ro-te');teEl.textContent=te.toFixed(3);teEl.className='v '+(te<0.18?'up':te>0.26?'down':'flat');
+  const vEl=document.getElementById('verdict');
+  if(c<=2){vEl.textContent='Underfit — the curve is too smooth to catch the real shape. Both errors a bit high.';vEl.style.color=getCss('--muted');}
+  else if(te<0.20){vEl.textContent='Good fit — the curve found the trend and ignored the noise. Test error is near its best.';vEl.style.color=getCss('--up');}
+  else{vEl.textContent='Overfit — train error is tiny but the curve is chasing noise. Test (real) error is climbing. This is the trap.';vEl.style.color=getCss('--down');}
+}
+function getCss(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+document.getElementById('sim-slider').addEventListener('input',draw);window.addEventListener('resize',resize);resize();
+document.querySelectorAll('.opt').forEach(opt=>{opt.addEventListener('click',()=>{const c=opt.dataset.correct==='true';opt.classList.add(c?'right':'wrong');const v=opt.querySelector('.verdict');v.textContent=c?'✓ Right. Out-of-sample is the only honest judge, and 40 tries means the winner needs extra suspicion.':'✗ With 40 attempts, a 2.5 in-sample Sharpe is very likely the luckiest of the bunch, not the best. Test it on unseen data.';document.querySelectorAll('.opt').forEach(o=>{if(o!==opt)o.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

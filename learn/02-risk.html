@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2 · Risk is the real product · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,72px);line-height:1;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(18px,3vw,28px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px;} .sim-hint{font-size:13px;color:var(--muted);margin-bottom:18px;}
+  .sim canvas{width:100%;height:230px;display:block;border-radius:10px;}
+  .sim-readout{display:flex;gap:24px;flex-wrap:wrap;margin:18px 0 14px;} .ro .k{font-size:11px;color:var(--muted);} .ro .v{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;margin-top:3px;font-variant-numeric:tabular-nums;}
+  .ro .v.up{color:var(--up);} .ro .v.down{color:var(--down);} .ro .v.flat{color:var(--muted);} .ro .v.win{color:var(--accent);}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--up),var(--muted) 55%,var(--down));outline:none;} input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:999px;background:var(--text);border:3px solid var(--accent);cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.4);} input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:999px;background:var(--text);border:3px solid var(--accent);cursor:grab;}
+  .slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  .sim-reroll{margin-top:14px;font-size:12px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:8px;padding:7px 14px;cursor:pointer;transition:all .16s;} .sim-reroll:hover{color:var(--text);border-color:var(--accent);}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .nextnav{margin-top:60px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);} .nextnav a.next{color:var(--accent);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 2 of the path</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 2 · Foundations</div>
+  <h1>Risk is the <em>real</em> product.</h1>
+  <p class="standfirst">Two strategies can earn the same return. One you'd put your savings in. The other would give you a heart attack. The difference is risk, and there's a single number that captures it.</p>
+  <div class="meta-line">~6 min · interactive · builds on Lesson 1</div>
+
+  <p>In Lesson 1 you learned the goal is a small, real edge. But "I made 40% this year" is a meaningless sentence on its own. <strong>40% how?</strong> Smoothly, sleeping well? Or by riding a rollercoaster that was down 60% in the middle and you got lucky it came back?</p>
+  <p>From MM2: imagine two flippers who both doubled their robux this year. One did it with steady, boring trades. The other YOLO'd everything on one Chroma gamble that happened to pay off. <span class="hl">Same return, wildly different skill.</span> If they each did it again, you'd bet on the steady one every time. <em class="it">That</em> instinct is what this lesson makes precise.</p>
+
+  <h2>The terms, defined</h2>
+  <dl class="terms">
+    <dt>return</dt>
+    <dd>How much you made, as a percent. The number everyone brags about, and the least useful on its own.</dd>
+    <dt>volatility (σ, "sigma")</dt>
+    <dd>How much your returns bounce around — the standard deviation of your daily/periodic returns. High volatility = big swings up and down. It's the textbook measure of risk.</dd>
+    <dt>drawdown</dt>
+    <dd>How far you've fallen from your peak. If you hit $10k then dropped to $7k, that's a 30% drawdown. <strong>Max drawdown</strong> is the worst one — the deepest hole you sat in. It's the risk you actually <em class="it">feel</em>.</dd>
+    <dt>Sharpe ratio</dt>
+    <dd>Return per unit of risk: roughly (your return − the risk-free rate) ÷ volatility. The single most important number in the field. A Sharpe of 1 is good, 2 is excellent, 3+ is suspicious (probably a bug — see Lesson 3). It rewards smooth gains and punishes wild ones.</dd>
+    <dt>risk-free rate</dt>
+    <dd>What you'd earn doing nothing risky (a government bond, a savings account). Your strategy has to beat this to be worth the stress, so Sharpe subtracts it out.</dd>
+    <dt>Sortino ratio</dt>
+    <dd>Like Sharpe, but only counts <em class="it">downside</em> volatility. Upside swings don't scare you, so why penalize them? Sortino fixes that.</dd>
+  </dl>
+
+  <h2>Feel it: same return, more <em>risk</em></h2>
+  <p>Below, the strategy has the <strong>same expected return</strong> no matter what — only the volatility changes. Drag it up and watch the equity curve get jagged, the drawdown deepen, and the Sharpe ratio collapse.</p>
+
+  <div class="sim">
+    <div class="sim-title">Drag the volatility</div>
+    <div class="sim-hint">One year of daily returns. Same average drift, rising noise. The shaded red band is the worst drawdown.</div>
+    <canvas id="sim-canvas" width="640" height="230"></canvas>
+    <div class="sim-readout">
+      <div class="ro"><div class="k">Volatility (annual)</div><div class="v win" id="ro-vol">40%</div></div>
+      <div class="ro"><div class="k">Max drawdown</div><div class="v down" id="ro-dd">—</div></div>
+      <div class="ro"><div class="k">Sharpe ratio</div><div class="v" id="ro-sharpe">—</div></div>
+    </div>
+    <input type="range" id="sim-slider" min="10" max="120" value="40" step="5">
+    <div class="slider-labels"><span>10% · calm</span><span>50%</span><span>120% · chaos</span></div>
+    <button class="sim-reroll" id="sim-reroll">↻ Re-roll the year</button>
+  </div>
+
+  <p>Same drift, but as volatility rises the Sharpe falls and the drawdown deepens. A strategy returning 40% at a Sharpe of 2 is a different universe from one returning 40% at a Sharpe of 0.4 — the second one will eventually hand you a drawdown that makes you quit at the bottom.</p>
+
+  <p class="pull">Amateurs chase return. Professionals chase Sharpe — return you can actually survive holding.</p>
+
+  <div class="callout">
+    <div class="tag">Why this matters for your bot</div>
+    <p>When you compare two alphas, never compare returns. Compare <span class="mono">Sharpe</span>. A lower-return, higher-Sharpe strategy is usually the better one: it's steadier, you can lever it up safely, and you won't panic-sell it in a drawdown. Your <span class="mono">run_sma.py</span> already prints Sharpe and max drawdown for exactly this reason.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>Return is the headline; risk is the story. Volatility measures the bounce, drawdown measures the pain, and Sharpe ties return and risk into one honest number. From here on, when someone shows you a return, your first question is automatic: <span class="hl-2">"at what Sharpe?"</span></p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">Strategy A: +30% return, Sharpe 1.8. Strategy B: +45% return, Sharpe 0.5. Which do you build on?</div>
+    <button class="opt" data-correct="true">A — lower return but far higher Sharpe; it's steadier, survivable, and you can size it up safely.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">B — 45% is more money, obviously take the bigger number.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Can't tell, returns are all that matter.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="01-edge-not-prediction.html">← Lesson 1</a><a class="next" href="03-backtests-lie.html">Lesson 3: How backtests lie →</a></div>
+</div>
+<script>
+const cv=document.getElementById('sim-canvas'),ctx=cv.getContext('2d');const DAYS=252;const DRIFT=0.40/DAYS;let noise=[];
+function dpr(){return Math.min(window.devicePixelRatio||1,2);}
+function resize(){const r=dpr();cv.width=cv.clientWidth*r;cv.height=cv.clientHeight*r;ctx.setTransform(r,0,0,r,0,0);draw();}
+function gauss(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function reroll(){noise=[];for(let i=0;i<DAYS;i++)noise.push(gauss());draw();}
+function draw(){
+  const volAnnual=Number(document.getElementById('sim-slider').value)/100;const sd=volAnnual/Math.sqrt(DAYS);
+  const rets=noise.map(z=>DRIFT+sd*z);
+  const eq=[1];for(let i=0;i<DAYS;i++)eq.push(eq[i]*(1+rets[i]));
+  // metrics
+  const mean=rets.reduce((a,b)=>a+b,0)/DAYS;const variance=rets.reduce((a,b)=>a+(b-mean)*(b-mean),0)/DAYS;const std=Math.sqrt(variance);
+  const sharpe=std?(mean/std)*Math.sqrt(DAYS):0;
+  let peak=eq[0],maxdd=0,ddStart=0,ddEnd=0,curStart=0;for(let i=0;i<eq.length;i++){if(eq[i]>peak){peak=eq[i];curStart=i;}const dd=(peak-eq[i])/peak;if(dd>maxdd){maxdd=dd;ddStart=curStart;ddEnd=i;}}
+  const w=cv.clientWidth,h=cv.clientHeight,pl=8,pr=8,pt=14,pb=14;ctx.clearRect(0,0,w,h);
+  const lo=Math.min(...eq),hi=Math.max(...eq),span=Math.max(0.05,hi-lo);
+  const X=i=>pl+(i/DAYS)*(w-pl-pr);const Y=v=>pt+(1-(v-lo)/span)*(h-pt-pb);
+  // baseline at 1
+  ctx.strokeStyle='rgba(241,239,230,0.14)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(pl,Y(1));ctx.lineTo(w-pr,Y(1));ctx.stroke();ctx.setLineDash([]);
+  // drawdown band
+  if(maxdd>0.001){ctx.fillStyle='rgba(240,133,125,0.12)';ctx.fillRect(X(ddStart),pt,X(ddEnd)-X(ddStart),h-pt-pb);}
+  // equity
+  const up=eq[eq.length-1]>=1;ctx.strokeStyle=up?getCss('--up'):getCss('--down');ctx.lineWidth=2;ctx.lineJoin='round';ctx.beginPath();eq.forEach((v,i)=>i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)));ctx.stroke();
+  document.getElementById('ro-vol').textContent=Math.round(volAnnual*100)+'%';
+  document.getElementById('ro-dd').textContent='−'+Math.round(maxdd*100)+'%';
+  const se=document.getElementById('ro-sharpe');se.textContent=sharpe.toFixed(2);se.className='v '+(sharpe>1.2?'up':sharpe<0.5?'down':'flat');
+}
+function getCss(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+document.getElementById('sim-slider').addEventListener('input',draw);document.getElementById('sim-reroll').addEventListener('click',reroll);window.addEventListener('resize',resize);reroll();resize();
+document.querySelectorAll('.opt').forEach(opt=>{opt.addEventListener('click',()=>{const c=opt.dataset.correct==='true';opt.classList.add(c?'right':'wrong');const v=opt.querySelector('.verdict');v.textContent=c?'✓ Right. Higher Sharpe wins. You can always lever a smooth 30% up to match a jagged 45%, but you cannot un-feel a 60% drawdown.':'✗ The bigger return hides bigger risk. At Sharpe 0.5 that 45% comes with drawdowns that make you quit at the worst moment.';document.querySelectorAll('.opt').forEach(o=>{if(o!==opt)o.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

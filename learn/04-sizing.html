@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4 · Sizing the bet · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,72px);line-height:1;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(18px,3vw,28px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px;} .sim-hint{font-size:13px;color:var(--muted);margin-bottom:18px;}
+  .sim canvas{width:100%;height:240px;display:block;border-radius:10px;}
+  .sim-readout{display:flex;gap:24px;flex-wrap:wrap;margin:18px 0 14px;} .ro .k{font-size:11px;color:var(--muted);} .ro .v{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;margin-top:3px;font-variant-numeric:tabular-nums;}
+  .ro .v.up{color:var(--up);} .ro .v.down{color:var(--down);} .ro .v.flat{color:var(--muted);} .ro .v.win{color:var(--accent);}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--muted),var(--up) 20%,var(--up) 22%,var(--muted) 45%,var(--down));outline:none;} input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:999px;background:var(--text);border:3px solid var(--accent);cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,0.4);} input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:999px;background:var(--text);border:3px solid var(--accent);cursor:grab;}
+  .slider-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px;font-family:var(--mono);}
+  .verdict-line{margin-top:14px;font-size:14px;font-weight:500;}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .nextnav{margin-top:60px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);} .nextnav a.next{color:var(--accent);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 4 of the path</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 4 · Survival</div>
+  <h1>Sizing the <em>bet.</em></h1>
+  <p class="standfirst">Here's the cruel twist: you can have a genuine edge and still go broke. Not from being wrong — from betting too big. How much you risk per trade matters as much as whether you're right.</p>
+  <div class="meta-line">~6 min · interactive · the Kelly criterion</div>
+
+  <p>Say you've got a real edge — you win <strong>55%</strong> of your bets, even money. You should make money forever, right? Only if you size it right. Bet too little and you crawl. Bet too much and — this is the part that breaks people's brains — <span class="hl-2">you lose money despite winning more than half the time.</span></p>
+  <p>From MM2: you know the trader who had good instincts but went all-in on one flip, got unlucky once, and was wiped out. Right call, wrong size. The math of <em class="it">how much</em> is a solved problem, and it has a name.</p>
+
+  <h2>The terms, defined</h2>
+  <dl class="terms">
+    <dt>position sizing</dt>
+    <dd>What fraction of your money you put on a single trade. The most underrated decision in trading — bigger than which asset, bigger than entry timing.</dd>
+    <dt>bankroll</dt>
+    <dd>Your total capital. Every bet is a fraction of it, and the fraction is what you're choosing.</dd>
+    <dt>geometric vs arithmetic growth</dt>
+    <dd>Arithmetic = the average of your returns. Geometric = what actually compounds (you multiply, not add). A +50% then −50% averages 0% but leaves you at 0.75× — down 25%. Compounding only cares about the geometric path, and big bets wreck it.</dd>
+    <dt>volatility drag</dt>
+    <dd>Why the above happens: swings hurt compounding. The bigger your bets, the bigger the swings, the more the drag eats your geometric growth even when the average looks fine.</dd>
+    <dt>Kelly criterion</dt>
+    <dd>The formula for the bet size that maximizes long-run (geometric) growth. For even-money bets: bet a fraction equal to your edge, (2 × win-rate − 1). A 55% edge → bet 10% of bankroll. Bet more and growth <em class="it">falls</em>; bet double and growth hits zero; beyond that you bleed.</dd>
+    <dt>fractional Kelly</dt>
+    <dd>What pros actually do: bet half-Kelly or less. You give up a little growth for a lot less stomach-churning volatility, and you survive your model being slightly wrong about its edge.</dd>
+    <dt>risk of ruin</dt>
+    <dd>The probability you lose so much you can't continue. Over-betting drives it toward 100% — a guaranteed wipeout given enough time, edge or no edge.</dd>
+  </dl>
+
+  <h2>Feel it: the same edge, different <em>size</em></h2>
+  <p>You win 55% of even-money bets — a real, fixed edge. The curve below is your long-run growth rate as a function of how big you bet. Drag the bet size and watch growth rise to a peak (that's Kelly), then fall, then go <span style="color:var(--down)">negative</span> — losing money with a winning edge.</p>
+
+  <div class="sim">
+    <div class="sim-title">Drag the bet size · edge is fixed at 55%</div>
+    <div class="sim-hint">The curve is long-run growth per bet vs. how much you risk. The gold line marks the Kelly-optimal size.</div>
+    <canvas id="sim-canvas" width="640" height="240"></canvas>
+    <div class="sim-readout">
+      <div class="ro"><div class="k">Bet size</div><div class="v win" id="ro-f">10%</div></div>
+      <div class="ro"><div class="k">Growth / bet</div><div class="v" id="ro-g">—</div></div>
+      <div class="ro"><div class="k">After 150 bets</div><div class="v" id="ro-m">—</div></div>
+    </div>
+    <input type="range" id="sim-slider" min="0" max="60" value="10" step="1">
+    <div class="slider-labels"><span>0% · idle</span><span>10% · Kelly</span><span>60% · ruin</span></div>
+    <div class="verdict-line" id="verdict"></div>
+  </div>
+
+  <p>The peak sits at <strong>10%</strong> — exactly your edge. Notice the shape: under-betting (left) grows slowly but safely. At Kelly, growth is maximized. Past <span class="hl">~20%</span> (double Kelly) growth is <strong>zero or negative</strong> — you have a 55% edge and you're <em class="it">losing money</em>, purely from volatility drag. That's how good traders blow up.</p>
+
+  <p class="pull">An edge tells you which way to bet. Sizing decides whether you compound or detonate. Most pros bet half-Kelly and sleep at night.</p>
+
+  <div class="callout">
+    <div class="tag">For your bot</div>
+    <p>This is what your <span class="mono">bet-sizing</span> skill is for. When a strategy survives walk-forward (Lesson 3) and you know its edge and odds, Kelly tells you the growth-optimal size — and then you bet a fraction of that for safety, because your edge estimate is never exact. Over-sizing a good strategy is one of the most common ways quants lose money.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>Being right is half the battle; sizing is the other half. Kelly finds the bet that compounds fastest, over-betting quietly destroys a real edge through volatility drag, and fractional Kelly is the humble, survivable choice. You can be the best knife-flipper alive and still go broke betting too big.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">Your strategy has a real 55% edge. Full Kelly says bet 10%. What do most pros actually bet, and why?</div>
+    <button class="opt" data-correct="true">Half-Kelly (~5%) — a little less growth for far less volatility, and a safety margin because the real edge might be lower than estimated.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Double Kelly (20%) — maximize growth by betting bigger.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">All-in every time — you have an edge, press it hard.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="03-backtests-lie.html">← Lesson 3</a><a class="next" href="05-ml-honestly.html">Lesson 5: Machine learning, honestly →</a></div>
+</div>
+<script>
+const cv=document.getElementById('sim-canvas'),ctx=cv.getContext('2d');const P=0.55;const KELLY=2*P-1;const N=150;
+function g(f){if(f<=0)return 0;if(f>=1)return -10;return P*Math.log(1+f)+(1-P)*Math.log(1-f);}
+function dpr(){return Math.min(window.devicePixelRatio||1,2);}
+function resize(){const r=dpr();cv.width=cv.clientWidth*r;cv.height=cv.clientHeight*r;ctx.setTransform(r,0,0,r,0,0);draw();}
+function draw(){
+  const f=Number(document.getElementById('sim-slider').value)/100;
+  const w=cv.clientWidth,h=cv.clientHeight,pl=14,pr=14,pt=16,pb=22;ctx.clearRect(0,0,w,h);
+  const fmax=0.60;const gmax=g(KELLY);const gmin=g(fmax);const yhi=gmax*1.25,ylo=gmin*1.05;
+  const X=ff=>pl+(ff/fmax)*(w-pl-pr);const Y=gg=>pt+(1-(gg-ylo)/(yhi-ylo))*(h-pt-pb);
+  // zero line
+  ctx.strokeStyle='rgba(241,239,230,0.16)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(pl,Y(0));ctx.lineTo(w-pr,Y(0));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=getCss('--muted');ctx.font='11px Inter Tight, sans-serif';ctx.fillText('zero growth',pl+4,Y(0)-5);
+  // kelly marker
+  ctx.strokeStyle='rgba(243,213,154,0.5)';ctx.lineWidth=1.5;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(KELLY),pt);ctx.lineTo(X(KELLY),h-pb);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=getCss('--accent-2');ctx.fillText('Kelly',X(KELLY)+5,pt+12);
+  // growth curve
+  ctx.strokeStyle=getCss('--accent');ctx.lineWidth=2.4;ctx.lineJoin='round';ctx.beginPath();
+  for(let i=0;i<=160;i++){const ff=(i/160)*fmax;const gg=Math.max(ylo,g(ff));i?ctx.lineTo(X(ff),Y(gg)):ctx.moveTo(X(ff),Y(gg));}ctx.stroke();
+  // current point
+  const gv=g(f);const col=gv>0.0005?getCss('--up'):gv<-0.0005?getCss('--down'):getCss('--muted');
+  ctx.fillStyle=col;ctx.beginPath();ctx.arc(X(f),Y(Math.max(ylo,gv)),6,0,7);ctx.fill();
+  // readouts
+  document.getElementById('ro-f').textContent=Math.round(f*100)+'%';
+  const ge=document.getElementById('ro-g');ge.textContent=(gv>=0?'+':'')+gv.toFixed(4);ge.className='v '+(gv>0.0005?'up':gv<-0.0005?'down':'flat');
+  const mult=Math.exp(N*gv);const me=document.getElementById('ro-m');me.textContent=mult>=1?mult.toFixed(1)+'×':mult.toFixed(2)+'×';me.className='v '+(mult>1.05?'up':mult<0.95?'down':'flat');
+  const v=document.getElementById('verdict');
+  if(f<KELLY*0.7){v.textContent='Under-betting — safe, but you are leaving growth on the table.';v.style.color=getCss('--muted');}
+  else if(f<=KELLY*1.25){v.textContent='Near Kelly — growth is maximized. Most pros sit a bit left of here (half-Kelly) for safety.';v.style.color=getCss('--up');}
+  else if(gv>0){v.textContent='Over-betting — past the peak. More risk, LESS growth. Going the wrong way.';v.style.color=getCss('--accent-2');}
+  else{v.textContent='Ruinous — negative growth. You have a 55% edge and you are losing money. This is how edges blow up.';v.style.color=getCss('--down');}
+}
+function getCss(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+document.getElementById('sim-slider').addEventListener('input',draw);window.addEventListener('resize',resize);resize();
+document.querySelectorAll('.opt').forEach(opt=>{opt.addEventListener('click',()=>{const c=opt.dataset.correct==='true';opt.classList.add(c?'right':'wrong');const v=opt.querySelector('.verdict');v.textContent=c?'✓ Right. Half-Kelly keeps almost all the growth with far less volatility and a margin for error.':'✗ Over Kelly means more risk for less growth, and double-plus heads toward ruin. The edge does not save you.';document.querySelectorAll('.opt').forEach(o=>{if(o!==opt)o.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

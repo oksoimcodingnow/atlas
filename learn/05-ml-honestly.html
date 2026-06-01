@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5 · Machine learning, honestly · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,7.5vw,68px);line-height:1.02;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout.warn{border-color:rgba(240,133,125,0.35);} .callout.warn .tag{color:var(--down);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(20px,3vw,30px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:14px;}
+  .acc-num{font-family:var(--serif);font-size:52px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;transition:color .3s;}
+  .acc-num.honest{color:var(--up);} .acc-num.leaked{color:var(--down);}
+  .bar{position:relative;height:30px;border-radius:8px;background:#0c0c18;border:1px solid var(--rule);margin:18px 0 8px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:7px 0 0 7px;transition:width .5s cubic-bezier(0.22,1,0.36,1),background .3s;}
+  .bar-fill.honest{background:linear-gradient(90deg,rgba(111,227,168,0.3),var(--up));} .bar-fill.leaked{background:linear-gradient(90deg,rgba(240,133,125,0.3),var(--down));}
+  .bar-mark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--accent-2);} .bar-mark span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--accent-2);white-space:nowrap;font-family:var(--mono);}
+  .bar-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:var(--mono);}
+  .acc-verdict{margin-top:16px;font-size:14px;line-height:1.55;}
+  .toggle-btn{margin-top:18px;font-size:13px;font-weight:600;color:var(--text);background:var(--bg);border:1px solid var(--border-2,var(--rule));border-radius:9px;padding:10px 18px;cursor:pointer;transition:all .16s;} .toggle-btn:hover{border-color:var(--accent);}
+  .pipeline{counter-reset:step;margin:26px 0;}
+  .pstep{display:grid;grid-template-columns:40px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--rule);} .pstep:last-child{border-bottom:none;}
+  .pstep .pn{counter-increment:step;font-family:var(--serif);font-style:italic;font-size:26px;color:var(--accent);} .pstep .pn::before{content:counter(step);}
+  .pstep .pt{font-weight:600;font-size:16px;margin-bottom:3px;} .pstep .pd{font-size:14px;color:var(--muted);} .pstep .pd code{font-family:var(--mono);font-size:12.5px;color:var(--accent);}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .cta{margin-top:44px;background:linear-gradient(180deg,rgba(184,192,255,0.08),transparent),var(--bg-2);border:1px solid rgba(184,192,255,0.3);border-radius:16px;padding:28px;text-align:center;}
+  .cta h3{font-family:var(--serif);font-size:28px;font-weight:500;margin-bottom:8px;} .cta p{color:var(--muted);font-size:15px;margin-bottom:0;}
+  .nextnav{margin-top:50px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 5 · the capstone</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 5 · The capstone</div>
+  <h1>Machine learning, <em>honestly.</em></h1>
+  <p class="standfirst">Everything so far was preparation for this. ML can find patterns no human sees — and it can hallucinate patterns that were never there, with total confidence. The skill is telling the two apart.</p>
+  <div class="meta-line">~8 min · interactive · then we build it for real</div>
+
+  <p>ML in trading is just this: show a model the past as <strong>features</strong> (clues) and <strong>labels</strong> (answers), let it learn the mapping, then ask it about the future. Powerful. And the most dangerous tool in this whole course, because everything you learned about overfitting and leakage gets <em class="it">amplified</em> — a model has thousands of knobs to fool itself with.</p>
+
+  <h2>The terms, defined</h2>
+  <dl class="terms">
+    <dt>features (X)</dt>
+    <dd>The inputs — the clues the model learns from. For BTC: past returns, volatility, RSI, momentum, volume. Every feature must use <em class="it">only past</em> information, or you've leaked the future.</dd>
+    <dt>label (y)</dt>
+    <dd>The answer you're trying to predict. Here: did the next day close up or down? (a yes/no, so this is <strong>classification</strong>). If you predicted the actual return, that's <strong>regression</strong>.</dd>
+    <dt>training / test set</dt>
+    <dd>Training = the past the model learns from. Test = unseen data you grade it on. For time series these must be split <em class="it">in time</em> — train on older, test on newer. Never shuffle.</dd>
+    <dt>baseline</dt>
+    <dd>The dumb benchmark you must beat. For up/down: a coin flip is 50%; "always guess up" might be 53% (markets drift up). A model at 52% is <em class="it">worse than guessing up</em>. Accuracy means nothing without its baseline.</dd>
+    <dt>logistic regression / gradient boosting</dt>
+    <dd>Two workhorse models. Logistic regression is simple and hard to overfit — start here. Gradient boosting (XGBoost, LightGBM) is stronger and overfits more easily. Deep learning is overkill for this and overfits hardest; skip it.</dd>
+    <dt>cross-validation (and why it's a trap here)</dt>
+    <dd>The standard ML trick of shuffling data into folds. For time series it's <strong>wrong</strong> — shuffling lets the model train on the future to predict the past. Use time-ordered walk-forward instead (Lesson 3).</dd>
+    <dt>confusion matrix</dt>
+    <dd>The full scorecard: how often you said up and were right/wrong, and same for down. Accuracy hides things; a model that's 70% accurate but only ever says "up" has no skill.</dd>
+  </dl>
+
+  <h2>Feel it: the number that <em>lies</em></h2>
+  <p>Here's a direction model's out-of-sample accuracy. The gold marks are your baselines. Flip the leak on and watch what a single future-peeking feature does to the number.</p>
+
+  <div class="sim">
+    <div class="sim-title">Model accuracy vs baselines</div>
+    <div class="acc-num honest" id="acc-num">52%</div>
+    <div class="bar">
+      <div class="bar-fill honest" id="bar-fill" style="width:52%"></div>
+      <div class="bar-mark" style="left:50%"><span>coin flip 50%</span></div>
+      <div class="bar-mark" style="left:53%;background:var(--accent)"><span style="color:var(--accent);top:auto;bottom:-18px">always-up 53%</span></div>
+    </div>
+    <div class="bar-scale"><span>40%</span><span>50%</span><span>60%</span><span>70%</span><span>80%</span></div>
+    <div class="acc-verdict" id="acc-verdict"></div>
+    <button class="toggle-btn" id="leak-btn">Introduce a data leak →</button>
+  </div>
+
+  <p>Honest, this model is <strong>52%</strong> — and it actually <em class="it">loses</em> to the always-up baseline of 53%. That's a real, common, deflating result: no edge. Now flip the leak: accuracy jumps to <strong>71%</strong> and looks incredible. But it's a ghost — one feature secretly used the next day's data. Ship it and you'd lose everything live. <span class="hl-2">The beautiful number was the bug.</span></p>
+
+  <p class="pull">In ML trading, a believable result is a modest one. Spectacular accuracy is a confession that something leaked.</p>
+
+  <h2>What we'll actually build</h2>
+  <p>Next session, in your quant repo, we build this for real — and run it through the handshake so Codex hunts the leaks:</p>
+  <div class="pipeline">
+    <div class="pstep"><div class="pn"></div><div><div class="pt">Engineer features (leakage-safe)</div><div class="pd">Past returns, rolling volatility, RSI, momentum — every one shifted so it uses only data available <em class="it">before</em> the bar. <code>ml/features.py</code></div></div></div>
+    <div class="pstep"><div class="pn"></div><div><div class="pt">Make the label</div><div class="pd">Next-day direction: up or down. Aligned carefully so today's features predict tomorrow.</div></div></div>
+    <div class="pstep"><div class="pn"></div><div><div class="pt">Split in time, never shuffle</div><div class="pd">Walk-forward: train on the past, test on the unseen future. The discipline from Lesson 3.</div></div></div>
+    <div class="pstep"><div class="pn"></div><div><div class="pt">Train a simple model</div><div class="pd">Logistic regression first, then maybe gradient boosting. <code>scikit-learn</code>, no deep learning.</div></div></div>
+    <div class="pstep"><div class="pn"></div><div><div class="pt">Judge it honestly</div><div class="pd">Out-of-sample accuracy vs both baselines. If it can't beat always-up, it has no edge — and that's a real, valuable answer.</div></div></div>
+  </div>
+
+  <h2>Recap</h2>
+  <p>ML is features in, predictions out — and a machine for fooling yourself unless you hold the line on baselines, time-ordered splits, and leak-hunting. You now have every concept you need: edge over prediction, risk over return, the backtest trap, honest sizing, and the suspicion that keeps you solvent. You're ready to build.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">Your ML model hits 52% out-of-sample accuracy. The always-up baseline is 53%. Verdict?</div>
+    <button class="opt" data-correct="true">No edge — it loses to the dumbest baseline. Honest, common, and far more trustworthy than a suspicious 71%. Back to the features.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">52% beats a coin flip, so it works — deploy it.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Add a feature that pushes it to 71% and ship that instead.<span class="verdict"></span></button>
+  </div>
+
+  <div class="cta">
+    <h3>That's the foundation.</h3>
+    <p>Five lessons, one skill: knowing which numbers to believe. Next, we build the ML pipeline in code — and you'll judge it like a pro.</p>
+  </div>
+
+  <div class="nextnav"><a href="04-sizing.html">← Lesson 4</a><a href="index.html">All lessons →</a></div>
+</div>
+<script>
+let leaked=false;
+const num=document.getElementById('acc-num'),fill=document.getElementById('bar-fill'),verdict=document.getElementById('acc-verdict'),btn=document.getElementById('leak-btn');
+function frac(acc){return ((acc-40)/40)*100;} // 40%..80% -> 0..100 of bar width
+function setState(){
+  const acc=leaked?71:52;
+  num.textContent=acc+'%';num.className='acc-num '+(leaked?'leaked':'honest');
+  fill.style.width=frac(acc)+'%';fill.className='bar-fill '+(leaked?'leaked':'honest');
+  verdict.innerHTML=leaked
+    ? '<strong style="color:var(--down)">71% — and it is a lie.</strong> One feature peeked at tomorrow. This is what leakage looks like: gorgeous, confident, worthless. In the wild this number ends accounts.'
+    : '<strong style="color:var(--up)">52% — honest, and it loses to always-up (53%).</strong> No edge yet. Disappointing, normal, and trustworthy. This is what real ML-quant feels like most days.';
+  btn.textContent=leaked?'← Show the honest model':'Introduce a data leak →';
+}
+btn.addEventListener('click',()=>{leaked=!leaked;setState();});
+setState();
+document.querySelectorAll('.opt').forEach(opt=>{opt.addEventListener('click',()=>{const c=opt.dataset.correct==='true';opt.classList.add(c?'right':'wrong');const v=opt.querySelector('.verdict');v.textContent=c?'✓ Exactly. Beating the right baseline is the bar, not beating a coin flip. And you trust 52% honest over 71% suspicious every time.':'✗ A model that loses to always-up has no edge, and chasing 71% via a leak is how you blow up live. The honest answer is no edge yet.';document.querySelectorAll('.opt').forEach(o=>{if(o!==opt)o.style.opacity='0.55';});});});
+</script>
+</body>
+</html>
