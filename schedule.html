@@ -438,6 +438,7 @@
 
   <div class="data-controls">
     <button type="button" id="remind-btn" title="Get a desktop notification when a timed task is due">&#128276; Reminders: off</button>
+    <button type="button" id="ics-btn" title="Download dated tasks as a calendar file (.ics) — import into Google / Apple Calendar for cross-device reminders">&#128197; Calendar</button>
     <button type="button" id="export-btn" title="Download all tasks as JSON">Export</button>
     <button type="button" id="import-btn" title="Replace all tasks with JSON from file">Import</button>
     <input type="file" id="import-file" accept="application/json" hidden>
@@ -919,6 +920,62 @@ document.getElementById('export-btn').addEventListener('click', () => {
 
 document.getElementById('import-btn').addEventListener('click', () => {
   document.getElementById('import-file').click();
+});
+
+// ── Calendar export (.ics) — dated tasks become real calendar events ──
+function pad2(n) { return String(n).padStart(2, '0'); }
+function icsEscape(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+}
+function icsStamp() {
+  const d = new Date();
+  return d.getUTCFullYear() + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate()) +
+         'T' + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes()) + pad2(d.getUTCSeconds()) + 'Z';
+}
+function icsAllDayNext(ds) {  // YYYYMMDD of the day after (all-day DTEND is exclusive)
+  const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate() + 1);
+  return d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate());
+}
+
+document.getElementById('ics-btn').addEventListener('click', () => {
+  const dated = tasks.filter(t => t.due && !t.done);
+  if (!dated.length) { flashMsg('No dated tasks to export to calendar', 'err'); return; }
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Atlas//Schedule//EN',
+             'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  const stamp = icsStamp();
+  dated.forEach(t => {
+    L.push('BEGIN:VEVENT');
+    L.push('UID:atlas-' + t.id + '@atlas.schedule');
+    L.push('DTSTAMP:' + stamp);
+    if (t.time) {
+      // Timed: a 1-hour event in floating local time + a 15-min-before alarm
+      const start = new Date(t.due + 'T' + t.time + ':00');
+      const end = new Date(start.getTime() + 3600000);
+      const fmt = d => d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()) +
+                       'T' + pad2(d.getHours()) + pad2(d.getMinutes()) + '00';
+      L.push('DTSTART:' + fmt(start));
+      L.push('DTEND:' + fmt(end));
+      L.push('BEGIN:VALARM', 'TRIGGER:-PT15M', 'ACTION:DISPLAY',
+             'DESCRIPTION:' + icsEscape(t.text), 'END:VALARM');
+    } else {
+      // Date-only: all-day event with a 9am-on-the-day alarm
+      const ymd0 = t.due.replace(/-/g, '');
+      L.push('DTSTART;VALUE=DATE:' + ymd0);
+      L.push('DTEND;VALUE=DATE:' + icsAllDayNext(t.due));
+      L.push('BEGIN:VALARM', 'TRIGGER:PT9H', 'ACTION:DISPLAY',
+             'DESCRIPTION:' + icsEscape(t.text), 'END:VALARM');
+    }
+    L.push('SUMMARY:' + icsEscape(t.text));
+    L.push('DESCRIPTION:' + icsEscape('Priority: ' + t.priority + '  ·  from Atlas Schedule'));
+    L.push('END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  const blob = new Blob([L.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'atlas-schedule.ics'; a.click();
+  URL.revokeObjectURL(url);
+  flashMsg('Calendar file downloaded — open it to import (' + dated.length + ' events)');
 });
 
 document.getElementById('import-file').addEventListener('change', (e) => {
