@@ -357,6 +357,55 @@
     .sync-form input { width: 100%; }
   }
 
+  /* Header actions + help button */
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .help-btn {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    color: var(--muted); font-size: 12px; font-weight: 600; cursor: pointer;
+    padding: 7px 12px; border-radius: 8px; font-family: inherit;
+    transition: transform 0.2s var(--spring), color 0.18s var(--glide), border-color 0.18s var(--glide), background 0.18s var(--glide);
+  }
+  .help-btn:hover { color: var(--text); border-color: var(--accent); background: rgba(129,140,248,0.12); transform: translateY(-1px); }
+  .help-btn:active { transform: scale(0.95); }
+
+  /* Guided tour (onboarding walkthrough) */
+  .tour { position: fixed; inset: 0; z-index: 200; }
+  .tour[hidden] { display: none; }
+  .tour-highlight {
+    position: fixed; border-radius: 12px;
+    box-shadow: 0 0 0 9999px rgba(8,8,16,0.80);
+    border: 1.5px solid var(--accent);
+    pointer-events: none; opacity: 0;
+    transition: top 0.45s var(--glide), left 0.45s var(--glide),
+                width 0.45s var(--glide), height 0.45s var(--glide), opacity 0.3s;
+  }
+  .tour-tip {
+    position: fixed; z-index: 201;
+    width: min(340px, calc(100vw - 32px));
+    background: linear-gradient(180deg, rgba(26,26,52,0.97), rgba(17,17,40,0.97));
+    border: 1px solid var(--border-hi);
+    border-radius: 14px; padding: 18px 18px 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    transition: top 0.4s var(--glide), left 0.4s var(--glide);
+  }
+  .tour-step { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent2); font-weight: 700; margin-bottom: 8px; }
+  .tour-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 7px; }
+  .tour-text { font-size: 13px; line-height: 1.55; color: #c8c8d8; margin-bottom: 16px; }
+  .tour-nav { display: flex; align-items: center; gap: 8px; }
+  .tour-dots { display: flex; gap: 5px; flex: 1; justify-content: center; }
+  .tour-dots span { width: 6px; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.18); transition: background 0.3s, transform 0.3s; }
+  .tour-dots span.on { background: var(--accent); transform: scale(1.35); }
+  .tour-nav button {
+    font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+    padding: 7px 13px; border-radius: 8px; border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04); color: var(--muted);
+    transition: transform 0.18s var(--spring), background 0.16s var(--glide), color 0.16s var(--glide), border-color 0.16s var(--glide);
+  }
+  .tour-nav button:hover { color: var(--text); border-color: var(--border-hi); }
+  .tour-nav button:active { transform: scale(0.94); }
+  .tour-nav button.primary { background: linear-gradient(135deg, rgba(129,140,248,0.42), rgba(34,211,238,0.28)); border-color: var(--accent); color: #fff; }
+
   @media (max-width: 600px) {
     .wrap { padding: 28px 16px 60px; }
     .brand .title { font-size: 32px; }
@@ -375,7 +424,10 @@
       <div class="title">Schedule</div>
       <div class="subtitle">tasks &middot; deadlines &middot; saved locally</div>
     </div>
-    <a class="back-link" href="index.html">← Atlas</a>
+    <div class="header-actions">
+      <button class="help-btn" id="help-btn" title="Take a quick tour">&#63; Tour</button>
+      <a class="back-link" href="index.html">← Atlas</a>
+    </div>
   </header>
 
   <div class="sync-bar" id="sync-bar">
@@ -446,6 +498,21 @@
   </div>
 
   <footer>data lives in your browser &middot; back it up with Export</footer>
+</div>
+
+<div class="tour" id="tour" hidden>
+  <div class="tour-highlight" id="tour-highlight"></div>
+  <div class="tour-tip" id="tour-tip">
+    <div class="tour-step" id="tour-step">1 / 10</div>
+    <div class="tour-title" id="tour-title"></div>
+    <div class="tour-text" id="tour-text"></div>
+    <div class="tour-nav">
+      <button id="tour-skip">Skip</button>
+      <div class="tour-dots" id="tour-dots"></div>
+      <button id="tour-back">Back</button>
+      <button id="tour-next" class="primary">Next</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1190,6 +1257,95 @@ checkReminders();
     }
   });
 })();
+
+// ── Guided tour (onboarding walkthrough) ─────────────────────
+const TOUR_STEPS = [
+  { sel: null, title: 'Welcome to Schedule', text: 'A 60-second tour of how everything works. Skip anytime — you can replay it from the “? Tour” button up top.' },
+  { sel: '.form-row-main', title: 'Add a task', text: 'Type what you need to do and hit Add (or press Enter). That’s the only required field — everything else is optional.' },
+  { sel: '#when-group', title: 'Set when it’s due', text: 'Pick a quick day — Today, Tomorrow, Weekend, Next week — or tap the calendar for any date. “None” keeps it undated.' },
+  { sel: '#time-group', title: 'Add a time', text: 'Give it a time and your reminders become precise to the minute. Leave it as “No time” for an all-day task.' },
+  { sel: '#prio-group', title: 'Priority', text: 'Low, Med, or High — it colors the task’s left edge so the important things stand out at a glance.' },
+  { sel: '#tabs', title: 'Filter your view', text: 'Jump between what’s due Today, This Week, all open tasks, and what you’ve already finished.' },
+  { sel: '#remind-btn', title: 'Desktop reminders', text: 'Turn this on to get a notification the moment a timed task is due — while Atlas is open on this device.' },
+  { sel: '#ics-btn', title: 'Calendar export', text: 'Send dated tasks to Google or Apple Calendar. That gives you reminders on your phone and watch, even when Atlas is closed.' },
+  { sel: '#sync-bar', title: 'Sync across devices', text: 'Sign in to share one task list across your PC and phone in real time — add on one, see it on the other.' },
+  { sel: null, title: 'You’re all set', text: 'Add your first task and make it yours. Tap “? Tour” in the header whenever you want to see this again.' },
+];
+let tourIdx = 0;
+const tourEl = document.getElementById('tour');
+const tourHl = document.getElementById('tour-highlight');
+const tourTip = document.getElementById('tour-tip');
+
+function buildTourDots() {
+  document.getElementById('tour-dots').innerHTML =
+    TOUR_STEPS.map((_, i) => `<span class="${i === tourIdx ? 'on' : ''}"></span>`).join('');
+}
+function positionTour() {
+  const step = TOUR_STEPS[tourIdx];
+  if (!step.sel) {
+    tourHl.style.opacity = '0';
+    tourHl.style.width = '0px'; tourHl.style.height = '0px';
+    tourHl.style.left = '50vw'; tourHl.style.top = '50vh';
+    tourTip.style.transform = 'translate(-50%, -50%)';
+    tourTip.style.left = '50%'; tourTip.style.top = '50%';
+    return;
+  }
+  const el = document.querySelector(step.sel);
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  const pad = 8;
+  tourHl.style.opacity = '1';
+  tourHl.style.top = (r.top - pad) + 'px';
+  tourHl.style.left = (r.left - pad) + 'px';
+  tourHl.style.width = (r.width + pad * 2) + 'px';
+  tourHl.style.height = (r.height + pad * 2) + 'px';
+  tourTip.style.transform = 'none';
+  const tipW = tourTip.offsetWidth, tipH = tourTip.offsetHeight;
+  let left = r.left + r.width / 2 - tipW / 2;
+  left = Math.max(16, Math.min(left, window.innerWidth - tipW - 16));
+  let top = (r.bottom + 14 + tipH < window.innerHeight)
+    ? r.bottom + 14
+    : Math.max(16, r.top - 14 - tipH);
+  tourTip.style.left = left + 'px';
+  tourTip.style.top = top + 'px';
+}
+function showTour(i) {
+  tourIdx = Math.max(0, Math.min(TOUR_STEPS.length - 1, i));
+  const step = TOUR_STEPS[tourIdx];
+  document.getElementById('tour-step').textContent = (tourIdx + 1) + ' / ' + TOUR_STEPS.length;
+  document.getElementById('tour-title').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-back').style.visibility = tourIdx === 0 ? 'hidden' : 'visible';
+  document.getElementById('tour-next').textContent = tourIdx === TOUR_STEPS.length - 1 ? 'Done' : 'Next';
+  buildTourDots();
+  if (step.sel) {
+    const el = document.querySelector(step.sel);
+    if (el) el.scrollIntoView({ block: 'center', behavior: 'auto' });
+  }
+  requestAnimationFrame(positionTour);
+}
+function startTour() { tourEl.hidden = false; showTour(0); }
+function endTour() { tourEl.hidden = true; localStorage.setItem('atlas_sched_tour_done', '1'); }
+
+document.getElementById('help-btn').addEventListener('click', startTour);
+document.getElementById('tour-skip').addEventListener('click', endTour);
+document.getElementById('tour-back').addEventListener('click', () => showTour(tourIdx - 1));
+document.getElementById('tour-next').addEventListener('click', () => {
+  if (tourIdx === TOUR_STEPS.length - 1) endTour();
+  else showTour(tourIdx + 1);
+});
+addEventListener('resize', () => { if (!tourEl.hidden) positionTour(); });
+addEventListener('keydown', e => {
+  if (tourEl.hidden) return;
+  if (e.key === 'Escape') endTour();
+  else if (e.key === 'ArrowRight') document.getElementById('tour-next').click();
+  else if (e.key === 'ArrowLeft' && tourIdx > 0) showTour(tourIdx - 1);
+});
+
+// Auto-launch once, on first visit
+if (!localStorage.getItem('atlas_sched_tour_done')) {
+  setTimeout(startTour, 650);
+}
 
 // Auto-focus the task input on page load
 document.getElementById('task-input').focus();
