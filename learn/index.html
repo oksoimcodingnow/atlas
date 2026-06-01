@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quant Academy · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a14; --bg-2: #11112a; --text: #f1efe6; --muted: #8a8aa8; --rule: rgba(241,239,230,0.16);
+    --accent: #b8c0ff; --accent-2: #f3d59a;
+    --max: 760px; --gutter: clamp(22px,5vw,48px);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body { font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; min-height: 100vh; }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 7px; } ::-webkit-scrollbar-thumb { background: rgba(184,192,255,0.25); }
+  body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.10), transparent 65%); }
+
+  .top-bar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--gutter); }
+  .brand { font-family: var(--serif); font-style: italic; font-size: 16px; }
+  .back { font-size: 12px; color: var(--muted); text-decoration: none; padding: 7px 13px; border: 1px solid var(--rule); border-radius: 999px; transition: all .2s; }
+  .back:hover { color: var(--text); border-color: var(--accent); background: rgba(184,192,255,0.08); }
+
+  .wrap { position: relative; z-index: 2; max-width: var(--max); margin: 0 auto; padding: clamp(36px,6vw,64px) var(--gutter) 100px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; margin-bottom: 20px; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(48px,10vw,108px); line-height: 0.92; letter-spacing: -0.02em; margin-bottom: 24px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { font-family: var(--serif); font-size: clamp(19px,2.3vw,26px); line-height: 1.45; color: var(--text); max-width: 600px; margin-bottom: 12px; }
+  .note { font-size: 13px; color: var(--muted); max-width: 560px; margin-bottom: 50px; }
+
+  .lessons { display: flex; flex-direction: column; gap: 12px; }
+  .lesson { display: grid; grid-template-columns: 64px 1fr auto; gap: 18px; align-items: center; padding: 22px 24px; background: var(--bg-2); border: 1px solid var(--rule); border-radius: 14px; text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s, background .2s; }
+  .lesson:hover { border-color: rgba(184,192,255,0.45); transform: translateY(-2px); background: #15152e; }
+  .lesson.soon { opacity: 0.55; pointer-events: none; }
+  .num { font-family: var(--serif); font-style: italic; font-size: 40px; font-weight: 400; color: var(--accent); line-height: 1; }
+  .lesson .body .t { font-family: var(--serif); font-size: 24px; font-weight: 500; line-height: 1.1; margin-bottom: 4px; }
+  .lesson .body .d { font-size: 13.5px; color: var(--muted); }
+  .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .pill.ready { color: var(--accent); border: 1px solid rgba(184,192,255,0.4); background: rgba(184,192,255,0.08); }
+  .pill.soon { color: var(--muted); border: 1px solid var(--rule); }
+
+  .arc { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--rule); }
+  .arc h2 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 26px; margin-bottom: 14px; }
+  .arc p { font-size: 14.5px; color: var(--muted); max-width: 600px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="brand">Atlas · <span style="font-style:italic;">Quant Academy</span></div>
+  <a class="back" href="../index.html">← Atlas</a>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Learn by doing · interactive</div>
+  <h1>Quant, from <em>zero.</em></h1>
+  <p class="lede">A visual path through how quantitative trading actually works — built around what you already know from six years of MM2 trading.</p>
+  <p class="note">No prediction fantasies. No buzzwords. Each lesson has a picture you can drag, and ends with the one idea that protects you from fooling yourself.</p>
+
+  <div class="lessons">
+    <a class="lesson" href="01-edge-not-prediction.html">
+      <div class="num">01</div>
+      <div class="body">
+        <div class="t">Edge, not prediction</div>
+        <div class="d">Why you don't predict the future — you find a small, repeatable advantage. With a live edge simulator.</div>
+      </div>
+      <span class="pill ready">Ready</span>
+    </a>
+
+    <div class="lesson soon">
+      <div class="num">02</div>
+      <div class="body">
+        <div class="t">Risk is the real product</div>
+        <div class="d">Returns vs drawdown, volatility, and why the Sharpe ratio is the number that matters.</div>
+      </div>
+      <span class="pill soon">Soon</span>
+    </div>
+
+    <div class="lesson soon">
+      <div class="num">03</div>
+      <div class="body">
+        <div class="t">How backtests lie</div>
+        <div class="d">Overfitting, look-ahead bias, and the walk-forward test that catches them.</div>
+      </div>
+      <span class="pill soon">Soon</span>
+    </div>
+
+    <div class="lesson soon">
+      <div class="num">04</div>
+      <div class="body">
+        <div class="t">Sizing the bet</div>
+        <div class="d">The Kelly criterion: how a real edge becomes real money, and how over-betting ruins it.</div>
+      </div>
+      <span class="pill soon">Soon</span>
+    </div>
+
+    <div class="lesson soon">
+      <div class="num">05</div>
+      <div class="body">
+        <div class="t">Machine learning, honestly</div>
+        <div class="d">Build a direction classifier — and prove whether it has any edge at all. The capstone.</div>
+      </div>
+      <span class="pill soon">Soon</span>
+    </div>
+  </div>
+
+  <div class="arc">
+    <h2>The arc</h2>
+    <p>One → what an edge is. Two → measuring risk. Three → catching your own lies. Four → sizing the bet. Five → ML done without fooling yourself. By the end you'll build an ML model and honestly judge whether it works, which is the whole skill.</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1 · Edge, not prediction · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a14; --bg-2: #11112a;
+    --text: #f1efe6; --muted: #8a8aa8; --rule: rgba(241,239,230,0.16);
+    --accent: #b8c0ff; --accent-2: #f3d59a;
+    --up: #6fe3a8; --down: #f0857d;
+    --max: 720px; --gutter: clamp(22px,5vw,48px);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body { font-family: var(--sans); font-size: 17px; line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 7px; } ::-webkit-scrollbar-thumb { background: rgba(184,192,255,0.25); }
+
+  .top-bar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; padding: 18px var(--gutter); backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(10,10,20,0.92), rgba(10,10,20,0.5)); border-bottom: 1px solid var(--rule); }
+  .crumb { font-family: var(--serif); font-style: italic; font-size: 16px; }
+  .crumb small { display: block; font-family: var(--sans); font-style: normal; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  .back { font-size: 12px; color: var(--muted); text-decoration: none; padding: 7px 13px; border: 1px solid var(--rule); border-radius: 999px; transition: all .2s; }
+  .back:hover { color: var(--text); border-color: var(--accent); background: rgba(184,192,255,0.08); }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: clamp(40px,6vw,72px) var(--gutter) 120px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; margin-bottom: 18px; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(40px,8vw,76px); line-height: 1; letter-spacing: -0.02em; margin-bottom: 22px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .standfirst { font-family: var(--serif); font-size: clamp(19px,2.3vw,25px); line-height: 1.45; color: var(--text); margin-bottom: 14px; }
+  .meta-line { font-size: 12.5px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 44px; padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
+
+  h2 { font-family: var(--serif); font-weight: 500; font-size: clamp(26px,4vw,40px); line-height: 1.1; letter-spacing: -0.01em; margin: 52px 0 18px; }
+  h2 em { font-style: italic; color: var(--accent); }
+  p { margin-bottom: 18px; }
+  p .hl { color: var(--accent); font-weight: 500; }
+  p .hl-2 { color: var(--accent-2); font-weight: 500; }
+  strong { font-weight: 600; }
+  em.it { font-style: italic; }
+
+  .pull { font-family: var(--serif); font-style: italic; font-size: clamp(22px,3vw,30px); line-height: 1.35; color: var(--text); margin: 36px 0; padding-left: 22px; border-left: 2px solid var(--accent-2); }
+
+  .callout { background: var(--bg-2); border: 1px solid var(--rule); border-radius: 14px; padding: 22px 24px; margin: 32px 0; }
+  .callout .tag { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+  .callout.warn { border-color: rgba(240,133,125,0.35); } .callout.warn .tag { color: var(--down); }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .mono { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+
+  /* coin visual */
+  .coins { display: flex; gap: 18px; justify-content: center; margin: 30px 0; }
+  .coin { width: 64px; height: 64px; border-radius: 999px; display: grid; place-items: center; font-family: var(--serif); font-size: 26px; font-weight: 600; border: 1.5px solid var(--rule); background: var(--bg-2); color: var(--muted); }
+  .coin.up { border-color: rgba(111,227,168,0.4); color: var(--up); } .coin.dn { border-color: rgba(240,133,125,0.4); color: var(--down); }
+
+  /* ── Interactive edge simulator ── */
+  .sim { background: var(--bg-2); border: 1px solid var(--rule); border-radius: 18px; padding: clamp(18px,3vw,28px); margin: 36px 0; }
+  .sim-title { font-family: var(--sans); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .sim-hint { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  .sim canvas { width: 100%; height: 230px; display: block; border-radius: 10px; }
+  .sim-controls { margin-top: 18px; }
+  .sim-readout { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 14px; }
+  .sim-readout .ro .k { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+  .sim-readout .ro .v { font-family: var(--serif); font-size: 30px; font-weight: 600; line-height: 1; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .sim-readout .ro .v.win { color: var(--accent); }
+  .sim-readout .ro .v.up { color: var(--up); } .sim-readout .ro .v.down { color: var(--down); } .sim-readout .ro .v.flat { color: var(--muted); }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px; background: linear-gradient(90deg, var(--down), var(--muted) 50%, var(--up)); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 999px; background: var(--text); border: 3px solid var(--accent); cursor: grab; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 999px; background: var(--text); border: 3px solid var(--accent); cursor: grab; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 8px; font-family: var(--mono); }
+  .sim-reroll { margin-top: 14px; font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); background: transparent; border: 1px solid var(--rule); border-radius: 8px; padding: 7px 14px; cursor: pointer; transition: all .16s; }
+  .sim-reroll:hover { color: var(--text); border-color: var(--accent); }
+
+  /* check question */
+  .check { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--rule); }
+  .check .q { font-family: var(--serif); font-size: clamp(22px,3vw,30px); font-style: italic; line-height: 1.3; margin-bottom: 22px; }
+  .opt { display: block; width: 100%; text-align: left; font-family: var(--sans); font-size: 15px; color: var(--text); background: var(--bg-2); border: 1px solid var(--rule); border-radius: 11px; padding: 15px 18px; margin-bottom: 10px; cursor: pointer; transition: border-color .16s, background .16s; }
+  .opt:hover { border-color: rgba(184,192,255,0.4); }
+  .opt.right { border-color: rgba(111,227,168,0.5); background: rgba(111,227,168,0.08); }
+  .opt.wrong { border-color: rgba(240,133,125,0.5); background: rgba(240,133,125,0.08); }
+  .opt .verdict { display: block; font-size: 13px; margin-top: 7px; color: var(--muted); }
+  .opt.right .verdict { color: var(--up); } .opt.wrong .verdict { color: var(--down); }
+
+  .nextnav { margin-top: 60px; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .nextnav a { font-size: 13px; color: var(--muted); text-decoration: none; padding: 13px 22px; border: 1px solid var(--rule); border-radius: 999px; transition: all .2s; }
+  .nextnav a:hover { color: var(--text); border-color: var(--accent); background: rgba(184,192,255,0.08); }
+  .nextnav a.next { color: var(--accent); }
+
+  body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); opacity: 0.5; mix-blend-mode: overlay; }
+  .top-bar, .wrap { position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="crumb">Quant Academy<small>Lesson 1 of the path</small></div>
+  <a class="back" href="index.html">← Lessons</a>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Lesson 1 · Foundations</div>
+  <h1>Edge, not <em>prediction.</em></h1>
+  <p class="standfirst">You don't get rich predicting the future. You get rich being a little less wrong than the person on the other side of the trade — over and over.</p>
+  <div class="meta-line">~6 min · anchored to your MM2 trading · interactive</div>
+
+  <p>When you traded MM2 knives, did you predict the <em class="it">exact</em> future price of a Chroma? No. You knew when something was <span class="hl">mispriced</span> — a panicked seller dumping a Godly too cheap, or hype about to spike demand. You didn't see the future. You knew <strong>value</strong> better than the person across the trade.</p>
+  <p>That's the whole game in quant. And it's the thing beginners get exactly backwards.</p>
+
+  <h2>The trap</h2>
+  <p>Beginners think quant means <em class="it">"predict tomorrow's BTC price."</em> That's nearly impossible, and it's the wrong frame. Day to day, BTC's direction is close to a coin flip — roughly <span class="hl">50/50</span> up or down. Smart, funded people have hunted that prediction for decades. If it were easy, it would already be gone.</p>
+
+  <div class="coins">
+    <div class="coin up">↑</div>
+    <div class="coin dn">↓</div>
+  </div>
+
+  <p>So when a model predicts direction with <strong>70% accuracy</strong> in a backtest, the honest reaction isn't <em class="it">"I'm rich."</em> It's <span class="hl-2">"where's my bug?"</span> — because that number is almost always a leak or an overfit. (We'll learn to hunt those.)</p>
+
+  <h2>What a <em>real</em> edge looks like</h2>
+  <p>A real edge is tiny. <strong>52, maybe 53%</strong> instead of 50. Sounds useless. It isn't — and you already know why from MM2.</p>
+  <p>You didn't get rich on one god-tier flip. You got there by making <strong>many</strong> slightly-favorable trades and letting them stack. A 3% edge, sized right and repeated thousands of times, compounds into real money.</p>
+
+  <p class="pull">A small, real, repeatable edge — sized correctly — beats a big edge you can't trust.</p>
+
+  <!-- ── The interactive picture ── -->
+  <div class="sim">
+    <div class="sim-title">Drag to feel it</div>
+    <div class="sim-hint">Each step is one trade: win → +1, lose → −1. Move the win rate and watch 400 trades play out. The bold line is the expected path; the faint lines are luck.</div>
+    <canvas id="sim-canvas" width="640" height="230"></canvas>
+    <div class="sim-controls">
+      <div class="sim-readout">
+        <div class="ro"><div class="k">Win rate</div><div class="v win" id="ro-win">53%</div></div>
+        <div class="ro"><div class="k">Edge per trade</div><div class="v" id="ro-edge">+0.06</div></div>
+        <div class="ro"><div class="k">Expected after 400</div><div class="v" id="ro-exp">+24</div></div>
+      </div>
+      <input type="range" id="sim-slider" min="44" max="58" value="53" step="1">
+      <div class="slider-labels"><span>44% · bleeds</span><span>50% · noise</span><span>58% · prints</span></div>
+      <button class="sim-reroll" id="sim-reroll">↻ Re-roll the luck</button>
+    </div>
+  </div>
+
+  <p>Notice three things as you drag:</p>
+  <p>At <span class="hl">50%</span>, the expected line is <strong>flat</strong> — pure noise. Some runs end up, some down, all luck, no edge. At <span class="hl-2">53%</span>, the bold line tilts up and the random runs cluster around it: a tiny edge, made visible by repetition. Below 50%, you bleed — slowly, but surely. <em class="it">That</em> is what a casino is: a 51% edge, repeated a million times.</p>
+
+  <div class="callout warn">
+    <div class="tag">The rule that saves you money</div>
+    <p>When our ML model later shows <span class="mono">51%</span> out-of-sample accuracy, a beginner throws it away, disappointed. You'll know better: <strong>51% that survives honest testing can be tradeable.</strong> And <span class="mono">68%</span> that looks gorgeous is almost certainly a lie you need to catch.</p>
+    <p>The skill was never building the model. It's <strong>knowing which number to believe.</strong></p>
+  </div>
+
+  <h2>The recap</h2>
+  <p>Quant is not fortune-telling. It's finding a small, real, repeatable statistical advantage — and sizing it so the math compounds in your favor. You've done this for six years with knives. Now we do it with code, and we learn to <em class="it">prove</em> the edge is real before trusting a baht to it.</p>
+
+  <!-- ── Check ── -->
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">You build an ML model and it shows 65% accuracy predicting BTC direction in your backtest. First reaction?</div>
+    <button class="opt" data-correct="false">“I'm rich — let's go live with real money.”<span class="verdict"></span></button>
+    <button class="opt" data-correct="true">“Where's my bug?” — that number is too good; hunt for leakage / overfitting before believing it.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">“65% isn't enough, throw it away and try a bigger neural network.”<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav">
+    <a href="index.html">← All lessons</a>
+    <a class="next" href="index.html">Lesson 2: coming soon →</a>
+  </div>
+</div>
+
+<script>
+// ── Edge simulator ──
+const cv = document.getElementById('sim-canvas');
+const ctx = cv.getContext('2d');
+const N = 400;
+let seedPaths = [];
+
+function dpr() { return Math.min(window.devicePixelRatio || 1, 2); }
+function resize() {
+  const r = dpr();
+  cv.width = cv.clientWidth * r; cv.height = cv.clientHeight * r;
+  ctx.setTransform(r, 0, 0, r, 0, 0);
+  draw();
+}
+function reroll() {
+  seedPaths = [];
+  for (let k = 0; k < 5; k++) { const seq = []; for (let i = 0; i < N; i++) seq.push(Math.random()); seedPaths.push(seq); }
+  draw();
+}
+function pathEquity(p, rand) { // rand: array of uniforms; returns equity array
+  const eq = [0]; let e = 0;
+  for (let i = 0; i < N; i++) { e += (rand[i] < p) ? 1 : -1; eq.push(e); }
+  return eq;
+}
+function draw() {
+  const p = Number(document.getElementById('sim-slider').value) / 100;
+  const w = cv.clientWidth, h = cv.clientHeight, padL = 8, padR = 8, padT = 14, padB = 14;
+  ctx.clearRect(0, 0, w, h);
+
+  // compute all equity series to find y-range
+  const expected = []; for (let i = 0; i <= N; i++) expected.push(i * (2 * p - 1));
+  const paths = seedPaths.map(r => pathEquity(p, r));
+  let lo = 0, hi = 0;
+  [expected, ...paths].forEach(s => s.forEach(v => { if (v < lo) lo = v; if (v > hi) hi = v; }));
+  const span = Math.max(20, hi - lo);
+  const yMid = (hi + lo) / 2;
+  const x = i => padL + (i / N) * (w - padL - padR);
+  const y = v => { const norm = (v - (yMid - span/2)) / span; return padT + (1 - norm) * (h - padT - padB); };
+
+  // zero baseline
+  ctx.strokeStyle = 'rgba(241,239,230,0.14)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(padL, y(0)); ctx.lineTo(w - padR, y(0)); ctx.stroke(); ctx.setLineDash([]);
+
+  // faint random paths
+  ctx.lineWidth = 1.2;
+  paths.forEach(s => {
+    ctx.strokeStyle = 'rgba(184,192,255,0.18)'; ctx.beginPath();
+    s.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v))); ctx.stroke();
+  });
+
+  // expected path (bold, colored by sign)
+  const slope = 2 * p - 1;
+  const col = slope > 0.005 ? getCss('--up') : slope < -0.005 ? getCss('--down') : getCss('--muted');
+  ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.lineJoin = 'round'; ctx.beginPath();
+  expected.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v))); ctx.stroke();
+
+  // readouts
+  const pct = Math.round(p * 100);
+  document.getElementById('ro-win').textContent = pct + '%';
+  const edge = (2 * p - 1);
+  document.getElementById('ro-edge').textContent = (edge >= 0 ? '+' : '') + edge.toFixed(2);
+  const exp = Math.round(edge * N);
+  const expEl = document.getElementById('ro-exp');
+  expEl.textContent = (exp >= 0 ? '+' : '') + exp;
+  expEl.className = 'v ' + (exp > 3 ? 'up' : exp < -3 ? 'down' : 'flat');
+  document.getElementById('ro-edge').className = 'v ' + (edge > 0.005 ? 'up' : edge < -0.005 ? 'down' : 'flat');
+}
+function getCss(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+document.getElementById('sim-slider').addEventListener('input', draw);
+document.getElementById('sim-reroll').addEventListener('click', reroll);
+window.addEventListener('resize', resize);
+reroll(); resize();
+
+// ── Check question ──
+document.querySelectorAll('.opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const correct = opt.dataset.correct === 'true';
+    opt.classList.add(correct ? 'right' : 'wrong');
+    const v = opt.querySelector('.verdict');
+    v.textContent = correct
+      ? '✓ Exactly. A number that good is a red flag, not a green light. The discipline is suspicion.'
+      : (opt.textContent.includes('rich') ? '✗ This is how people blow up accounts. 65% out-of-sample on price direction is almost always a bug.' : '✗ Bigger models overfit harder. The problem was never model size — it was trusting the number.');
+    document.querySelectorAll('.opt').forEach(o => { if (o !== opt) o.style.opacity = '0.55'; });
+  });
+});
+</script>
+</body>
+</html>
