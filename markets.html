@@ -51,6 +51,23 @@
   .gstat .v { font-size: 15px; font-weight: 600; }
   .pos { color: var(--up); } .neg { color: var(--down); }
 
+  /* Portfolio bar */
+  .pf { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; padding: 14px 16px; margin-bottom: 16px; background: linear-gradient(180deg, var(--accent-soft), transparent), var(--surface); border: 1px solid var(--accent-line); border-radius: 12px; }
+  .pf[hidden] { display: none; }
+  .pf .pf-k { font-size: 11.5px; color: var(--muted); }
+  .pf .pf-v { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  .pf .pf-chg { font-size: 14px; font-weight: 600; }
+  .pf .spacer { flex: 1; }
+  .pf .pf-edit { align-self: center; }
+
+  /* Holdings edit */
+  .hold-row { display: grid; grid-template-columns: 1fr 130px 120px; align-items: center; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--border); }
+  .hold-row:last-child { border-bottom: none; }
+  .hold-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--ink); padding: 8px 10px; border-radius: 8px; font-size: 13.5px; font-family: inherit; outline: none; text-align: right; transition: border-color .14s; }
+  .hold-input:focus { border-color: var(--accent-line); }
+  .hold-val { text-align: right; font-weight: 600; font-size: 14px; color: var(--muted); }
+  .market.editing .head { display: none; }
+
   /* Table */
   .market { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
   .row { display: grid; grid-template-columns: 1fr 96px 120px 92px 28px; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border); transition: background .14s var(--ease); }
@@ -113,6 +130,19 @@
     </div>
   </header>
 
+  <div class="pf" id="pf" hidden>
+    <div>
+      <div class="pf-k">Portfolio value</div>
+      <div class="pf-v tnum" id="pf-val">—</div>
+    </div>
+    <div>
+      <div class="pf-k">Today</div>
+      <div class="pf-chg tnum" id="pf-chg">—</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="ghost pf-edit" id="pf-edit">Edit holdings</button>
+  </div>
+
   <div class="global" id="global" hidden>
     <div class="gstat"><div class="k">Total market cap</div><div class="v tnum" id="g-cap">—</div></div>
     <div class="gstat"><div class="k">24h</div><div class="v tnum" id="g-chg">—</div></div>
@@ -126,6 +156,7 @@
 
   <div class="add-wrap">
     <button class="ghost add-toggle" id="add-toggle">+ Add coin</button>
+    <button class="ghost" id="pf-enter">Track holdings</button>
     <div class="quick" id="quick" hidden></div>
   </div>
 
@@ -147,6 +178,11 @@ let lastFetch = 0;
 
 function load() { try { const v = JSON.parse(localStorage.getItem(LS_KEY)); return Array.isArray(v) && v.length ? v : DEFAULT.slice(); } catch { return DEFAULT.slice(); } }
 function save() { localStorage.setItem(LS_KEY, JSON.stringify(watch)); }
+let holdings = loadHold();
+let editing = false;
+function loadHold() { try { return JSON.parse(localStorage.getItem('atlas_holdings')) || {}; } catch { return {}; } }
+function saveHold() { localStorage.setItem('atlas_holdings', JSON.stringify(holdings)); }
+function fmtMoney(n) { return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 2 }); }
 
 // ── Formatting ──
 function fmtPrice(p) {
@@ -214,11 +250,68 @@ function render(data) {
       </div>`;
   }).join('');
 }
+function renderHoldings() {
+  const m = priceMap();
+  const ordered = watch.map(id => m[id]).filter(Boolean);
+  rowsEl.innerHTML = ordered.map(c => {
+    const amt = holdings[c.id] || '';
+    const val = (holdings[c.id] || 0) * c.current_price;
+    return `<div class="hold-row" data-id="${esc(c.id)}">
+      <div class="coin"><img src="${esc(c.image)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="sym">${esc(c.symbol)} · ${fmtPrice(c.current_price)}</div></div></div>
+      <input class="hold-input tnum" type="number" inputmode="decimal" min="0" step="any" placeholder="0" value="${amt}" data-hold="${esc(c.id)}" aria-label="Amount of ${esc(c.name)} held">
+      <div class="hold-val tnum">${val ? fmtMoney(val) : '—'}</div>
+    </div>`;
+  }).join('');
+}
+function priceMap() { const m = {}; lastData.forEach(c => m[c.id] = c); return m; }
+function computePortfolio() {
+  const m = priceMap(); let val = 0, prev = 0, has = false;
+  for (const id in holdings) {
+    const amt = holdings[id], c = m[id];
+    if (!amt || !c) continue;
+    has = true; val += amt * c.current_price;
+    const chg = c.price_change_percentage_24h ?? 0;
+    prev += amt * (c.current_price / (1 + chg / 100));
+  }
+  return { val, change: val - prev, pct: prev ? (val - prev) / prev * 100 : 0, has };
+}
+function updatePortfolio() {
+  const p = computePortfolio(), pf = document.getElementById('pf');
+  if (!p.has && !editing) { pf.hidden = true; return; }
+  pf.hidden = false;
+  document.getElementById('pf-val').textContent = p.has ? fmtMoney(p.val) : '—';
+  const ce = document.getElementById('pf-chg');
+  if (p.has) { ce.textContent = (p.change >= 0 ? '+' : '−') + '$' + Math.abs(p.change).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' (' + fmtPct(p.pct) + ')'; ce.className = 'pf-chg tnum ' + (p.change >= 0 ? 'pos' : 'neg'); }
+  else { ce.textContent = 'add amounts to track'; ce.className = 'pf-chg tnum'; }
+}
+function paint() {
+  if (editing) renderHoldings();
+  else if (lastData.length) render(lastData);
+  else skeletons();
+  updatePortfolio();
+}
+function setEditing(v) {
+  editing = v;
+  document.getElementById('market').classList.toggle('editing', editing);
+  document.getElementById('pf-edit').textContent = editing ? 'Done' : 'Edit holdings';
+  paint();
+}
+document.getElementById('pf-edit').addEventListener('click', () => setEditing(!editing));
+document.getElementById('pf-enter').addEventListener('click', () => setEditing(true));
+
 rowsEl.addEventListener('click', e => {
   const rm = e.target.closest('[data-rm]'); if (!rm) return;
   watch = watch.filter(id => id !== rm.dataset.rm); save();
-  if (lastData.length) render(lastData); else skeletons();
-  renderQuick();
+  paint(); renderQuick();
+});
+rowsEl.addEventListener('input', e => {
+  const inp = e.target.closest('[data-hold]'); if (!inp) return;
+  const v = parseFloat(inp.value);
+  if (v > 0) holdings[inp.dataset.hold] = v; else delete holdings[inp.dataset.hold];
+  saveHold();
+  const c = priceMap()[inp.dataset.hold], row = inp.closest('.hold-row'), valEl = row && row.querySelector('.hold-val');
+  if (valEl && c) { const val = (holdings[inp.dataset.hold] || 0) * c.current_price; valEl.textContent = val ? fmtMoney(val) : '—'; }
+  updatePortfolio();
 });
 
 // ── Status ──
@@ -241,7 +334,7 @@ async function fetchMarkets() {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const data = await r.json();
     lastData = data; lastFetch = Date.now();
-    render(data); tickAgo();
+    paint(); tickAgo();
   } catch (e) {
     if (lastData.length) { setStatus('offline — showing last', true); }
     else { rowsEl.innerHTML = `<div class="err">Couldn't reach CoinGecko (${esc(e.message)}). Retrying…</div>`; setStatus('error', true); }
@@ -276,7 +369,7 @@ document.getElementById('add-toggle').addEventListener('click', () => {
 });
 quickEl.addEventListener('click', e => {
   const b = e.target.closest('[data-add]'); if (!b) return;
-  if (!watch.includes(b.dataset.add)) { watch.push(b.dataset.add); save(); renderQuick(); skeletons(); fetchMarkets(); }
+  if (!watch.includes(b.dataset.add)) { watch.push(b.dataset.add); save(); renderQuick(); if (!editing) skeletons(); fetchMarkets(); }
 });
 
 document.getElementById('refresh').addEventListener('click', refreshAll);
