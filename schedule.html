@@ -336,6 +336,7 @@
   .sync-btn:hover { border-color: var(--accent); background: rgba(129,140,248,0.12); transform: translateY(-1px); }
   .sync-btn:active { transform: scale(0.96); }
   .sync-form { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; align-items: center; }
+  .sync-form[hidden] { display: none; }   /* author display:flex would otherwise defeat the hidden attribute */
   .sync-form input {
     background: rgba(10,10,20,0.85); border: 1px solid var(--border);
     color: var(--text); padding: 7px 10px; border-radius: 7px;
