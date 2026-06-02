@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debugging &amp; Code Structure · Library · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --good:#8fd6c8;
+    --max:840px; --gutter:clamp(22px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif;
+    --mono:ui-monospace,'Cascadia Code',Consolas,Menlo,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(720px 380px at 72% -8%,rgba(184,192,255,0.10),transparent 65%);}
+
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:22px var(--gutter);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:clamp(28px,5vw,52px) var(--gutter) 100px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(42px,8vw,84px);line-height:0.92;letter-spacing:-0.02em;margin-bottom:18px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.45;color:var(--text);max-width:600px;margin-bottom:8px;}
+
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px;}
+  .jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .18s;}
+  .jump a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .part{margin-top:54px;scroll-margin-top:20px;}
+  .part-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+  .part-head .h{font-family:var(--serif);font-style:italic;font-weight:500;font-size:30px;color:var(--text);}
+  .part-head .n{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+  .part > p{margin-top:14px;color:#e3dcef;}
+  .part p b{color:#fff;font-weight:600;}
+  .part p .ac{color:var(--accent);font-weight:600;}
+
+  /* numbered steps */
+  ol.steps{list-style:none;counter-reset:s;margin:22px 0 6px;}
+  ol.steps > li{counter-increment:s;position:relative;padding:16px 0 16px 52px;border-bottom:1px solid var(--rule);}
+  ol.steps > li:last-child{border-bottom:0;}
+  ol.steps > li::before{content:counter(s);position:absolute;left:0;top:15px;width:32px;height:32px;border-radius:50%;
+    border:1px solid rgba(184,192,255,0.4);color:var(--accent);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  ol.steps .st{font-size:16.5px;font-weight:600;color:#fff;margin-bottom:3px;}
+  ol.steps .sd{font-size:14.5px;color:var(--muted);line-height:1.55;}
+  ol.steps .sd b{color:var(--accent);font-weight:600;}
+  ol.steps .sd code{font-family:var(--mono);font-size:0.84em;background:rgba(184,192,255,0.1);border:1px solid var(--rule);padding:1px 6px;border-radius:5px;color:#dfe2ff;}
+
+  /* lookup table */
+  .tbl{margin:24px 0;border:1px solid var(--rule);border-radius:14px;overflow:hidden;}
+  .tbl .row{display:grid;grid-template-columns:1.1fr 1.2fr 1.3fr;gap:0;}
+  .tbl .row > div{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:13.5px;line-height:1.45;}
+  .tbl .row:last-child > div{border-bottom:0;}
+  .tbl .row.head > div{background:rgba(184,192,255,0.06);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent-2);font-weight:700;}
+  .tbl .row > div:nth-child(1){color:#f1efe6;font-weight:500;border-right:1px solid var(--rule);}
+  .tbl .row > div:nth-child(2){color:var(--muted);border-right:1px solid var(--rule);}
+  .tbl .row > div:nth-child(3){color:#cfeee6;}
+  .tbl code{font-family:var(--mono);font-size:0.86em;color:#dfe2ff;}
+  @media(max-width:600px){ .tbl .row{grid-template-columns:1fr;} .tbl .row > div{border-right:0!important;} .tbl .row.head{display:none;}
+    .tbl .row > div:nth-child(1)::before{content:'Symptom: ';color:var(--faint);font-weight:400;}
+    .tbl .row > div:nth-child(2)::before{content:'Cause: ';color:var(--faint);}
+    .tbl .row > div:nth-child(3)::before{content:'Check: ';color:var(--faint);} }
+
+  /* callout box */
+  .box{margin:24px 0;padding:18px 20px;background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;}
+  .box.good{border-color:rgba(143,214,200,0.35);}
+  .box .lbl{display:block;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;margin-bottom:8px;color:var(--accent-2);}
+  .box.good .lbl{color:var(--good);}
+  .box p{font-size:14.5px;color:#ded6ea;line-height:1.55;}
+  .box p + p{margin-top:8px;}
+  .box code{font-family:var(--mono);font-size:0.85em;background:rgba(255,255,255,0.05);padding:1px 6px;border-radius:5px;color:#dfe2ff;}
+
+  /* principle list */
+  .princ{display:flex;flex-direction:column;gap:2px;margin:20px 0;}
+  .princ .p{padding:13px 2px;border-bottom:1px solid var(--rule);}
+  .princ .p:last-child{border-bottom:0;}
+  .princ .pt{font-size:15.5px;font-weight:600;color:#fff;}
+  .princ .pt .why{color:var(--good);font-weight:500;font-size:13px;}
+  .princ .pd{font-size:14px;color:var(--muted);line-height:1.5;margin-top:2px;}
+  .princ .pd code{font-family:var(--mono);font-size:0.85em;color:#dfe2ff;}
+
+  /* worked example as a transcript */
+  .hunt{margin:22px 0;padding:22px clamp(16px,3vw,26px);background:linear-gradient(180deg,rgba(184,192,255,0.05),rgba(255,255,255,0));border:1px solid var(--rule);border-radius:16px;}
+  .hunt .h2{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--accent);margin-bottom:12px;}
+  .hunt .turn{padding:10px 0;border-bottom:1px solid var(--rule);}
+  .hunt .turn:last-child{border-bottom:0;}
+  .hunt .who{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;color:var(--faint);margin-bottom:3px;}
+  .hunt .what{font-size:14.5px;color:#e3dcef;line-height:1.55;}
+  .hunt .what b{color:var(--accent);font-weight:600;}
+  .hunt .what code{font-family:var(--mono);font-size:0.85em;background:rgba(184,192,255,0.1);border:1px solid var(--rule);padding:1px 6px;border-radius:5px;color:#dfe2ff;}
+
+  .foot{margin-top:50px;padding-top:22px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);text-decoration:none;padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span style="font-style:italic;">Library</span></div><a class="back" href="index.html">&larr; Library</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Coding &middot; how to not get stuck</div>
+  <h1>Find the bug. <em>Then make the next one easy to find.</em></h1>
+  <p class="lede">Two skills that compound: a repeatable way to hunt down the <i>cause</i> of a bug, and a way to lay out code so the cause is obvious next time &mdash; for you, and for Claude reading it cheaply.</p>
+
+  <div class="jump">
+    <a href="#root">1 &middot; Root cause</a>
+    <a href="#table">Symptom &rarr; cause</a>
+    <a href="#structure">2 &middot; Structure</a>
+    <a href="#hunt">3 &middot; A real hunt</a>
+    <a href="#ask">Ask Claude well</a>
+  </div>
+
+  <!-- ── PART 1 ─────────────────────────────── -->
+  <section class="part" id="root">
+    <div class="part-head"><span class="h">Find the root cause</span><span class="n">Part 1 &middot; the method</span></div>
+    <p>A bug is a <b>gap between what you expected and what happened.</b> The whole game is finding <i>where</i> reality first diverges from your mental model. Don't guess and change things at random &mdash; that turns one bug into three. Observe, narrow, then fix. Here's the loop, every time:</p>
+
+    <ol class="steps">
+      <li>
+        <div class="st">Read the error &mdash; actually read it</div>
+        <div class="sd">The error message and <b>stack trace</b> usually hand you the answer. Read it top to bottom: the top line is <i>where it blew up</i>; scan down for the <b>first line in <i>your</i> file</b> (e.g. <code>shop.js:42</code>) &mdash; that's your starting point. The message names the kind of failure (<code>undefined is not a function</code>, <code>404</code>, <code>permission denied</code>).</div>
+      </li>
+      <li>
+        <div class="st">Reproduce it reliably</div>
+        <div class="sd">A bug you can trigger on demand is half-fixed. Find the <b>exact steps</b>. Does it happen every time, or only sometimes? Every item, or one? <i>Sometimes</i> usually means timing/async or bad data; <i>always</i> means logic.</div>
+      </li>
+      <li>
+        <div class="st">Say expected vs actual out loud</div>
+        <div class="sd">"I expected the image to load; instead I see the emoji." Now you know the gap is <i>"the img URL isn't being used."</i> Naming the gap points at where to look.</div>
+      </li>
+      <li>
+        <div class="st">Bisect &mdash; cut the problem in half</div>
+        <div class="sd"><b>The core skill.</b> Drop a <code>console.log</code> (or <code>print</code>) at the <i>midpoint</i> of the path and ask: is the data correct <i>here</i>? If yes &rarr; the bug is <b>downstream</b>. If no &rarr; it's <b>upstream</b>. Move your log halfway again. In a few steps you've cornered the exact line. This beats staring at code every time.</div>
+      </li>
+      <li>
+        <div class="st">Ask "what changed?"</div>
+        <div class="sd">If it worked yesterday, something changed. <code>git log</code> to see recent commits; mentally (or with <code>git bisect</code>) find the last commit where it worked. The diff since then contains your bug 90% of the time.</div>
+      </li>
+      <li>
+        <div class="st">Fix the cause, not the symptom &mdash; then guard it</div>
+        <div class="sd">Patching the symptom (hide the error, retry blindly) leaves the cause to bite again. Fix the actual cause, then add a small <b>guard</b> so it can't silently return: a fallback, a check, or a clear error message.</div>
+      </li>
+    </ol>
+
+    <div class="box">
+      <span class="lbl">The one habit that matters most</span>
+      <p>When stuck, resist editing code. Instead <b>add one observation</b> (a log, a breakpoint) that splits the unknown in half. You are not trying to <i>fix</i> yet &mdash; you're trying to <i>locate</i>. Fixing is easy once you know exactly where.</p>
+    </div>
+  </section>
+
+  <!-- ── LOOKUP TABLE ─────────────────────────────── -->
+  <section class="part" id="table">
+    <div class="part-head"><span class="h">Symptom &rarr; likely cause</span><span class="n">a cheat sheet</span></div>
+    <p>Most bugs are one of a handful of shapes. Match the symptom, check the usual suspect first.</p>
+    <div class="tbl">
+      <div class="row head"><div>Symptom</div><div>Usual suspect</div><div>First check</div></div>
+      <div class="row"><div><code>undefined</code> / null error</div><div>Used a thing before it exists, or a fetch returned nothing</div><div>Log the value on the line <i>before</i> it's used</div></div>
+      <div class="row"><div>Works local, 404 on live site</div><div>Deploy lag, wrong path/case, or stale cache</div><div>Wait ~1 min, hard-refresh (<code>Ctrl+Shift+R</code>), recheck the exact URL</div></div>
+      <div class="row"><div>Change doesn't show up</div><div>Browser or service-worker cache</div><div>Hard refresh; bump the cache version</div></div>
+      <div class="row"><div>Right code, wrong result</div><div>It's the <i>input data</i>, not the code</div><div>Log the input &mdash; is it shaped how you assumed?</div></div>
+      <div class="row"><div>Off-by-one / last item missing</div><div>Loop bounds or slice</div><div>Print the start and end index</div></div>
+      <div class="row"><div>Works sometimes / out of order</div><div>Missing <code>await</code>, a race, or a stale closure</div><div>Log order + timestamps; check every <code>await</code></div></div>
+      <div class="row"><div><code>==</code> surprises (<code>"1" == 1</code>)</div><div>Type coercion</div><div>Use <code>===</code>; log <code>typeof</code> the value</div></div>
+      <div class="row"><div>Permission / auth denied</div><div>Rules, token, or you're not signed in</div><div>Log who you are; re-read the rule for that path</div></div>
+    </div>
+  </section>
+
+  <!-- ── PART 2 ─────────────────────────────── -->
+  <section class="part" id="structure">
+    <div class="part-head"><span class="h">Structure for findability</span><span class="n">Part 2 &middot; so bugs surface</span></div>
+    <p>A big codebase isn't hard because it's big &mdash; it's hard when you can't <b>guess where a thing lives.</b> Good structure means you (or Claude) jump to the right file in one search instead of reading everything. <span class="ac">That's also the token saver:</span> Claude debugs by searching; clear names and small, single-purpose files mean it finds the cause in one or two lookups, not by reading the whole repo.</p>
+
+    <div class="princ">
+      <div class="p"><div class="pt">One file, one job <span class="why">&mdash;so the file name predicts the bug</span></div><div class="pd">If you can describe a file in one sentence, it's right-sized. <code>escrow.js</code> handles escrow, nothing else. A bug in releasing funds? You already know the file.</div></div>
+      <div class="p"><div class="pt">Names you can grep <span class="why">&mdash;findable beats clever</span></div><div class="pd"><code>releaseEscrowToSeller()</code> is searchable and self-explaining. <code>handle2()</code> is a future mystery. Name for the person searching at 2 a.m.</div></div>
+      <div class="p"><div class="pt">Keep files small <span class="why">&mdash;~200&ndash;300 lines</span></div><div class="pd">A 2,000-line file costs more to read (more tokens, more scrolling) and hides bugs in the noise. Split by responsibility when it grows.</div></div>
+      <div class="p"><div class="pt">One source of truth per thing <span class="why">&mdash;no scattered copies</span></div><div class="pd">Your THB&rarr;Robux price math lives in <i>one</i> function, imported everywhere. Five copies = five places to fix and four you'll forget.</div></div>
+      <div class="p"><div class="pt">Group by feature once it grows <span class="why">&mdash;not by file type</span></div><div class="pd">Early on, flat is fine. Past ~15 files, fold into folders by <i>feature</i> (<code>/deals</code>, <code>/payments</code>, <code>/admin</code>) so related code sits together.</div></div>
+      <div class="p"><div class="pt">Errors carry context <span class="why">&mdash;where + what</span></div><div class="pd"><code>throw new Error("releaseEscrow: deal 84 has no funded amount")</code> tells you the file, the case, and the data. <code>throw "error"</code> tells you nothing.</div></div>
+      <div class="p"><div class="pt">A map at the root <span class="why">&mdash;orient in 10 seconds</span></div><div class="pd">A short <code>README</code> / <code>CLAUDE.md</code> listing what each folder does. It's the first thing Claude reads; it's how a big repo stays cheap to navigate.</div></div>
+    </div>
+
+    <div class="box good">
+      <span class="lbl">The findability test</span>
+      <p>Read a bug report &mdash; <i>"refund button does nothing"</i> &mdash; and ask: <b>can I name the file it's probably in?</b> If yes, your structure is doing its job. If you'd have to search blindly, that's the signal to split and rename.</p>
+    </div>
+
+    <div class="box">
+      <span class="lbl">Logging at the boundaries</span>
+      <p>Log where data <b>enters and leaves</b> your system &mdash; an API call in, a payment out, a write to the database. When something breaks, these logs show you which side of the boundary went wrong, so bugs half-announce themselves before you even start hunting.</p>
+    </div>
+  </section>
+
+  <!-- ── PART 3: WORKED HUNT ─────────────────────────────── -->
+  <section class="part" id="hunt">
+    <div class="part-head"><span class="h">A real hunt</span><span class="n">Part 3 &middot; the method, applied</span></div>
+    <p>Watch the loop run on an actual RoShop-shaped bug. Notice: zero random edits &mdash; just observations that cut the unknown in half.</p>
+
+    <div class="hunt">
+      <div class="h2">"The shop shows an emoji instead of the item's image."</div>
+      <div class="turn"><div class="who">1 &middot; Expected vs actual</div><div class="what">Expected: the knife image. Actual: the &#129481; emoji. Gap: <b>the <code>img</code> URL isn't being used.</b> So either there's no URL, or there is one and it fails to load.</div></div>
+      <div class="turn"><div class="who">2 &middot; Reproduce / narrow</div><div class="what">Is it <i>every</i> item or <i>one</i>? &rarr; Only "Eternal III". <b>That points at the data, not the rendering code</b> (the code works for every other item).</div></div>
+      <div class="turn"><div class="who">3 &middot; Bisect with two observations</div><div class="what">Open <b>Console</b>: any red errors? Open the <b>Network</b> tab, reload: did an image request <b>404</b>? And log the item: <code>console.log(item)</code> &mdash; does it even have an <code>img</code> field?</div></div>
+      <div class="turn"><div class="who">4 &middot; The split decides it</div><div class="what">Two possible findings: <b>(a)</b> the item has no <code>img</code> field &rarr; the cause is the <i>Firestore data</i>, upstream. <b>(b)</b> it has one but Network shows a 404 &rarr; the URL is wrong (wrong <code>raw.githubusercontent</code> path or filename). Either way you now know the cause <i>exactly</i> &mdash; no guessing.</div></div>
+      <div class="turn"><div class="who">5 &middot; Fix the cause, keep the guard</div><div class="what">Case (a): add the <code>img</code> field in Firestore. Case (b): fix the raw URL. The guard already exists by design &mdash; the shop <b>falls back to the emoji</b> when <code>img</code> is missing or broken, which is exactly why you saw an emoji and not a crash. Good guards turn bugs into graceful degradation.</div></div>
+    </div>
+    <p>That's the entire discipline: <b>expected vs actual &rarr; reproduce &rarr; bisect with observations &rarr; locate the cause &rarr; fix + guard.</b> It scales from a one-page shop to a codebase you can't hold in your head.</p>
+  </section>
+
+  <!-- ── ASK CLAUDE ─────────────────────────────── -->
+  <section class="part" id="ask">
+    <div class="part-head"><span class="h">Ask Claude so it's cheap</span><span class="n">bonus &middot; fewer tokens, faster fixes</span></div>
+    <p>When you hand a bug to Claude, the difference between a slow, expensive answer and an instant one is <b>how you frame it.</b> Give the three things that let it skip straight to the right file:</p>
+    <div class="box good">
+      <span class="lbl">The cheap bug report</span>
+      <p><b>1. The exact error</b> &mdash; paste the Console/terminal text, don't paraphrase.</p>
+      <p><b>2. Where</b> &mdash; the file, or the page/feature (<code>shop.js</code>, "the admin image tab").</p>
+      <p><b>3. Expected vs actual</b> &mdash; "I expected X, I got Y."</p>
+      <p style="margin-top:10px;color:var(--good);">&ldquo;Console says <code>Cannot read 'img' of undefined</code> in shop.js when I open the shop; I expected the item to render.&rdquo; &rarr; Claude goes straight to the line.</p>
+      <p style="color:var(--faint);">&ldquo;the shop is broken&rdquo; &rarr; Claude has to read everything to find it. More tokens, slower, vaguer.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    <a href="commands.html">Commands cheatsheet &rarr;</a>
+    <a href="../demos/handshake-live.html">The review handshake &rarr;</a>
+    <a href="index.html">&larr; Back to Library</a>
+  </div>
+</div>
+</body>
+</html>
