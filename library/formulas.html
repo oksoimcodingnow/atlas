@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formula Quick-Reference · Library · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a;
+    --max:840px; --gutter:clamp(22px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif;
+    --math:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(720px 380px at 72% -8%,rgba(184,192,255,0.10),transparent 65%);}
+
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:22px var(--gutter);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:clamp(28px,5vw,52px) var(--gutter) 100px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(46px,9vw,96px);line-height:0.9;letter-spacing:-0.02em;margin-bottom:18px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.45;color:var(--text);max-width:580px;margin-bottom:14px;}
+  .note-top{font-size:13px;color:var(--muted);max-width:560px;margin-bottom:8px;}
+
+  /* jump nav */
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px;}
+  .jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .18s;}
+  .jump a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  /* section */
+  .sec{margin-top:48px;scroll-margin-top:20px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+  .sec-head .h{font-family:var(--serif);font-style:italic;font-weight:500;font-size:27px;color:var(--text);}
+  .sec-head .n{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+
+  /* formula row */
+  .fml{display:grid;grid-template-columns:1fr;gap:6px;padding:18px 2px 16px;border-bottom:1px solid var(--rule);}
+  .fml:last-child{border-bottom:0;}
+  .fml-name{font-size:15px;font-weight:600;color:var(--text);}
+  .fml-eq{font-family:var(--math);font-size:clamp(20px,3.2vw,27px);line-height:1.35;color:#eef0ff;padding:10px 16px;background:rgba(184,192,255,0.045);border:1px solid var(--rule);border-radius:12px;overflow-x:auto;}
+  .fml-eq i{font-style:italic;}
+  .fml-note{font-size:13.5px;color:var(--muted);line-height:1.5;max-width:640px;}
+  .fml-note b{color:var(--accent);font-weight:600;}
+  .fml-note .rt{color:var(--accent-2);font-weight:600;}
+
+  /* math helpers */
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 .22em;}
+  .frac > .n{border-bottom:1.5px solid currentColor;padding:0 .55em .12em;}
+  .frac > .d{padding:.14em .55em 0;}
+  .rad{text-decoration:overline;text-decoration-thickness:1.3px;padding:0 .12em;}
+  .op{padding:0 .14em;color:var(--muted);}
+  sub,sup{font-size:0.62em;}
+
+  .foot{margin-top:46px;padding-top:22px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);text-decoration:none;padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .disc{margin-top:22px;font-size:12px;color:var(--faint);line-height:1.55;max-width:600px;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span style="font-style:italic;">Library</span></div><a class="back" href="index.html">&larr; Library</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Quant &middot; fast lookup</div>
+  <h1>Formula <em>quick-ref.</em></h1>
+  <p class="lede">The equations you reach for, typeset on one page. Each one says what it measures and what counts as "good."</p>
+  <p class="note-top">All annualizations assume daily data and <i>252</i> trading days. Returns are arithmetic unless noted.</p>
+
+  <div class="jump">
+    <a href="#returns">Returns</a>
+    <a href="#risk">Risk &amp; drawdown</a>
+    <a href="#radj">Risk-adjusted</a>
+    <a href="#sizing">Position sizing</a>
+    <a href="#rel">Relationships</a>
+    <a href="#real">Is it real?</a>
+  </div>
+
+  <!-- ── RETURNS ─────────────────────────────── -->
+  <section class="sec" id="returns">
+    <div class="sec-head"><span class="h">Returns</span><span class="n">growth &amp; compounding</span></div>
+
+    <div class="fml">
+      <div class="fml-name">Simple (arithmetic) return</div>
+      <div class="fml-eq"><i>r<sub>t</sub></i> <span class="op">=</span> <span class="frac"><span class="n"><i>P<sub>t</sub></i> <span class="op">&minus;</span> <i>P<sub>t&minus;1</sub></i></span><span class="d"><i>P<sub>t&minus;1</sub></i></span></span></div>
+      <div class="fml-note">The percentage change over one period. Simple returns <b>add across assets</b> (a portfolio's return is the weighted sum), which is why they're used for cross-sectional work.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Log return</div>
+      <div class="fml-eq"><i>r<sub>t</sub></i> <span class="op">=</span> ln<span class="op">(</span><span class="frac"><span class="n"><i>P<sub>t</sub></i></span><span class="d"><i>P<sub>t&minus;1</sub></i></span></span><span class="op">)</span> <span class="op">=</span> ln <i>P<sub>t</sub></i> <span class="op">&minus;</span> ln <i>P<sub>t&minus;1</sub></i></div>
+      <div class="fml-note">Logs <b>add across time</b> (sum the daily log returns to get the period return) and are roughly symmetric, so they're the default for time-series modelling. For small moves, log &asymp; simple.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Annualized return (geometric)</div>
+      <div class="fml-eq"><i>R<sub>ann</sub></i> <span class="op">=</span> <span class="op">(</span>1 <span class="op">+</span> <i>R<sub>period</sub></i><span class="op">)</span><sup><i>N</i></sup> <span class="op">&minus;</span> 1</div>
+      <div class="fml-note">Compound a per-period return to a year, where <i>N</i> = periods per year (e.g. 252 daily, 12 monthly). This is <b>CAGR</b> when the period return is the geometric mean per period.</div>
+    </div>
+  </section>
+
+  <!-- ── RISK ─────────────────────────────── -->
+  <section class="sec" id="risk">
+    <div class="sec-head"><span class="h">Risk &amp; drawdown</span><span class="n">how much it can hurt</span></div>
+
+    <div class="fml">
+      <div class="fml-name">Volatility (return standard deviation)</div>
+      <div class="fml-eq"><i>&sigma;</i> <span class="op">=</span> <span class="rad">Var<span class="op">(</span><i>r</i><span class="op">)</span></span>  <span class="op">,</span>   <i>&sigma;<sub>ann</sub></i> <span class="op">=</span> <i>&sigma;<sub>daily</sub></i> <span class="op">&middot;</span> <span class="op">&radic;</span><span class="rad">252</span></div>
+      <div class="fml-note">Spread of returns around their mean. Volatility scales with the <b>square root of time</b> &mdash; that's the &radic;252 factor for daily&rarr;annual (it assumes returns are roughly independent across days).</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Maximum drawdown</div>
+      <div class="fml-eq"><i>MDD</i> <span class="op">=</span> max<sub><i>t</i></sub> <span class="frac"><span class="n">Peak<sub>&le;<i>t</i></sub> <span class="op">&minus;</span> <i>V<sub>t</sub></i></span><span class="d">Peak<sub>&le;<i>t</i></sub></span></span></div>
+      <div class="fml-note">The largest peak-to-trough drop in the equity curve, as a fraction of the peak. <b>The pain metric</b> &mdash; it answers "what's the worst I'd have sat through?" Drawdown <i>duration</i> (time to recover) matters just as much.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Value at Risk (parametric, normal)</div>
+      <div class="fml-eq"><i>VaR<sub>&alpha;</sub></i> <span class="op">=</span> <span class="op">&minus;</span><span class="op">(</span><i>&mu;</i> <span class="op">+</span> <i>z<sub>&alpha;</sub></i> <i>&sigma;</i><span class="op">)</span></div>
+      <div class="fml-note">The loss you won't exceed with confidence 1&minus;<i>&alpha;</i>. <i>z<sub>&alpha;</sub></i> is the normal quantile (<b>z<sub>.05</sub> = &minus;1.645</b>, z<sub>.01</sub> = &minus;2.326). <span class="rt">Caveat:</span> assumes normality, so it understates fat tails. Historical VaR just reads the empirical quantile instead.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Conditional VaR (Expected Shortfall)</div>
+      <div class="fml-eq"><i>CVaR<sub>&alpha;</sub></i> <span class="op">=</span> <i>E</i><span class="op">[</span> loss <span class="op">|</span> loss <span class="op">&gt;</span> <i>VaR<sub>&alpha;</sub></i> <span class="op">]</span></div>
+      <div class="fml-note">The <b>average</b> loss in the worst <i>&alpha;</i> of cases &mdash; the size of the tail, not just its edge. More informative than VaR and <b>coherent</b> (it rewards diversification); regulators increasingly prefer it.</div>
+    </div>
+  </section>
+
+  <!-- ── RISK-ADJUSTED ─────────────────────────────── -->
+  <section class="sec" id="radj">
+    <div class="sec-head"><span class="h">Risk-adjusted</span><span class="n">return per unit of risk</span></div>
+
+    <div class="fml">
+      <div class="fml-name">Sharpe ratio</div>
+      <div class="fml-eq"><i>S</i> <span class="op">=</span> <span class="frac"><span class="n"><i>R<sub>p</sub></i> <span class="op">&minus;</span> <i>R<sub>f</sub></i></span><span class="d"><i>&sigma;<sub>p</sub></i></span></span>   <span class="op">,</span>   <i>S<sub>ann</sub></i> <span class="op">=</span> <span class="op">&radic;</span><span class="rad">252</span> <span class="op">&middot;</span> <i>S<sub>daily</sub></i></div>
+      <div class="fml-note">Excess return per unit of <b>total</b> volatility. <span class="rt">Rule of thumb:</span> &gt;1 good, &gt;2 excellent, &gt;3 &mdash; suspect a leak or overfit before you believe it.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Sortino ratio</div>
+      <div class="fml-eq"><i>Sortino</i> <span class="op">=</span> <span class="frac"><span class="n"><i>R<sub>p</sub></i> <span class="op">&minus;</span> <i>R<sub>f</sub></i></span><span class="d"><i>&sigma;<sub>down</sub></i></span></span></div>
+      <div class="fml-note">Like Sharpe, but the denominator is <b>downside deviation</b> &mdash; only returns below the target (often 0) count. It stops punishing a strategy for upside volatility. Higher than Sharpe when gains are choppier than losses.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Calmar ratio</div>
+      <div class="fml-eq"><i>Calmar</i> <span class="op">=</span> <span class="frac"><span class="n"><i>R<sub>ann</sub></i></span><span class="d"><span class="op">|</span><i>MDD</i><span class="op">|</span></span></span></div>
+      <div class="fml-note">Annual return per unit of worst drawdown. Speaks to anyone who feels <b>drawdown</b>, not variance. &gt;0.5 is decent, &gt;1 is strong over a full cycle.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Information ratio</div>
+      <div class="fml-eq"><i>IR</i> <span class="op">=</span> <span class="frac"><span class="n"><i>R<sub>p</sub></i> <span class="op">&minus;</span> <i>R<sub>b</sub></i></span><span class="d">TE</span></span>   <span class="op">,</span>   TE <span class="op">=</span> <i>&sigma;</i><span class="op">(</span><i>R<sub>p</sub></i> <span class="op">&minus;</span> <i>R<sub>b</sub></i><span class="op">)</span></div>
+      <div class="fml-note">Active return over a benchmark per unit of <b>tracking error</b>. The Sharpe of your <i>bets against the index</i> &mdash; how skillfully, not just how much, you deviate.</div>
+    </div>
+  </section>
+
+  <!-- ── SIZING ─────────────────────────────── -->
+  <section class="sec" id="sizing">
+    <div class="sec-head"><span class="h">Position sizing</span><span class="n">how much to bet</span></div>
+
+    <div class="fml">
+      <div class="fml-name">Kelly criterion (discrete bet)</div>
+      <div class="fml-eq"><i>f</i><sup>&lowast;</sup> <span class="op">=</span> <span class="frac"><span class="n"><i>bp</i> <span class="op">&minus;</span> <i>q</i></span><span class="d"><i>b</i></span></span> <span class="op">=</span> <i>p</i> <span class="op">&minus;</span> <span class="frac"><span class="n"><i>q</i></span><span class="d"><i>b</i></span></span></div>
+      <div class="fml-note">Fraction of bankroll to wager. <i>p</i> = win prob, <i>q</i> = 1&minus;<i>p</i>, <i>b</i> = net odds received. Maximizes long-run <b>log growth</b>. <span class="rt">In practice:</span> bet <b>half-Kelly</b> &mdash; nearly all the growth, far less of the wild ride.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Kelly (continuous / investing)</div>
+      <div class="fml-eq"><i>f</i><sup>&lowast;</sup> <span class="op">=</span> <span class="frac"><span class="n"><i>&mu;</i> <span class="op">&minus;</span> <i>r</i></span><span class="d"><i>&sigma;</i><sup>2</sup></span></span></div>
+      <div class="fml-note">Optimal leverage = excess return over <b>variance</b>. Note it's &sigma;&sup2;, not &sigma; &mdash; doubling volatility quarters your size. Estimation error in <i>&mu;</i> is brutal here, which is the real argument for fractional Kelly.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Volatility targeting</div>
+      <div class="fml-eq"><i>w<sub>t</sub></i> <span class="op">=</span> <span class="frac"><span class="n"><i>&sigma;<sub>target</sub></i></span><span class="d"><i>&sigma;<sub>forecast,&thinsp;t</sub></i></span></span></div>
+      <div class="fml-note">Scale exposure inversely to forecast vol to hold risk roughly constant: lever up when calm, cut when stormy. Use a <b>lagged</b> forecast (e.g. <i>&sigma;</i> from data up to <i>t</i>&minus;1) or you've peeked at the future.</div>
+    </div>
+  </section>
+
+  <!-- ── RELATIONSHIPS ─────────────────────────────── -->
+  <section class="sec" id="rel">
+    <div class="sec-head"><span class="h">Relationships</span><span class="n">how things move together</span></div>
+
+    <div class="fml">
+      <div class="fml-name">Correlation</div>
+      <div class="fml-eq"><i>&rho;<sub>xy</sub></i> <span class="op">=</span> <span class="frac"><span class="n">Cov<span class="op">(</span><i>x</i><span class="op">,</span> <i>y</i><span class="op">)</span></span><span class="d"><i>&sigma;<sub>x</sub></i> <i>&sigma;<sub>y</sub></i></span></span></div>
+      <div class="fml-note">Covariance scaled to [&minus;1, 1]. <b>The engine of diversification</b> &mdash; combining assets with &rho; &lt; 1 lowers portfolio variance. Watch out: correlations drift toward 1 exactly when you need them low (crises).</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Beta</div>
+      <div class="fml-eq"><i>&beta;</i> <span class="op">=</span> <span class="frac"><span class="n">Cov<span class="op">(</span><i>r<sub>i</sub></i><span class="op">,</span> <i>r<sub>m</sub></i><span class="op">)</span></span><span class="d">Var<span class="op">(</span><i>r<sub>m</sub></i><span class="op">)</span></span></span></div>
+      <div class="fml-note">Sensitivity of an asset to the market. &beta; = 1 moves with it; &beta; &gt; 1 amplifies; &beta; &lt; 0 hedges. It's the slope of regressing the asset's returns on the market's.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">CAPM expected return</div>
+      <div class="fml-eq"><i>E</i><span class="op">[</span><i>R<sub>i</sub></i><span class="op">]</span> <span class="op">=</span> <i>R<sub>f</sub></i> <span class="op">+</span> <i>&beta;<sub>i</sub></i> <span class="op">(</span><i>E</i><span class="op">[</span><i>R<sub>m</sub></i><span class="op">]</span> <span class="op">&minus;</span> <i>R<sub>f</sub></i><span class="op">)</span></div>
+      <div class="fml-note">Required return = risk-free rate + beta &times; the <b>equity risk premium</b>. Return above this line is <b>alpha</b>. The baseline every active strategy is implicitly claiming to beat.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">Z-score (standardize)</div>
+      <div class="fml-eq"><i>z</i> <span class="op">=</span> <span class="frac"><span class="n"><i>x</i> <span class="op">&minus;</span> <i>&mu;</i></span><span class="d"><i>&sigma;</i></span></span></div>
+      <div class="fml-note">How many standard deviations a value sits from its mean. The backbone of <b>mean-reversion</b> signals (fade extreme z) and of normalizing features before a model.</div>
+    </div>
+  </section>
+
+  <!-- ── IS IT REAL ─────────────────────────────── -->
+  <section class="sec" id="real">
+    <div class="sec-head"><span class="h">Is it real?</span><span class="n">don't fool yourself</span></div>
+
+    <div class="fml">
+      <div class="fml-name">t-stat of a backtest Sharpe</div>
+      <div class="fml-eq"><i>t</i> <span class="op">&asymp;</span> <i>S<sub>ann</sub></i> <span class="op">&middot;</span> <span class="op">&radic;</span><span class="rad">years</span></div>
+      <div class="fml-note">Rough significance of a Sharpe over a backtest of length <i>years</i>. <span class="rt">Reality check:</span> a Sharpe of 1 needs <b>~4 years</b> just to clear t = 2 &mdash; and that's <i>before</i> penalizing for how many strategies you tried. Short, pretty backtests prove almost nothing.</div>
+    </div>
+
+    <div class="fml">
+      <div class="fml-name">The leakage rule (not a formula, a law)</div>
+      <div class="fml-eq" style="font-family:var(--sans);font-size:clamp(15px,2.4vw,18px);font-style:normal;">feature<span class="op">(</span><i>t</i><span class="op">)</span> may use data up to <i>t</i> only &nbsp;&middot;&nbsp; label is <i>t</i> &rarr; <i>t</i>+1</div>
+      <div class="fml-note">If a feature can "see" the bar it's predicting, your backtest is fiction. Shift labels with <b>.shift(&minus;1)</b>, forecasts with <b>.shift(+1)</b>, split in <b>time</b> (never shuffle), and fit scalers on <b>train only</b>. This is the whole ballgame.</div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <a href="../learn/">Quant Academy &rarr;</a>
+    <a href="index.html">&larr; Back to Library</a>
+  </div>
+  <p class="disc">Quick-reference, not gospel &mdash; these are the standard textbook forms with common conventions noted inline. Sanity-check assumptions (annualization basis, arithmetic vs log, normality) against your actual data before you lean on a number.</p>
+</div>
+</body>
+</html>
