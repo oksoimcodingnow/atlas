@@ -112,6 +112,12 @@
     <div class="pstep"><div class="pn"></div><div><div class="pt">Judge it honestly</div><div class="pd">Out-of-sample accuracy vs both baselines. If it can't beat always-up, it has no edge — and that's a real, valuable answer.</div></div></div>
   </div>
 
+  <div class="callout">
+    <div class="tag">We built this — here's what it actually found</div>
+    <p>The pipeline above is real code now (<span class="mono">ml/train_direction.py</span>). On daily BTC, <strong>both models scored ~49.5% out-of-sample</strong> — losing to the always-up baseline. <span class="hl-2">No edge.</span> Honest and deflating, exactly as this lesson warned.</p>
+    <p>Then we flipped the target to <em class="it">volatility</em> (<span class="mono">ml/predict_volatility.py</span>): a simple persistence forecast hit <strong>+0.17 correlation</strong> out-of-sample — real, positive signal, because volatility clusters. Direction was noise; volatility was forecastable. <strong>And the dumb baseline beat the fancy model</strong> — the humbling result every quant meets. That contrast is the whole point.</p>
+  </div>
+
   <h2>Recap</h2>
   <p>ML is features in, predictions out — and a machine for fooling yourself unless you hold the line on baselines, time-ordered splits, and leak-hunting. You now have every concept you need: edge over prediction, risk over return, the backtest trap, honest sizing, and the suspicion that keeps you solvent. You're ready to build.</p>
 
