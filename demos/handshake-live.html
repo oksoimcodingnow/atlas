@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Handshake, live · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a;
+    --max:880px; --gutter:clamp(22px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(720px 380px at 72% -8%,rgba(184,192,255,0.10),transparent 65%);}
+
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:22px var(--gutter);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:clamp(28px,5vw,48px) var(--gutter) 90px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(46px,9vw,92px);line-height:0.92;letter-spacing:-0.02em;margin-bottom:18px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.45;color:var(--text);max-width:560px;margin-bottom:36px;}
+
+  /* ── Graph stage ───────────────────────────────── */
+  .stage{border:1px solid var(--rule);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,0.012),rgba(255,255,255,0));padding:8px clamp(6px,2vw,18px) 18px;}
+  svg.graph{display:block;width:100%;height:auto;}
+  .edge{fill:none;stroke:rgba(184,192,255,0.20);stroke-width:2;marker-end:url(#arrow);transition:stroke .35s,stroke-width .35s;}
+  .edge.active{stroke:var(--accent);stroke-width:3.4;}
+  .node{cursor:pointer;transition:filter .3s;}
+  .node rect{fill:#12122c;stroke:var(--rule);stroke-width:1.4;transition:fill .4s,stroke .35s,stroke-width .35s;}
+  .node .ttl{fill:var(--text);font-family:var(--sans);font-weight:600;font-size:18px;}
+  .node .role{fill:var(--muted);font-family:var(--sans);font-weight:500;font-size:11px;letter-spacing:0.04em;}
+  .node:hover rect{stroke:rgba(184,192,255,0.55);}
+  .node.active{filter:drop-shadow(0 0 11px rgba(184,192,255,0.5));}
+  .node.active rect{stroke:var(--accent);stroke-width:2;fill:#171738;}
+  .node.active .ttl{fill:#fff;}
+  .node.recv rect{fill:rgba(184,192,255,0.22);}
+  .node.dim{opacity:0.4;}
+  #pulse{filter:drop-shadow(0 0 8px rgba(184,192,255,0.9));opacity:0;transition:opacity .2s;}
+  #pulse .halo{fill:rgba(184,192,255,0.35);}
+  #pulse .core{fill:#eef0ff;}
+
+  /* ── Caption ───────────────────────────────── */
+  .cap{margin-top:6px;min-height:104px;padding:18px 20px;border-radius:14px;background:var(--bg-2);border:1px solid var(--rule);}
+  .cap-kicker{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:8px;}
+  .cap-text{font-family:var(--serif);font-size:clamp(18px,2.4vw,23px);line-height:1.4;color:var(--text);}
+  .cap-text b{color:var(--accent);font-weight:600;}
+  .cap-text code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:0.78em;background:rgba(184,192,255,0.10);border:1px solid var(--rule);padding:1px 6px;border-radius:6px;color:#dfe2ff;}
+  .cap-text i{font-style:italic;color:var(--accent-2);}
+
+  /* ── Controls ───────────────────────────────── */
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;}
+  .btn{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:10px 18px;cursor:pointer;transition:all .18s;}
+  .btn:hover{border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .btn.primary{color:var(--accent);border-color:rgba(184,192,255,0.45);}
+  .dots{display:flex;gap:8px;margin-left:4px;}
+  .dot{width:10px;height:10px;border-radius:50%;border:1px solid rgba(184,192,255,0.4);background:transparent;cursor:pointer;transition:all .2s;padding:0;}
+  .dot.on{background:var(--accent);border-color:var(--accent);transform:scale(1.15);}
+  .hint{font-size:12.5px;color:var(--faint);margin:14px 2px 0;}
+  .hint b{color:var(--muted);font-weight:600;}
+
+  .foot{margin-top:40px;padding-top:22px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);text-decoration:none;padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  @media (max-width:560px){
+    .node .ttl{font-size:16px;} .cap{min-height:124px;}
+  }
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span style="font-style:italic;">The Handshake</span></div><a class="back" href="../library/">&larr; Library</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Builder &middot; Checker &middot; Decider</div>
+  <h1>The handshake, <em>live.</em></h1>
+  <p class="lede">One change moving through the loop. Watch the pulse travel: who builds, who checks, who decides &mdash; and how a fix loops back.</p>
+
+  <div class="stage">
+    <svg class="graph" viewBox="0 0 760 600" role="img" aria-label="Animated handshake loop between You, Claude, Codex, and the Repo">
+      <defs>
+        <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L7,3 L0,6 Z" fill="rgba(184,192,255,0.8)"/>
+        </marker>
+      </defs>
+
+      <!-- edges: clockwise ring  claude -> repo -> codex -> you -> claude -->
+      <path id="e1" class="edge" d="M190,285 Q210,165 320,122"/>
+      <path id="e2" class="edge" d="M440,122 Q550,165 570,285"/>
+      <path id="e3" class="edge" d="M570,339 Q552,460 440,502"/>
+      <path id="e4" class="edge" d="M320,502 Q208,460 190,339"/>
+
+      <!-- nodes -->
+      <g id="node-claude" class="node" data-node="claude">
+        <rect x="54" y="278" width="156" height="68" rx="15"/>
+        <text class="ttl" x="132" y="308" text-anchor="middle">Claude</text>
+        <text class="role" x="132" y="328" text-anchor="middle">builds &amp; fixes</text>
+      </g>
+      <g id="node-repo" class="node" data-node="repo">
+        <rect x="302" y="62" width="156" height="68" rx="15"/>
+        <text class="ttl" x="380" y="92" text-anchor="middle">Repo</text>
+        <text class="role" x="380" y="112" text-anchor="middle">the commit</text>
+      </g>
+      <g id="node-codex" class="node" data-node="codex">
+        <rect x="550" y="278" width="156" height="68" rx="15"/>
+        <text class="ttl" x="628" y="308" text-anchor="middle">Codex</text>
+        <text class="role" x="628" y="328" text-anchor="middle">audits</text>
+      </g>
+      <g id="node-you" class="node" data-node="you">
+        <rect x="302" y="494" width="156" height="68" rx="15"/>
+        <text class="ttl" x="380" y="524" text-anchor="middle">You</text>
+        <text class="role" x="380" y="544" text-anchor="middle">decide</text>
+      </g>
+
+      <!-- travelling pulse -->
+      <g id="pulse"><circle class="halo" r="12"/><circle class="core" r="5.5"/></g>
+    </svg>
+
+    <div class="cap" id="cap" aria-live="polite">
+      <div class="cap-kicker" id="capKicker">The loop</div>
+      <div class="cap-text" id="capText">Four roles, one rule: nothing ships without a check and a human decision. Press <b>Play</b> to watch a change travel the loop &mdash; or tap any node for its job.</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="back">&lsaquo; Back</button>
+      <button class="btn primary" id="play">&#9654; Play</button>
+      <button class="btn" id="next">Next &rsaquo;</button>
+      <button class="btn" id="restart">&#8635; Restart</button>
+      <div class="dots" id="dots"></div>
+    </div>
+    <p class="hint"><b>Tip:</b> tap any node to read its role. The glowing dot is one change moving through the handshake.</p>
+  </div>
+
+  <div class="foot">
+    <a href="handshake.html">Why the handshake works &rarr;</a>
+    <a href="workflow.html">All workflow maps &rarr;</a>
+    <a href="start-here.html">The exact keystrokes &rarr;</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var svg = document.querySelector('svg.graph');
+  var pulse = document.getElementById('pulse');
+  var capKicker = document.getElementById('capKicker');
+  var capText = document.getElementById('capText');
+  var playBtn = document.getElementById('play');
+  var dotsWrap = document.getElementById('dots');
+
+  var nodes = {
+    claude: document.getElementById('node-claude'),
+    repo:   document.getElementById('node-repo'),
+    codex:  document.getElementById('node-codex'),
+    you:    document.getElementById('node-you')
+  };
+
+  // The four hops, in loop order.
+  var steps = [
+    { edge:'e1', from:'claude', to:'repo',
+      kicker:'Step 1 &mdash; Build &amp; commit',
+      text:'<b>Claude</b> writes the code and commits it with a <b>### Verify</b> block &mdash; the exact checks a reviewer should run.' },
+    { edge:'e2', from:'repo', to:'codex',
+      kicker:'Step 2 &mdash; Send for review',
+      text:'You run <code>scripts\\review.bat</code>. It bundles the diff and the Verify checklist into one prompt, and you paste that into <b>Codex</b>.' },
+    { edge:'e3', from:'codex', to:'you',
+      kicker:'Step 3 &mdash; Codex audits',
+      text:'<b>Codex</b> checks each item against the diff and writes <b>PASS</b> / <b>FAIL</b> to a review file. It never just trusts the message.' },
+    { edge:'e4', from:'you', to:'claude',
+      kicker:'Step 4 &mdash; You decide, Claude fixes',
+      text:'<b>You</b> read the verdict and choose what merges. Claude fixes any <b>FAIL</b> in a <i>new</i> commit &mdash; never amending. The loop closes, and repeats.' }
+  ];
+
+  // Per-node descriptions (shown on click).
+  var nodeInfo = {
+    claude:{ k:'Claude &mdash; thebuilder', t:'Writes the code and fixes whatever the review flags &mdash; always in a <i>new</i> commit, never by rewriting history.' },
+    repo:  { k:'Repo &mdash; theartifact',  t:'The commit under review: the diff plus a <b>### Verify</b> block listing the exact checks to run.' },
+    codex: { k:'Codex &mdash; thechecker',  t:'An independent reviewer. Audits the diff against the checklist and writes <b>PASS</b> / <b>FAIL</b> &mdash; it doesn&rsquo;t take the commit message on faith.' },
+    you:   { k:'You &mdash; thedecider',    t:'You run the review, read the verdict, and choose what merges. <b>Nothing ships without you.</b>' }
+  };
+
+  var DURATION = 1250, PAUSE = 950;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) DURATION = 1;
+
+  var current = 0, playing = false, rafId = null, timer = null;
+
+  // Build step dots.
+  steps.forEach(function(_, i){
+    var d = document.createElement('button');
+    d.className = 'dot'; d.setAttribute('aria-label', 'Go to step ' + (i+1));
+    d.addEventListener('click', function(){ stopAuto(); current = i; runHop(); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = dotsWrap.querySelectorAll('.dot');
+
+  function clearActive(){
+    Object.keys(nodes).forEach(function(k){ nodes[k].classList.remove('active','dim','recv'); });
+    steps.forEach(function(s){ document.getElementById(s.edge).classList.remove('active'); });
+  }
+
+  function highlightStep(i){
+    clearActive();
+    var s = steps[i];
+    document.getElementById(s.edge).classList.add('active');
+    nodes[s.from].classList.add('active');
+    nodes[s.to].classList.add('active');
+    capKicker.innerHTML = s.kicker;
+    capText.innerHTML = s.text;
+    dots.forEach(function(d, j){ d.classList.toggle('on', j === i); });
+  }
+
+  function setPulseTo(pathEl, t){
+    var len = pathEl.getTotalLength();
+    var p = pathEl.getPointAtLength(t * len);
+    pulse.setAttribute('transform', 'translate(' + p.x + ',' + p.y + ')');
+  }
+
+  function ease(t){ return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
+
+  function runHop(){
+    if (rafId) cancelAnimationFrame(rafId);
+    if (timer) { clearTimeout(timer); timer = null; }
+    highlightStep(current);
+    var s = steps[current];
+    var pathEl = document.getElementById(s.edge);
+    setPulseTo(pathEl, 0);
+    pulse.style.opacity = '1';
+
+    var start = performance.now();
+    function frame(now){
+      var t = (now - start) / DURATION; if (t > 1) t = 1;
+      setPulseTo(pathEl, ease(t));
+      if (t < 1) { rafId = requestAnimationFrame(frame); }
+      else { onArrive(s); }
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function onArrive(s){
+    pulse.style.opacity = '0';
+    var target = nodes[s.to];
+    target.classList.add('recv');
+    setTimeout(function(){ target.classList.remove('recv'); }, 520);
+    if (playing){
+      timer = setTimeout(function(){ current = (current + 1) % steps.length; runHop(); }, PAUSE);
+    }
+  }
+
+  function stopAuto(){
+    playing = false;
+    if (timer) { clearTimeout(timer); timer = null; }
+    playBtn.innerHTML = '&#9654; Play';
+  }
+
+  playBtn.addEventListener('click', function(){
+    if (playing){ stopAuto(); }
+    else { playing = true; playBtn.innerHTML = '&#10073;&#10073; Pause'; runHop(); }
+  });
+  document.getElementById('next').addEventListener('click', function(){
+    stopAuto(); current = (current + 1) % steps.length; runHop();
+  });
+  document.getElementById('back').addEventListener('click', function(){
+    stopAuto(); current = (current - 1 + steps.length) % steps.length; runHop();
+  });
+  document.getElementById('restart').addEventListener('click', function(){
+    stopAuto(); current = 0; runHop();
+  });
+
+  // Node click -> show its role.
+  Object.keys(nodes).forEach(function(k){
+    nodes[k].addEventListener('click', function(){
+      stopAuto();
+      if (rafId) cancelAnimationFrame(rafId);
+      pulse.style.opacity = '0';
+      clearActive();
+      Object.keys(nodes).forEach(function(j){ if (j !== k) nodes[j].classList.add('dim'); });
+      nodes[k].classList.add('active');
+      dots.forEach(function(d){ d.classList.remove('on'); });
+      capKicker.innerHTML = nodeInfo[k].k;
+      capText.innerHTML = nodeInfo[k].t;
+    });
+  });
+
+  // Start: show step 1 framing, paused. Auto-play after a beat unless reduced motion.
+  highlightStep(0);
+  setPulseTo(document.getElementById('e1'), 0);
+  if (!reduce){
+    timer = setTimeout(function(){
+      playing = true; playBtn.innerHTML = '&#10073;&#10073; Pause'; runHop();
+    }, 1100);
+  }
+})();
+</script>
+</body>
+</html>
