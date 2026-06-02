@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library · Commands · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:760px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(36px,6vw,64px) var(--gutter) 110px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,72px);line-height:1;letter-spacing:-0.02em;margin-bottom:18px;} h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,23px);line-height:1.45;color:var(--text);max-width:600px;margin-bottom:8px;}
+  .note{font-size:13px;color:var(--muted);margin-bottom:40px;}
+
+  .jump{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:44px;}
+  .jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:6px 12px;border:1px solid var(--rule);border-radius:999px;transition:all .16s;} .jump a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  section{margin-bottom:46px;scroll-margin-top:80px;}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3.6vw,34px);line-height:1.1;margin-bottom:6px;} h2 em{font-style:italic;color:var(--accent);}
+  .sub{font-size:14px;color:var(--muted);margin-bottom:20px;}
+  .row{margin-bottom:16px;}
+  .row .d{font-size:14.5px;color:var(--text);margin-bottom:7px;} .row .d strong{font-weight:600;} .row .d .mut{color:var(--muted);}
+  .cmd{position:relative;display:block;width:100%;text-align:left;font-family:var(--mono);font-size:13.5px;line-height:1.7;background:#0c0c18;border:1px solid var(--rule);border-radius:9px;padding:13px 46px 13px 16px;color:var(--accent);cursor:pointer;white-space:pre-wrap;word-break:break-word;transition:border-color .16s,background .16s;}
+  .cmd:hover{border-color:rgba(184,192,255,0.4);background:#0e0e1c;}
+  .cmd::after{content:'copy';position:absolute;top:11px;right:13px;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);transition:color .16s;}
+  .cmd:hover::after{color:var(--muted);}
+  .cmd.copied{border-color:rgba(111,227,168,0.5);} .cmd.copied::after{content:'copied';color:var(--up);}
+  .cmd .c{color:var(--faint);}  /* comment in a command */
+
+  .tip{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted);border-left:2px solid var(--accent-2);padding-left:14px;margin:14px 0;}
+  .warn{background:var(--bg-2);border:1px solid rgba(240,133,125,0.3);border-radius:12px;padding:16px 20px;margin:16px 0;}
+  .warn .err{font-family:var(--mono);font-size:12.5px;color:var(--down);}
+  .warn .fix{font-size:14px;color:var(--text);margin-top:5px;}
+  .warn .fix strong{color:var(--up);}
+
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Library<small>Commands &amp; terminal</small></div><a class="back" href="index.html">← Library</a></div>
+<div class="wrap">
+  <div class="eyebrow">Reference · click any command to copy</div>
+  <h1>The commands you <em>actually</em> need.</h1>
+  <p class="lede">No memorizing. Find it, click it, paste it. The whole point is you never have to remember <code style="font-family:var(--mono);font-size:13px;color:var(--accent)">cd</code> again.</p>
+  <p class="note">Tap a black box to copy it. Paste into PowerShell or Command Prompt with Ctrl+V.</p>
+
+  <div class="jump">
+    <a href="#open">Open things</a>
+    <a href="#terminal">Terminal basics</a>
+    <a href="#git">Git</a>
+    <a href="#review">Handshake review</a>
+    <a href="#quant">Run quant</a>
+    <a href="#deploy">Deploy Atlas</a>
+    <a href="#gotchas">Gotchas</a>
+  </div>
+
+  <section id="open">
+    <h2>Open <em>things</em></h2>
+    <div class="sub">You almost never need the terminal just to open Atlas.</div>
+    <div class="row"><div class="d"><strong>Open Atlas in the browser</strong> <span class="mut">— paste into the address bar</span></div><button class="cmd">https://oksoimcodingnow.github.io/atlas/</button></div>
+    <div class="row"><div class="d"><strong>Or</strong> double-click the <strong>Atlas</strong> icon on your desktop / Start menu. It also opens automatically when you sign in.</div></div>
+    <div class="row"><div class="d"><strong>Open a folder in File Explorer</strong> <span class="mut">— paste in Explorer's address bar</span></div><button class="cmd">C:\Users\HOME\atlas</button></div>
+  </section>
+
+  <section id="terminal">
+    <h2>Terminal <em>basics</em></h2>
+    <div class="sub">One rule fixes 90% of your errors: go INTO the folder first with <code style="font-family:var(--mono);font-size:13px;color:var(--accent)">cd</code>.</div>
+    <div class="row"><div class="d"><strong>Go into the Atlas folder</strong></div><button class="cmd">cd C:\Users\HOME\atlas</button></div>
+    <div class="row"><div class="d"><strong>Go into the Quant folder</strong></div><button class="cmd">cd C:\Users\HOME\quant</button></div>
+    <div class="row"><div class="d"><strong>See what files are here</strong></div><button class="cmd">dir</button></div>
+    <p class="tip">A bare path like <code style="font-family:var(--mono);font-size:13px">C:/atlas</code> typed alone is NOT a command — that's the "not recognized" error. You must put <code style="font-family:var(--mono);font-size:13px">cd</code> in front of it.</p>
+    <div class="row"><div class="d"><strong>Shortcut:</strong> open a terminal already inside a folder — in File Explorer, click the address bar, type <strong>powershell</strong>, press Enter.</div></div>
+  </section>
+
+  <section id="git">
+    <h2><em>Git</em> — save &amp; upload your work</h2>
+    <div class="sub">Git takes snapshots of your code and uploads them to GitHub. Four commands cover 95% of it.</div>
+    <div class="row"><div class="d"><strong>See what changed</strong> <span class="mut">— always safe to run</span></div><button class="cmd">git status</button></div>
+    <div class="row"><div class="d"><strong>Stage all your changes</strong> <span class="mut">— get them ready to save</span></div><button class="cmd">git add .</button></div>
+    <div class="row"><div class="d"><strong>Save a snapshot</strong> <span class="mut">— with a message describing it</span></div><button class="cmd">git commit -m "describe what you changed"</button></div>
+    <div class="row"><div class="d"><strong>Upload to GitHub</strong></div><button class="cmd">git push</button></div>
+    <div class="row"><div class="d"><strong>The whole save + upload flow</strong> <span class="mut">— run these in order</span></div><button class="cmd">git add .
+git commit -m "what I changed"
+git push</button></div>
+    <div class="row"><div class="d"><strong>See the history</strong></div><button class="cmd">git log --oneline -10</button></div>
+    <div class="row"><div class="d"><strong>Pull the latest</strong> <span class="mut">— if you edited on another device</span></div><button class="cmd">git pull</button></div>
+  </section>
+
+  <section id="review">
+    <h2>Run the <em>handshake</em> review</h2>
+    <div class="sub">Generates the prompt to paste into Codex. You MUST cd into the repo first.</div>
+    <div class="row"><div class="d"><strong>Review the latest commit in Quant</strong></div><button class="cmd">cd C:\Users\HOME\quant
+scripts\review.bat</button></div>
+    <div class="row"><div class="d"><strong>Review the latest commit in Atlas</strong></div><button class="cmd">cd C:\Users\HOME\atlas
+scripts\review.bat</button></div>
+    <p class="tip">Then copy the printed block between the dashed lines, paste it into Codex, and it writes the review. Tell Claude "done" and it reads the result.</p>
+  </section>
+
+  <section id="quant">
+    <h2>Run the <em>quant</em> scripts</h2>
+    <div class="sub">All from inside the quant folder, using its own Python.</div>
+    <div class="row"><div class="d"><strong>Go to quant first</strong></div><button class="cmd">cd C:\Users\HOME\quant</button></div>
+    <div class="row"><div class="d"><strong>Toy backtest</strong> <span class="mut">— SMA crossover on BTC</span></div><button class="cmd">.venv\Scripts\python backtests\run_sma.py</button></div>
+    <div class="row"><div class="d"><strong>Walk-forward validation</strong> <span class="mut">— is a strategy overfit?</span></div><button class="cmd">.venv\Scripts\python backtests\walk_forward.py</button></div>
+    <div class="row"><div class="d"><strong>ML: direction classifier</strong> <span class="mut">— the honest "no edge" one</span></div><button class="cmd">.venv\Scripts\python ml\train_direction.py</button></div>
+    <div class="row"><div class="d"><strong>ML: volatility predictor</strong> <span class="mut">— the real signal</span></div><button class="cmd">.venv\Scripts\python ml\predict_volatility.py</button></div>
+    <div class="row"><div class="d"><strong>Vol-targeting overlay</strong></div><button class="cmd">.venv\Scripts\python backtests\vol_target.py --target-vol 0.35 --max-leverage 1.0</button></div>
+  </section>
+
+  <section id="deploy">
+    <h2>Deploy <em>Atlas</em> (publish changes)</h2>
+    <div class="sub">Edit files, then push — GitHub Pages rebuilds the live site automatically.</div>
+    <div class="row"><div class="d"><strong>The full deploy flow</strong> <span class="mut">— from the atlas folder</span></div><button class="cmd">cd C:\Users\HOME\atlas
+git add .
+git commit -m "what I changed"
+git push</button></div>
+    <p class="tip">After it pushes, wait ~30 seconds for GitHub Pages to rebuild, then hard-refresh the page with Ctrl+Shift+R.</p>
+  </section>
+
+  <section id="gotchas">
+    <h2>The <em>gotchas</em> (errors you'll hit)</h2>
+    <div class="sub">Every one of these has a one-line fix. None of them mean anything is broken.</div>
+    <div class="warn">
+      <div class="err">'C:/atlas' is not recognized as an internal or external command</div>
+      <div class="fix"><strong>Fix:</strong> you typed a bare path. Put <code style="font-family:var(--mono);font-size:12.5px">cd</code> in front: <code style="font-family:var(--mono);font-size:12.5px">cd C:\Users\HOME\atlas</code></div>
+    </div>
+    <div class="warn">
+      <div class="err">scripts\review.bat — The system cannot find the path specified</div>
+      <div class="fix"><strong>Fix:</strong> you're not inside the repo. Run <code style="font-family:var(--mono);font-size:12.5px">cd C:\Users\HOME\quant</code> first, then the script.</div>
+    </div>
+    <div class="warn">
+      <div class="err">The token '&amp;&amp;' is not a valid statement separator</div>
+      <div class="fix"><strong>Fix:</strong> PowerShell doesn't use <code style="font-family:var(--mono);font-size:12.5px">&amp;&amp;</code>. Use <code style="font-family:var(--mono);font-size:12.5px">;</code> instead, or just put each command on its own line.</div>
+    </div>
+    <div class="warn">
+      <div class="err">404 — File not found (right after you pushed)</div>
+      <div class="fix"><strong>Fix:</strong> not broken — GitHub Pages is still building. Wait ~30s, then hard-refresh with Ctrl+Shift+R.</div>
+    </div>
+    <div class="warn">
+      <div class="err">running scripts is disabled on this system (.ps1)</div>
+      <div class="fix"><strong>Fix:</strong> use the <code style="font-family:var(--mono);font-size:12.5px">.bat</code> version (e.g. <code style="font-family:var(--mono);font-size:12.5px">scripts\review.bat</code>), which sidesteps the policy.</div>
+    </div>
+  </section>
+</div>
+<script>
+document.querySelectorAll('.cmd').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1300);
+    }).catch(() => {});
+  });
+});
+</script>
+</body>
+</html>
