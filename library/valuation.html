@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is a stock worth? · Library · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --good:#8fd6c8;
+    --max:840px; --gutter:clamp(22px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif;
+    --math:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+    --mono:ui-monospace,Consolas,Menlo,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(720px 380px at 72% -8%,rgba(184,192,255,0.10),transparent 65%);}
+
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:22px var(--gutter);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:clamp(28px,5vw,52px) var(--gutter) 100px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(42px,8vw,84px);line-height:0.92;letter-spacing:-0.02em;margin-bottom:18px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.45;color:var(--text);max-width:600px;margin-bottom:8px;}
+
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px;}
+  .jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .18s;}
+  .jump a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .part{margin-top:50px;scroll-margin-top:20px;}
+  .part-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+  .part-head .h{font-family:var(--serif);font-style:italic;font-weight:500;font-size:29px;color:var(--text);}
+  .part-head .n{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+  .part > p{margin-top:14px;color:#e3dcef;}
+  .part p b{color:#fff;font-weight:600;}
+  .part p .ac{color:var(--accent);font-weight:600;}
+
+  .formula{font-family:var(--math);font-size:clamp(19px,3vw,25px);line-height:1.4;color:#eef0ff;padding:12px 18px;margin:18px 0;background:rgba(184,192,255,0.045);border:1px solid var(--rule);border-radius:12px;overflow-x:auto;}
+  .formula i{font-style:italic;}
+  .frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 .22em;}
+  .frac > .n{border-bottom:1.5px solid currentColor;padding:0 .55em .12em;}
+  .frac > .d{padding:.14em .55em 0;}
+  .op{padding:0 .12em;color:var(--muted);} sub,sup{font-size:0.62em;}
+
+  .box{margin:22px 0;padding:18px 20px;background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;}
+  .box.good{border-color:rgba(143,214,200,0.35);}
+  .box .lbl{display:block;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;margin-bottom:8px;color:var(--accent-2);}
+  .box.good .lbl{color:var(--good);}
+  .box p{font-size:14.5px;color:#ded6ea;line-height:1.55;} .box p + p{margin-top:8px;}
+
+  /* multiples table */
+  .tbl{margin:22px 0;border:1px solid var(--rule);border-radius:14px;overflow:hidden;}
+  .tbl .row{display:grid;grid-template-columns:0.7fr 1fr 1.3fr;}
+  .tbl .row > div{padding:12px 14px;border-bottom:1px solid var(--rule);font-size:13.5px;line-height:1.45;}
+  .tbl .row:last-child > div{border-bottom:0;}
+  .tbl .row.head > div{background:rgba(184,192,255,0.06);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent-2);font-weight:700;}
+  .tbl .row > div:nth-child(1){color:#fff;font-weight:600;font-family:var(--mono);border-right:1px solid var(--rule);}
+  .tbl .row > div:nth-child(2){color:#dfe2ff;border-right:1px solid var(--rule);}
+  .tbl .row > div:nth-child(3){color:var(--muted);}
+  @media(max-width:600px){ .tbl .row{grid-template-columns:1fr;} .tbl .row>div{border-right:0!important;} .tbl .row.head{display:none;} }
+
+  /* DCF calculator */
+  .calc{margin:24px 0;padding:22px;border:1px solid rgba(184,192,255,0.3);border-radius:18px;background:linear-gradient(180deg,rgba(184,192,255,0.05),rgba(255,255,255,0));}
+  .calc h3{font-family:var(--serif);font-style:italic;font-size:23px;color:var(--accent);margin-bottom:4px;}
+  .calc .sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
+  .ctrl{margin:13px 0;}
+  .ctrl label{display:flex;justify-content:space-between;font-size:13.5px;color:#ded6ea;margin-bottom:5px;}
+  .ctrl label b{color:var(--accent);font-family:var(--mono);font-weight:600;}
+  .ctrl input[type=range]{width:100%;accent-color:var(--accent);height:4px;}
+  .out{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .out .cell{padding:13px 15px;border:1px solid var(--rule);border-radius:11px;background:rgba(255,255,255,0.015);}
+  .out .cell .k{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+  .out .cell .v{font-family:var(--mono);font-size:21px;color:#fff;margin-top:3px;}
+  .out .cell.hi{border-color:rgba(243,213,154,0.45);}
+  .out .cell.hi .v{color:var(--accent-2);}
+  .bar{margin-top:14px;height:26px;border-radius:8px;overflow:hidden;display:flex;border:1px solid var(--rule);font-size:11px;font-weight:700;}
+  .bar .s1{background:rgba(184,192,255,0.5);color:#0a0a14;display:flex;align-items:center;justify-content:center;}
+  .bar .tv{background:rgba(243,213,154,0.55);color:#0a0a14;display:flex;align-items:center;justify-content:center;}
+  .calc .warn{margin-top:12px;font-size:13px;color:var(--accent-2);min-height:18px;}
+
+  .foot{margin-top:48px;padding-top:22px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);text-decoration:none;padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span style="font-style:italic;">Library</span></div><a class="back" href="index.html">&larr; Library</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Quant &middot; valuation</div>
+  <h1>What is a stock <em>worth?</em></h1>
+  <p class="lede">Price is what the market quotes. Value is what the business is actually worth. This is how you estimate the second one &mdash; and why the gap between them is where investors make money.</p>
+
+  <div class="jump">
+    <a href="#value">Price vs value</a>
+    <a href="#dcf">DCF</a>
+    <a href="#calc">Live DCF</a>
+    <a href="#multiples">Multiples</a>
+    <a href="#traps">The traps</a>
+  </div>
+
+  <!-- PART 1 -->
+  <section class="part" id="value">
+    <div class="part-head"><span class="h">Price is not value</span><span class="n">the whole idea</span></div>
+    <p>A stock is a <b>claim on a business's future cash</b>. Its <b>intrinsic value</b> is what all that future cash is worth today. The <b>price</b> is just the last number two strangers agreed on. They drift apart constantly &mdash; fear, hype, indexes, headlines.</p>
+    <p>Investing is buying when <span class="ac">price &lt; value</span> by a wide enough margin that you're protected even if your estimate is off. That cushion has a name:</p>
+    <div class="box good">
+      <span class="lbl">Margin of safety</span>
+      <p>If you think a stock is worth $100, you don't pay $98 &mdash; you wait for $70. The <b>30% gap is your protection</b> against being wrong, against bad luck, against the future not cooperating. Valuation gives you the $100 estimate; the margin of safety admits the estimate is fuzzy.</p>
+    </div>
+    <p>There are two honest ways to estimate value: build it up from the cash a business will produce (<b>DCF</b>, absolute), or compare it to what similar businesses sell for (<b>multiples</b>, relative). Good analysts use both and see if they agree.</p>
+  </section>
+
+  <!-- PART 2: DCF -->
+  <section class="part" id="dcf">
+    <div class="part-head"><span class="h">Discounted cash flow</span><span class="n">value from first principles</span></div>
+    <p>A business is worth the cash it will hand you over its life &mdash; but a dollar in 10 years is worth less than a dollar today, so you <b>discount</b> future cash back to the present. Sum the discounted free cash flows, add a <b>terminal value</b> for everything past your forecast:</p>
+    <div class="formula"><i>V</i> <span class="op">=</span> <span class="op">&sum;</span><sub>t=1..n</sub> <span class="frac"><span class="n"><i>FCF<sub>t</sub></i></span><span class="d">(1 <span class="op">+</span> <i>WACC</i>)<sup>t</sup></span></span> <span class="op">+</span> <span class="frac"><span class="n"><i>TV</i></span><span class="d">(1 <span class="op">+</span> <i>WACC</i>)<sup>n</sup></span></span></div>
+    <p>Three pieces do the work:</p>
+    <p><b>1. Free cash flow (FCF)</b> &mdash; the cash a business throws off after running and reinvesting in itself. The thing you actually own a share of.</p>
+    <p><b>2. The discount rate (WACC)</b> &mdash; the return you require, blending the cost of equity and debt. Cost of equity comes from <b>CAPM</b> (your formula sheet): <i>r<sub>e</sub></i> = <i>R<sub>f</sub></i> + <i>&beta;</i>(<i>R<sub>m</sub></i> &minus; <i>R<sub>f</sub></i>). Riskier business &rarr; higher WACC &rarr; lower value.</p>
+    <p><b>3. Terminal value</b> &mdash; the business doesn't stop at year <i>n</i>. The Gordon-growth form assumes cash grows forever at a slow rate <i>g</i> (near GDP, 2&ndash;4%):</p>
+    <div class="formula"><i>TV</i> <span class="op">=</span> <span class="frac"><span class="n"><i>FCF<sub>n</sub></i> <span class="op">&middot;</span> (1 <span class="op">+</span> <i>g</i>)</span><span class="d"><i>WACC</i> <span class="op">&minus;</span> <i>g</i></span></span></div>
+    <p>Here's the thing nobody tells beginners: <b>the terminal value is usually 60&ndash;80% of the whole answer.</b> Most of a DCF's "value" lives in assumptions about a future you can't see. Don't take my word for it &mdash; <span class="ac">drag the sliders below and watch.</span></p>
+  </section>
+
+  <!-- THE LIVE CALCULATOR -->
+  <section class="part" id="calc">
+    <div class="calc">
+      <h3>Live DCF &mdash; feel the terminal value</h3>
+      <div class="sub">A toy two-stage DCF. Numbers in $millions. Watch the gold bar (terminal value) dominate.</div>
+
+      <div class="ctrl"><label>Current free cash flow <b><span id="vF">$100M</span></b></label><input id="f" type="range" min="10" max="500" value="100" step="10"></div>
+      <div class="ctrl"><label>Growth, years 1&ndash;n <b><span id="vG">12%</span></b></label><input id="g" type="range" min="0" max="30" value="12" step="1"></div>
+      <div class="ctrl"><label>Forecast years (n) <b><span id="vN">5</span></b></label><input id="n" type="range" min="3" max="15" value="5" step="1"></div>
+      <div class="ctrl"><label>Terminal growth (g) <b><span id="vT">3%</span></b></label><input id="t" type="range" min="0" max="6" value="3" step="0.5"></div>
+      <div class="ctrl"><label>Discount rate (WACC) <b><span id="vW">10%</span></b></label><input id="w" type="range" min="5" max="20" value="10" step="0.5"></div>
+
+      <div class="out">
+        <div class="cell"><div class="k">PV of forecast cash</div><div class="v" id="oS1">&mdash;</div></div>
+        <div class="cell"><div class="k">PV of terminal value</div><div class="v" id="oTV">&mdash;</div></div>
+        <div class="cell hi" style="grid-column:1/3;"><div class="k">Enterprise value (intrinsic)</div><div class="v" id="oEV">&mdash;</div></div>
+      </div>
+      <div class="bar"><div class="s1" id="bS1" style="width:30%">forecast</div><div class="tv" id="bTV" style="width:70%">terminal</div></div>
+      <div class="warn" id="warn"></div>
+    </div>
+  </section>
+
+  <!-- PART 3: MULTIPLES -->
+  <section class="part" id="multiples">
+    <div class="part-head"><span class="h">Multiples</span><span class="n">value by comparison</span></div>
+    <p>A DCF is a lot of assumptions. The fast cross-check: what do <b>similar businesses</b> sell for, per dollar of earnings/sales/assets? Take the <b>median</b> multiple of a peer group and apply it.</p>
+    <div class="tbl">
+      <div class="row head"><div>Multiple</div><div>Value &divide; ...</div><div>Best for</div></div>
+      <div class="row"><div>P/E</div><div>Price &divide; earnings per share</div><div>Profitable, stable companies. The default.</div></div>
+      <div class="row"><div>EV/EBITDA</div><div>Enterprise value &divide; EBITDA</div><div>Comparing across debt levels (capital-structure neutral).</div></div>
+      <div class="row"><div>P/S</div><div>Price &divide; sales</div><div>Young / unprofitable firms with no earnings yet.</div></div>
+      <div class="row"><div>P/B</div><div>Price &divide; book value</div><div>Asset-heavy: banks, insurers, REITs.</div></div>
+    </div>
+    <div class="box">
+      <span class="lbl">Example</span>
+      <p>Target earns <b>$3.00/share</b>. Peers trade at P/E of 15, 17, 18, 19, 22 &rarr; median <b>18</b>. Implied price = 3.00 &times; 18 = <b>$54</b>. If it trades at $45, it looks ~17% cheap &mdash; <i>but first ask why</i>: slower growth, thinner margins, or more risk can justify the discount. A low multiple is a question, not an answer.</p>
+    </div>
+  </section>
+
+  <!-- PART 4: TRAPS -->
+  <section class="part" id="traps">
+    <div class="part-head"><span class="h">The traps</span><span class="n">where valuations lie</span></div>
+    <p>Same spirit as the rest of your quant work &mdash; a model is only as honest as its inputs:</p>
+    <p><b>Terminal value dominates.</b> 60&ndash;80% of a DCF is the perpetuity. A tiny change in <i>g</i> or WACC swings the answer wildly (you just saw it). Treat the output as a <i>range</i>, not a number.</p>
+    <p><b>Garbage in, garbage out.</b> A DCF gives a precise-looking number from guessed inputs. False precision &rarr; false confidence. Always run the assumptions up and down (sensitivity).</p>
+    <p><b>Growth forever is a fantasy.</b> No company compounds at 15% indefinitely &mdash; competition pulls it back to the mean. Fade high growth toward GDP.</p>
+    <p><b>A cheap multiple can be a trap.</b> Markets aren't dumb; a low P/E often prices in real deterioration. Cheap and <i>broken</i> is not a bargain.</p>
+    <div class="box good">
+      <span class="lbl">The honest workflow</span>
+      <p>Build a DCF for a value <i>range</i>. Cross-check with peer multiples. Demand a <b>margin of safety</b> between price and your estimate. If the two methods disagree wildly, you've found the question worth researching &mdash; not a verdict to act on.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    <a href="formulas.html">Formula quick-reference &rarr;</a>
+    <a href="../learn/">Quant Academy &rarr;</a>
+    <a href="index.html">&larr; Back to Library</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var ids = ["f","g","n","t","w"];
+  var el = {}; ids.forEach(function(i){ el[i] = document.getElementById(i); });
+  var fmt = function(x){ return "$" + Math.round(x).toLocaleString() + "M"; };
+
+  function calc(){
+    var F = +el.f.value, g = +el.g.value/100, N = +el.n.value, gT = +el.t.value/100, w = +el.w.value/100;
+    document.getElementById("vF").textContent = fmt(F);
+    document.getElementById("vG").textContent = (g*100).toFixed(0) + "%";
+    document.getElementById("vN").textContent = N;
+    document.getElementById("vT").textContent = (gT*100).toFixed(1) + "%";
+    document.getElementById("vW").textContent = (w*100).toFixed(1) + "%";
+
+    var warn = document.getElementById("warn");
+    // Gordon growth requires WACC > g (else the perpetuity blows up / goes negative).
+    if (w <= gT){
+      warn.textContent = "WACC must exceed terminal growth, or the perpetuity is infinite. Raise WACC or lower g.";
+      document.getElementById("oS1").textContent = "n/a";
+      document.getElementById("oTV").textContent = "n/a";
+      document.getElementById("oEV").textContent = "n/a";
+      return;
+    }
+    warn.textContent = "";
+
+    var pvS1 = 0, fcf = F;
+    for (var t = 1; t <= N; t++){
+      fcf = fcf * (1 + g);
+      pvS1 += fcf / Math.pow(1 + w, t);
+    }
+    var tv = fcf * (1 + gT) / (w - gT);     // fcf is now FCF_n
+    var pvTV = tv / Math.pow(1 + w, N);
+    var ev = pvS1 + pvTV;
+    var tvShare = pvTV / ev;
+
+    document.getElementById("oS1").textContent = fmt(pvS1);
+    document.getElementById("oTV").textContent = fmt(pvTV);
+    document.getElementById("oEV").textContent = fmt(ev);
+    var pct = Math.max(2, Math.min(98, tvShare * 100));
+    document.getElementById("bS1").style.width = (100 - pct) + "%";
+    document.getElementById("bTV").style.width = pct + "%";
+    document.getElementById("bS1").textContent = (100 - pct).toFixed(0) + "% forecast";
+    document.getElementById("bTV").textContent = pct.toFixed(0) + "% terminal";
+  }
+
+  ids.forEach(function(i){ el[i].addEventListener("input", calc); });
+  calc();
+})();
+</script>
+</body>
+</html>
