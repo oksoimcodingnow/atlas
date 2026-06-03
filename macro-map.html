@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro Map · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --accent-2:#f3d59a;
+    --cold:#7aa6ff; --warm:#ff8c6b; --gutter:clamp(16px,4vw,40px);
+    --sans:'Inter Tight',-apple-system,sans-serif; --mono:ui-monospace,Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  a{color:inherit;}
+
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;letter-spacing:-0.01em;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .head{padding:clamp(22px,4vw,38px) var(--gutter) 8px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:10px;}
+  h1{font-size:clamp(28px,5vw,44px);font-weight:700;letter-spacing:-0.02em;line-height:1.02;}
+  .lede{color:var(--muted);max-width:620px;margin-top:10px;font-size:14.5px;}
+  .lede a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(184,192,255,0.3);}
+
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:18px var(--gutter) 4px;}
+  .controls .lbl{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-right:4px;}
+  .seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;overflow:hidden;}
+  .seg button{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;border:0;padding:9px 15px;cursor:pointer;transition:all .15s;}
+  .seg button.on{background:var(--accent);color:var(--bg);}
+  .seg button:not(.on):hover{color:var(--text);background:rgba(184,192,255,0.08);}
+  .status{font-size:12px;color:var(--faint);margin-left:auto;}
+
+  .layout{display:grid;grid-template-columns:1fr;gap:0;padding:14px var(--gutter) 60px;}
+  @media(min-width:900px){ .layout{grid-template-columns:1fr 300px;gap:18px;} }
+
+  .mapwrap{border:1px solid var(--rule);border-radius:16px;background:linear-gradient(180deg,#0c0c1a,#090912);overflow:hidden;position:relative;}
+  svg.map{display:block;width:100%;height:auto;}
+  .grat{stroke:rgba(184,192,255,0.08);stroke-width:1;}
+  .land{fill:rgba(184,192,255,0.05);stroke:rgba(184,192,255,0.14);stroke-width:1;}
+  .mk{cursor:pointer;transition:r .15s;}
+  .mk-ring{fill:none;stroke:rgba(255,255,255,0.25);stroke-width:1;pointer-events:none;}
+  .mk-lbl{fill:var(--muted);font-size:9px;font-family:var(--sans);font-weight:500;pointer-events:none;}
+  .mk.sel{stroke:#fff;stroke-width:2;}
+
+  .legend{position:absolute;left:14px;bottom:12px;background:rgba(10,10,20,0.7);border:1px solid var(--rule);border-radius:10px;padding:9px 12px;backdrop-filter:blur(4px);font-size:11px;color:var(--muted);}
+  .legend .bar{height:8px;width:150px;border-radius:5px;margin:6px 0 4px;}
+  .legend .ends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--faint);}
+  .legend .ttl{color:var(--text);font-weight:600;font-size:11px;}
+
+  .panel{border:1px solid var(--rule);border-radius:16px;background:var(--panel);padding:18px;min-height:200px;align-self:start;}
+  .panel .ph{color:var(--faint);font-size:13.5px;line-height:1.5;}
+  .panel h3{font-size:18px;font-weight:700;margin-bottom:2px;}
+  .panel .sub{font-size:12px;color:var(--faint);margin-bottom:14px;}
+  .stat{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule);}
+  .stat:last-child{border-bottom:0;}
+  .stat .k{font-size:12.5px;color:var(--muted);}
+  .stat .v{font-family:var(--mono);font-size:15px;color:var(--text);}
+  .stat .v.big{font-size:19px;color:var(--accent-2);}
+
+  .note{margin:8px var(--gutter) 0;padding:13px 16px;border:1px solid var(--rule);border-radius:12px;background:var(--bg-2);font-size:12.5px;color:var(--muted);line-height:1.55;}
+  .note b{color:var(--accent-2);}
+  .note a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(184,192,255,0.3);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Macro Map</span></div><a class="back" href="index.html">&larr; Atlas</a></div>
+
+<div class="head">
+  <div class="eyebrow">Global monitor</div>
+  <h1>Macro Map</h1>
+  <p class="lede">Key economic &amp; commodity hubs, live. Toggle a layer to colour them by weather or economy, click any to inspect. An <b>exploration</b> tool &mdash; eyeballing patterns, not a trading signal. <a href="https://github.com/oksoimcodingnow/quant/blob/main/research/weather-coffee-leadlag.md" target="_blank" rel="noopener">(the honest hunt found no weather&rarr;price edge.)</a></p>
+</div>
+
+<div class="controls">
+  <span class="lbl">Layer</span>
+  <div class="seg" id="seg">
+    <button data-layer="temp" class="on">Temperature</button>
+    <button data-layer="precip">Rain</button>
+    <button data-layer="gdp">GDP / capita</button>
+    <button data-layer="infl">Inflation</button>
+  </div>
+  <span class="status" id="status">loading live data…</span>
+</div>
+
+<div class="layout">
+  <div class="mapwrap">
+    <svg class="map" id="map" viewBox="0 0 720 380" role="img" aria-label="World map of economic hubs">
+      <!-- graticule -->
+      <g id="grat"></g>
+      <!-- rough continent silhouettes (stylized, equirectangular) -->
+      <g id="land"></g>
+      <!-- markers injected here -->
+      <g id="markers"></g>
+    </svg>
+    <div class="legend"><div class="ttl" id="legTtl">Temperature</div>
+      <div class="bar" id="legBar"></div>
+      <div class="ends"><span id="legLo">–</span><span id="legHi">–</span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel">
+    <div class="ph">Click a hub on the map to see its live weather and economy.<br><br>Each dot is a major economy or commodity-growing region. The colour shows the layer you picked above.</div>
+  </div>
+</div>
+
+<div class="note">
+  <b>How to read it:</b> this shows current values per place &mdash; useful for <i>seeing</i> the world at a glance and forming hypotheses. It does <b>not</b> prove relationships. When we tested "weather here &rarr; commodity price there" rigorously, nothing survived the honest test. A map makes patterns <i>visible</i>; only an out-of-sample test makes them <i>real</i>. Data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (weather) · <a href="https://data.worldbank.org" target="_blank" rel="noopener">World Bank</a> (economy).
+</div>
+
+<script>
+(function(){
+  var W=720, H=380;
+  // lon/lat -> x/y on an equirectangular projection
+  function proj(lon,lat){ return [ (lon+180)/360*W, (90-lat)/180*H ]; }
+
+  // ── stylized continents (rough blocks, just for orientation) ──
+  var LAND = [
+    // N America
+    [[-168,68],[-52,68],[-58,48],[-82,26],[-98,18],[-125,33],[-140,60]],
+    // S America
+    [[-82,10],[-35,8],[-35,-22],[-58,-52],[-72,-50],[-80,-18]],
+    // Africa + Europe block
+    [[-12,36],[30,40],[44,40],[52,12],[40,-34],[18,-34],[10,4],[-16,16]],
+    // Europe cap
+    [[-10,44],[30,44],[40,60],[5,60],[-10,52]],
+    // Asia
+    [[44,42],[140,44],[170,66],[100,72],[55,52]],
+    // SE Asia / India
+    [[60,30],[122,30],[120,-8],[95,2],[68,8]],
+    // Australia
+    [[114,-12],[154,-20],[150,-39],[120,-35],[114,-22]]
+  ];
+  var landG=document.getElementById('land');
+  LAND.forEach(function(poly){
+    var pts=poly.map(function(p){var xy=proj(p[0],p[1]);return xy[0].toFixed(1)+','+xy[1].toFixed(1);}).join(' ');
+    var el=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    el.setAttribute('points',pts); el.setAttribute('class','land'); landG.appendChild(el);
+  });
+  // graticule
+  var gratG=document.getElementById('grat');
+  for(var lon=-180;lon<=180;lon+=30){var a=proj(lon,90),b=proj(lon,-90);mkline(a,b);}
+  for(var lat=-60;lat<=60;lat+=30){var c=proj(-180,lat),d=proj(180,lat);mkline(c,d);}
+  function mkline(a,b){var l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',a[0]);l.setAttribute('y1',a[1]);l.setAttribute('x2',b[0]);l.setAttribute('y2',b[1]);
+    l.setAttribute('class','grat');gratG.appendChild(l);}
+
+  // ── hubs: economy / commodity regions ──
+  var HUBS=[
+    {n:'New York',   iso:'US', lat:40.7, lon:-74.0},
+    {n:'São Paulo',  iso:'BR', lat:-23.5,lon:-46.6, note:'coffee + sugar belt'},
+    {n:'London',     iso:'GB', lat:51.5, lon:-0.1},
+    {n:'Frankfurt',  iso:'DE', lat:50.1, lon:8.7},
+    {n:'Lagos',      iso:'NG', lat:6.5,  lon:3.4},
+    {n:'Abidjan',    iso:'CI', lat:5.3,  lon:-4.0, note:'cocoa #1'},
+    {n:'Johannesburg',iso:'ZA',lat:-26.2,lon:28.0},
+    {n:'Mumbai',     iso:'IN', lat:19.1, lon:72.9},
+    {n:'Shanghai',   iso:'CN', lat:31.2, lon:121.5},
+    {n:'Tokyo',      iso:'JP', lat:35.7, lon:139.7},
+    {n:'Singapore',  iso:'SG', lat:1.35, lon:103.8},
+    {n:'Sydney',     iso:'AU', lat:-33.9,lon:151.2},
+    {n:'Bangkok',    iso:'TH', lat:13.8, lon:100.5, note:'home'}
+  ];
+
+  // colour scale: value -> hex between cold(blue) and warm(orange)
+  function lerp(a,b,t){return Math.round(a+(b-a)*t);}
+  function hex(r,g,b){return '#'+[r,g,b].map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');}
+  function scale(t){ // 0..1 -> blue->grey->orange
+    t=Math.max(0,Math.min(1,t));
+    var c1=[122,166,255], c2=[243,213,154], c3=[255,140,107];
+    var a = t<0.5 ? c1 : c2, b = t<0.5 ? c2 : c3, tt = t<0.5 ? t*2 : (t-0.5)*2;
+    return hex(lerp(a[0],b[0],tt),lerp(a[1],b[1],tt),lerp(a[2],b[2],tt));
+  }
+
+  var LAYERS={
+    temp:  {ttl:'Temperature (°C)',   unit:'°C', fmt:function(v){return v.toFixed(0)+'°';}},
+    precip:{ttl:'Rain now (mm)',      unit:'mm', fmt:function(v){return v.toFixed(1)+'mm';}},
+    gdp:   {ttl:'GDP / capita (USD)', unit:'$',  fmt:function(v){return '$'+Math.round(v).toLocaleString();}},
+    infl:  {ttl:'Inflation (%/yr)',   unit:'%',  fmt:function(v){return v.toFixed(1)+'%';}}
+  };
+
+  var layer='temp', selected=null;
+  var statusEl=document.getElementById('status');
+  var markersG=document.getElementById('markers');
+
+  // ── fetch live data ──
+  function fetchWeather(h){
+    var u='https://api.open-meteo.com/v1/forecast?latitude='+h.lat+'&longitude='+h.lon+
+          '&current=temperature_2m,precipitation,wind_speed_10m';
+    return fetch(u).then(function(r){return r.json();}).then(function(j){
+      h.temp=j.current?j.current.temperature_2m:null;
+      h.precip=j.current?j.current.precipitation:null;
+      h.wind=j.current?j.current.wind_speed_10m:null;
+    }).catch(function(){});
+  }
+  function wb(iso,ind){
+    var u='https://api.worldbank.org/v2/country/'+iso+'/indicator/'+ind+'?format=json&mrv=1';
+    return fetch(u).then(function(r){return r.json();}).then(function(j){
+      if(Array.isArray(j)&&j[1]&&j[1][0]) return j[1][0].value;
+      return null;
+    }).catch(function(){return null;});
+  }
+  function fetchEcon(h){
+    return Promise.all([wb(h.iso,'NY.GDP.PCAP.CD'),wb(h.iso,'FP.CPI.TOTL.ZG')])
+      .then(function(a){ h.gdp=a[0]; h.infl=a[1]; });
+  }
+
+  Promise.all(HUBS.map(fetchWeather)).then(function(){
+    statusEl.textContent='weather live · loading economy…';
+    render();
+    return Promise.all(HUBS.map(fetchEcon));
+  }).then(function(){
+    statusEl.textContent='live · '+HUBS.length+' hubs';
+    render();
+  });
+
+  // ── render markers coloured by current layer ──
+  function render(){
+    var vals=HUBS.map(function(h){return h[layer];}).filter(function(v){return v!=null&&!isNaN(v);});
+    var lo=Math.min.apply(null,vals), hi=Math.max.apply(null,vals);
+    if(!isFinite(lo)){lo=0;hi=1;}
+    markersG.innerHTML='';
+    HUBS.forEach(function(h){
+      var xy=proj(h.lon,h.lat), v=h[layer];
+      var t = (v==null||hi===lo)?0.5:(v-lo)/(hi-lo);
+      var col = v==null ? '#3a3a52' : scale(t);
+      var g=document.createElementNS('http://www.w3.org/2000/svg','g');
+      var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',xy[0]);c.setAttribute('cy',xy[1]);c.setAttribute('r',h===selected?8:6);
+      c.setAttribute('fill',col);c.setAttribute('class','mk'+(h===selected?' sel':''));
+      c.addEventListener('click',function(){selected=h;render();showPanel(h);});
+      g.appendChild(c);
+      if(h===selected){var ring=document.createElementNS('http://www.w3.org/2000/svg','circle');
+        ring.setAttribute('cx',xy[0]);ring.setAttribute('cy',xy[1]);ring.setAttribute('r',12);
+        ring.setAttribute('class','mk-ring');g.appendChild(ring);}
+      var lbl=document.createElementNS('http://www.w3.org/2000/svg','text');
+      lbl.setAttribute('x',xy[0]+9);lbl.setAttribute('y',xy[1]+3);lbl.setAttribute('class','mk-lbl');
+      lbl.textContent=h.n; g.appendChild(lbl);
+      markersG.appendChild(g);
+    });
+    // legend
+    var L=LAYERS[layer];
+    document.getElementById('legTtl').textContent=L.ttl;
+    document.getElementById('legBar').style.background='linear-gradient(90deg,'+scale(0)+','+scale(0.5)+','+scale(1)+')';
+    document.getElementById('legLo').textContent=isFinite(lo)?L.fmt(lo):'–';
+    document.getElementById('legHi').textContent=isFinite(hi)?L.fmt(hi):'–';
+  }
+
+  function showPanel(h){
+    var p=document.getElementById('panel');
+    function row(k,v,big){return '<div class="stat"><span class="k">'+k+'</span><span class="v'+(big?' big':'')+'">'+v+'</span></div>';}
+    var na=function(v,f){return (v==null||isNaN(v))?'—':f(v);};
+    p.innerHTML='<h3>'+h.n+'</h3><div class="sub">'+(h.note?h.note+' · ':'')+h.iso+' · '+h.lat.toFixed(1)+', '+h.lon.toFixed(1)+'</div>'
+      + row('Temperature', na(h.temp,function(v){return v.toFixed(1)+' °C';}), layer==='temp')
+      + row('Rain (now)',  na(h.precip,function(v){return v.toFixed(1)+' mm';}), layer==='precip')
+      + row('Wind',        na(h.wind,function(v){return v.toFixed(0)+' km/h';}))
+      + row('GDP / capita',na(h.gdp,function(v){return '$'+Math.round(v).toLocaleString();}), layer==='gdp')
+      + row('Inflation',   na(h.infl,function(v){return v.toFixed(1)+' %';}), layer==='infl');
+  }
+
+  // layer toggle
+  document.getElementById('seg').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    [].forEach.call(this.querySelectorAll('button'),function(x){x.classList.remove('on');});
+    b.classList.add('on'); layer=b.dataset.layer; render(); if(selected)showPanel(selected);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
