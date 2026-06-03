@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Spotlight · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --accent-2:#f3d59a; --green:#6fcf8e; --red:#ff7a8a;
+    --gutter:clamp(16px,4vw,40px);
+    --sans:'Inter Tight',-apple-system,sans-serif; --mono:ui-monospace,Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);} a{color:inherit;}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 380px at 80% -10%,rgba(111,207,142,0.09),transparent 62%);}
+
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{position:relative;z-index:2;max-width:880px;margin:0 auto;padding:clamp(24px,4vw,44px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:10px;}
+  h1{font-size:clamp(30px,6vw,52px);font-weight:700;letter-spacing:-0.02em;line-height:1.0;}
+  .lede{color:var(--muted);max-width:660px;margin-top:12px;font-size:15px;}
+  .lede b{color:var(--text);}
+
+  .warn{margin-top:18px;border:1px solid rgba(255,122,138,0.32);border-radius:12px;padding:13px 16px;background:rgba(255,122,138,0.05);font-size:12.5px;color:#e7d2d6;line-height:1.55;}
+  .warn b{color:var(--red);}
+
+  h2{font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:36px 0 14px;}
+
+  /* featured */
+  .feat{border:1px solid rgba(111,207,142,0.4);border-radius:18px;background:linear-gradient(180deg,rgba(111,207,142,0.06),transparent);padding:20px 22px;}
+  .feat .tag{display:inline-block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;color:var(--green);border:1px solid rgba(111,207,142,0.4);border-radius:999px;padding:3px 10px;margin-bottom:12px;}
+  .feat .tkr{font-family:var(--mono);font-size:14px;color:var(--green);font-weight:600;}
+  .feat .co{font-size:26px;font-weight:700;margin:2px 0 2px;}
+  .feat .does{font-size:14px;color:var(--muted);margin-bottom:14px;}
+  .feat .blk{margin-top:13px;}
+  .feat .lbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;color:var(--accent-2);margin-bottom:4px;}
+  .feat .txt{font-size:14px;color:#e3dcef;line-height:1.55;} .feat .txt b{color:var(--accent);}
+  .feat .risk .lbl{color:var(--red);} .feat .risk .txt{color:#e7d2d6;}
+  .feat .check{margin-top:14px;border-top:1px solid var(--rule);padding-top:12px;font-size:13px;color:var(--muted);}
+  .feat .check b{color:var(--text);}
+
+  /* radar meter */
+  .radar{display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:12px;color:var(--muted);}
+  .pips{display:flex;gap:3px;} .pip{width:18px;height:5px;border-radius:3px;background:rgba(255,255,255,0.12);} .pip.on{background:var(--green);}
+
+  /* watchlist */
+  .grid{display:grid;grid-template-columns:1fr;gap:11px;}
+  @media(min-width:680px){ .grid{grid-template-columns:1fr 1fr;} }
+  .card{border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:15px 17px;}
+  .card .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .card .tk{font-family:var(--mono);font-size:13px;color:var(--accent);font-weight:600;}
+  .card .layer{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);font-weight:700;}
+  .card .co{font-size:16px;font-weight:700;margin-top:1px;}
+  .card .does{font-size:12.5px;color:var(--muted);margin:5px 0 9px;line-height:1.45;}
+  .card .why{font-size:13px;color:#dcd4ea;line-height:1.5;} .card .why b{color:var(--accent);}
+  .card .rk{font-size:12px;color:#cbb8bc;margin-top:8px;line-height:1.45;} .card .rk b{color:var(--red);}
+  .card .pips{margin-top:9px;}
+
+  .foot{margin-top:34px;padding-top:20px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);text-decoration:none;padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .disc{margin-top:16px;font-size:12px;color:var(--faint);line-height:1.55;border-left:2px solid var(--rule);padding-left:14px;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Spotlight</span></div><a class="back" href="overview.html">&larr; Big Picture</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">The un-obvious picks</div>
+  <h1>Stock Spotlight</h1>
+  <p class="lede">Not the names everyone knows. These are the <b>under-followed picks-and-shovels</b> from the green (less-crowded) layers of the <a href="ai-ripple.html" style="color:var(--green)">AI Ripple</a> &mdash; companies that quietly profit from the whole build-out, with a clear <i>why</i> and an honest <i>risk</i>.</p>
+
+  <div class="warn">
+    <b>Read this first.</b> These are <b>ideas to research, not advice</b>, and lesser-known usually means <b>smaller, more volatile, and riskier</b>. My data has a cutoff &mdash; some may have already re-rated (gotten expensive). <b>Whether any is actually undervalued depends on TODAY's price</b>, which you must check, then run the <a href="library/valuation.html" style="color:var(--accent-2)">valuation</a> and size small.
+  </div>
+
+  <h2>Featured — the quiet toll-taker</h2>
+  <div class="feat">
+    <span class="tag">⌖ low profile · real moat</span>
+    <div class="tkr">ENTG · Nasdaq</div>
+    <div class="co">Entegris</div>
+    <div class="does">Makes the ultra-pure <b>materials, chemicals, and filtration</b> used to manufacture chips &mdash; the consumables that flow through every fab, on every wafer.</div>
+
+    <div class="radar"><span>Under-the-radar</span><span class="pips"><span class="pip on"></span><span class="pip on"></span><span class="pip on"></span><span class="pip"></span></span><span>high</span></div>
+
+    <div class="blk"><div class="lbl">Why it has potential</div>
+      <div class="txt">Everyone watches the chip <i>designers</i> and the <i>equipment</i> makers. Almost nobody watches the company selling the <b>purity</b> every fab consumes. Two things make it special: <b>(1) it's a consumable, not a one-off tool</b> &mdash; recurring revenue that grows every time a wafer is made, so it's less boom-bust than the equipment names; and <b>(2)</b> as chips get more complex (more layers, advanced packaging, AI nodes), each wafer needs <b>more</b> of Entegris's materials and filtration. It's a quiet <b>toll on the entire semiconductor ramp</b>, and it's deeply qualified into customers' recipes &mdash; switching means re-certifying a process, so the revenue is sticky.</div>
+    </div>
+
+    <div class="blk risk"><div class="lbl">The real risk</div>
+      <div class="txt">Still <b>cyclical</b> with the chip industry; carries <b>debt</b> from a big acquisition (CMC Materials); and has <b>China export-control exposure</b> that can hit sales. And like everything in the stack, it leans on the AI-capex wave continuing.</div>
+    </div>
+
+    <div class="check"><b>Before you act:</b> check the current P/E and EV/EBITDA vs its own history and vs the equipment names (AMAT, LRCX); confirm the debt is coming down and free cash flow is healthy. <b>Cheap relative to that recurring, sticky revenue = the thesis. Verify it.</b></div>
+  </div>
+
+  <h2>Watchlist — more un-obvious exposure</h2>
+  <div class="grid" id="grid"></div>
+
+  <div class="foot">
+    <a href="ai-ripple.html">&larr; The AI Ripple</a>
+    <a href="semiconductors.html">Semiconductor map</a>
+    <a href="library/valuation.html">Value any of these &rarr;</a>
+  </div>
+  <p class="disc">Tickers are illustrative examples of <i>exposure</i>, not recommendations. "Under-the-radar" is a judgement, not a metric. Smaller / less-followed stocks carry more risk and can be thinly traded. Nothing here is financial advice &mdash; research, value, and size for the downside before acting.</p>
+</div>
+
+<script>
+(function(){
+  var PICKS=[
+    {tk:'ONTO', co:'Onto Innovation', layer:'Inspection · Packaging', radar:3,
+     does:'Metrology & inspection tools aimed at advanced packaging (HBM, chiplets).',
+     why:'<b>Advanced packaging</b> is the new bottleneck for AI chips — stacking HBM, chiplets. Onto is a focused inspection play levered to exactly that, far less known than KLA.',
+     rk:'Smaller-cap, customer-concentrated, and cyclical — swings hard both ways.'},
+    {tk:'NVT', co:'nVent Electric', layer:'Power · Cooling', radar:3,
+     does:'Electrical enclosures, connections, and liquid-cooling gear for data centers.',
+     why:'A direct <b>data-center power + cooling</b> beneficiary with a lower profile than Vertiv — the unglamorous hardware every rack needs.',
+     rk:'Build-out slowdown hits orders; competitive, lower-moat than the chip names.'},
+    {tk:'FIX', co:'Comfort Systems USA', layer:'Build-out', radar:3,
+     does:'Mechanical / electrical / HVAC contractor that physically builds data centers & fabs.',
+     why:'The literal <b>builder</b> of AI infrastructure. Its backlog is the build-out, in concrete form — a true picks-and-shovels play most ignore.',
+     rk:'Construction is cyclical and lumpy; labor-dependent; project timing is bumpy.'},
+    {tk:'POWL', co:'Powell Industries', layer:'Grid · Equipment', radar:2,
+     does:'Switchgear & electrical distribution for power-hungry facilities.',
+     why:'Levered to <b>electrification + data center + LNG</b> capex. A small-cap industrial that was deeply under-followed.',
+     rk:'Small, order-book lumpy, and it has already re-rated a lot — verify it isn’t now expensive.'},
+    {tk:'CCJ', co:'Cameco', layer:'Energy · Uranium', radar:2,
+     does:'One of the largest uranium miners.',
+     why:'The <b>nuclear revival</b> for 24/7 data-center power pulls uranium demand against tight, concentrated supply.',
+     rk:'A commodity proxy — volatile, sentiment-driven, and only indirectly an "AI" bet.'}
+  ];
+  var g=document.getElementById('grid');
+  PICKS.forEach(function(p){
+    var pips='';for(var i=0;i<3;i++){pips+='<span class="pip'+(i<p.radar?' on':'')+'"></span>';}
+    var el=document.createElement('div'); el.className='card';
+    el.innerHTML='<div class="top"><span class="tk">'+p.tk+'</span><span class="layer">'+p.layer+'</span></div>'
+      +'<div class="co">'+p.co+'</div>'
+      +'<div class="does">'+p.does+'</div>'
+      +'<div class="why">'+p.why+'</div>'
+      +'<div class="rk"><b>Risk:</b> '+p.rk+'</div>'
+      +'<div class="radar" style="margin-top:9px"><span style="font-size:11px">radar</span><span class="pips">'+pips+'</span></div>';
+    g.appendChild(el);
+  });
+})();
+</script>
+</body>
+</html>
