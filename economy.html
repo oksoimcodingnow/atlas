@@ -38,11 +38,12 @@
   svg.web{display:block;width:100%;max-width:560px;height:auto;margin:0 auto;overflow:visible;}
   .edge{stroke:rgba(184,192,255,0.13);stroke-width:1.4;transition:stroke .2s,stroke-width .2s;}
   .edge.hot{stroke:rgba(243,213,154,0.7);stroke-width:2.4;}
-  .node{cursor:pointer;}
-  .node .ring{transition:transform .16s,opacity .2s;transform-origin:center;}
+  .node{cursor:pointer;transition:opacity .3s;}
+  .node .ring{transition:transform .16s,filter .3s;transform-origin:center;}
   .node:hover .ring{transform:scale(1.1);}
-  .node.dim{opacity:0.32;}
-  .node.sel .ring{stroke-width:3;}
+  .node.faint{opacity:0.24;}
+  .node.lit .ring{filter:drop-shadow(0 0 7px rgba(243,213,154,0.6));}
+  .node.src .ring{stroke-width:4;filter:drop-shadow(0 0 14px #f3d59a);}
   .node .ic{font-size:23px;pointer-events:none;}
   .node .lb{font-family:var(--sans);font-size:10.5px;font-weight:600;fill:var(--muted);pointer-events:none;}
   .node.sel .lb{fill:var(--text);}
@@ -154,43 +155,59 @@
   var W=540,C=270,R=200;
   function pos(i){ var a=(-90+i*(360/SECTORS.length))*Math.PI/180; return [C+R*Math.cos(a), C+R*Math.sin(a)]; }
 
-  var svg=document.getElementById('web'), sel=null;
-  function draw(){
+  var svg=document.getElementById('web');
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function neighbors(id){ var out=[]; CONN.forEach(function(e){ if(e[0]===id)out.push(e[1]); else if(e[1]===id)out.push(e[0]); }); return out; }
+
+  // Build the static graph once; the cascade just toggles classes on it.
+  (function build(){
     var parts=[];
-    // edges
     CONN.forEach(function(e){
       var a=pos(IDX[e[0]]), b=pos(IDX[e[1]]);
-      var hot = sel && (e[0]===sel||e[1]===sel);
-      parts.push('<line class="edge'+(hot?' hot':'')+'" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>');
+      parts.push('<line class="edge" data-a="'+e[0]+'" data-b="'+e[1]+'" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>');
     });
-    // nodes
     SECTORS.forEach(function(s,i){
       var p=pos(i);
-      var connected = !sel || s.id===sel || CONN.some(function(e){return (e[0]===sel&&e[1]===s.id)||(e[1]===sel&&e[0]===s.id);});
-      var cls='node'+(s.id===sel?' sel':'')+(connected?'':' dim');
-      parts.push('<g class="'+cls+'" data-id="'+s.id+'">'
+      parts.push('<g class="node" data-id="'+s.id+'">'
         +'<circle class="ring" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="27" fill="#14142c" stroke="'+s.col+'" stroke-width="2"/>'
         +'<text class="ic" x="'+p[0].toFixed(1)+'" y="'+(p[1]+8).toFixed(1)+'" text-anchor="middle">'+s.ic+'</text>'
         +'<text class="lb" x="'+p[0].toFixed(1)+'" y="'+(p[1]+44).toFixed(1)+'" text-anchor="middle">'+s.nm.split(' ')[0]+'</text>'
         +'</g>');
     });
     svg.innerHTML=parts.join('');
-    svg.querySelectorAll('.node').forEach(function(g){
-      g.addEventListener('click',function(){ select(g.dataset.id); });
-    });
+    svg.querySelectorAll('.node').forEach(function(g){ g.addEventListener('click',function(){ select(g.dataset.id); }); });
+  })();
+
+  var timers=[];
+  // BFS from the tapped sector; light nodes order-by-order so you SEE the shock
+  // ripple outward (direct neighbours, then theirs, then theirs...).
+  function cascade(srcId){
+    timers.forEach(clearTimeout); timers=[];
+    var order={}; order[srcId]=0; var q=[srcId], maxO=0;
+    while(q.length){ var u=q.shift(); neighbors(u).forEach(function(v){ if(order[v]===undefined){ order[v]=order[u]+1; maxO=Math.max(maxO,order[v]); q.push(v);} }); }
+    svg.querySelectorAll('.node').forEach(function(g){ g.classList.remove('lit','src'); g.classList.add('faint'); });
+    svg.querySelectorAll('.edge').forEach(function(e){ e.classList.remove('hot'); });
+    var k;
+    for(k=0;k<=maxO;k++){ (function(level){ timers.push(setTimeout(function(){
+      svg.querySelectorAll('.node').forEach(function(g){ if(order[g.dataset.id]===level){ g.classList.remove('faint'); g.classList.add('lit'); if(level===0)g.classList.add('src'); } });
+      svg.querySelectorAll('.edge').forEach(function(e){ var oa=order[e.dataset.a], ob=order[e.dataset.b];
+        if((oa===level-1&&ob===level)||(ob===level-1&&oa===level)) e.classList.add('hot'); });
+    }, reduce?0:level*280)); })(k); }
+    return order;
   }
+
   function select(id){
-    sel=id; draw();
+    var order=cascade(id);
     var s=SECTORS[IDX[id]];
-    var links=CONN.filter(function(e){return e[0]===id||e[1]===id;}).map(function(e){return e[0]===id?e[1]:e[0];});
+    var cnt={}; Object.keys(order).forEach(function(n){ var o=order[n]; if(o>0) cnt[o]=(cnt[o]||0)+1; });
+    var direct=cnt[1]||0, second=cnt[2]||0, third=(cnt[3]||0)+(cnt[4]||0)+(cnt[5]||0);
+    var links=neighbors(id);
     var linkBtns=links.map(function(lid){ return '<button data-go="'+lid+'">'+SECTORS[IDX[lid]].ic+' '+SECTORS[IDX[lid]].nm.split(' ')[0]+'</button>'; }).join('');
-    var tks=s.names.map(function(t){
-      var slug=t.toLowerCase().replace('.','.');
-      return '<a class="tk" href="https://stockanalysis.com/stocks/'+slug+'/" target="_blank" rel="noopener" title="Open '+t+' (price + financials)">'+t+'</a>';
-    }).join('');
+    var tks=s.names.map(function(t){ var slug=t.toLowerCase();
+      return '<a class="tk" href="https://stockanalysis.com/stocks/'+slug+'/" target="_blank" rel="noopener" title="Open '+t+' (price + financials)">'+t+'</a>'; }).join('');
     var p=document.getElementById('panel');
     p.innerHTML='<div class="hd"><span class="e">'+s.ic+'</span><span class="nm">'+s.nm+'</span></div>'
-      +'<div class="sub">'+links.length+' direct links across the economy</div>'
+      +'<div class="sub">a shock here ripples out &rarr; <b style="color:#f3d59a">'+direct+' direct</b> &middot; '+second+' second-order &middot; '+third+' third</div>'
       +'<div class="row"><span class="k">Provides</span><span class="v">'+s.provides+'</span></div>'
       +'<div class="row"><span class="k">Needs</span><span class="v">'+s.needs+'</span></div>'
       +'<div class="row"><span class="k">Names</span><span class="v">'+tks+'</span></div>'
@@ -198,14 +215,13 @@
       +'<div class="ai"><b>AI angle:</b> '+s.ai+'</div>';
     p.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ select(b.dataset.go); document.querySelector('.stage').scrollIntoView({behavior:'smooth',block:'start'}); }); });
   }
-  draw();
 })();
 </script>
 <script>
 window.atlasTourId = 'economy';
 window.atlasTourSteps = [
   { title: 'The whole economy, connected', body: 'Every sector is a node. The lines are real dependencies: who powers, supplies, or funds whom.' },
-  { sel: '.web', title: 'Tap a sector', body: 'Tap any circle to light up its connections and dim the rest. You instantly see what it touches.' },
+  { sel: '.web', title: 'Tap a sector, watch it ripple', body: 'Tap any circle and a shock spreads outward through the web: first its direct links, then theirs, then theirs. You watch the ripple travel the economy.' },
   { sel: '.panel', title: 'See how it links', body: 'The panel shows what each sector <b>provides</b>, what it <b>needs</b>, example companies, and the <b>AI angle</b>. Tap a connection chip to hop to a neighbour.' },
   { title: 'One web, many threads', body: 'The AI Ripple is just one path through this web. Every theme (energy transition, aging, etc.) is another path through the same sectors.' }
 ];
