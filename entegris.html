@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entegris — Deep Valuation · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --accent-2:#f3d59a; --green:#6fcf8e; --red:#ff7a8a; --bear:#ff7a8a; --bull:#6fcf8e;
+    --gutter:clamp(16px,4vw,40px);
+    --sans:'Inter Tight',-apple-system,sans-serif; --mono:ui-monospace,Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.58;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;} ::selection{background:var(--accent);color:var(--bg);}
+
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{max-width:840px;margin:0 auto;padding:clamp(24px,4vw,44px) var(--gutter) 90px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:8px;}
+  h1{font-size:clamp(30px,6vw,50px);font-weight:700;letter-spacing:-0.02em;line-height:1.0;}
+  h1 .tk{font-family:var(--mono);font-size:0.5em;color:var(--green);vertical-align:middle;margin-left:10px;}
+  .lede{color:var(--muted);max-width:640px;margin-top:12px;font-size:15px;} .lede b{color:var(--text);}
+
+  .warn{margin-top:16px;border:1px solid rgba(255,122,138,0.3);border-radius:12px;padding:12px 15px;background:rgba(255,122,138,0.05);font-size:12.5px;color:#e7d2d6;line-height:1.5;}
+  .warn b{color:var(--red);}
+
+  h2{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:38px 0 12px;display:flex;align-items:center;gap:8px;}
+  h2 .n{font-family:var(--mono);color:var(--accent);}
+  p.body{color:#ded6ea;font-size:14.5px;} p.body b{color:#fff;} p.body .ac{color:var(--accent);font-weight:600;}
+  p.body + p.body{margin-top:10px;}
+
+  /* moat grid */
+  .moat{display:grid;grid-template-columns:1fr;gap:7px;margin:14px 0;}
+  @media(min-width:620px){ .moat{grid-template-columns:1fr 1fr;} }
+  .ms{border:1px solid var(--rule);border-radius:11px;padding:12px 14px;background:var(--panel);}
+  .ms .h{display:flex;justify-content:space-between;align-items:baseline;}
+  .ms .nm{font-weight:600;font-size:13.5px;}
+  .ms .lv{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;}
+  .lv.strong{background:rgba(111,207,142,0.16);color:var(--green);}
+  .lv.mod{background:rgba(243,213,154,0.16);color:var(--accent-2);}
+  .lv.weak{background:rgba(138,138,168,0.16);color:var(--muted);}
+  .ms .d{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45;}
+
+  /* scenario table */
+  .scen{border:1px solid var(--rule);border-radius:13px;overflow:hidden;margin:14px 0;}
+  .scen .r{display:grid;grid-template-columns:1.1fr 0.7fr 2fr;gap:0;}
+  .scen .r>div{padding:11px 14px;border-bottom:1px solid var(--rule);font-size:13.5px;}
+  .scen .r:last-child>div{border-bottom:0;}
+  .scen .r.head>div{background:rgba(184,192,255,0.05);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent-2);font-weight:700;}
+  .scen .nm{font-weight:700;} .scen .nm.bear{color:var(--bear);} .scen .nm.base{color:var(--accent-2);} .scen .nm.bull{color:var(--bull);} .scen .nm.wt{color:var(--accent);}
+  .scen .v{font-family:var(--mono);font-weight:600;color:#fff;} .scen .as{color:var(--muted);font-size:12.5px;}
+  @media(max-width:560px){ .scen .r{grid-template-columns:1fr 1fr;} .scen .as{grid-column:1/3;border-top:0!important;padding-top:0;} }
+
+  /* reverse DCF widget */
+  .rev{margin:14px 0;border:1px solid rgba(184,192,255,0.35);border-radius:16px;padding:18px;background:linear-gradient(180deg,rgba(184,192,255,0.05),transparent);}
+  .rev h3{font-size:17px;font-weight:700;margin-bottom:3px;}
+  .rev .sub{font-size:12.5px;color:var(--muted);margin-bottom:14px;}
+  .rev .in{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .rev label{font-size:13px;color:#ded6ea;}
+  .rev input{font-family:var(--mono);font-size:16px;width:110px;background:#161630;border:1px solid var(--rule);border-radius:8px;color:#fff;padding:9px 11px;}
+  .rev .out{margin-top:16px;padding:14px 16px;border:1px solid var(--rule);border-radius:11px;background:rgba(255,255,255,0.015);}
+  .rev .big{font-family:var(--mono);font-size:26px;color:var(--accent-2);font-weight:600;}
+  .rev .verdict{margin-top:8px;font-size:13.5px;font-weight:600;}
+  .rev .hint{font-size:12px;color:var(--faint);margin-top:10px;line-height:1.5;}
+
+  .multi{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+  .mc{border:1px solid var(--rule);border-radius:9px;padding:8px 12px;font-size:12.5px;color:var(--muted);}
+  .mc b{font-family:var(--mono);color:#fff;}
+
+  .risk{display:flex;flex-direction:column;gap:2px;margin:10px 0;}
+  .risk .ri{padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:#dcd4ea;}
+  .risk .ri:last-child{border-bottom:0;} .risk .ri b{color:var(--red);}
+
+  .verdict-box{margin:14px 0;border:1px solid rgba(111,207,142,0.35);border-radius:14px;padding:16px 18px;background:linear-gradient(180deg,rgba(111,207,142,0.05),transparent);}
+  .verdict-box p{font-size:14px;color:#e3ece5;line-height:1.55;} .verdict-box b{color:var(--green);}
+
+  .check{border:1px solid var(--rule);border-radius:13px;background:var(--bg-2);padding:6px 4px;margin:12px 0;}
+  .check .c{display:flex;gap:11px;padding:10px 15px;border-bottom:1px solid var(--rule);font-size:13px;}
+  .check .c:last-child{border-bottom:0;} .check .k{color:var(--accent);font-weight:600;flex:0 0 130px;} .check .v{color:var(--muted);}
+
+  .foot{margin-top:36px;padding-top:20px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);text-decoration:none;padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .disc{margin-top:14px;font-size:11.5px;color:var(--faint);line-height:1.55;border-left:2px solid var(--rule);padding-left:13px;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Deep Valuation</span></div><a class="back" href="spotlight.html">&larr; Spotlight</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Worked valuation · the real thing</div>
+  <h1>Entegris<span class="tk">ENTG</span></h1>
+  <p class="lede">A full valuation of the Spotlight's featured pick &mdash; moat, three scenarios, a reverse DCF, and an honest verdict. The conclusion isn't "it's cheap." It's <b>"here's exactly what you'd be betting on, and how to judge it at today's price."</b></p>
+
+  <div class="warn"><b>All financial inputs are estimates (~2024&ndash;25) and must be verified.</b> My data has a cutoff. The <i>method</i> and the <i>reverse-DCF tool</i> are real and stay valid &mdash; just plug in today's actual price (and check the FCF/debt figures).</div>
+
+  <h2><span class="n">1</span> The business</h2>
+  <p class="body">Entegris makes the <b>ultra-pure materials, chemicals, and filtration</b> that flow through semiconductor fabs &mdash; the consumables used on <i>every wafer</i>. As chips get more advanced (more layers, smaller nodes, advanced packaging for AI/HBM), each wafer needs <b>more</b> of this content. So revenue rides the whole semiconductor ramp, not any one chip winner. It's a <span class="ac">"toll on every wafer."</span> The catch: it bought CMC Materials in 2022, taking on heavy <b>debt</b> that still shapes the equity story.</p>
+
+  <h2><span class="n">2</span> Moat &mdash; is the advantage durable?</h2>
+  <div class="moat">
+    <div class="ms"><div class="h"><span class="nm">Switching costs</span><span class="lv strong">Strong</span></div><div class="d">Materials are <b>qualified into each customer's exact process recipe</b>. Switching means re-qualifying &mdash; months of work and yield risk. This is the dominant moat.</div></div>
+    <div class="ms"><div class="h"><span class="nm">Cost advantage</span><span class="lv mod">Moderate</span></div><div class="d">Scale in ultra-high-purity manufacturing is genuinely hard to replicate cheaply.</div></div>
+    <div class="ms"><div class="h"><span class="nm">Intangibles</span><span class="lv mod">Moderate</span></div><div class="d">Decades of materials know-how, patents, and deep customer co-development.</div></div>
+    <div class="ms"><div class="h"><span class="nm">Network / scale</span><span class="lv weak">Weak</span></div><div class="d">No network effects; some niches have few credible suppliers (partial efficient scale).</div></div>
+  </div>
+  <p class="body"><b>Verdict: narrow-to-wide moat</b>, ~10&ndash;20yr durability, anchored by switching costs. Industry structure is favorable (high qualification barriers keep new entrants out; purity has no substitute). Historically ROIC &gt; WACC (value-creating) &mdash; though the CMC debt has compressed returns lately. <span class="ac">A genuinely high-quality business.</span> The question was never quality &mdash; it's <i>price</i>.</p>
+
+  <h2><span class="n">3</span> Three scenarios &mdash; the debt cuts both ways</h2>
+  <div class="scen">
+    <div class="r head"><div>Scenario</div><div>Value/sh</div><div>What it assumes</div></div>
+    <div class="r"><div class="nm bear">🐻 Bear</div><div class="v">~$9</div><div class="as">Weak cycle, slow FCF, debt lingers. The $4B debt <b>crushes</b> equity value &mdash; this is the real downside.</div></div>
+    <div class="r"><div class="nm base">⚖️ Base</div><div class="v">~$35</div><div class="as">Normal recovery + AI tailwind (~10% FCF growth), debt steadily paid down.</div></div>
+    <div class="r"><div class="nm bull">🐂 Bull</div><div class="v">~$70</div><div class="as">Strong AI-driven upcycle (~14% growth), fast deleveraging.</div></div>
+    <div class="r"><div class="nm wt">Prob-weighted</div><div class="v">~$34</div><div class="as">30% bear / 50% base / 20% bull. Skewed by that brutal bear.</div></div>
+  </div>
+  <p class="body"><b>The debt is the whole story.</b> A company with an ~$9B enterprise value is worth far less to <i>shareholders</i> after subtracting ~$4B net debt &mdash; and in the bear case the leverage is punishing. <span class="ac">High quality + high debt = you must size the position for the downside.</span></p>
+
+  <h2><span class="n">4</span> Reverse DCF &mdash; what is the market pricing in?</h2>
+  <div class="rev">
+    <h3>What growth does today's price imply?</h3>
+    <div class="sub">Enter the current ENTG share price. This solves for the 5-yr FCF growth the market must be assuming (base FCF ~$475M, WACC 10%, terminal 3%). The single best gut-check for "cheap or not."</div>
+    <div class="in"><label>ENTG price $</label><input id="px" type="number" value="100" min="5" max="300" step="1"></div>
+    <div class="out">
+      <div>The market is implying <span class="big" id="ig">—</span> FCF growth per year, for 5 years.</div>
+      <div class="verdict" id="rv">—</div>
+    </div>
+    <div class="hint">Gut-check: a semi-materials business compounds ~high-single to low-double-digit organically through a cycle. <b style="color:var(--green)">&lt;12%</b> = modest, room for upside · <b style="color:var(--accent-2)">12&ndash;18%</b> = a real recovery is required · <b style="color:var(--red)">&gt;20%</b> = priced for a big upcycle (demanding). Change the FCF assumption and this moves &mdash; verify it.</div>
+  </div>
+
+  <h2><span class="n">5</span> Multiples cross-check (estimates)</h2>
+  <div class="multi">
+    <div class="mc">EV/EBITDA 12&times; → <b>$49</b></div>
+    <div class="mc">16&times; → <b>$74</b></div>
+    <div class="mc">20&times; → <b>$99</b></div>
+    <div class="mc">P/E 20&times; → <b>$48</b></div>
+    <div class="mc">26&times; → <b>$62</b></div>
+    <div class="mc">32&times; → <b>$77</b></div>
+  </div>
+  <p class="body"><b>Notice the gap:</b> the base DCF (~$35) sits <i>well below</i> the multiples ($48&ndash;99). That's the tension to resolve: the multiples assume "normal/recovered" earnings; the DCF is harsh on the <i>depressed-now</i> reality. <span class="ac">The truth lives in between</span> &mdash; and the reverse DCF tells you which side today's price is betting on.</p>
+
+  <h2><span class="n">6</span> Risks</h2>
+  <div class="risk">
+    <div class="ri"><b>Leverage.</b> ~$4B net debt from CMC. Magnifies the downside; deleveraging pace is the swing factor.</div>
+    <div class="ri"><b>Cyclicality.</b> Semis boom and bust; FCF can stay depressed longer than you'd like.</div>
+    <div class="ri"><b>China.</b> Export controls can hit a chunk of sales.</div>
+    <div class="ri"><b>Integration / M&A.</b> Serial acquisitions can mask organic softness &mdash; watch organic growth + cash flow vs earnings.</div>
+  </div>
+
+  <h2><span class="n">7</span> The verdict</h2>
+  <div class="verdict-box">
+    <p><b>High-quality business, NOT an obvious bargain.</b> The moat is real (switching costs) and the AI-driven secular demand is real. But on base-case fundamentals it's worth ~$35, the bear case (~$9) is brutal because of the debt, and the bull (~$70) needs a strong upcycle. So Entegris is a <b>recovery + deleveraging bet on a quality compounder</b> &mdash; not a hidden cheap gem. <b>Use the reverse DCF at today's price:</b> if the implied growth looks easy, the quality may be on sale; if it's demanding, you're paying up for a recovery that has to show up. Either way: <b>size small for the leverage, and demand a margin of safety.</b></p>
+  </div>
+
+  <h2><span class="n">8</span> Verify before acting (every estimate → source)</h2>
+  <div class="check">
+    <div class="c"><span class="k">Share price</span><span class="v">today's quote — the reverse DCF needs it</span></div>
+    <div class="c"><span class="k">Free cash flow</span><span class="v">latest 10-K/10-Q; is capex easing, FCF recovering?</span></div>
+    <div class="c"><span class="k">Net debt</span><span class="v">balance sheet; is it actually coming down each quarter?</span></div>
+    <div class="c"><span class="k">Shares out</span><span class="v">latest filing (buybacks/dilution shift it)</span></div>
+    <div class="c"><span class="k">EBITDA / EPS</span><span class="v">to refresh the multiples cross-check</span></div>
+    <div class="c"><span class="k">Growth</span><span class="v">recent organic revenue trend vs the reverse-DCF bar</span></div>
+  </div>
+
+  <div class="foot">
+    <a href="spotlight.html">&larr; Stock Spotlight</a>
+    <a href="library/valuation.html">The valuation method</a>
+    <a href="ai-ripple.html">AI Ripple</a>
+  </div>
+  <p class="disc">Educational analysis, not financial advice. All figures are estimates pending verification. A single-name deep-dive is a worked example of the method &mdash; the same process applies to any stock. Do your own research, value it yourself, and size for the downside.</p>
+</div>
+
+<script>
+(function(){
+  var SHARES=152, NET_DEBT=4000, FCF0=475, N=5, gT=0.03, wacc=0.10;
+  function ev(g){ var pv=0, fcf=FCF0; for(var t=1;t<=N;t++){ fcf*=(1+g); pv+=fcf/Math.pow(1+wacc,t);} var tv=fcf*(1+gT)/(wacc-gT); return pv+tv/Math.pow(1+wacc,N); }
+  function impliedGrowth(price){
+    var target=price*SHARES+NET_DEBT, lo=-0.10, hi=0.40;
+    for(var i=0;i<60;i++){ var mid=(lo+hi)/2; if(ev(mid)<target) lo=mid; else hi=mid; }
+    return (lo+hi)/2;
+  }
+  var px=document.getElementById('px'), ig=document.getElementById('ig'), rv=document.getElementById('rv');
+  function update(){
+    var p=parseFloat(px.value);
+    if(!(p>0)){ ig.textContent='—'; rv.textContent='—'; return; }
+    var g=impliedGrowth(p)*100;
+    ig.textContent=g.toFixed(1)+'%';
+    var label, col;
+    if(g<12){ label='Modest expectations — if quality holds, there may be room.'; col='var(--green)'; }
+    else if(g<18){ label='A real recovery is required to justify this. Fair-ish.'; col='var(--accent-2)'; }
+    else if(g<25){ label='Demanding — the market is pricing a strong upcycle.'; col='var(--red)'; }
+    else { label='Very demanding — priced for a big AI-driven boom. Little margin.'; col='var(--red)'; }
+    rv.textContent=label; rv.style.color=col;
+  }
+  px.addEventListener('input', update);
+  update();
+})();
+</script>
+</body>
+</html>
