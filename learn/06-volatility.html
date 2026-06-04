@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6 · Volatility, the thing you can predict · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,7.5vw,68px);line-height:1.02;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout.warn{border-color:rgba(240,133,125,0.35);} .callout.warn .tag{color:var(--down);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(20px,3vw,30px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px;}
+  .chartwrap{position:relative;}
+  svg.chart{display:block;width:100%;height:auto;background:#0c0c18;border:1px solid var(--rule);border-radius:12px;}
+  .ctrls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+  .btn{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);background:var(--bg);border:1px solid var(--rule);border-radius:9px;padding:10px 16px;cursor:pointer;transition:.16s;} .btn:hover{border-color:var(--accent);}
+  .btn.on{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+  .readout{margin-top:14px;font-size:14px;color:var(--muted);line-height:1.55;} .readout b{color:var(--up);}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .cta{margin-top:44px;background:linear-gradient(180deg,rgba(184,192,255,0.08),transparent),var(--bg-2);border:1px solid rgba(184,192,255,0.3);border-radius:16px;padding:28px;text-align:center;}
+  .cta h3{font-family:var(--serif);font-size:28px;font-weight:500;margin-bottom:8px;} .cta p{color:var(--muted);font-size:15px;margin-bottom:0;}
+  .nextnav{margin-top:50px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 6 · the real edge</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 6 · The real edge</div>
+  <h1>Volatility: the thing you <em>can</em> predict.</h1>
+  <p class="standfirst">Lesson 5 ended on a claim: you can't predict whether a price goes up or down, but you <em>can</em> predict how <em>wild</em> tomorrow will be. This lesson proves it, and shows the models that do it.</p>
+  <p class="meta-line">~9 min · builds on Lesson 5 · with a volatility-clustering simulator</p>
+
+  <h2>Direction is a coin flip. <em>Size</em> isn't.</h2>
+  <p>Ask "will the price be higher tomorrow?" and the honest answer is roughly 50/50. We tested it: a real model on daily Bitcoin got <span class="hl">~49.5%</span> accuracy. A coin flip. Markets price in what's knowable, so the next move is mostly noise.</p>
+  <p>But ask a different question, "how <em>big</em> will tomorrow's move be, up or down?", and suddenly there's structure. Big days cluster. A violent day tends to be followed by another violent day; a calm stretch stays calm. That clustering is <span class="hl-2">volatility</span>, and unlike direction, it's <strong>forecastable</strong>.</p>
+
+  <div class="pull">You can't say <span style="font-style:normal;color:var(--accent)">which way</span>. You can often say <span style="font-style:normal;color:var(--accent-2)">how much</span>.</div>
+
+  <div class="terms">
+    <dt>volatility</dt><dd>How much returns swing around, usually the standard deviation of returns. Not direction, just <em>magnitude</em> of movement.</dd>
+    <dt>volatility clustering</dt><dd>The empirical fact that big moves follow big moves and calm follows calm. The whole reason vol is predictable.</dd>
+    <dt>EWMA</dt><dd>Exponentially-weighted moving average. A simple vol forecast that weights recent days more. RiskMetrics' classic: 94% weight on yesterday's estimate, 6% on yesterday's squared return.</dd>
+    <dt>GARCH(1,1)</dt><dd>A vol model that adds <em>mean reversion</em>: today's vol = a baseline + a piece of yesterday's shock + a piece of yesterday's vol. It pulls back toward a long-run level.</dd>
+  </div>
+
+  <h2>Watch the clustering</h2>
+  <p>Below is a stream of daily returns. Toggle the volatility forecast on and watch how it <span class="hl">rises right after a shock and decays as things calm</span>. That responsiveness is the edge: knowing tomorrow is likely to be stormy is worth real money, even if you can't say which direction.</p>
+
+  <div class="sim">
+    <div class="sim-title">Volatility-clustering simulator</div>
+    <div class="chartwrap">
+      <svg class="chart" id="chart" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="ctrls">
+      <button class="btn on" id="bForecast">Show vol forecast</button>
+      <button class="btn" id="bShock">Inject a shock</button>
+      <button class="btn" id="bReset">New data</button>
+    </div>
+    <div class="readout" id="readout">Grey bars = daily returns (up or down). The gold line = the EWMA volatility forecast. Notice it spikes after a cluster of big bars, then fades.</div>
+  </div>
+
+  <h2>Do the real models beat a dumb guess?</h2>
+  <p>The honest test (we ran it on Bitcoin): forecast tomorrow's variance, then compare to what actually happened, on data the model never saw. The bar to clear is a <strong>dumb baseline</strong>, "tomorrow's vol = the recent average." Beating zero is easy; beating the dumb baseline is the real test.</p>
+  <p>The result: both <span class="hl">EWMA</span> and <span class="hl">GARCH</span> beat the baseline out-of-sample, by a modest but real margin (GARCH tracked the changes best, ~0.23 correlation with next-day moves). Small, but genuine, and the opposite of the direction result, which was nothing.</p>
+
+  <div class="callout">
+    <div class="tag">Why this matters</div>
+    <p>Risk is the one thing you can see coming. That's why <strong>everything practical is built on it</strong>: position sizing (bet less when vol is high), options pricing (vol IS the price), risk limits, and the vol-targeting overlays that keep a portfolio's risk roughly constant. You forecast the storm, not the direction of the wind.</p>
+  </div>
+
+  <div class="callout warn">
+    <div class="tag">The trap</div>
+    <p>"Predictable" is not "huge." The edge over the dumb baseline was ~1%. And we found it on <em>one</em> asset, <em>one</em> period. Before trusting it: re-test on another market and timeframe. Vol is the most honest signal in markets, but it's still small, and small edges die fast when you stop checking.</p>
+  </div>
+
+  <div class="check">
+    <div class="q">A stock just had three huge down-days in a row. What does a volatility model predict for tomorrow?</div>
+    <button class="opt" data-c="0">The price will keep falling (the trend continues).
+      <span class="verdict">No, that's direction, and direction is ~a coin flip. The model says nothing about which way.</span></button>
+    <button class="opt" data-c="1">Tomorrow will probably be another big move, up or down.
+      <span class="verdict">Right. Volatility clusters, so a stormy stretch predicts more storm, magnitude only, not direction.</span></button>
+    <button class="opt" data-c="0">Tomorrow will be calm (it has to revert).
+      <span class="verdict">No, vol mean-reverts slowly. Right after a cluster of shocks, the forecast is HIGH, not low.</span></button>
+  </div>
+
+  <div class="cta">
+    <h3>You can forecast risk, not direction.</h3>
+    <p>That single asymmetry is what real quant is built on. Next: a cautionary tale about a signal that looked real and wasn't.</p>
+  </div>
+
+  <div class="nextnav"><a href="05-ml-honestly.html">← Lesson 5</a><a href="07-alt-data.html">Lesson 7: The false-positive trap →</a></div>
+</div>
+<script>
+(function(){
+  var svg=document.getElementById('chart'), W=600, H=220, mid=H*0.5;
+  var N=80, rets=[], vol=[], showF=true;
+  function rnd(){ return (Math.random()*2-1); }
+  function gen(){
+    rets=[]; vol=[]; var v=0.02;
+    for(var i=0;i<N;i++){
+      // vol clusters: occasional regime of high variance
+      if(Math.random()<0.05) v=0.06;            // shock onset
+      v = 0.9*v + 0.1*0.02 + 0.0;               // decay toward baseline
+      var r = rnd()*v*3;                        // today's return ~ scaled by vol
+      rets.push(r);
+      // EWMA forecast (lambda 0.94), one-step-ahead
+      var prev = i===0?0.0004:vol[i-1];
+      vol.push(0.94*prev + 0.06*(r*r));
+    }
+  }
+  function draw(){
+    var maxR=Math.max.apply(null,rets.map(Math.abs))||0.1;
+    var maxV=Math.max.apply(null,vol)||0.001;
+    var bw=W/N, parts=[];
+    // zero line
+    parts.push('<line x1="0" y1="'+mid+'" x2="'+W+'" y2="'+mid+'" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>');
+    // return bars
+    for(var i=0;i<N;i++){
+      var h=Math.abs(rets[i])/maxR*(mid-12);
+      var y=rets[i]>=0?mid-h:mid;
+      parts.push('<rect x="'+(i*bw+1).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(bw-1.5).toFixed(1)+'" height="'+h.toFixed(1)+'" fill="rgba(184,192,255,0.32)"/>');
+    }
+    // vol forecast line (sqrt of variance -> vol scale)
+    if(showF){
+      var d='';
+      for(var j=0;j<N;j++){
+        var vy = H-14 - (Math.sqrt(vol[j])/Math.sqrt(maxV))*(H*0.42);
+        d += (j===0?'M':'L')+(j*bw+bw/2).toFixed(1)+','+vy.toFixed(1)+' ';
+      }
+      parts.push('<path d="'+d+'" fill="none" stroke="#f3d59a" stroke-width="2.5"/>');
+    }
+    svg.innerHTML=parts.join('');
+  }
+  function refresh(){ gen(); draw(); }
+  document.getElementById('bForecast').addEventListener('click',function(){ showF=!showF; this.classList.toggle('on',showF); draw(); });
+  document.getElementById('bShock').addEventListener('click',function(){
+    // splice a violent cluster into the middle and recompute EWMA
+    var k=Math.floor(N*0.45);
+    for(var i=k;i<k+6;i++){ rets[i]=rnd()*0.14; }
+    for(var j=1;j<N;j++){ vol[j]=0.94*vol[j-1]+0.06*(rets[j]*rets[j]); }
+    draw();
+  });
+  document.getElementById('bReset').addEventListener('click',refresh);
+  document.querySelectorAll('.opt').forEach(function(o){
+    o.addEventListener('click',function(){
+      document.querySelectorAll('.opt').forEach(function(x){x.classList.remove('right','wrong');});
+      o.classList.add(o.dataset.c==='1'?'right':'wrong');
+    });
+  });
+  refresh();
+})();
+</script>
+</body>
+</html>
