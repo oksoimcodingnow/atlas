@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japanese · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#101024; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --pink:#ff8db3; --green:#5fd39a;
+    --gutter:clamp(16px,4vw,40px);
+    --sans:'Inter Tight',-apple-system,sans-serif; --jp:'Noto Sans JP',sans-serif;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:16px var(--gutter);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--pink);}
+  .back{font-size:12px;color:var(--muted);padding:8px 13px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);}
+
+  .wrap{max-width:760px;margin:0 auto;padding:clamp(14px,3vw,28px) var(--gutter) 90px;}
+  h1{font-size:clamp(32px,7vw,52px);font-weight:700;letter-spacing:-0.02em;line-height:1;}
+  h1 .jp{font-family:var(--jp);color:var(--pink);font-weight:700;}
+  .lede{color:var(--muted);margin-top:8px;font-size:14.5px;}
+  .lede b{color:var(--gold);}
+
+  /* tabs */
+  .tabs{display:flex;gap:6px;margin:20px 0 18px;flex-wrap:wrap;}
+  .tab{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:9px 16px;cursor:pointer;transition:.15s;}
+  .tab.on{background:var(--pink);color:#1a0a12;border-color:var(--pink);}
+  .tab:not(.on):hover{color:var(--text);background:rgba(255,141,179,0.08);}
+
+  .panel{display:none;} .panel.on{display:block;}
+
+  /* hiragana grid */
+  .hgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+  @media(max-width:480px){ .hgrid{gap:5px;} }
+  .kana{aspect-ratio:1;border:1px solid var(--rule);border-radius:12px;background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.13s;}
+  .kana:hover,.kana:active{border-color:var(--pink);background:#1c1424;transform:translateY(-2px);}
+  .kana.empty{border:0;background:transparent;cursor:default;}
+  .kana .c{font-family:var(--jp);font-size:clamp(22px,5.5vw,30px);font-weight:500;line-height:1;}
+  .kana .r{font-size:11px;color:var(--muted);margin-top:4px;}
+  .hint{font-size:12.5px;color:var(--faint);margin:14px 0 4px;text-align:center;}
+
+  /* phrase / vocab cards */
+  .cards{display:flex;flex-direction:column;gap:9px;}
+  .pc{display:flex;align-items:center;gap:14px;border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:14px 16px;cursor:pointer;transition:.14s;}
+  .pc:hover{border-color:var(--pink);background:#161425;}
+  .pc .spk{flex-shrink:0;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,141,179,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--pink);}
+  .pc .jp{font-family:var(--jp);font-size:21px;font-weight:500;line-height:1.2;}
+  .pc .ro{font-size:12.5px;color:var(--gold);margin-top:2px;}
+  .pc .en{font-size:13px;color:var(--muted);margin-top:1px;}
+
+  /* practice / flashcards */
+  .deckpick{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+  .deckpick button{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:8px 14px;cursor:pointer;}
+  .deckpick button.on{background:var(--accent);color:#0a0a14;border-color:var(--accent);}
+  .flash{border:1px solid var(--rule);border-radius:20px;background:var(--panel);padding:34px 22px;text-align:center;min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;}
+  .flash .front{font-family:var(--jp);font-size:clamp(44px,12vw,72px);font-weight:500;line-height:1;}
+  .flash .reveal{margin-top:18px;}
+  .flash .ro{font-size:20px;color:var(--gold);} .flash .en{font-size:16px;color:var(--muted);margin-top:5px;}
+  .flash .tap{font-size:12px;color:var(--faint);margin-top:18px;}
+  .grades{display:flex;gap:10px;margin-top:14px;}
+  .grades button{flex:1;font-family:var(--sans);font-size:14px;font-weight:600;border:0;border-radius:12px;padding:13px;cursor:pointer;}
+  .grades .again{background:rgba(255,122,138,0.18);color:#ff9bab;}
+  .grades .good{background:rgba(95,211,154,0.18);color:var(--green);}
+  .prog{text-align:center;font-size:12.5px;color:var(--muted);margin-top:14px;}
+  .prog b{color:var(--green);}
+
+  .foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--rule);font-size:12px;color:var(--faint);text-align:center;}
+  .foot b{color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>日本語</span></div><a class="back" href="index.html">&larr; Home</a></div>
+
+<div class="wrap">
+  <h1>Learn <span class="jp">日本語</span></h1>
+  <p class="lede">Tap anything to <b>hear it spoken</b>. Start with hiragana, learn real phrases, then practice with flashcards.</p>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-p="hira">Hiragana</button>
+    <button class="tab" data-p="phrases">Phrases</button>
+    <button class="tab" data-p="numbers">Numbers</button>
+    <button class="tab" data-p="practice">Practice</button>
+  </div>
+
+  <div class="panel on" id="p-hira">
+    <p class="hint">あ い う え お &mdash; the 46 building blocks. Tap to hear each sound.</p>
+    <div class="hgrid" id="hgrid"></div>
+  </div>
+
+  <div class="panel" id="p-phrases">
+    <div class="cards" id="phrases"></div>
+  </div>
+
+  <div class="panel" id="p-numbers">
+    <div class="cards" id="numbers"></div>
+  </div>
+
+  <div class="panel" id="p-practice">
+    <div class="deckpick" id="deckpick"></div>
+    <div class="flash" id="flash"><div class="front" id="fFront">…</div><div class="reveal" id="fReveal" style="display:none"><div class="ro" id="fRo"></div><div class="en" id="fEn"></div></div><div class="tap" id="fTap">tap card to flip</div></div>
+    <div class="grades" id="grades" style="display:none"><button class="again" id="gAgain">Again</button><button class="good" id="gGood">Got it</button></div>
+    <div class="prog" id="prog"></div>
+  </div>
+
+  <p class="foot"><b>Tip:</b> if you hear nothing, your device may lack a Japanese voice. On most phones it works out of the box. 頑張って (good luck!)</p>
+</div>
+
+<script>
+(function(){
+  // ── speak (browser TTS) ──
+  function jpVoice(){
+    var vs = speechSynthesis.getVoices() || [];
+    return vs.find(function(v){return v.lang && v.lang.toLowerCase().indexOf('ja')===0;}) || null;
+  }
+  function speak(text){
+    if(!window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='ja-JP'; u.rate=0.85;
+    var v=jpVoice(); if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }
+  if(window.speechSynthesis) speechSynthesis.onvoiceschanged=function(){};
+
+  // ── data ──
+  var HIRA=[
+    ['あ','a'],['い','i'],['う','u'],['え','e'],['お','o'],
+    ['か','ka'],['き','ki'],['く','ku'],['け','ke'],['こ','ko'],
+    ['さ','sa'],['し','shi'],['す','su'],['せ','se'],['そ','so'],
+    ['た','ta'],['ち','chi'],['つ','tsu'],['て','te'],['と','to'],
+    ['な','na'],['に','ni'],['ぬ','nu'],['ね','ne'],['の','no'],
+    ['は','ha'],['ひ','hi'],['ふ','fu'],['へ','he'],['ほ','ho'],
+    ['ま','ma'],['み','mi'],['む','mu'],['め','me'],['も','mo'],
+    ['や','ya'],['','' ],['ゆ','yu'],['','' ],['よ','yo'],
+    ['ら','ra'],['り','ri'],['る','ru'],['れ','re'],['ろ','ro'],
+    ['わ','wa'],['','' ],['','' ],['','' ],['を','wo'],
+    ['ん','n'],['','' ],['','' ],['','' ],['','' ]
+  ];
+  var PHRASES=[
+    ['こんにちは','konnichiwa','Hello (daytime)'],
+    ['おはようございます','ohayō gozaimasu','Good morning'],
+    ['こんばんは','konbanwa','Good evening'],
+    ['ありがとうございます','arigatō gozaimasu','Thank you'],
+    ['すみません','sumimasen','Excuse me / Sorry'],
+    ['はい','hai','Yes'],
+    ['いいえ','iie','No'],
+    ['おねがいします','onegaishimasu','Please'],
+    ['はじめまして','hajimemashite','Nice to meet you'],
+    ['わかりません','wakarimasen','I don’t understand'],
+    ['いくらですか','ikura desu ka','How much is it?'],
+    ['トイレはどこですか','toire wa doko desu ka','Where is the toilet?'],
+    ['おいしい','oishii','Delicious!'],
+    ['さようなら','sayōnara','Goodbye']
+  ];
+  var NUMBERS=[
+    ['いち','ichi','1'],['に','ni','2'],['さん','san','3'],['よん','yon','4'],['ご','go','5'],
+    ['ろく','roku','6'],['なな','nana','7'],['はち','hachi','8'],['きゅう','kyū','9'],['じゅう','jū','10']
+  ];
+
+  // ── hiragana grid ──
+  var hg=document.getElementById('hgrid');
+  HIRA.forEach(function(p){
+    var d=document.createElement('div');
+    if(!p[0]){ d.className='kana empty'; hg.appendChild(d); return; }
+    d.className='kana';
+    d.innerHTML='<span class="c">'+p[0]+'</span><span class="r">'+p[1]+'</span>';
+    d.addEventListener('click',function(){ speak(p[0]); d.style.borderColor='var(--pink)'; setTimeout(function(){d.style.borderColor='';},400); });
+    hg.appendChild(d);
+  });
+
+  // ── phrase + number cards ──
+  function buildCards(into, rows){
+    rows.forEach(function(p){
+      var c=document.createElement('div'); c.className='pc';
+      c.innerHTML='<div class="spk">&#9658;</div><div><div class="jp">'+p[0]+'</div><div class="ro">'+p[1]+'</div><div class="en">'+p[2]+'</div></div>';
+      c.addEventListener('click',function(){ speak(p[0]); });
+      into.appendChild(c);
+    });
+  }
+  buildCards(document.getElementById('phrases'), PHRASES);
+  buildCards(document.getElementById('numbers'), NUMBERS);
+
+  // ── tabs ──
+  document.getElementById('tabs').addEventListener('click',function(e){
+    var b=e.target.closest('.tab'); if(!b) return;
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('on',t===b);});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
+    document.getElementById('p-'+b.dataset.p).classList.add('on');
+  });
+
+  // ── practice (flashcards) ──
+  var DECKS={
+    Hiragana: HIRA.filter(function(p){return p[0];}).map(function(p){return [p[0],p[1],'sound'];}),
+    Phrases: PHRASES,
+    Numbers: NUMBERS
+  };
+  var deckName='Phrases', queue=[], idx=0, flipped=false, known=0, total=0;
+  var dp=document.getElementById('deckpick');
+  Object.keys(DECKS).forEach(function(name){
+    var b=document.createElement('button'); b.textContent=name; b.className=(name===deckName?'on':'');
+    b.addEventListener('click',function(){ deckName=name; document.querySelectorAll('#deckpick button').forEach(function(x){x.classList.toggle('on',x===b);}); startDeck(); });
+    dp.appendChild(b);
+  });
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function startDeck(){ queue=shuffle(DECKS[deckName]); idx=0; known=0; total=queue.length; flipped=false; show(); }
+  function show(){
+    if(!queue.length){ return; }
+    var card=queue[idx%queue.length];
+    document.getElementById('fFront').textContent=card[0];
+    document.getElementById('fRo').textContent=card[1];
+    document.getElementById('fEn').textContent=card[2];
+    document.getElementById('fReveal').style.display='none';
+    document.getElementById('fTap').style.display='block';
+    document.getElementById('grades').style.display='none';
+    flipped=false;
+    document.getElementById('prog').innerHTML='Card '+((idx%queue.length)+1)+' of '+queue.length+'  &middot;  <b>'+known+'</b> got';
+    speak(card[0]);
+  }
+  document.getElementById('flash').addEventListener('click',function(){
+    if(flipped) return;
+    flipped=true;
+    document.getElementById('fReveal').style.display='block';
+    document.getElementById('fTap').style.display='none';
+    document.getElementById('grades').style.display='flex';
+    speak(queue[idx%queue.length][0]);
+  });
+  document.getElementById('gGood').addEventListener('click',function(e){ e.stopPropagation(); known++; next(); });
+  document.getElementById('gAgain').addEventListener('click',function(e){ e.stopPropagation(); queue.push(queue[idx%queue.length]); next(); });
+  function next(){ idx++; show(); }
+  startDeck();
+})();
+</script>
+</body>
+</html>
