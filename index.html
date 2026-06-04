@@ -500,6 +500,7 @@ function esc(s) {
 function makeTile(p) {
   const tile = document.createElement('div');
   tile.className = 'tile' + (p.status === 'planned' ? ' planned' : '');
+  tile.dataset.tour = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   tile.style.setProperty('--tile-color', p.color);
   const actionsHtml = p.actions.map(a => {
     const cls = 'btn' + (a.primary ? ' primary' : '');
@@ -554,7 +555,19 @@ function tick() {
 }
 tick();
 setInterval(tick, 30000);
+
+// Guided tour (the "? Tour" button, bottom-right)
+window.atlasTourId = 'home';
+window.atlasTourSteps = [
+  { title: 'Welcome to Atlas', body: 'Your personal hub. Quick 20-second tour of what is here, and the one thing that trips everyone up.' },
+  { sel: '[data-tour="ai-investing-map"]', title: 'The investing kit', body: 'Your stock-research maps. Open <b>Big Picture</b> first, then branch into Semiconductors, the AI Ripple, or Spotlight.' },
+  { sel: '[data-tour="japanese"]', title: 'Learn Japanese', body: 'Tap any character or phrase to <b>hear it spoken</b>. There is a flashcard practice mode too.' },
+  { sel: '[data-tour="library"]', title: 'The Library', body: 'Lessons and reference: the Quant Academy, formulas, terminal commands, and how to debug.' },
+  { title: 'The one gotcha: stale pages', body: 'If a page ever looks old or will not open, <b>close Atlas completely and reopen it twice</b>. It auto-updates after that. This is the number-one confusion, now you know the fix.' },
+  { title: 'That is the tour', body: 'Tap any tile to dive in. Replay this anytime with the <b>? Tour</b> button in the corner.' }
+];
 </script>
 <script src="lib/atlas-fx.js"></script>
+<script src="lib/tour.js"></script>
 </body>
 </html>

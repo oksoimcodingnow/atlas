@@ -206,5 +206,14 @@
   render();
 })();
 </script>
+<script>
+window.atlasTourId = 'semi';
+window.atlasTourSteps = [
+  { sel: '.legend', title: 'Read the bubbles', body: 'Each company is a bubble. <b>Width = market cap</b> (bigger company = wider). <b>Colour = moat</b> (green wide, gold moderate, grey narrow).' },
+  { sel: '.flow', title: 'Filter by stage', body: 'Tap a stage in the chain to show only its companies. Tap it again to see all of them.' },
+  { sel: '#detail', title: 'Tap any bubble', body: 'Tap a company bubble and its details (what it does, its moat, its role) appear right here.' }
+];
+</script>
+<script src="lib/tour.js"></script>
 </body>
 </html>
