@@ -10,141 +10,164 @@
 <meta name="theme-color" content="#0a0a14">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
-    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --accent-2:#f3d59a;
-    --chip:#b8c0ff; --ai:#f3d59a; --power:#ff7a8a; --raw:#6fcf8e;
-    --gutter:clamp(16px,4vw,40px);
-    --sans:'Inter Tight',-apple-system,sans-serif; --mono:ui-monospace,Consolas,monospace;
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#101024; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a;
+    --chip:#b8c0ff; --ai:#f3d59a; --power:#ff8d6b; --raw:#5fd39a;
+    --gutter:clamp(18px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif;
   }
   html,body{background:var(--bg);color:var(--text);}
-  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
-  ::selection{background:var(--accent);color:var(--bg);} a{color:inherit;text-decoration:none;}
+  body{font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
   body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:radial-gradient(700px 380px at 80% -10%,rgba(184,192,255,0.10),transparent 62%),
-               radial-gradient(560px 320px at 10% 108%,rgba(111,207,142,0.07),transparent 62%);}
+    background:radial-gradient(680px 420px at 78% -12%,rgba(184,192,255,0.12),transparent 60%),
+               radial-gradient(560px 360px at 8% 112%,rgba(95,211,154,0.08),transparent 60%);}
 
-  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
-  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
-  .back{font-size:12px;color:var(--muted);padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:17px;}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
   .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
 
-  .wrap{position:relative;z-index:2;max-width:780px;margin:0 auto;padding:clamp(26px,5vw,48px) var(--gutter) 80px;}
-  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:10px;}
-  h1{font-size:clamp(32px,7vw,60px);font-weight:700;letter-spacing:-0.025em;line-height:0.98;}
-  h1 em{font-style:normal;color:var(--accent);}
-  .lede{color:var(--muted);max-width:600px;margin-top:14px;font-size:15.5px;}
-  .lede b{color:var(--text);}
+  .wrap{position:relative;z-index:2;max-width:780px;margin:0 auto;padding:clamp(20px,4vw,40px) var(--gutter) 80px;text-align:center;}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(48px,11vw,96px);line-height:0.92;letter-spacing:-0.02em;}
+  h1 em{font-style:italic;color:var(--gold);}
+  .lede{font-family:var(--serif);font-size:clamp(19px,2.6vw,26px);color:var(--muted);max-width:30ch;margin:14px auto 0;line-height:1.35;text-wrap:balance;}
 
-  /* the journey rail */
-  .journey{position:relative;margin-top:34px;padding-left:34px;}
-  .journey::before{content:'';position:absolute;left:12px;top:6px;bottom:40px;width:2px;
-    background:linear-gradient(180deg,var(--chip) 0%,var(--chip) 24%,var(--ai) 34%,var(--ai) 46%,var(--power) 56%,var(--power) 70%,var(--raw) 80%,var(--raw) 100%);opacity:0.5;}
+  /* the cycle diagram */
+  .cycle{margin:clamp(20px,4vw,40px) auto 0;max-width:460px;}
+  svg.ring{display:block;width:100%;height:auto;overflow:visible;}
+  .ring-track{fill:none;stroke:rgba(184,192,255,0.16);stroke-width:1.5;stroke-dasharray:3 5;}
+  .pulse-rot{transform-origin:240px 240px;animation:spin 9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .pulse{fill:#fff;filter:drop-shadow(0 0 7px rgba(184,192,255,0.9));}
+  .node{cursor:pointer;}
+  .node .dot{transition:transform .18s ease-out;transform-origin:center;}
+  .node:hover .dot{transform:scale(1.12);}
+  .node .ic{font-size:27px;pointer-events:none;}
+  .node .lbl{font-family:var(--sans);font-size:13px;font-weight:600;pointer-events:none;}
+  .center-l{font-family:var(--serif);font-style:italic;fill:var(--muted);font-size:15px;}
+  .center-s{font-family:var(--sans);fill:var(--faint);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;}
+  @media (prefers-reduced-motion: reduce){ .pulse-rot{animation:none;} }
 
-  .phase{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;margin:24px 0 12px;}
-  .phase:first-child{margin-top:0;}
-  .phase.chip{color:var(--chip);} .phase.ai{color:var(--ai);} .phase.power{color:var(--power);} .phase.raw{color:var(--raw);}
+  .phases{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 16px;margin-top:8px;font-size:12.5px;color:var(--muted);}
+  .ph{display:flex;align-items:center;gap:7px;} .ph i{width:11px;height:11px;border-radius:50%;display:inline-block;}
 
-  .stop{position:relative;margin-bottom:11px;}
-  .stop .dot{position:absolute;left:-29px;top:15px;width:14px;height:14px;border-radius:50%;border:2px solid var(--bg);box-shadow:0 0 0 2px currentColor;}
-  .stop.chip .dot{color:var(--chip);background:var(--chip);}
-  .stop.ai .dot{color:var(--ai);background:var(--ai);}
-  .stop.power .dot{color:var(--power);background:var(--power);}
-  .stop.raw .dot{color:var(--raw);background:var(--raw);}
-  .card{display:block;border:1px solid var(--rule);border-radius:13px;background:var(--panel);padding:13px 16px;transition:all .15s;}
-  .card:hover{border-color:var(--accent);background:#15152e;transform:translateX(2px);}
-  .card .h{display:flex;align-items:center;gap:10px;}
-  .card .ico{font-size:20px;} .card .nm{font-weight:700;font-size:15.5px;}
-  .card .ln{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.45;}
-  .card .go{font-size:11.5px;color:var(--accent);font-weight:600;margin-top:8px;display:inline-block;}
-  .card.flat{cursor:default;} .card.flat:hover{transform:none;border-color:var(--rule);background:var(--panel);}
+  .loopnote{margin:26px auto 0;max-width:34ch;font-family:var(--serif);font-size:clamp(17px,2.2vw,21px);line-height:1.4;color:var(--text);}
+  .loopnote b{color:var(--raw);font-weight:600;font-style:italic;}
 
-  /* loop insight */
-  .loop{position:relative;margin:6px 0 6px -2px;padding:13px 16px;border:1px dashed rgba(111,207,142,0.5);border-radius:13px;background:rgba(111,207,142,0.05);}
-  .loop .t{font-weight:700;color:var(--raw);font-size:13.5px;}
-  .loop p{font-size:13px;color:#cfe6d6;margin-top:4px;line-height:1.5;}
+  /* the edge spectrum */
+  .edge{margin:clamp(30px,5vw,48px) auto 0;max-width:560px;}
+  .edge .cap{font-size:13px;color:var(--muted);margin-bottom:10px;}
+  .edge .cap b{color:var(--text);}
+  .spectrum{height:14px;border-radius:8px;background:linear-gradient(90deg,#ff7a8a,#f3d59a 52%,#5fd39a);}
+  .ends{display:flex;justify-content:space-between;margin-top:7px;font-size:11px;font-weight:600;}
+  .ends .l{color:#ff8d8d;} .ends .r{color:#5fd39a;}
+  .pins{position:relative;height:42px;margin-top:2px;font-size:11px;}
+  .pin{position:absolute;transform:translateX(-50%);color:var(--muted);text-align:center;line-height:1.2;}
+  .pin::before{content:'';display:block;width:1px;height:9px;background:var(--rule);margin:0 auto 4px;}
 
-  /* valuation cap */
-  .cap{margin-top:26px;border:1px solid rgba(184,192,255,0.4);border-radius:16px;padding:18px 20px;background:linear-gradient(180deg,rgba(184,192,255,0.07),transparent);}
-  .cap .t{font-weight:700;font-size:17px;}
-  .cap p{font-size:13.5px;color:var(--muted);margin-top:5px;line-height:1.5;}
-  .cap a{display:inline-block;margin-top:11px;font-size:13px;font-weight:600;color:var(--bg);background:var(--accent);padding:9px 16px;border-radius:999px;}
+  /* deep-dive tiles */
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:clamp(30px,5vw,48px);text-align:left;}
+  @media(max-width:520px){ .tiles{grid-template-columns:1fr;} }
+  .tile{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid var(--rule);border-radius:16px;background:var(--panel);transition:.18s;}
+  .tile:hover{border-color:var(--accent);background:#16162f;transform:translateY(-2px);}
+  .tile .e{font-size:30px;line-height:1;flex-shrink:0;}
+  .tile .t{font-weight:700;font-size:15.5px;}
+  .tile .s{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .tile .arr{margin-left:auto;color:var(--faint);font-size:18px;}
+  .tile:hover .arr{color:var(--accent);}
 
-  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px;font-size:12px;color:var(--muted);}
-  .legend .it{display:flex;align-items:center;gap:6px;} .legend .sw{width:11px;height:11px;border-radius:3px;}
-  .disc{margin-top:18px;font-size:12px;color:var(--faint);line-height:1.55;border-left:2px solid var(--rule);padding-left:14px;}
+  .foot{margin-top:34px;font-size:12px;color:var(--faint);line-height:1.5;max-width:48ch;margin-left:auto;margin-right:auto;}
 </style>
 </head>
 <body>
-<div class="top-bar"><div class="brand">Atlas · <span>Big Picture</span></div><a class="back" href="index.html">&larr; Atlas</a></div>
+<div class="top-bar"><div class="brand">Atlas</div><a class="back" href="index.html">&larr; Home</a></div>
 
 <div class="wrap">
-  <div class="eyebrow">One flow, end to end</div>
-  <h1>From sand to <em>stocks.</em></h1>
-  <p class="lede">The whole thesis in one picture: how a grain of sand becomes intelligence &mdash; and <b>every place an investor can stand</b> along the way. Each stop links to its deep-dive. Follow the rail down.</p>
+  <h1>From sand<br>to <em>stocks.</em></h1>
+  <p class="lede">The whole AI economy is one loop. Tap any stage to go deeper.</p>
 
-  <div class="journey" id="journey"></div>
+  <!-- ── the cycle ── -->
+  <div class="cycle">
+    <svg class="ring" viewBox="0 0 480 480" role="img" aria-label="The AI economy as a cycle: materials, chips, AI, power, cooling, raw earth">
+      <circle class="ring-track" cx="240" cy="240" r="150"></circle>
 
-  <div class="cap">
-    <div class="t">Found something interesting anywhere on this map?</div>
-    <p>A spot on the chain isn't an investment yet. The last step is always the same: figure out what it's <i>worth</i>, and only buy below that with a margin of safety.</p>
-    <a href="library/valuation.html">→ Now value it</a>
+      <!-- travelling pulse -->
+      <g class="pulse-rot"><circle class="pulse" cx="240" cy="90" r="5.5"></circle></g>
+
+      <!-- center label -->
+      <text class="center-l" x="240" y="234" text-anchor="middle">it&rsquo;s a cycle</text>
+      <text class="center-s" x="240" y="256" text-anchor="middle">not a line</text>
+
+      <!-- nodes (clockwise from top) -->
+      <a href="semiconductors.html" class="node" aria-label="Materials">
+        <circle class="dot" cx="240" cy="90" r="30" fill="#1a1a38" stroke="#b8c0ff" stroke-width="2"></circle>
+        <text class="ic" x="240" y="99" text-anchor="middle">&#9935;</text>
+        <text class="lbl" x="240" y="42" text-anchor="middle" fill="#b8c0ff">Materials</text>
+      </a>
+      <a href="semiconductors.html" class="node" aria-label="Chips">
+        <circle class="dot" cx="369.9" cy="165" r="30" fill="#1a1a38" stroke="#b8c0ff" stroke-width="2"></circle>
+        <text class="ic" x="369.9" y="174" text-anchor="middle">&#128268;</text>
+        <text class="lbl" x="412" y="143" text-anchor="middle" fill="#b8c0ff">Chips</text>
+      </a>
+      <a href="ai-ripple.html" class="node" aria-label="AI">
+        <circle class="dot" cx="369.9" cy="315" r="30" fill="#221d12" stroke="#f3d59a" stroke-width="2"></circle>
+        <text class="ic" x="369.9" y="324" text-anchor="middle">&#129302;</text>
+        <text class="lbl" x="412" y="339" text-anchor="middle" fill="#f3d59a">AI</text>
+      </a>
+      <a href="ai-ripple.html" class="node" aria-label="Power">
+        <circle class="dot" cx="240" cy="390" r="30" fill="#241612" stroke="#ff8d6b" stroke-width="2"></circle>
+        <text class="ic" x="240" y="399" text-anchor="middle">&#9889;</text>
+        <text class="lbl" x="240" y="442" text-anchor="middle" fill="#ff8d6b">Power</text>
+      </a>
+      <a href="ai-ripple.html" class="node" aria-label="Cooling">
+        <circle class="dot" cx="110.1" cy="315" r="30" fill="#241612" stroke="#ff8d6b" stroke-width="2"></circle>
+        <text class="ic" x="110.1" y="324" text-anchor="middle">&#10052;</text>
+        <text class="lbl" x="68" y="339" text-anchor="middle" fill="#ff8d6b">Cooling</text>
+      </a>
+      <a href="ai-ripple.html" class="node" aria-label="Raw earth">
+        <circle class="dot" cx="110.1" cy="165" r="30" fill="#13241a" stroke="#5fd39a" stroke-width="2"></circle>
+        <text class="ic" x="110.1" y="174" text-anchor="middle">&#129704;</text>
+        <text class="lbl" x="68" y="143" text-anchor="middle" fill="#5fd39a">Raw earth</text>
+      </a>
+    </svg>
   </div>
 
-  <a class="card" href="spotlight.html" style="display:block;margin-top:14px;border-color:rgba(111,207,142,0.4);background:linear-gradient(180deg,rgba(111,207,142,0.06),transparent);">
-    <div class="h"><span class="ico">⌖</span><span class="nm">Stock Spotlight — the un-obvious picks</span></div>
-    <div class="ln">The under-followed picks-and-shovels from the less-crowded layers — a featured pick + watchlist, each with the why and the risk.</div>
-    <span class="go" style="color:var(--raw)">See the spotlight →</span>
-  </a>
-
-  <div class="legend">
-    <span class="it"><span class="sw" style="background:var(--chip)"></span> Build the chip</span>
-    <span class="it"><span class="sw" style="background:var(--ai)"></span> Run the AI</span>
-    <span class="it"><span class="sw" style="background:var(--power)"></span> Power &amp; cool it</span>
-    <span class="it"><span class="sw" style="background:var(--raw)"></span> Raw earth</span>
+  <div class="phases">
+    <span class="ph"><i style="background:var(--chip)"></i>Build the chip</span>
+    <span class="ph"><i style="background:var(--ai)"></i>Run the AI</span>
+    <span class="ph"><i style="background:var(--power)"></i>Power &amp; cool it</span>
+    <span class="ph"><i style="background:var(--raw)"></i>Raw earth</span>
   </div>
 
-  <p class="disc">A map for thinking, not a set of picks. The 1st-order stops (chips, AI compute) are obvious and crowded; the further down you go, the less priced-in &mdash; but also the more indirect, and the harder everything falls if AI spending stalls. Verify and value before you act.</p>
+  <p class="loopnote">The end feeds the beginning. AI&rsquo;s hunger for <b>power and copper</b> loops right back to raw materials. More intelligence needs more earth.</p>
+
+  <!-- ── where the edge hides ── -->
+  <div class="edge">
+    <div class="cap"><b>Where the edge hides.</b> Everyone owns the left. The interesting ideas sit on the right.</div>
+    <div class="spectrum"></div>
+    <div class="ends"><span class="l">Obvious &amp; crowded</span><span class="r">Un-obvious, less priced-in</span></div>
+    <div class="pins">
+      <div class="pin" style="left:8%">NVIDIA</div>
+      <div class="pin" style="left:38%">Power<br>&amp; grid</div>
+      <div class="pin" style="left:66%">Cooling</div>
+      <div class="pin" style="left:92%">Copper</div>
+    </div>
+  </div>
+
+  <!-- ── deep dives ── -->
+  <div class="tiles">
+    <a class="tile" href="semiconductors.html"><span class="e">&#128268;</span><span><span class="t">Semiconductors</span><span class="s">how chips get made</span></span><span class="arr">&rarr;</span></a>
+    <a class="tile" href="ai-ripple.html"><span class="e">&#127754;</span><span><span class="t">AI Ripple</span><span class="s">the 2nd-order winners</span></span><span class="arr">&rarr;</span></a>
+    <a class="tile" href="spotlight.html"><span class="e">&#9678;</span><span><span class="t">Spotlight</span><span class="s">under-the-radar picks</span></span><span class="arr">&rarr;</span></a>
+    <a class="tile" href="library/valuation.html"><span class="e">&#128176;</span><span><span class="t">Valuation</span><span class="s">what is it worth?</span></span><span class="arr">&rarr;</span></a>
+  </div>
+
+  <p class="foot">A map for thinking, not a set of picks. The further right on the spectrum, the less priced-in, but also the more it leans on AI spending staying strong. Verify and value before you act.</p>
 </div>
-
-<script>
-(function(){
-  var STOPS=[
-    {phase:'chip', head:'Build the chip · the physical foundation'},
-    {cls:'chip', ico:'⛏️', nm:'Sand → silicon wafers', ln:'Quartz becomes ultra-pure wafers. Plus the gases, photoresist, and the EDA software to design on.', link:'semiconductors.html', go:'Semiconductor map →'},
-    {cls:'chip', ico:'⚛️', nm:'Design → fab → package', ln:'Fabless designers, the equipment makers (ASML’s EUV monopoly), the foundries (TSMC), then assembly & test.', link:'semiconductors.html', go:'See the 23 companies + moats →'},
-
-    {phase:'ai', head:'Run the AI · the chips do work'},
-    {cls:'ai', ico:'🤖', nm:'AI compute', ln:'GPUs run the models. The obvious, crowded trade — NVIDIA & friends. Demand here drives everything below.', link:'ai-ripple.html', go:'The AI Ripple →'},
-    {cls:'ai', ico:'🏢', nm:'Data centers', ln:'Where the compute lives. Hyperscalers (MSFT, GOOGL, AMZN, META) write the checks that fund the whole build-out.', link:'ai-ripple.html', go:'Trace the ripple →'},
-
-    {phase:'power', head:'Power & cool it · the surprise cost'},
-    {cls:'power', ico:'⚡', nm:'Energy & the grid', ln:'A GPU cluster needs a power plant. Gas turbines, nuclear & SMRs, transformers, switchgear — the un-obvious second-order winners.', link:'ai-ripple.html', go:'Energy layer →'},
-    {cls:'power', ico:'❄️', nm:'Cooling', ln:'Dense racks can’t be air-cooled. Liquid cooling goes from niche to mandatory — a quiet third-order beneficiary.', link:'ai-ripple.html', go:'Cooling layer →'},
-
-    {phase:'raw', head:'Raw earth · furthest out, least crowded'},
-    {cls:'raw', ico:'🪨', nm:'Copper, uranium, gas', ln:'All that power & wiring needs raw inputs. Copper (“the metal of AI”), uranium for the nuclear revival, natural gas.', link:'ai-ripple.html', go:'Raw inputs →'}
-  ];
-
-  var j=document.getElementById('journey');
-  STOPS.forEach(function(s){
-    if(s.phase){
-      var h=document.createElement('div'); h.className='phase '+s.phase; h.textContent=s.head; j.appendChild(h); return;
-    }
-    var a=document.createElement('a'); a.className='stop '+s.cls; a.href=s.link;
-    a.innerHTML='<span class="dot"></span><div class="card"><div class="h"><span class="ico">'+s.ico+'</span><span class="nm">'+s.nm+'</span></div>'
-      +'<div class="ln">'+s.ln+'</div><span class="go">'+s.go+'</span></div>';
-    j.appendChild(a);
-  });
-
-  // the loop insight, appended after the last stop
-  var loop=document.createElement('div'); loop.className='loop';
-  loop.innerHTML='<div class="t">↻ The end feeds the beginning</div><p>Notice the loop: AI’s hunger for <b>power and copper</b> at the bottom circles right back to the <b>raw materials</b> at the top. It’s not a line — it’s a cycle. More intelligence demands more physical earth, which demands more chips, which demand more power… </p>';
-  j.appendChild(loop);
-})();
-</script>
 </body>
 </html>
