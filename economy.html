@@ -29,52 +29,54 @@
   .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
   .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
 
-  .wrap{position:relative;z-index:2;max-width:920px;margin:0 auto;padding:clamp(18px,3vw,34px) var(--gutter) 80px;}
-  h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,7vw,64px);line-height:0.95;letter-spacing:-0.02em;text-align:center;}
+  .wrap{position:relative;z-index:2;max-width:920px;margin:0 auto;padding:clamp(18px,3vw,30px) var(--gutter) 80px;}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,6.5vw,58px);line-height:0.95;letter-spacing:-0.02em;text-align:center;}
   h1 em{font-style:italic;color:var(--gold);}
-  .lede{font-family:var(--serif);font-size:clamp(18px,2.3vw,23px);color:var(--muted);max-width:38ch;margin:12px auto 0;line-height:1.35;text-align:center;text-wrap:balance;}
+  .lede{font-family:var(--serif);font-size:clamp(17px,2.2vw,22px);color:var(--muted);max-width:40ch;margin:10px auto 0;line-height:1.35;text-align:center;text-wrap:balance;}
 
-  .stage{margin-top:clamp(14px,3vw,26px);}
+  .crumb{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px 0 4px;font-size:13px;color:var(--muted);}
+  .crumb button{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--accent);background:none;border:0;cursor:pointer;padding:0;}
+  .crumb button:disabled{color:var(--text);cursor:default;}
+  .crumb .sep{color:var(--faint);}
+
   svg.web{display:block;width:100%;max-width:560px;height:auto;margin:0 auto;overflow:visible;}
-  .edge{stroke:rgba(184,192,255,0.13);stroke-width:1.4;transition:stroke .2s,stroke-width .2s;}
-  .edge.hot{stroke:rgba(243,213,154,0.7);stroke-width:2.4;}
+  .edge{stroke:rgba(184,192,255,0.13);stroke-width:1.4;transition:stroke .25s,stroke-width .25s;}
+  .edge.hot{stroke:rgba(243,213,154,0.72);stroke-width:2.5;}
   .node{cursor:pointer;transition:opacity .3s;}
   .node .ring{transition:transform .16s,filter .3s;transform-origin:center;}
   .node:hover .ring{transform:scale(1.1);}
   .node.faint{opacity:0.24;}
   .node.lit .ring{filter:drop-shadow(0 0 7px rgba(243,213,154,0.6));}
   .node.src .ring{stroke-width:4;filter:drop-shadow(0 0 14px #f3d59a);}
-  .node .ic{font-size:23px;pointer-events:none;}
-  .node .lb{font-family:var(--sans);font-size:10.5px;font-weight:600;fill:var(--muted);pointer-events:none;}
-  .node.sel .lb{fill:var(--text);}
+  .node .ic{font-size:22px;pointer-events:none;}
+  .node .lb{font-family:var(--sans);font-size:10px;font-weight:600;fill:var(--muted);pointer-events:none;}
+  .node.lit .lb,.node.src .lb{fill:var(--text);}
 
-  /* detail panel */
-  .panel{margin-top:14px;border:1px solid var(--rule);border-radius:18px;background:var(--panel);padding:20px 22px;min-height:190px;}
+  .panel{margin-top:14px;border:1px solid var(--rule);border-radius:18px;background:var(--panel);padding:20px 22px;min-height:180px;}
   .panel .ph{color:var(--faint);font-size:14px;text-align:center;padding:18px 0;line-height:1.5;}
   .panel .hd{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
-  .panel .hd .e{font-size:30px;}
-  .panel .hd .nm{font-size:22px;font-weight:700;}
+  .panel .hd .e{font-size:30px;} .panel .hd .nm{font-size:21px;font-weight:700;}
   .panel .sub{font-size:13px;color:var(--muted);margin-bottom:14px;}
-  .row{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;}
+  .row{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--rule);font-size:13.5px;}
   .row:last-of-type{border-bottom:0;}
   .row .k{color:var(--gold);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.04em;padding-top:1px;}
   .row .v{color:#ded6ea;line-height:1.5;}
-  .row .v .tk{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(184,192,255,0.08);padding:2px 7px;border-radius:5px;margin:0 5px 5px 0;display:inline-block;text-decoration:none;border:1px solid transparent;transition:.14s;}
-  .row .v a.tk:hover{border-color:var(--accent);background:rgba(184,192,255,0.16);color:#fff;}
-  .row .v a.tk::after{content:' ↗';font-size:9px;opacity:0.6;}
+  .tk{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(184,192,255,0.08);padding:2px 7px;border-radius:5px;margin:0 5px 5px 0;display:inline-block;text-decoration:none;border:1px solid transparent;transition:.14s;}
+  a.tk:hover{border-color:var(--accent);background:rgba(184,192,255,0.16);color:#fff;}
+  a.tk::after{content:' ↗';font-size:9px;opacity:0.55;}
   .links{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
   .links button{font-family:var(--sans);font-size:11.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:4px 11px;cursor:pointer;transition:.15s;}
   .links button:hover{color:var(--text);border-color:var(--accent);}
-  .ai{margin-top:12px;padding:11px 14px;border:1px solid rgba(243,213,154,0.3);border-radius:11px;background:rgba(243,213,154,0.05);font-size:13px;color:#e7dcc4;line-height:1.5;}
-  .ai b{color:var(--gold);}
+  .ai{margin-top:12px;padding:11px 14px;border:1px solid rgba(243,213,154,0.3);border-radius:11px;background:rgba(243,213,154,0.05);font-size:13px;color:#e7dcc4;line-height:1.5;} .ai b{color:var(--gold);}
+  .explore{margin-top:13px;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:#0a0a14;background:var(--accent);border:0;border-radius:11px;padding:11px 16px;cursor:pointer;transition:.15s;} .explore:hover{filter:brightness(1.06);transform:translateY(-1px);}
+  .deeplink{margin-top:11px;display:inline-block;font-size:13px;font-weight:600;color:var(--gold);border-bottom:1px solid rgba(243,213,154,0.4);}
 
   .note{margin-top:18px;font-size:13px;color:var(--muted);text-align:center;line-height:1.55;max-width:54ch;margin-left:auto;margin-right:auto;}
   .note a{color:var(--accent);border-bottom:1px solid rgba(184,192,255,0.3);}
-
-  .foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+  .foot{margin-top:28px;padding-top:18px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
   .foot a{font-size:13px;color:var(--muted);padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
   .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
-  .disc{margin-top:14px;font-size:11.5px;color:var(--faint);text-align:center;max-width:56ch;margin-left:auto;margin-right:auto;line-height:1.5;}
+  .disc{margin-top:14px;font-size:11.5px;color:var(--faint);text-align:center;max-width:58ch;margin-left:auto;margin-right:auto;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -82,148 +84,214 @@
 
 <div class="wrap">
   <h1>The connected <em>economy.</em></h1>
-  <p class="lede">Every sector leans on the others. Tap one to light up what it needs, what it feeds, and how the AI wave touches it.</p>
+  <p class="lede">11 sectors, all linked. Tap one to ripple a shock outward, or zoom inside it to its own web.</p>
 
-  <div class="stage">
-    <svg class="web" id="web" viewBox="0 0 540 540" role="img" aria-label="A web of the 11 economic sectors and how they connect"></svg>
-  </div>
+  <div class="crumb" id="crumb"></div>
+  <svg class="web" id="web" viewBox="0 0 540 540" role="img" aria-label="Interactive web of economic sectors"></svg>
 
-  <div class="panel" id="panel">
-    <div class="ph">Tap any sector in the web above.<br>The lines show real dependencies: who supplies whom, who funds whom, who powers whom.</div>
-  </div>
+  <div class="panel" id="panel"><div class="ph">Tap any sector above. Watch the ripple spread, then tap <b>Explore inside</b> to zoom into its sub-industries.</div></div>
 
-  <p class="note">The <a href="ai-ripple.html">AI Ripple</a> you already explored is just <b style="color:var(--gold)">one thread</b> through this web: Tech pulls Energy, Energy pulls Materials, and the wave spreads outward. Every theme is a path through these same sectors.</p>
+  <p class="note">The <a href="ai-ripple.html">AI Ripple</a> is one thread through this web. Now you can also zoom <b style="color:var(--gold)">into</b> any sector, the economy nested all the way down.</p>
 
   <div class="foot">
     <a href="overview.html">&larr; Big Picture</a>
-    <a href="ai-ripple.html">The AI thread</a>
     <a href="semiconductors.html">Semiconductors</a>
+    <a href="spotlight.html">Spotlight</a>
     <a href="library/valuation.html">Value a stock</a>
   </div>
-  <p class="disc">A map for thinking about how the economy fits together, not investment advice. Company names are illustrative examples of each sector, not picks. Connections are simplified; the real economy has far more.</p>
+  <p class="disc">A map for thinking about how the economy fits together, not investment advice. Company names are illustrative examples, not picks. Connections are simplified; the real economy has far more.</p>
 </div>
 
 <script>
 (function(){
   var SECTORS=[
-    {id:'tech',  ic:'💻', nm:'Technology', col:'#b8c0ff',
-     provides:'Software + chips that run everything else', needs:'Energy (data centers), materials (chips), capital',
-     names:['NVDA','MSFT','AAPL','ASML'], ai:'The <b>source</b> of the AI wave. Every other sector becomes a customer.'},
-    {id:'comm',  ic:'📡', nm:'Communication', col:'#c8a0ff',
-     provides:'Internet, media, ads, telecom', needs:'Tech infrastructure, data centers, energy',
-     names:['GOOGL','META','NFLX','TMUS'], ai:'AI-powered ads and content; huge data-center spenders themselves.'},
-    {id:'disc',  ic:'🛍️', nm:'Consumer Discretionary', col:'#ff8db3',
-     provides:'Cars, retail, travel, the things people want', needs:'Financing, healthy consumers, materials',
-     names:['AMZN','TSLA','HD'], ai:'AI recommendations + robotaxis; EVs pull chips, copper and power.'},
-    {id:'staples',ic:'🛒', nm:'Consumer Staples', col:'#7fd6c0',
-     provides:'Food, drinks, household basics', needs:'Materials, logistics, stable demand',
-     names:['PG','KO','WMT','COST'], ai:'Defensive; AI mostly trims supply-chain + marketing costs.'},
-    {id:'health',ic:'🩺', nm:'Health Care', col:'#9ee6b0',
-     provides:'Drugs, devices, care', needs:'Tech (AI, devices), materials (chemicals), capital',
-     names:['LLY','UNH','JNJ'], ai:'AI <b>drug discovery</b> and diagnostics; a real frontier.'},
-    {id:'fin',   ic:'🏦', nm:'Financials', col:'#7aa6ff',
-     provides:'Capital + credit that funds everyone', needs:'A healthy economy, stable rates',
-     names:['JPM','BRK.B','V','MA'], ai:'Funds the whole build-out; AI in fraud, trading, underwriting.'},
-    {id:'re',    ic:'🏢', nm:'Real Estate', col:'#f3d59a',
-     provides:'Buildings, including data centers', needs:'Financing (rates), construction, power',
-     names:['PLD','EQIX','DLR'], ai:'<b>Data-center REITs</b> are a direct AI landlord play.'},
-    {id:'util',  ic:'⚡', nm:'Utilities', col:'#9fd0ff',
-     provides:'Electricity, water, gas to everyone', needs:'Energy (fuel), materials, grid equipment',
-     names:['NEE','DUK','SO','CEG'], ai:'AI data centers are the first big demand surge in decades.'},
-    {id:'indust',ic:'🏭', nm:'Industrials', col:'#ffc480',
-     provides:'Machines, transport, construction, power gear', needs:'Materials, energy, demand',
-     names:['GE','CAT','ETN','HON'], ai:'Builds the data centers + the transformers and turbines for them.'},
-    {id:'energy',ic:'🔥', nm:'Energy', col:'#ff8d6b',
-     provides:'The fuel + power behind all of it', needs:'Materials (steel, copper), industrial equipment',
-     names:['XOM','CVX','GEV'], ai:'AI electricity demand revives gas + nuclear; a core 2nd-order play.'},
-    {id:'mat',   ic:'🪨', nm:'Materials', col:'#5fd39a',
-     provides:'Metals, chemicals, the raw inputs', needs:'Energy (mining is power-hungry), industrial gear',
-     names:['FCX','LIN','NEM'], ai:'<b>Copper</b> for grids and data centers; the metal of electrification.'}
+    {id:'tech',ic:'💻',nm:'Technology',col:'#b8c0ff',provides:'Software + chips that run everything',needs:'Energy, materials, capital',names:['NVDA','MSFT','ASML'],ai:'The <b>source</b> of the AI wave.'},
+    {id:'comm',ic:'📡',nm:'Communication',col:'#c8a0ff',provides:'Internet, media, ads, telecom',needs:'Tech, data centers, energy',names:['GOOGL','META','TMUS'],ai:'AI ads + content; huge data-center spenders.'},
+    {id:'disc',ic:'🛍️',nm:'Consumer Discretionary',col:'#ff8db3',provides:'Cars, retail, travel, wants',needs:'Financing, healthy consumers',names:['AMZN','TSLA','HD'],ai:'AI retail + robotaxis; EVs pull chips & copper.'},
+    {id:'staples',ic:'🛒',nm:'Consumer Staples',col:'#7fd6c0',provides:'Food, drinks, basics',needs:'Materials, logistics',names:['PG','KO','WMT'],ai:'Defensive; AI trims supply-chain cost.'},
+    {id:'health',ic:'🩺',nm:'Health Care',col:'#9ee6b0',provides:'Drugs, devices, care',needs:'Tech, materials, capital',names:['LLY','UNH','JNJ'],ai:'AI <b>drug discovery</b> + diagnostics.'},
+    {id:'fin',ic:'🏦',nm:'Financials',col:'#7aa6ff',provides:'Capital + credit for everyone',needs:'A healthy economy, stable rates',names:['JPM','V','BRK.B'],ai:'Funds the build-out; AI in fraud + trading.'},
+    {id:'re',ic:'🏢',nm:'Real Estate',col:'#f3d59a',provides:'Buildings, incl. data centers',needs:'Financing, construction, power',names:['PLD','EQIX','DLR'],ai:'<b>Data-center REITs</b> = a direct AI landlord.'},
+    {id:'util',ic:'⚡',nm:'Utilities',col:'#9fd0ff',provides:'Electricity + water to all',needs:'Energy, materials, grid gear',names:['NEE','DUK','CEG'],ai:'AI data centers = first demand surge in decades.'},
+    {id:'indust',ic:'🏭',nm:'Industrials',col:'#ffc480',provides:'Machines, transport, power gear',needs:'Materials, energy, demand',names:['GE','CAT','ETN'],ai:'Builds the data centers + their power gear.'},
+    {id:'energy',ic:'🔥',nm:'Energy',col:'#ff8d6b',provides:'Fuel + power behind it all',needs:'Materials, industrial equipment',names:['XOM','CVX','GEV'],ai:'AI power demand revives gas + nuclear.'},
+    {id:'mat',ic:'🪨',nm:'Materials',col:'#5fd39a',provides:'Metals, chemicals, raw inputs',needs:'Energy, industrial gear',names:['FCX','LIN','NEM'],ai:'<b>Copper</b> = the metal of electrification.'}
   ];
-  var IDX={}; SECTORS.forEach(function(s,i){IDX[s.id]=i;});
-  // meaningful dependency edges
-  var CONN=[
-    ['tech','energy'],['tech','mat'],['tech','comm'],['tech','fin'],['tech','health'],
-    ['energy','mat'],['energy','util'],['energy','indust'],
-    ['mat','indust'],['mat','re'],
-    ['indust','util'],['indust','re'],
-    ['util','re'],
-    ['fin','re'],['fin','disc'],['fin','staples'],
-    ['comm','disc'],['disc','staples'],['health','staples'],
-    ['util','tech']
-  ];
-  var W=540,C=270,R=200;
-  function pos(i){ var a=(-90+i*(360/SECTORS.length))*Math.PI/180; return [C+R*Math.cos(a), C+R*Math.sin(a)]; }
+  var SECTOR_CONN=[['tech','energy'],['tech','mat'],['tech','comm'],['tech','fin'],['tech','health'],
+    ['energy','mat'],['energy','util'],['energy','indust'],['mat','indust'],['mat','re'],
+    ['indust','util'],['indust','re'],['util','re'],['fin','re'],['fin','disc'],['fin','staples'],
+    ['comm','disc'],['disc','staples'],['health','staples'],['util','tech']];
+
+  // Each sector's INTERNAL web of sub-industries.
+  var SUBS={
+    tech:{subs:[
+      {id:'semis',ic:'🔌',nm:'Semiconductors',desc:'The chips themselves',names:['NVDA','TSM'],deep:'semiconductors.html'},
+      {id:'software',ic:'🧩',nm:'Software',desc:'Apps, OS, enterprise',names:['MSFT','CRM']},
+      {id:'cloud',ic:'☁️',nm:'Cloud & Internet',desc:'Compute on rent',names:['AMZN','GOOGL']},
+      {id:'devices',ic:'📱',nm:'Hardware & devices',desc:'Phones, PCs, gear',names:['AAPL','DELL']},
+      {id:'itserv',ic:'🛠️',nm:'IT services',desc:'Build + run systems',names:['ACN','IBM']}],
+      conn:[['software','semis'],['cloud','semis'],['cloud','devices'],['devices','semis'],['itserv','software'],['itserv','cloud']]},
+    energy:{subs:[
+      {id:'ep',ic:'🛢️',nm:'Oil & gas E&P',desc:'Find + pump it',names:['XOM','COP']},
+      {id:'mid',ic:'🔧',nm:'Midstream',desc:'Pipes + storage',names:['ET','KMI']},
+      {id:'ref',ic:'🏭',nm:'Refining',desc:'Crude into fuel',names:['MPC','VLO']},
+      {id:'ren',ic:'☀️',nm:'Renewables',desc:'Solar, wind',names:['FSLR','NEE']},
+      {id:'nuke',ic:'⚛️',nm:'Nuclear & power',desc:'Baseload + turbines',names:['CEG','GEV']}],
+      conn:[['ep','mid'],['mid','ref'],['ren','nuke'],['nuke','ref'],['ep','ref']]},
+    mat:{subs:[
+      {id:'mining',ic:'⛏️',nm:'Metals & mining',desc:'Copper, gold, iron',names:['FCX','NEM']},
+      {id:'chem',ic:'⚗️',nm:'Chemicals',desc:'Industrial inputs',names:['LIN','DOW']},
+      {id:'constr',ic:'🧱',nm:'Construction mat.',desc:'Cement, aggregates',names:['VMC','MLM']},
+      {id:'spec',ic:'🔋',nm:'Specialty / battery',desc:'Lithium, rare earth',names:['ALB','MP']}],
+      conn:[['mining','spec'],['mining','chem'],['chem','constr'],['mining','constr']]},
+    indust:{subs:[
+      {id:'aero',ic:'✈️',nm:'Aerospace & defense',desc:'Planes, defense',names:['BA','RTX']},
+      {id:'mach',ic:'⚙️',nm:'Machinery',desc:'Heavy equipment',names:['CAT','DE']},
+      {id:'elec',ic:'🔌',nm:'Electrical equipment',desc:'Power gear, grid',names:['ETN','PWR']},
+      {id:'trans',ic:'🚚',nm:'Transport & logistics',desc:'Move the goods',names:['UNP','UPS']},
+      {id:'build',ic:'🏗️',nm:'Construction',desc:'Build the things',names:['CAT','URI']}],
+      conn:[['mach','build'],['elec','build'],['aero','mach'],['trans','build'],['elec','mach']]},
+    util:{subs:[
+      {id:'elec',ic:'⚡',nm:'Electric',desc:'Generate + sell power',names:['DUK','SO']},
+      {id:'rengen',ic:'☀️',nm:'Renewable gen',desc:'Wind + solar utilities',names:['NEE','AEP']},
+      {id:'gas',ic:'🔥',nm:'Gas utilities',desc:'Pipe gas to homes',names:['SRE','ATO']},
+      {id:'water',ic:'💧',nm:'Water',desc:'Treat + deliver water',names:['AWK','WTRG']},
+      {id:'grid',ic:'🕸️',nm:'Grid & transmission',desc:'Move power around',names:['AEP','PWR']}],
+      conn:[['elec','grid'],['rengen','grid'],['gas','elec'],['water','elec'],['rengen','elec']]},
+    fin:{subs:[
+      {id:'banks',ic:'🏦',nm:'Banks',desc:'Loans + deposits',names:['JPM','BAC']},
+      {id:'ins',ic:'🛡️',nm:'Insurance',desc:'Sell + manage risk',names:['BRK.B','PGR']},
+      {id:'asset',ic:'📈',nm:'Asset management',desc:'Invest others money',names:['BLK','BX']},
+      {id:'pay',ic:'💳',nm:'Payments',desc:'Move money',names:['V','MA']},
+      {id:'exch',ic:'🏛️',nm:'Exchanges',desc:'Run the markets',names:['ICE','CME']}],
+      conn:[['banks','pay'],['banks','asset'],['ins','asset'],['pay','exch'],['asset','exch']]},
+    re:{subs:[
+      {id:'dc',ic:'🖥️',nm:'Data-center REITs',desc:'Land for the AI boom',names:['EQIX','DLR']},
+      {id:'resi',ic:'🏠',nm:'Residential',desc:'Homes + apartments',names:['AVB','INVH']},
+      {id:'office',ic:'🏢',nm:'Office / commercial',desc:'Workspaces',names:['BXP','VNO']},
+      {id:'logi',ic:'📦',nm:'Industrial / logistics',desc:'Warehouses',names:['PLD','REXR']},
+      {id:'hcre',ic:'🏥',nm:'Healthcare REITs',desc:'Hospitals, senior care',names:['WELL','VTR']}],
+      conn:[['dc','logi'],['resi','office'],['logi','office'],['dc','office'],['hcre','resi']]},
+    comm:{subs:[
+      {id:'internet',ic:'🔍',nm:'Internet & search',desc:'Ads + discovery',names:['GOOGL','META']},
+      {id:'social',ic:'💬',nm:'Social media',desc:'Attention platforms',names:['META','SNAP']},
+      {id:'stream',ic:'🎬',nm:'Streaming & media',desc:'Content',names:['NFLX','DIS']},
+      {id:'telecom',ic:'📶',nm:'Telecom',desc:'The pipes',names:['TMUS','VZ']},
+      {id:'gaming',ic:'🎮',nm:'Gaming',desc:'Interactive entertainment',names:['EA','TTWO']}],
+      conn:[['internet','social'],['social','stream'],['stream','gaming'],['telecom','internet'],['telecom','stream']]},
+    disc:{subs:[
+      {id:'ecom',ic:'🛒',nm:'Retail & e-commerce',desc:'Sell to people',names:['AMZN','HD']},
+      {id:'auto',ic:'🚗',nm:'Autos & EVs',desc:'Cars, electric shift',names:['TSLA','GM']},
+      {id:'travel',ic:'✈️',nm:'Travel & leisure',desc:'Hotels, airlines',names:['BKNG','MAR']},
+      {id:'rest',ic:'🍔',nm:'Restaurants',desc:'Eating out',names:['MCD','SBUX']},
+      {id:'lux',ic:'👜',nm:'Apparel & luxury',desc:'Brands',names:['NKE','LVMUY']}],
+      conn:[['ecom','lux'],['auto','ecom'],['travel','rest'],['rest','ecom'],['lux','ecom']]},
+    staples:{subs:[
+      {id:'foodbev',ic:'🥤',nm:'Food & beverage',desc:'Eat + drink brands',names:['KO','PEP']},
+      {id:'house',ic:'🧴',nm:'Household products',desc:'Cleaning, care',names:['PG','CL']},
+      {id:'grocery',ic:'🏪',nm:'Grocery & retail',desc:'Where you buy it',names:['WMT','COST']},
+      {id:'altob',ic:'🍷',nm:'Alcohol & tobacco',desc:'Vice staples',names:['PM','BUD']}],
+      conn:[['foodbev','grocery'],['house','grocery'],['altob','grocery'],['foodbev','house']]},
+    health:{subs:[
+      {id:'pharma',ic:'💊',nm:'Pharma',desc:'Big drug makers',names:['LLY','MRK']},
+      {id:'biotech',ic:'🧬',nm:'Biotech',desc:'New science',names:['VRTX','AMGN']},
+      {id:'devices',ic:'🩻',nm:'Medical devices',desc:'Tools + implants',names:['ISRG','MDT']},
+      {id:'insurers',ic:'🏥',nm:'Health insurers',desc:'Pay for care',names:['UNH','ELV']},
+      {id:'healthit',ic:'💻',nm:'Health IT',desc:'AI + records',names:['VEEV','TDOC']}],
+      conn:[['pharma','biotech'],['devices','healthit'],['insurers','pharma'],['healthit','insurers'],['biotech','devices']]}
+  };
+
+  var cur=null;   // null = top economy; else a sector id
+  function curGraph(){
+    if(!cur) return {nodes:SECTORS, conn:SECTOR_CONN};
+    return {nodes:SUBS[cur].subs, conn:SUBS[cur].conn};
+  }
+  function nodeBy(id){ return curGraph().nodes.filter(function(n){return n.id===id;})[0]; }
+  function idxOf(id){ var ns=curGraph().nodes; for(var i=0;i<ns.length;i++) if(ns[i].id===id) return i; return 0; }
+  function pos(i){ var n=curGraph().nodes.length, a=(-90+i*(360/n))*Math.PI/180, R=n<=6?165:200; return [270+R*Math.cos(a),270+R*Math.sin(a)]; }
+  function neighbors(id){ var out=[]; curGraph().conn.forEach(function(e){ if(e[0]===id)out.push(e[1]); else if(e[1]===id)out.push(e[0]); }); return out; }
 
   var svg=document.getElementById('web');
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function neighbors(id){ var out=[]; CONN.forEach(function(e){ if(e[0]===id)out.push(e[1]); else if(e[1]===id)out.push(e[0]); }); return out; }
+  var sectorOf={}; SECTORS.forEach(function(s){sectorOf[s.id]=s;});
 
-  // Build the static graph once; the cascade just toggles classes on it.
-  (function build(){
-    var parts=[];
-    CONN.forEach(function(e){
-      var a=pos(IDX[e[0]]), b=pos(IDX[e[1]]);
-      parts.push('<line class="edge" data-a="'+e[0]+'" data-b="'+e[1]+'" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>');
-    });
-    SECTORS.forEach(function(s,i){
-      var p=pos(i);
+  function crumb(){
+    var c=document.getElementById('crumb');
+    if(!cur){ c.innerHTML='<button disabled>🌐 Economy</button>'; }
+    else { c.innerHTML='<button data-top="1">🌐 Economy</button><span class="sep">›</span><button disabled>'+sectorOf[cur].ic+' '+sectorOf[cur].nm+'</button>';
+      c.querySelector('[data-top]').addEventListener('click',goTop); }
+  }
+  function build(){
+    crumb();
+    var g=curGraph(), parts=[];
+    g.conn.forEach(function(e){ var a=pos(idxOf(e[0])), b=pos(idxOf(e[1]));
+      parts.push('<line class="edge" data-a="'+e[0]+'" data-b="'+e[1]+'" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>'); });
+    g.nodes.forEach(function(s,i){ var p=pos(i), col=s.col||sectorOf[cur].col;
       parts.push('<g class="node" data-id="'+s.id+'">'
-        +'<circle class="ring" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="27" fill="#14142c" stroke="'+s.col+'" stroke-width="2"/>'
+        +'<circle class="ring" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(g.nodes.length<=6?30:27)+'" fill="#14142c" stroke="'+col+'" stroke-width="2"/>'
         +'<text class="ic" x="'+p[0].toFixed(1)+'" y="'+(p[1]+8).toFixed(1)+'" text-anchor="middle">'+s.ic+'</text>'
-        +'<text class="lb" x="'+p[0].toFixed(1)+'" y="'+(p[1]+44).toFixed(1)+'" text-anchor="middle">'+s.nm.split(' ')[0]+'</text>'
-        +'</g>');
-    });
+        +'<text class="lb" x="'+p[0].toFixed(1)+'" y="'+(p[1]+(g.nodes.length<=6?46:44)).toFixed(1)+'" text-anchor="middle">'+(s.nm.split(' ')[0])+'</text>'
+        +'</g>'); });
     svg.innerHTML=parts.join('');
-    svg.querySelectorAll('.node').forEach(function(g){ g.addEventListener('click',function(){ select(g.dataset.id); }); });
-  })();
+    svg.querySelectorAll('.node').forEach(function(gg){ gg.addEventListener('click',function(){ select(gg.dataset.id); }); });
+  }
 
   var timers=[];
-  // BFS from the tapped sector; light nodes order-by-order so you SEE the shock
-  // ripple outward (direct neighbours, then theirs, then theirs...).
   function cascade(srcId){
     timers.forEach(clearTimeout); timers=[];
     var order={}; order[srcId]=0; var q=[srcId], maxO=0;
     while(q.length){ var u=q.shift(); neighbors(u).forEach(function(v){ if(order[v]===undefined){ order[v]=order[u]+1; maxO=Math.max(maxO,order[v]); q.push(v);} }); }
     svg.querySelectorAll('.node').forEach(function(g){ g.classList.remove('lit','src'); g.classList.add('faint'); });
     svg.querySelectorAll('.edge').forEach(function(e){ e.classList.remove('hot'); });
-    var k;
-    for(k=0;k<=maxO;k++){ (function(level){ timers.push(setTimeout(function(){
+    for(var k=0;k<=maxO;k++){ (function(level){ timers.push(setTimeout(function(){
       svg.querySelectorAll('.node').forEach(function(g){ if(order[g.dataset.id]===level){ g.classList.remove('faint'); g.classList.add('lit'); if(level===0)g.classList.add('src'); } });
       svg.querySelectorAll('.edge').forEach(function(e){ var oa=order[e.dataset.a], ob=order[e.dataset.b];
         if((oa===level-1&&ob===level)||(ob===level-1&&oa===level)) e.classList.add('hot'); });
-    }, reduce?0:level*280)); })(k); }
+    }, reduce?0:level*270)); })(k); }
     return order;
   }
 
+  function tickerHtml(names){ return names.map(function(t){ return '<a class="tk" href="https://stockanalysis.com/stocks/'+t.toLowerCase()+'/" target="_blank" rel="noopener" title="Open '+t+'">'+t+'</a>'; }).join(''); }
+  function linkChips(id){ return neighbors(id).map(function(lid){ var n=nodeBy(lid); return '<button data-go="'+lid+'">'+n.ic+' '+n.nm.split(' ')[0]+'</button>'; }).join(''); }
+  function wireChips(p){ p.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ select(b.dataset.go); svg.scrollIntoView({behavior:'smooth',block:'start'}); }); }); }
+
   function select(id){
-    var order=cascade(id);
-    var s=SECTORS[IDX[id]];
-    var cnt={}; Object.keys(order).forEach(function(n){ var o=order[n]; if(o>0) cnt[o]=(cnt[o]||0)+1; });
-    var direct=cnt[1]||0, second=cnt[2]||0, third=(cnt[3]||0)+(cnt[4]||0)+(cnt[5]||0);
-    var links=neighbors(id);
-    var linkBtns=links.map(function(lid){ return '<button data-go="'+lid+'">'+SECTORS[IDX[lid]].ic+' '+SECTORS[IDX[lid]].nm.split(' ')[0]+'</button>'; }).join('');
-    var tks=s.names.map(function(t){ var slug=t.toLowerCase();
-      return '<a class="tk" href="https://stockanalysis.com/stocks/'+slug+'/" target="_blank" rel="noopener" title="Open '+t+' (price + financials)">'+t+'</a>'; }).join('');
-    var p=document.getElementById('panel');
-    p.innerHTML='<div class="hd"><span class="e">'+s.ic+'</span><span class="nm">'+s.nm+'</span></div>'
-      +'<div class="sub">a shock here ripples out &rarr; <b style="color:#f3d59a">'+direct+' direct</b> &middot; '+second+' second-order &middot; '+third+' third</div>'
-      +'<div class="row"><span class="k">Provides</span><span class="v">'+s.provides+'</span></div>'
-      +'<div class="row"><span class="k">Needs</span><span class="v">'+s.needs+'</span></div>'
-      +'<div class="row"><span class="k">Names</span><span class="v">'+tks+'</span></div>'
-      +'<div class="row"><span class="k">Connects</span><span class="v"><div class="links">'+linkBtns+'</div></span></div>'
-      +'<div class="ai"><b>AI angle:</b> '+s.ai+'</div>';
-    p.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ select(b.dataset.go); document.querySelector('.stage').scrollIntoView({behavior:'smooth',block:'start'}); }); });
+    var order=cascade(id), s=nodeBy(id), p=document.getElementById('panel');
+    if(!cur){
+      var cnt={}; Object.keys(order).forEach(function(n){var o=order[n];if(o>0)cnt[o]=(cnt[o]||0)+1;});
+      var direct=cnt[1]||0, second=cnt[2]||0, third=(cnt[3]||0)+(cnt[4]||0)+(cnt[5]||0);
+      p.innerHTML='<div class="hd"><span class="e">'+s.ic+'</span><span class="nm">'+s.nm+'</span></div>'
+        +'<div class="sub">a shock here ripples out &rarr; <b style="color:#f3d59a">'+direct+' direct</b> &middot; '+second+' second &middot; '+third+' third</div>'
+        +'<div class="row"><span class="k">Provides</span><span class="v">'+s.provides+'</span></div>'
+        +'<div class="row"><span class="k">Needs</span><span class="v">'+s.needs+'</span></div>'
+        +'<div class="row"><span class="k">Names</span><span class="v">'+tickerHtml(s.names)+'</span></div>'
+        +'<div class="row"><span class="k">Connects</span><span class="v"><div class="links">'+linkChips(id)+'</div></span></div>'
+        +'<div class="ai"><b>AI angle:</b> '+s.ai+'</div>'
+        +(SUBS[id]?'<button class="explore" data-drill="'+id+'">⤢ Explore inside '+s.nm+'</button>':'');
+      var dr=p.querySelector('[data-drill]'); if(dr) dr.addEventListener('click',function(){ drillInto(id); });
+    } else {
+      p.innerHTML='<div class="hd"><span class="e">'+s.ic+'</span><span class="nm">'+s.nm+'</span></div>'
+        +'<div class="sub">inside '+sectorOf[cur].nm+'</div>'
+        +'<div class="row"><span class="k">What</span><span class="v">'+s.desc+'</span></div>'
+        +'<div class="row"><span class="k">Names</span><span class="v">'+tickerHtml(s.names)+'</span></div>'
+        +'<div class="row"><span class="k">Connects</span><span class="v"><div class="links">'+linkChips(id)+'</div></span></div>'
+        +(s.deep?'<a class="deeplink" href="'+s.deep+'">↳ Open the full '+s.nm+' map →</a>':'');
+    }
+    wireChips(p);
   }
+  function drillInto(id){ cur=id; build(); document.getElementById('panel').innerHTML='<div class="ph">Inside <b>'+sectorOf[id].nm+'</b>. Tap a sub-industry to ripple it, or use 🌐 Economy above to zoom back out.</div>'; svg.scrollIntoView({behavior:'smooth',block:'center'}); }
+  function goTop(){ cur=null; build(); document.getElementById('panel').innerHTML='<div class="ph">Back at the full economy. Tap any sector to ripple it, or Explore inside to zoom in.</div>'; }
+
+  build();
 })();
 </script>
 <script>
 window.atlasTourId = 'economy';
 window.atlasTourSteps = [
   { title: 'The whole economy, connected', body: 'Every sector is a node. The lines are real dependencies: who powers, supplies, or funds whom.' },
-  { sel: '.web', title: 'Tap a sector, watch it ripple', body: 'Tap any circle and a shock spreads outward through the web: first its direct links, then theirs, then theirs. You watch the ripple travel the economy.' },
-  { sel: '.panel', title: 'See how it links', body: 'The panel shows what each sector <b>provides</b>, what it <b>needs</b>, example companies, and the <b>AI angle</b>. Tap a connection chip to hop to a neighbour.' },
-  { title: 'One web, many threads', body: 'The AI Ripple is just one path through this web. Every theme (energy transition, aging, etc.) is another path through the same sectors.' }
+  { sel: '.web', title: 'Tap a sector, watch it ripple', body: 'Tap a circle and a shock spreads outward through the web: direct links, then theirs, then theirs.' },
+  { sel: '#panel', title: 'Zoom inside', body: 'The panel shows what a sector provides, needs, and its AI angle. Tap <b>Explore inside</b> to zoom into its own web of sub-industries.' },
+  { sel: '#crumb', title: 'Find your way', body: 'The breadcrumb shows where you are. Tap <b>Economy</b> to zoom back out to the top.' }
 ];
 </script>
 <script src="lib/tour.js"></script>
