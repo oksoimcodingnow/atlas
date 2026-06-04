@@ -1,7 +1,7 @@
 /* Atlas service worker — cache-first with on-the-fly population.
  * Bump CACHE_VERSION to force a refresh after deploying changes.
  */
-const CACHE_VERSION = 'atlas-v35';
+const CACHE_VERSION = 'atlas-v36';
 const ASSETS = [
   './',
   './index.html',
@@ -61,19 +61,45 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Cache a fresh same-origin response (fire-and-forget).
+function cachePut(req, resp) {
+  if (resp && resp.ok && new URL(req.url).origin === self.location.origin) {
+    const clone = resp.clone();
+    caches.open(CACHE_VERSION).then((c) => c.put(req, clone));
+  }
+  return resp;
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
+
+  // Is this a PAGE navigation (an HTML document)?
+  const isPage =
+    req.mode === 'navigate' ||
+    (req.headers.get('accept') || '').includes('text/html');
+
+  if (isPage) {
+    // NETWORK-FIRST for pages: when online you ALWAYS get the latest version
+    // (no more stale-PWA / "still the old one" problem). Fall back to the cached
+    // page, then to the cached home, only when the network fails (offline).
+    event.respondWith(
+      fetch(req)
+        .then((resp) => cachePut(req, resp))
+        .catch(() =>
+          caches.match(req).then((c) => c || caches.match('./index.html'))
+        )
+    );
+    return;
+  }
+
+  // STALE-WHILE-REVALIDATE for static assets (fonts, icons, libs): serve cached
+  // instantly for speed, refresh the cache in the background. Assets are
+  // effectively versioned, so a one-load delay on changes is fine.
   event.respondWith(
     caches.match(req).then((cached) => {
       const networkFetch = fetch(req)
-        .then((resp) => {
-          if (resp.ok && new URL(req.url).origin === self.location.origin) {
-            const clone = resp.clone();
-            caches.open(CACHE_VERSION).then((c) => c.put(req, clone));
-          }
-          return resp;
-        })
+        .then((resp) => cachePut(req, resp))
         .catch(() => cached);
       return cached || networkFetch;
     })
