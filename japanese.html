@@ -90,8 +90,8 @@
 
   <div class="tabs" id="tabs">
     <button class="tab on" data-p="hira">Hiragana</button>
+    <button class="tab" data-p="words">Words</button>
     <button class="tab" data-p="phrases">Phrases</button>
-    <button class="tab" data-p="numbers">Numbers</button>
     <button class="tab" data-p="practice">Practice</button>
   </div>
 
@@ -104,8 +104,9 @@
     <div class="cards" id="phrases"></div>
   </div>
 
-  <div class="panel" id="p-numbers">
-    <div class="cards" id="numbers"></div>
+  <div class="panel" id="p-words">
+    <div id="catbar" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
+    <div class="cards" id="words"></div>
   </div>
 
   <div class="panel" id="p-practice">
@@ -163,12 +164,56 @@
     ['いくらですか','ikura desu ka','How much is it?'],
     ['トイレはどこですか','toire wa doko desu ka','Where is the toilet?'],
     ['おいしい','oishii','Delicious!'],
-    ['さようなら','sayōnara','Goodbye']
+    ['さようなら','sayōnara','Goodbye'],
+    ['これをください','kore o kudasai','This one, please'],
+    ['英語が話せますか','eigo ga hanasemasu ka','Do you speak English?'],
+    ['ゆっくりお願いします','yukkuri onegaishimasu','Slowly, please'],
+    ['もう一度お願いします','mō ichido onegaishimasu','Once more, please'],
+    ['大丈夫です','daijōbu desu','It’s okay / I’m fine'],
+    ['お会計お願いします','okaikei onegaishimasu','The check, please'],
+    ['お名前は何ですか','onamae wa nan desu ka','What’s your name?'],
+    ['元気ですか','genki desu ka','How are you?'],
+    ['乾杯','kanpai','Cheers!'],
+    ['すごい','sugoi','Amazing! / Wow'],
+    ['かわいい','kawaii','Cute!'],
+    ['助けて','tasukete','Help!']
   ];
-  var NUMBERS=[
-    ['いち','ichi','1'],['に','ni','2'],['さん','san','3'],['よん','yon','4'],['ご','go','5'],
-    ['ろく','roku','6'],['なな','nana','7'],['はち','hachi','8'],['きゅう','kyū','9'],['じゅう','jū','10']
-  ];
+  var WORDS={
+    'Numbers':[
+      ['いち','ichi','1'],['に','ni','2'],['さん','san','3'],['よん','yon','4'],['ご','go','5'],
+      ['ろく','roku','6'],['なな','nana','7'],['はち','hachi','8'],['きゅう','kyū','9'],['じゅう','jū','10']],
+    'Food':[
+      ['水','mizu','water'],['お茶','ocha','tea'],['コーヒー','kōhī','coffee'],['ご飯','gohan','rice / meal'],
+      ['肉','niku','meat'],['魚','sakana','fish'],['野菜','yasai','vegetables'],['果物','kudamono','fruit'],
+      ['パン','pan','bread'],['卵','tamago','egg'],['ラーメン','rāmen','ramen'],['寿司','sushi','sushi'],['ビール','bīru','beer']],
+    'Time & Days':[
+      ['今日','kyō','today'],['明日','ashita','tomorrow'],['昨日','kinō','yesterday'],['今','ima','now'],
+      ['朝','asa','morning'],['昼','hiru','noon / day'],['夜','yoru','night'],
+      ['月曜日','getsuyōbi','Monday'],['火曜日','kayōbi','Tuesday'],['水曜日','suiyōbi','Wednesday'],
+      ['木曜日','mokuyōbi','Thursday'],['金曜日','kin’yōbi','Friday'],['土曜日','doyōbi','Saturday'],['日曜日','nichiyōbi','Sunday']],
+    'Family':[
+      ['家族','kazoku','family'],['お母さん','okāsan','mother'],['お父さん','otōsan','father'],
+      ['兄','ani','older brother'],['姉','ane','older sister'],['弟','otōto','younger brother'],
+      ['妹','imōto','younger sister'],['子供','kodomo','child'],['友達','tomodachi','friend']],
+    'Places':[
+      ['駅','eki','station'],['トイレ','toire','toilet'],['ホテル','hoteru','hotel'],['レストラン','resutoran','restaurant'],
+      ['病院','byōin','hospital'],['学校','gakkō','school'],['家','ie','house'],['店','mise','shop'],
+      ['コンビニ','konbini','convenience store'],['空港','kūkō','airport'],['銀行','ginkō','bank']],
+    'Colors':[
+      ['赤','aka','red'],['青','ao','blue'],['黄色','kiiro','yellow'],['緑','midori','green'],
+      ['白','shiro','white'],['黒','kuro','black'],['ピンク','pinku','pink'],['紫','murasaki','purple'],['オレンジ','orenji','orange']],
+    'Feelings':[
+      ['いい','ii','good'],['悪い','warui','bad'],['暑い','atsui','hot (weather)'],['寒い','samui','cold'],
+      ['大きい','ōkii','big'],['小さい','chiisai','small'],['楽しい','tanoshii','fun'],['疲れた','tsukareta','tired'],
+      ['嬉しい','ureshii','happy'],['かわいい','kawaii','cute'],['高い','takai','expensive / tall'],['安い','yasui','cheap']],
+    'Verbs':[
+      ['食べる','taberu','to eat'],['飲む','nomu','to drink'],['行く','iku','to go'],['来る','kuru','to come'],
+      ['見る','miru','to see / watch'],['する','suru','to do'],['買う','kau','to buy'],['話す','hanasu','to speak'],
+      ['分かる','wakaru','to understand'],['好き','suki','to like']],
+    'Questions':[
+      ['何','nani','what'],['どこ','doko','where'],['いつ','itsu','when'],['誰','dare','who'],
+      ['なぜ','naze','why'],['どう','dō','how'],['いくら','ikura','how much'],['どれ','dore','which']]
+  };
 
   // ── hiragana grid ──
   var hg=document.getElementById('hgrid');
@@ -191,7 +236,20 @@
     });
   }
   buildCards(document.getElementById('phrases'), PHRASES);
-  buildCards(document.getElementById('numbers'), NUMBERS);
+
+  // ── words: category chips + cards ──
+  var WORD_CATS=Object.keys(WORDS), curCat=WORD_CATS[0];
+  var catbar=document.getElementById('catbar'), wordsEl=document.getElementById('words');
+  function renderCat(){
+    wordsEl.innerHTML=''; buildCards(wordsEl, WORDS[curCat]);
+    document.querySelectorAll('#catbar .tab').forEach(function(b){ b.classList.toggle('on', b.dataset.cat===curCat); });
+  }
+  WORD_CATS.forEach(function(cat){
+    var b=document.createElement('button'); b.className='tab'+(cat===curCat?' on':''); b.dataset.cat=cat; b.textContent=cat;
+    b.addEventListener('click',function(){ curCat=cat; renderCat(); });
+    catbar.appendChild(b);
+  });
+  renderCat();
 
   // ── tabs ──
   document.getElementById('tabs').addEventListener('click',function(e){
@@ -204,9 +262,9 @@
   // ── practice (flashcards) ──
   var DECKS={
     Hiragana: HIRA.filter(function(p){return p[0];}).map(function(p){return [p[0],p[1],'sound'];}),
-    Phrases: PHRASES,
-    Numbers: NUMBERS
+    Phrases: PHRASES
   };
+  Object.keys(WORDS).forEach(function(cat){ DECKS[cat]=WORDS[cat]; });
   var deckName='Phrases', queue=[], idx=0, flipped=false, known=0, total=0;
   var dp=document.getElementById('deckpick');
   Object.keys(DECKS).forEach(function(name){
