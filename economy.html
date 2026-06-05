@@ -115,17 +115,17 @@
 <script>
 (function(){
   var SECTORS=[
-    {id:'tech',ic:'💻',nm:'Technology',col:'#b8c0ff',provides:'Software + chips that run everything',needs:'Energy, materials, capital',names:['NVDA','MSFT','ASML'],ai:'The <b>source</b> of the AI wave.'},
-    {id:'comm',ic:'📡',nm:'Communication',col:'#c8a0ff',provides:'Internet, media, ads, telecom',needs:'Tech, data centers, energy',names:['GOOGL','META','TMUS'],ai:'AI ads + content; huge data-center spenders.'},
-    {id:'disc',ic:'🛍️',nm:'Consumer Discretionary',col:'#ff8db3',provides:'Cars, retail, travel, wants',needs:'Financing, healthy consumers',names:['AMZN','TSLA','HD'],ai:'AI retail + robotaxis; EVs pull chips & copper.'},
-    {id:'staples',ic:'🛒',nm:'Consumer Staples',col:'#7fd6c0',provides:'Food, drinks, basics',needs:'Materials, logistics',names:['PG','KO','WMT'],ai:'Defensive; AI trims supply-chain cost.'},
-    {id:'health',ic:'🩺',nm:'Health Care',col:'#9ee6b0',provides:'Drugs, devices, care',needs:'Tech, materials, capital',names:['LLY','UNH','JNJ'],ai:'AI <b>drug discovery</b> + diagnostics.'},
-    {id:'fin',ic:'🏦',nm:'Financials',col:'#7aa6ff',provides:'Capital + credit for everyone',needs:'A healthy economy, stable rates',names:['JPM','V','BRK.B'],ai:'Funds the build-out; AI in fraud + trading.'},
-    {id:'re',ic:'🏢',nm:'Real Estate',col:'#f3d59a',provides:'Buildings, incl. data centers',needs:'Financing, construction, power',names:['PLD','EQIX','DLR'],ai:'<b>Data-center REITs</b> = a direct AI landlord.'},
-    {id:'util',ic:'⚡',nm:'Utilities',col:'#9fd0ff',provides:'Electricity + water to all',needs:'Energy, materials, grid gear',names:['NEE','DUK','CEG'],ai:'AI data centers = first demand surge in decades.'},
-    {id:'indust',ic:'🏭',nm:'Industrials',col:'#ffc480',provides:'Machines, transport, power gear',needs:'Materials, energy, demand',names:['GE','CAT','ETN'],ai:'Builds the data centers + their power gear.'},
-    {id:'energy',ic:'🔥',nm:'Energy',col:'#ff8d6b',provides:'Fuel + power behind it all',needs:'Materials, industrial equipment',names:['XOM','CVX','GEV'],ai:'AI power demand revives gas + nuclear.'},
-    {id:'mat',ic:'🪨',nm:'Materials',col:'#5fd39a',provides:'Metals, chemicals, raw inputs',needs:'Energy, industrial gear',names:['FCX','LIN','NEM'],ai:'<b>Copper</b> = the metal of electrification.'}
+    {id:'tech',ic:'💻',nm:'Technology',col:'#b8c0ff',wt:30,cyc:['recovery','expansion'],provides:'Software + chips that run everything',needs:'Energy, materials, capital',names:['NVDA','MSFT','ASML'],ai:'The <b>source</b> of the AI wave.'},
+    {id:'comm',ic:'📡',nm:'Communication',col:'#c8a0ff',wt:9,cyc:['recovery','expansion'],provides:'Internet, media, ads, telecom',needs:'Tech, data centers, energy',names:['GOOGL','META','TMUS'],ai:'AI ads + content; huge data-center spenders.'},
+    {id:'disc',ic:'🛍️',nm:'Consumer Discretionary',col:'#ff8db3',wt:10,cyc:['recovery'],provides:'Cars, retail, travel, wants',needs:'Financing, healthy consumers',names:['AMZN','TSLA','HD'],ai:'AI retail + robotaxis; EVs pull chips & copper.'},
+    {id:'staples',ic:'🛒',nm:'Consumer Staples',col:'#7fd6c0',wt:6,cyc:['recession'],provides:'Food, drinks, basics',needs:'Materials, logistics',names:['PG','KO','WMT'],ai:'Defensive; AI trims supply-chain cost.'},
+    {id:'health',ic:'🩺',nm:'Health Care',col:'#9ee6b0',wt:11,cyc:['recession'],provides:'Drugs, devices, care',needs:'Tech, materials, capital',names:['LLY','UNH','JNJ'],ai:'AI <b>drug discovery</b> + diagnostics.'},
+    {id:'fin',ic:'🏦',nm:'Financials',col:'#7aa6ff',wt:13,cyc:['recovery'],provides:'Capital + credit for everyone',needs:'A healthy economy, stable rates',names:['JPM','V','BRK.B'],ai:'Funds the build-out; AI in fraud + trading.'},
+    {id:'re',ic:'🏢',nm:'Real Estate',col:'#f3d59a',wt:2,cyc:['recovery'],provides:'Buildings, incl. data centers',needs:'Financing, construction, power',names:['PLD','EQIX','DLR'],ai:'<b>Data-center REITs</b> = a direct AI landlord.'},
+    {id:'util',ic:'⚡',nm:'Utilities',col:'#9fd0ff',wt:2.5,cyc:['recession'],provides:'Electricity + water to all',needs:'Energy, materials, grid gear',names:['NEE','DUK','CEG'],ai:'AI data centers = first demand surge in decades.'},
+    {id:'indust',ic:'🏭',nm:'Industrials',col:'#ffc480',wt:8.5,cyc:['expansion'],provides:'Machines, transport, power gear',needs:'Materials, energy, demand',names:['GE','CAT','ETN'],ai:'Builds the data centers + their power gear.'},
+    {id:'energy',ic:'🔥',nm:'Energy',col:'#ff8d6b',wt:3.5,cyc:['late'],provides:'Fuel + power behind it all',needs:'Materials, industrial equipment',names:['XOM','CVX','GEV'],ai:'AI power demand revives gas + nuclear.'},
+    {id:'mat',ic:'🪨',nm:'Materials',col:'#5fd39a',wt:2.2,cyc:['late'],provides:'Metals, chemicals, raw inputs',needs:'Energy, industrial gear',names:['FCX','LIN','NEM'],ai:'<b>Copper</b> = the metal of electrification.'}
   ];
   // [from, to, weight]  weight: 1 = minor, 2 = moderate, 3 = major dependency
   var SECTOR_CONN=[['tech','energy',3],['tech','mat',2],['tech','comm',3],['tech','fin',2],['tech','health',1],
@@ -239,10 +239,12 @@
       var w=e[2]||2;
       parts.push('<line class="edge w'+w+'" data-a="'+e[0]+'" data-b="'+e[1]+'" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>'); });
     g.nodes.forEach(function(s,i){ var p=pos(i), col=s.col||sectorOf[cur].col;
+      // top level: circle size scales with market weight (bigger sector = bigger node)
+      var r = (!cur && s.wt) ? (17 + Math.sqrt(s.wt) * 3.9) : (g.nodes.length<=6?30:27);
       parts.push('<g class="node" data-id="'+s.id+'">'
-        +'<circle class="ring" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(g.nodes.length<=6?30:27)+'" fill="#14142c" stroke="'+col+'" stroke-width="2"/>'
+        +'<circle class="ring" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+r.toFixed(1)+'" fill="#14142c" stroke="'+col+'" stroke-width="2"/>'
         +'<text class="ic" x="'+p[0].toFixed(1)+'" y="'+(p[1]+8).toFixed(1)+'" text-anchor="middle">'+s.ic+'</text>'
-        +'<text class="lb" x="'+p[0].toFixed(1)+'" y="'+(p[1]+(g.nodes.length<=6?46:44)).toFixed(1)+'" text-anchor="middle">'+(s.nm.split(' ')[0])+'</text>'
+        +'<text class="lb" x="'+p[0].toFixed(1)+'" y="'+(p[1]+r+14).toFixed(1)+'" text-anchor="middle">'+(s.nm.split(' ')[0])+'</text>'
         +'</g>'); });
     svg.innerHTML=parts.join('');
     svg.querySelectorAll('.node').forEach(function(gg){ gg.addEventListener('click',function(){ select(gg.dataset.id); }); });
