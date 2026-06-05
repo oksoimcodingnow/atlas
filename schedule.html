@@ -632,7 +632,7 @@ function deleteTask(id) { const t = tasks.find(x => String(x.id) == String(id));
 
 // ════════ Google Calendar auto-sync ════════
 // Set this to your OAuth Web Client ID (Google Cloud Console -> Credentials).
-const GCAL_CLIENT_ID = '';   // <-- paste it here to activate auto-sync
+const GCAL_CLIENT_ID = '609821959172-joet3cmamul673gri1g6citrjdgt9uj4.apps.googleusercontent.com';
 const GCAL_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
 let gcalTokenClient = null, gcalToken = null, gcalQueue = [];
 function gcalEnabled() { return localStorage.getItem('atlas_gcal') === 'on' && !!GCAL_CLIENT_ID; }
