@@ -263,7 +263,7 @@
     return order;
   }
 
-  function tickerHtml(names){ return names.map(function(t){ return '<a class="tk" href="https://stockanalysis.com/stocks/'+t.toLowerCase()+'/" target="_blank" rel="noopener" title="Open '+t+'">'+t+'</a>'; }).join(''); }
+  function tickerHtml(names){ return names.map(function(t){ return '<a class="tk" href="https://stockanalysis.com/stocks/'+t.toLowerCase()+'/financials/" target="_blank" rel="noopener" title="'+t+' financial statements (income, balance sheet, cash flow)">'+t+'</a>'; }).join(''); }
   function linkChips(id){ return neighbors(id).map(function(lid){ var n=nodeBy(lid); return '<button data-go="'+lid+'">'+n.ic+' '+n.nm.split(' ')[0]+'</button>'; }).join(''); }
   function wireChips(p){ p.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ select(b.dataset.go); svg.scrollIntoView({behavior:'smooth',block:'start'}); }); }); }
 
