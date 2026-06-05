@@ -191,8 +191,13 @@
   .due.tomorrow { color: var(--ink); }
   .due.overdue { color: var(--red); background: rgba(240,115,107,0.12); }
 
-  .task-actions { display: flex; gap: 2px; opacity: 0; transition: opacity .16s var(--ease); }
-  .task:hover .task-actions, .task:focus-within .task-actions { opacity: 1; }
+  .task-actions { display: flex; gap: 2px; }
+  /* edit + delete stay hover-revealed (keeps the row clean) ... */
+  .task-actions .edit, .task-actions .del { opacity: 0; transition: opacity .16s var(--ease); }
+  .task:hover .edit, .task:focus-within .edit, .task:hover .del, .task:focus-within .del { opacity: 1; }
+  /* ...but the calendar button is ALWAYS visible on dated tasks (it's a primary action) */
+  .icon-btn.cal { opacity: 1; color: var(--accent-ink, #b8c0ff); }
+  .icon-btn.cal:hover { background: rgba(184,192,255,0.14); }
   .icon-btn {
     width: 28px; height: 28px; border-radius: 7px; border: none; background: transparent; color: var(--faint);
     cursor: pointer; display: grid; place-items: center; font-size: 15px; transition: color .14s, background .14s;
