@@ -40,8 +40,13 @@
   .crumb .sep{color:var(--faint);}
 
   svg.web{display:block;width:100%;max-width:560px;height:auto;margin:0 auto;overflow:visible;}
+  /* thicker = stronger dependency */
   .edge{stroke:rgba(184,192,255,0.13);stroke-width:1.4;transition:stroke .25s,stroke-width .25s;}
-  .edge.hot{stroke:rgba(243,213,154,0.72);stroke-width:2.5;}
+  .edge.w1{stroke:rgba(184,192,255,0.09);stroke-width:1.1;}
+  .edge.w2{stroke:rgba(184,192,255,0.16);stroke-width:2.2;}
+  .edge.w3{stroke:rgba(184,192,255,0.26);stroke-width:3.6;}
+  .edge.hot{stroke:rgba(243,213,154,0.78);}
+  .edge.hot.w1{stroke-width:2;} .edge.hot.w2{stroke-width:3.2;} .edge.hot.w3{stroke-width:4.6;}
   .node{cursor:pointer;transition:opacity .3s;}
   .node .ring{transition:transform .16s,filter .3s;transform-origin:center;}
   .node:hover .ring{transform:scale(1.1);}
@@ -85,6 +90,11 @@
 <div class="wrap">
   <h1>The connected <em>economy.</em></h1>
   <p class="lede">11 sectors, all linked. Tap one to ripple a shock outward, or zoom inside it to its own web.</p>
+  <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin:14px 0 2px;font-size:12px;color:var(--muted);flex-wrap:wrap;">
+    <span style="display:flex;align-items:center;gap:7px;"><svg width="34" height="6"><line x1="0" y1="3" x2="34" y2="3" stroke="rgba(184,192,255,0.5)" stroke-width="3.6"/></svg>major</span>
+    <span style="display:flex;align-items:center;gap:7px;"><svg width="34" height="6"><line x1="0" y1="3" x2="34" y2="3" stroke="rgba(184,192,255,0.35)" stroke-width="2.2"/></svg>moderate</span>
+    <span style="display:flex;align-items:center;gap:7px;"><svg width="34" height="6"><line x1="0" y1="3" x2="34" y2="3" stroke="rgba(184,192,255,0.22)" stroke-width="1.1"/></svg>minor dependency</span>
+  </div>
 
   <div class="crumb" id="crumb"></div>
   <svg class="web" id="web" viewBox="0 0 540 540" role="img" aria-label="Interactive web of economic sectors"></svg>
@@ -99,7 +109,7 @@
     <a href="spotlight.html">Spotlight</a>
     <a href="library/valuation.html">Value a stock</a>
   </div>
-  <p class="disc">A map for thinking about how the economy fits together, not investment advice. Company names are illustrative examples, not picks. Connections are simplified; the real economy has far more.</p>
+  <p class="disc">A map for thinking about how the economy fits together, not investment advice. Company names are illustrative examples, not picks. Line thickness shows relative dependency strength (reasoned estimates, not precise figures). The rigorous version of this is economics' <b style="color:var(--muted)">input-output (Leontief) tables</b>, which measure exactly how much each sector buys from every other.</p>
 </div>
 
 <script>
@@ -117,10 +127,11 @@
     {id:'energy',ic:'🔥',nm:'Energy',col:'#ff8d6b',provides:'Fuel + power behind it all',needs:'Materials, industrial equipment',names:['XOM','CVX','GEV'],ai:'AI power demand revives gas + nuclear.'},
     {id:'mat',ic:'🪨',nm:'Materials',col:'#5fd39a',provides:'Metals, chemicals, raw inputs',needs:'Energy, industrial gear',names:['FCX','LIN','NEM'],ai:'<b>Copper</b> = the metal of electrification.'}
   ];
-  var SECTOR_CONN=[['tech','energy'],['tech','mat'],['tech','comm'],['tech','fin'],['tech','health'],
-    ['energy','mat'],['energy','util'],['energy','indust'],['mat','indust'],['mat','re'],
-    ['indust','util'],['indust','re'],['util','re'],['fin','re'],['fin','disc'],['fin','staples'],
-    ['comm','disc'],['disc','staples'],['health','staples'],['util','tech']];
+  // [from, to, weight]  weight: 1 = minor, 2 = moderate, 3 = major dependency
+  var SECTOR_CONN=[['tech','energy',3],['tech','mat',2],['tech','comm',3],['tech','fin',2],['tech','health',1],
+    ['energy','mat',3],['energy','util',3],['energy','indust',2],['mat','indust',3],['mat','re',1],
+    ['indust','util',2],['indust','re',2],['util','re',2],['fin','re',3],['fin','disc',3],['fin','staples',1],
+    ['comm','disc',2],['disc','staples',1],['health','staples',1],['util','tech',3]];
 
   // Each sector's INTERNAL web of sub-industries.
   var SUBS={
@@ -225,7 +236,8 @@
     crumb();
     var g=curGraph(), parts=[];
     g.conn.forEach(function(e){ var a=pos(idxOf(e[0])), b=pos(idxOf(e[1]));
-      parts.push('<line class="edge" data-a="'+e[0]+'" data-b="'+e[1]+'" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>'); });
+      var w=e[2]||2;
+      parts.push('<line class="edge w'+w+'" data-a="'+e[0]+'" data-b="'+e[1]+'" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>'); });
     g.nodes.forEach(function(s,i){ var p=pos(i), col=s.col||sectorOf[cur].col;
       parts.push('<g class="node" data-id="'+s.id+'">'
         +'<circle class="ring" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+(g.nodes.length<=6?30:27)+'" fill="#14142c" stroke="'+col+'" stroke-width="2"/>'
