@@ -47,6 +47,13 @@
   .edge.w3{stroke:rgba(184,192,255,0.26);stroke-width:3.6;}
   .edge.hot{stroke:rgba(243,213,154,0.78);}
   .edge.hot.w1{stroke-width:2;} .edge.hot.w2{stroke-width:3.2;} .edge.hot.w3{stroke-width:4.6;}
+  .cyclebar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:7px;margin:14px 0 4px;}
+  .cyc-lbl{font-size:12px;color:var(--muted);font-weight:600;}
+  .cyclebar button{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:7px 13px;cursor:pointer;transition:.15s;}
+  .cyclebar button:hover{color:var(--text);border-color:var(--accent);}
+  .cyclebar button.on{background:var(--gold);color:#0a0a14;border-color:var(--gold);}
+  .cyc-cap{text-align:center;font-size:13px;color:#ded6ea;max-width:46ch;margin:6px auto 0;line-height:1.5;min-height:1px;}
+  .cyc-cap b{color:var(--gold);}
   .node{cursor:pointer;transition:opacity .3s;}
   .node .ring{transition:transform .16s,filter .3s;transform-origin:center;}
   .node:hover .ring{transform:scale(1.1);}
@@ -98,6 +105,15 @@
 
   <div class="crumb" id="crumb"></div>
   <svg class="web" id="web" viewBox="0 0 540 540" role="img" aria-label="Interactive web of economic sectors"></svg>
+
+  <div class="cyclebar" id="cyclebar">
+    <span class="cyc-lbl">↻ Who leads when:</span>
+    <button type="button" data-cyc="recovery">Recovery</button>
+    <button type="button" data-cyc="expansion">Expansion</button>
+    <button type="button" data-cyc="late">Late cycle</button>
+    <button type="button" data-cyc="recession">Recession</button>
+  </div>
+  <div class="cyc-cap" id="cyc-cap"></div>
 
   <div class="panel" id="panel"><div class="ph">Tap any sector above. Watch the ripple spread, then tap <b>Explore inside</b> to zoom into its sub-industries.</div></div>
 
@@ -270,6 +286,7 @@
   function wireChips(p){ p.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ select(b.dataset.go); svg.scrollIntoView({behavior:'smooth',block:'start'}); }); }); }
 
   function select(id){
+    clearCycleUI();
     var order=cascade(id), s=nodeBy(id), p=document.getElementById('panel');
     if(!cur){
       var cnt={}; Object.keys(order).forEach(function(n){var o=order[n];if(o>0)cnt[o]=(cnt[o]||0)+1;});
@@ -293,8 +310,34 @@
     }
     wireChips(p);
   }
-  function drillInto(id){ cur=id; build(); document.getElementById('panel').innerHTML='<div class="ph">Inside <b>'+sectorOf[id].nm+'</b>. Tap a sub-industry to ripple it, or use 🌐 Economy above to zoom back out.</div>'; svg.scrollIntoView({behavior:'smooth',block:'center'}); }
-  function goTop(){ cur=null; build(); document.getElementById('panel').innerHTML='<div class="ph">Back at the full economy. Tap any sector to ripple it, or Explore inside to zoom in.</div>'; }
+  function drillInto(id){ cur=id; build(); clearCycleUI(); document.getElementById('panel').innerHTML='<div class="ph">Inside <b>'+sectorOf[id].nm+'</b>. Tap a sub-industry to ripple it, or use 🌐 Economy above to zoom back out.</div>'; svg.scrollIntoView({behavior:'smooth',block:'center'}); }
+  function goTop(){ cur=null; build(); clearCycleUI(); document.getElementById('panel').innerHTML='<div class="ph">Back at the full economy. Tap any sector to ripple it, or Explore inside to zoom in.</div>'; }
+
+  // ── cycle / sector-rotation toggle: which sectors lead in each phase ──
+  var PHASE={
+    recovery:{t:'Early cycle / Recovery',d:'Cheap money + a rebounding economy. Rate-sensitive and growth sectors lead.'},
+    expansion:{t:'Mid cycle / Expansion',d:'Steady growth. Tech, communication, and industrials hum.'},
+    late:{t:'Late cycle',d:'Inflation rising, growth peaking. Energy and materials (commodities) shine.'},
+    recession:{t:'Recession',d:'Downturn, defence mode. Staples, utilities, and health care hold up best.'}
+  };
+  var activePhase=null;
+  function clearCycleUI(){ activePhase=null; document.getElementById('cyc-cap').innerHTML=''; document.querySelectorAll('#cyclebar button').forEach(function(b){b.classList.remove('on');}); }
+  function showCycle(phase){
+    if(activePhase===phase){ clearCycleUI(); svg.querySelectorAll('.node').forEach(function(g){g.classList.remove('lit','faint','src');}); svg.querySelectorAll('.edge').forEach(function(e){e.classList.remove('hot');}); return; }
+    if(cur){ cur=null; build(); }              // cycle only applies to the top-level sectors
+    timers.forEach(clearTimeout); timers=[];
+    activePhase=phase;
+    svg.querySelectorAll('.edge').forEach(function(e){e.classList.remove('hot');});
+    svg.querySelectorAll('.node').forEach(function(g){
+      var leads=(sectorOf[g.dataset.id].cyc||[]).indexOf(phase)>=0;
+      g.classList.remove('src'); g.classList.toggle('lit',leads); g.classList.toggle('faint',!leads);
+    });
+    var info=PHASE[phase];
+    var leaders=SECTORS.filter(function(s){return (s.cyc||[]).indexOf(phase)>=0;}).map(function(s){return s.ic+' '+s.nm.split(' ')[0];}).join(' · ');
+    document.getElementById('cyc-cap').innerHTML='<b>'+info.t+'</b> — '+info.d+'<br>Leaders: '+leaders;
+    document.querySelectorAll('#cyclebar button').forEach(function(b){b.classList.toggle('on',b.dataset.cyc===phase);});
+  }
+  document.getElementById('cyclebar').addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) showCycle(b.dataset.cyc); });
 
   build();
 })();
