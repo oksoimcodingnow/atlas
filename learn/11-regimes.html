@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 11 · When the rug gets pulled · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,7.5vw,68px);line-height:1.02;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  a.inline{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(184,192,255,0.35);}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout.warn{border-color:rgba(240,133,125,0.35);} .callout.warn .tag{color:var(--down);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(20px,3vw,30px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px;}
+  .sim canvas{display:block;width:100%;height:auto;border-radius:12px;background:#0c0c18;border:1px solid var(--rule);}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:12px;}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px;}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+  @media(max-width:520px){ .twocol{grid-template-columns:1fr;} }
+  .stat{border:1px solid var(--rule);border-radius:12px;padding:16px;text-align:center;background:#0c0c18;}
+  .stat .lbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .stat .val{font-family:var(--serif);font-size:34px;font-weight:600;line-height:1;margin:8px 0 4px;font-variant-numeric:tabular-nums;}
+  .stat .sub{font-size:12px;color:var(--muted);font-family:var(--mono);}
+  .stat.good .val{color:var(--up);} .stat.bad .val{color:var(--down);}
+  .slider{display:flex;align-items:center;gap:12px;margin-top:16px;font-size:13px;color:var(--muted);}
+  .slider input[type=range]{flex:1;accent-color:var(--accent);} .slider span.nm{min-width:9ch;} .slider b{font-family:var(--mono);color:var(--text);min-width:10ch;text-align:right;}
+  .ctrls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .btn{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);background:var(--bg);border:1px solid var(--rule);border-radius:9px;padding:10px 16px;cursor:pointer;transition:.16s;} .btn:hover{border-color:var(--accent);}
+  .readout{margin-top:16px;font-size:14px;color:var(--muted);line-height:1.55;} .readout b{color:var(--text);}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .cta{margin-top:44px;background:linear-gradient(180deg,rgba(184,192,255,0.08),transparent),var(--bg-2);border:1px solid rgba(184,192,255,0.3);border-radius:16px;padding:28px;text-align:center;}
+  .cta h3{font-family:var(--serif);font-size:28px;font-weight:500;margin-bottom:8px;} .cta p{color:var(--muted);font-size:15px;margin-bottom:0;}
+  .nextnav{margin-top:50px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 11 · regimes</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 11 · Nothing lasts</div>
+  <h1>When the rug <em>gets pulled.</em></h1>
+  <p class="standfirst">A strategy can print money for two years, then quietly stop, not because it was ever wrong, but because the market changed underneath it. Markets switch between regimes, and a rule that is genius in one is a disaster in the next.</p>
+  <p class="meta-line">~8 min · why every edge decays · with a regime-flip simulator</p>
+
+  <h2>The market is not one thing</h2>
+  <p>It looks like a single price chart, but it behaves like several different worlds taking turns. A <span class="hl">calm uptrend</span> where prices grind steadily higher. A <span class="hl">choppy range</span> where they bounce up and down going nowhere. A <span class="hl-2">panic</span> where everything gaps down at once. Each of these is a regime, and the rules that win are different in each.</p>
+  <p>This is the practical face of <span class="hl">nonstationarity</span> from <a class="inline" href="08-neural-nets.html">Lesson 8</a>: the process generating the data is not fixed, it changes. So a model that fit the last regime perfectly can be exactly wrong the moment the regime flips.</p>
+
+  <div class="pull">Your edge did not break. The <span style="font-style:normal;color:var(--accent-2)">world it was built for</span> went away.</div>
+
+  <h2>Same rule, opposite outcomes</h2>
+  <p>Two of the oldest strategies prove the point, and they are mirror images. <span class="hl">Trend following</span> buys what is going up and rides it. It is a hero in a steady trend and gets chopped to pieces in a sideways market, buying every top and selling every bottom. <span class="hl-2">Mean reversion</span> does the opposite: it fades moves, betting prices snap back. It thrives in a choppy range and gets flattened in a strong trend, fighting the move the whole way down.</p>
+  <p>Neither is better. Each is simply matched to a regime. Run only one and you are making a hidden bet that its regime will last.</p>
+
+  <h2>Flip the regime</h2>
+  <p>Below, the price runs through a <span class="hl">trending</span> regime, then flips to a <span class="hl-2">choppy</span> one (drag the flip point, or swap the order). Watch the two strategies. The trend follower climbs in the trend and bleeds in the chop. The mean reverter does the reverse. The same code, unchanged, switches from winner to loser the instant the regime turns.</p>
+
+  <div class="sim">
+    <div class="sim-title">Regime flip · same strategies, changing world</div>
+    <canvas id="cv" width="660" height="320"></canvas>
+    <div class="legend">
+      <span><i style="background:#b8c0ff"></i>trend follower</span>
+      <span><i style="background:#f3d59a"></i>mean reverter</span>
+      <span><i style="background:#6b6b88"></i>break even</span>
+    </div>
+    <div class="slider"><span class="nm">flip point</span><input id="flip" type="range" min="0.25" max="0.75" step="0.05" value="0.5"><b id="flipv">50%</b></div>
+    <div class="twocol">
+      <div class="stat" id="boxT"><div class="lbl">Trend follower</div><div class="val" id="vT">–</div><div class="sub">total PnL</div></div>
+      <div class="stat" id="boxM"><div class="lbl">Mean reverter</div><div class="val" id="vM">–</div><div class="sub">total PnL</div></div>
+    </div>
+    <div class="ctrls"><button class="btn" id="swap">Swap regime order</button><button class="btn" id="reroll">New run</button></div>
+    <div class="readout" id="readout">Watch each curve change slope at the flip. One strategy owns the trend, the other owns the chop. The market decides which.</div>
+  </div>
+
+  <div class="terms">
+    <dt>regime</dt><dd>A stretch of time where the market behaves in one consistent way (trending, ranging, panicking). Different regimes reward different strategies.</dd>
+    <dt>nonstationarity</dt><dd>When the data-generating process itself changes over time. The deeper reason edges decay and backtests go stale.</dd>
+    <dt>edge decay</dt><dd>The slow death of a working strategy as the regime shifts or others copy it. Every real edge fades; the question is how fast.</dd>
+    <dt>trend following</dt><dd>Buy strength, ride momentum. Wins in sustained trends, loses in choppy ranges.</dd>
+    <dt>mean reversion</dt><dd>Fade extremes, bet on snap-back. Wins in ranges, loses badly in strong trends.</dd>
+    <dt>regime risk</dt><dd>The danger that you are quietly betting on the current regime lasting. The most common reason a live strategy underperforms its backtest.</dd>
+  </div>
+
+  <h2>You cannot see the flip coming</h2>
+  <p>The hard truth is that regimes do not announce themselves. You usually only know one ended after it has cost you. So the defense is not prediction, it is structure: do not depend on a single regime surviving.</p>
+
+  <div class="callout">
+    <div class="tag">How to survive regime change</div>
+    <p><strong>1.</strong> <span class="hl">Diversify across regimes</span> (<a class="inline" href="10-diversification.html">Lesson 10</a>). Run a trend strategy and a mean-reversion one together, so something works in each world.<br>
+    <strong>2.</strong> <span class="hl">Re-validate continuously</span> with walk-forward (<a class="inline" href="03-backtests-lie.html">Lesson 3</a>). If the recent edge is gone, believe the data, not the old backtest.<br>
+    <strong>3.</strong> <span class="hl">Size down when you are out of regime.</span> Cut risk when your strategy's conditions are absent rather than hoping they return.<br>
+    <strong>4.</strong> <span class="hl">Expect decay.</span> Assume every edge has a shelf life and keep researching the next one.</p>
+  </div>
+
+  <div class="check">
+    <div class="q">Your trend strategy crushed it for three years, then lost money for the last six months while the market went sideways. What happened?</div>
+    <button class="opt" data-c="1">The regime changed from trending to choppy. The strategy did not break, its world did.
+      <span class="verdict">Exactly. Trend strategies bleed in ranges. This is regime risk, not a broken model. Pair it with a mean-reversion edge.</span></button>
+    <button class="opt" data-c="0">The strategy was always broken; the three years were luck.
+      <span class="verdict">Unlikely. Three years of profit in trending markets is the strategy working as designed, then meeting a regime it hates.</span></button>
+    <button class="opt" data-c="0">Add more leverage to win the losses back.
+      <span class="verdict">No. Pressing size into the wrong regime is how a drawdown becomes a blow-up. Size down, do not lever up.</span></button>
+  </div>
+
+  <div class="cta">
+    <h3>Build for many worlds.</h3>
+    <p>The goal is not a strategy that wins every regime, that does not exist. It is a portfolio where something wins in each.</p>
+  </div>
+
+  <div class="nextnav"><a href="10-diversification.html">← Lesson 10</a><a href="index.html">All lessons →</a></div>
+</div>
+<script>
+(function(){
+  // regime flip: price trends, then mean-reverts (or swapped). Two mirror
+  // strategies: trend-follower (10-day momentum) vs mean-reverter (fade the
+  // 5-day SMA). Watch each curve's slope flip when the regime turns.
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d'), W=660, H=320, pad=30, T=252;
+  function randn(){ var u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+  var seed=null, swapped=false;
+  function newSeed(){ seed=[]; for(var t=0;t<T;t++) seed.push(randn()); }
+  function buildPrice(flipIdx){
+    var p=[100], level=100, sd=0.85, drift=0.20, k=0.10, i;
+    for(i=1;i<T;i++){
+      var inTrend = swapped ? (i>=flipIdx) : (i<flipIdx);
+      var dp;
+      if(inTrend){ dp = drift + seed[i]*sd; }
+      else { dp = -k*(p[i-1]-level) + seed[i]*sd; }
+      p.push(p[i-1]+dp);
+      // capture the level at the moment we enter a choppy regime
+      if(i===(swapped?1:flipIdx)) level=p[i];
+      if(swapped && i===flipIdx) level=p[i];
+    }
+    return p;
+  }
+  function sma(p,w,i){ var s=0,c=0; for(var k=Math.max(0,i-w+1);k<=i;k++){s+=p[k];c++;} return s/c; }
+  function sign(x){ return x>0?1:(x<0?-1:0); }
+  function strat(p,kind){
+    var pnl=[0], cum=0;
+    for(var i=0;i<T-1;i++){
+      var pos=0;
+      if(kind==='trend'){ if(i>=10) pos=sign(p[i]-p[i-10]); }
+      else { if(i>=5) pos=-sign(p[i]-sma(p,5,i)); }
+      cum += pos*(p[i+1]-p[i]); pnl.push(cum);
+    }
+    return pnl;
+  }
+  function px(i){ return pad + i/T*(W-2*pad); }
+  function draw(){
+    var flip=parseFloat(document.getElementById('flip').value), flipIdx=Math.round(flip*T);
+    if(!seed) newSeed();
+    var p=buildPrice(flipIdx);
+    var tf=strat(p,'trend'), mr=strat(p,'mr');
+    var lo=Math.min(0,Math.min.apply(null,tf),Math.min.apply(null,mr));
+    var hi=Math.max(0,Math.max.apply(null,tf),Math.max.apply(null,mr));
+    var span=hi-lo||1; lo-=span*0.08; hi+=span*0.08;
+    function py(y){ return H-pad-(y-lo)/(hi-lo)*(H-2*pad); }
+    ctx.clearRect(0,0,W,H);
+    // regime shading
+    var fx=px(flipIdx);
+    var trendFirst=!swapped;
+    ctx.fillStyle='rgba(184,192,255,0.05)'; if(trendFirst) ctx.fillRect(pad,pad,fx-pad,H-2*pad); else ctx.fillRect(fx,pad,W-pad-fx,H-2*pad);
+    ctx.fillStyle='rgba(243,213,154,0.05)'; if(trendFirst) ctx.fillRect(fx,pad,W-pad-fx,H-2*pad); else ctx.fillRect(pad,pad,fx-pad,H-2*pad);
+    // regime divider + labels
+    ctx.beginPath(); ctx.moveTo(fx,pad); ctx.lineTo(fx,H-pad); ctx.strokeStyle='rgba(241,239,230,0.25)'; ctx.setLineDash([4,4]); ctx.lineWidth=1; ctx.stroke(); ctx.setLineDash([]);
+    ctx.font='10px Inter Tight, sans-serif'; ctx.textAlign='center'; ctx.fillStyle='rgba(154,154,184,0.85)';
+    var leftLbl=trendFirst?'TRENDING':'CHOPPY', rightLbl=trendFirst?'CHOPPY':'TRENDING';
+    ctx.fillText(leftLbl,(pad+fx)/2,pad+12); ctx.fillText(rightLbl,(fx+W-pad)/2,pad+12);
+    // zero line
+    ctx.beginPath(); ctx.moveTo(pad,py(0)); ctx.lineTo(W-pad,py(0)); ctx.strokeStyle='rgba(150,150,170,0.4)'; ctx.lineWidth=1; ctx.stroke();
+    function line(arr,col){ ctx.beginPath(); for(var i=0;i<arr.length;i++){ var X=px(i),Y=py(arr[i]); if(i===0)ctx.moveTo(X,Y); else ctx.lineTo(X,Y);} ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.stroke(); }
+    line(tf,'#b8c0ff'); line(mr,'#f3d59a');
+    var tEnd=tf[tf.length-1], mEnd=mr[mr.length-1];
+    document.getElementById('vT').textContent=(tEnd>=0?'+':'')+tEnd.toFixed(1);
+    document.getElementById('vM').textContent=(mEnd>=0?'+':'')+mEnd.toFixed(1);
+    document.getElementById('boxT').className='stat '+(tEnd>=0?'good':'bad');
+    document.getElementById('boxM').className='stat '+(mEnd>=0?'good':'bad');
+    var winner = tEnd>mEnd?'The trend follower':'The mean reverter';
+    document.getElementById('readout').innerHTML='<b>'+winner+' won overall here.</b> But look at the slopes: each one earns in its own regime and gives it back in the other. Move the flip point and the totals shuffle. No fixed rule wins both worlds.';
+  }
+  document.getElementById('flip').addEventListener('input',function(){ document.getElementById('flipv').textContent=Math.round(parseFloat(this.value)*100)+'%'; draw(); });
+  document.getElementById('swap').addEventListener('click',function(){ swapped=!swapped; draw(); });
+  document.getElementById('reroll').addEventListener('click',function(){ newSeed(); draw(); });
+  document.querySelectorAll('.opt').forEach(function(o){ o.addEventListener('click',function(){
+    document.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('right','wrong'); });
+    o.classList.add(o.dataset.c==='1'?'right':'wrong');
+  }); });
+  draw();
+})();
+</script>
+</body>
+</html>
