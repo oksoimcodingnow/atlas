@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 12 · Putting it all together · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,7.5vw,68px);line-height:1.02;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  a.inline{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(184,192,255,0.35);}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .steps{counter-reset:step;margin:24px 0;} .step{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid rgba(241,239,230,0.08);} .step:last-child{border-bottom:0;}
+  .step .n{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--accent);line-height:1.1;} .step .tx{font-size:15px;} .step .tx b{font-weight:600;} .step .tx a{color:var(--accent-2);text-decoration:none;border-bottom:1px solid rgba(243,213,154,0.3);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(20px,3vw,30px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px;}
+  .sim canvas{display:block;width:100%;height:auto;border-radius:12px;background:#0c0c18;border:1px solid var(--rule);}
+  .slider{display:flex;align-items:center;gap:12px;margin-top:16px;font-size:13px;color:var(--muted);}
+  .slider input[type=range]{flex:1;accent-color:var(--accent);} .slider span.nm{min-width:11ch;} .slider b{font-family:var(--mono);color:var(--text);min-width:9ch;text-align:right;}
+  .verdict-box{margin-top:18px;border:1px solid var(--rule);border-radius:12px;padding:18px;text-align:center;background:#0c0c18;}
+  .verdict-box .vv{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;} .verdict-box .vs{font-size:13px;color:var(--muted);margin-top:6px;}
+  .verdict-box.good{border-color:rgba(111,227,168,0.5);} .verdict-box.good .vv{color:var(--up);}
+  .verdict-box.mid{border-color:rgba(243,213,154,0.5);} .verdict-box.mid .vv{color:var(--accent-2);}
+  .verdict-box.bad{border-color:rgba(240,133,125,0.5);} .verdict-box.bad .vv{color:var(--down);}
+  .readout{margin-top:16px;font-size:13.5px;color:var(--muted);line-height:1.55;} .readout b{color:var(--text);}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .cta{margin-top:44px;background:linear-gradient(180deg,rgba(184,192,255,0.08),transparent),var(--bg-2);border:1px solid rgba(184,192,255,0.3);border-radius:16px;padding:30px;text-align:center;}
+  .cta h3{font-family:var(--serif);font-size:30px;font-weight:500;margin-bottom:8px;} .cta p{color:var(--muted);font-size:15px;margin-bottom:16px;} .cta a{display:inline-block;font-size:13px;font-weight:600;color:var(--bg);background:var(--accent);border-radius:999px;padding:11px 22px;text-decoration:none;margin:4px;}
+  .cta a.alt{background:transparent;border:1px solid var(--rule);color:var(--text);}
+  .nextnav{margin-top:50px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 12 · the capstone</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 12 · The capstone</div>
+  <h1>Putting it all <em>together.</em></h1>
+  <p class="standfirst">Every lesson so far was one gate. This is the gauntlet they form. A trading idea has to survive all of them in a row, and almost none do. Watching a beautiful backtest shrink at every gate is not failure, it is the entire job done correctly.</p>
+  <p class="meta-line">~9 min · the eleven lessons as one pipeline · with an idea-to-live gauntlet</p>
+
+  <h2>From idea to live money</h2>
+  <p>Here is the whole course as the order you actually do things. Each step is a previous lesson, and each one can kill the idea:</p>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div class="tx"><b>Have an edge, not a prediction.</b> Start with a small repeatable advantage with a reason to exist. <a href="01-edge-not-prediction.html">Lesson 1</a></div></div>
+    <div class="step"><div class="n">2</div><div class="tx"><b>Build it without leakage, judge it by risk.</b> Clean features, honest labels, and Sharpe, not just return. <a href="05-ml-honestly.html">Lesson 5</a> &middot; <a href="02-risk.html">Lesson 2</a></div></div>
+    <div class="step"><div class="n">3</div><div class="tx"><b>Validate out-of-sample.</b> Walk-forward on data you never touched, and count your tries so you do not fall for a false positive. <a href="03-backtests-lie.html">Lesson 3</a> &middot; <a href="07-alt-data.html">Lesson 7</a></div></div>
+    <div class="step"><div class="n">4</div><div class="tx"><b>Charge it for trading.</b> Re-test net of spread, commission, and slippage. Gross is a story. <a href="09-costs.html">Lesson 9</a></div></div>
+    <div class="step"><div class="n">5</div><div class="tx"><b>Do not over-power it.</b> Match model capacity to the signal, or it memorizes noise. <a href="08-neural-nets.html">Lesson 8</a></div></div>
+    <div class="step"><div class="n">6</div><div class="tx"><b>Size the bet.</b> Turn the surviving edge into position size without over-betting. <a href="04-sizing.html">Lesson 4</a></div></div>
+    <div class="step"><div class="n">7</div><div class="tx"><b>Diversify and watch the regime.</b> Run uncorrelated edges, and expect this one to decay when the world changes. <a href="10-diversification.html">Lesson 10</a> &middot; <a href="06-volatility.html">Lesson 6</a> &middot; <a href="11-regimes.html">Lesson 11</a></div></div>
+  </div>
+
+  <div class="pull">A good backtest is the <span style="font-style:normal;color:var(--accent-2)">start</span> of the work, not the end. Everything after it is subtraction.</div>
+
+  <h2>Every stage takes a cut</h2>
+  <p>This is the part beginners never see. An idea with a gorgeous in-sample Sharpe walks into the pipeline, and each gate shaves it. Overfitting halves it. Searching many variants inflates the winner, so honesty cuts more. Costs subtract a chunk. Trading at real size slips a little more. What limps out the far end is the only number that was ever real.</p>
+
+  <div class="sim">
+    <div class="sim-title">The gauntlet · watch the edge shrink stage by stage</div>
+    <canvas id="cv" width="660" height="300"></canvas>
+    <div class="slider"><span class="nm">in-sample Sharpe</span><input id="sis" type="range" min="0.5" max="4" step="0.1" value="2.4"><b id="sisv">2.4</b></div>
+    <div class="slider"><span class="nm">variants tried</span><input id="tries" type="range" min="1" max="500" step="1" value="40"><b id="triesv">40</b></div>
+    <div class="slider"><span class="nm">cost drag</span><input id="cost" type="range" min="0" max="1.2" step="0.05" value="0.3"><b id="costv">0.30</b></div>
+    <div class="verdict-box" id="vbox"><div class="vv" id="vv">–</div><div class="vs" id="vs">live Sharpe after the gauntlet</div></div>
+    <div class="readout" id="readout">These are illustrative, typical haircuts, not exact laws. The point is the shape: the bar shrinks at every gate. Push variants up and watch honesty punish the over-searched idea harder.</div>
+  </div>
+
+  <div class="terms">
+    <dt>in-sample vs out-of-sample</dt><dd>In-sample is the data you fit on (flattering). Out-of-sample is fresh data (honest). The gap between them is mostly overfitting.</dd>
+    <dt>Sharpe haircut</dt><dd>The rule of thumb that a strategy's live Sharpe is roughly half its in-sample one, before costs even enter. Sometimes worse.</dd>
+    <dt>selection bias</dt><dd>The more ideas you try, the more the best one is inflated by luck. The cure is to demand a bigger margin the harder you searched.</dd>
+    <dt>deployment threshold</dt><dd>The minimum live Sharpe worth trading after all haircuts. Below it, the edge will not survive a bad year of slippage and decay.</dd>
+  </div>
+
+  <h2>Why this is the actual job</h2>
+  <p>Almost every idea dies somewhere in that funnel, and that is correct. The skill this whole course teaches is not generating signals, it is the <span class="hl">honesty to run them through the gauntlet and kill the ones that do not survive</span>. The market pays the disciplined, not the clever. Finding nothing and knowing it beats trading a mirage, every single time.</p>
+
+  <div class="callout">
+    <div class="tag">The deploy checklist</div>
+    <p>Before any real money: <span class="mono">edge has a reason</span> &middot; <span class="mono">no leakage</span> &middot; <span class="mono">survives walk-forward</span> &middot; <span class="mono">survives non-overlapping p-value</span> &middot; <span class="mono">profitable net of costs</span> &middot; <span class="mono">capacity matches signal</span> &middot; <span class="mono">sized sanely</span> &middot; <span class="mono">diversified</span> &middot; <span class="mono">decay plan in place</span>. Miss one and the funnel will find it for you, with real money.</p>
+  </div>
+
+  <div class="check">
+    <div class="q">An idea has a 3.0 in-sample Sharpe but you tried 300 variants to find it. What is the honest expectation for live performance?</div>
+    <button class="opt" data-c="1">Apply a big haircut: overfitting and heavy searching mean live could easily be near zero.
+      <span class="verdict">Exactly. A 3.0 found among 300 tries is mostly luck. Halve for overfitting, subtract for selection and costs, and little may remain.</span></button>
+    <button class="opt" data-c="0">3.0 is world-class, trade it at full size.
+      <span class="verdict">No. In-sample Sharpe is not live Sharpe, and the heavy search makes the 3.0 deeply suspect. This is the classic trap.</span></button>
+    <button class="opt" data-c="0">The variant count does not matter, only the Sharpe.
+      <span class="verdict">No. The number of tries is exactly what inflates the winner. More searching demands a bigger haircut, not less.</span></button>
+  </div>
+
+  <div class="cta">
+    <h3>You finished the course.</h3>
+    <p>Twelve lessons: what an edge is, how to measure it, how to catch your own lies, and how to ship the rare idea that survives. Now go build, and judge honestly.</p>
+    <a href="../neural.html">Neural Net Playground →</a>
+    <a class="alt" href="https://github.com/oksoimcodingnow/quant">The quant repo →</a>
+    <a class="alt" href="index.html">All lessons →</a>
+  </div>
+
+  <div class="nextnav"><a href="11-regimes.html">← Lesson 11</a><a href="index.html">All lessons →</a></div>
+</div>
+<script>
+(function(){
+  // the gauntlet: an in-sample Sharpe is whittled by each gate. Haircuts are
+  // illustrative rules of thumb (the halving rule, a log selection penalty,
+  // a cost subtraction, a size slip), not exact laws. The lesson is the SHAPE.
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d'), W=660, H=300, pad=34, MAXS=4;
+  function stages(){
+    var sis=parseFloat(document.getElementById('sis').value);
+    var tries=parseInt(document.getElementById('tries').value);
+    var cost=parseFloat(document.getElementById('cost').value);
+    var oos = sis*0.55;                          // overfitting / walk-forward haircut
+    var sel = oos - 0.11*Math.log10(tries);      // selection bias grows with tries
+    var net = sel - cost;                        // trading costs
+    var live = net*0.9;                          // slippage at real size
+    return [
+      {n:'In-sample', v:sis},
+      {n:'Walk-fwd', v:oos},
+      {n:'Selection', v:sel},
+      {n:'Net costs', v:net},
+      {n:'Live', v:live}
+    ];
+  }
+  function draw(){
+    var s=stages(), n=s.length, live=s[n-1].v;
+    ctx.clearRect(0,0,W,H);
+    var plotH=H-2*pad-14, baseY=H-pad-14, gap=18, bw=(W-2*pad-(n-1)*gap)/n;
+    // gridline at deployment threshold (0.5)
+    var yThr=baseY-(0.5/MAXS)*plotH;
+    ctx.beginPath(); ctx.moveTo(pad,yThr); ctx.lineTo(W-pad,yThr); ctx.strokeStyle='rgba(111,227,168,0.35)'; ctx.setLineDash([4,4]); ctx.lineWidth=1; ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(111,227,168,0.7)'; ctx.font='10px Inter Tight, sans-serif'; ctx.textAlign='left'; ctx.fillText('deploy line (0.5)', pad+2, yThr-4);
+    for(var i=0;i<n;i++){
+      var x=pad+i*(bw+gap), val=Math.max(0,s[i].v), h=Math.min(1,val/MAXS)*plotH;
+      var isLive=(i===n-1);
+      if(isLive){ ctx.fillStyle = live>=1?'#6fe3a8':(live>=0.5?'#6fe3a8':(live>=0.2?'#f3d59a':'#f0857d')); }
+      else { var t=i/(n-1); ctx.fillStyle='rgba('+Math.round(184-20*t)+','+Math.round(192-10*t)+','+Math.round(255-90*t)+',0.85)'; }
+      ctx.fillRect(x, baseY-h, bw, h);
+      // value on top
+      ctx.fillStyle='#f1efe6'; ctx.font='600 13px Inter Tight, sans-serif'; ctx.textAlign='center';
+      ctx.fillText(s[i].v.toFixed(2), x+bw/2, baseY-h-7);
+      // stage label
+      ctx.fillStyle='rgba(154,154,184,0.9)'; ctx.font='10px Inter Tight, sans-serif';
+      ctx.fillText(s[i].n, x+bw/2, H-pad+4);
+    }
+    var vbox=document.getElementById('vbox'), vv=document.getElementById('vv'), vs=document.getElementById('vs');
+    vv.textContent=(live>=0?'':'')+live.toFixed(2);
+    var cls, label;
+    if(live>=1){ cls='good'; label='World-class. Deploy with confidence.'; }
+    else if(live>=0.5){ cls='good'; label='Solid. Deployable with discipline.'; }
+    else if(live>=0.2){ cls='mid'; label='Marginal. Costs and decay may finish it off.'; }
+    else { cls='bad'; label='Dead on arrival. Back to research.'; }
+    vbox.className='verdict-box '+cls; vs.textContent=label;
+  }
+  ['sis','tries','cost'].forEach(function(id){ document.getElementById(id).addEventListener('input',function(){
+    document.getElementById('sisv').textContent=parseFloat(document.getElementById('sis').value).toFixed(1);
+    document.getElementById('triesv').textContent=document.getElementById('tries').value;
+    document.getElementById('costv').textContent=parseFloat(document.getElementById('cost').value).toFixed(2);
+    draw();
+  }); });
+  document.querySelectorAll('.opt').forEach(function(o){ o.addEventListener('click',function(){
+    document.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('right','wrong'); });
+    o.classList.add(o.dataset.c==='1'?'right':'wrong');
+  }); });
+  draw();
+})();
+</script>
+</body>
+</html>
