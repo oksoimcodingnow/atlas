@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 9 · The silent killer: costs · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --up:#6fe3a8; --down:#f0857d; --max:720px; --gutter:clamp(22px,5vw,48px); --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace; }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--accent);color:var(--bg);} ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  .top-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(10,10,20,0.92),rgba(10,10,20,0.5));border-bottom:1px solid var(--rule);}
+  .crumb{font-family:var(--serif);font-style:italic;font-size:16px;} .crumb small{display:block;font-family:var(--sans);font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:var(--max);margin:0 auto;padding:clamp(40px,6vw,72px) var(--gutter) 120px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:18px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,7.5vw,68px);line-height:1.02;letter-spacing:-0.02em;margin-bottom:22px;} h1 em{font-style:italic;color:var(--accent);}
+  .standfirst{font-family:var(--serif);font-size:clamp(19px,2.3vw,25px);line-height:1.45;margin-bottom:14px;}
+  .meta-line{font-size:12.5px;color:var(--muted);margin-bottom:44px;padding-bottom:22px;border-bottom:1px solid var(--rule);}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.1;margin:52px 0 18px;} h2 em{font-style:italic;color:var(--accent);}
+  p{margin-bottom:18px;} p .hl{color:var(--accent);font-weight:500;} p .hl-2{color:var(--accent-2);font-weight:500;} strong{font-weight:600;} em.it{font-style:italic;}
+  a.inline{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(184,192,255,0.35);}
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1.35;margin:36px 0;padding-left:22px;border-left:2px solid var(--accent-2);}
+  .terms{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:8px 24px;margin:32px 0;}
+  .terms dt{font-family:var(--mono);font-size:13.5px;color:var(--accent);font-weight:500;margin-top:18px;}
+  .terms dd{font-size:15px;color:var(--text);margin:5px 0 0;line-height:1.55;} .terms dd:last-child{margin-bottom:18px;}
+  .callout{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:22px 24px;margin:32px 0;} .callout .tag{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;color:var(--accent-2);} .callout.warn{border-color:rgba(240,133,125,0.35);} .callout.warn .tag{color:var(--down);} .callout p:last-child{margin-bottom:0;} .callout .mono{font-family:var(--mono);font-size:13px;color:var(--accent);}
+  .sim{background:var(--bg-2);border:1px solid var(--rule);border-radius:18px;padding:clamp(20px,3vw,30px);margin:36px 0;}
+  .sim-title{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px;}
+  .sim canvas{display:block;width:100%;height:auto;border-radius:12px;background:#0c0c18;border:1px solid var(--rule);}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:12px;}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px;}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+  @media(max-width:520px){ .twocol{grid-template-columns:1fr;} }
+  .stat{border:1px solid var(--rule);border-radius:12px;padding:16px;text-align:center;background:#0c0c18;}
+  .stat .lbl{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .stat .val{font-family:var(--serif);font-size:38px;font-weight:600;line-height:1;margin:8px 0 4px;font-variant-numeric:tabular-nums;}
+  .stat .sub{font-size:12px;color:var(--muted);font-family:var(--mono);}
+  .stat.gross .val{color:var(--up);} .stat.net.good .val{color:var(--up);} .stat.net.bad .val{color:var(--down);}
+  .slider{display:flex;align-items:center;gap:12px;margin-top:16px;font-size:13px;color:var(--muted);}
+  .slider input[type=range]{flex:1;accent-color:var(--accent);} .slider span.nm{min-width:9ch;} .slider b{font-family:var(--mono);color:var(--text);min-width:11ch;text-align:right;}
+  .ctrls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .btn{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);background:var(--bg);border:1px solid var(--rule);border-radius:9px;padding:10px 16px;cursor:pointer;transition:.16s;} .btn:hover{border-color:var(--accent);}
+  .readout{margin-top:16px;font-size:14px;color:var(--muted);line-height:1.55;} .readout b{color:var(--text);}
+  .check{margin-top:60px;padding-top:40px;border-top:1px solid var(--rule);} .check .q{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-style:italic;line-height:1.3;margin-bottom:22px;}
+  .opt{display:block;width:100%;text-align:left;font-size:15px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:11px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:border-color .16s,background .16s;font-family:var(--sans);} .opt:hover{border-color:rgba(184,192,255,0.4);}
+  .opt.right{border-color:rgba(111,227,168,0.5);background:rgba(111,227,168,0.08);} .opt.wrong{border-color:rgba(240,133,125,0.5);background:rgba(240,133,125,0.08);}
+  .opt .verdict{display:block;font-size:13px;margin-top:7px;color:var(--muted);} .opt.right .verdict{color:var(--up);} .opt.wrong .verdict{color:var(--down);}
+  .cta{margin-top:44px;background:linear-gradient(180deg,rgba(184,192,255,0.08),transparent),var(--bg-2);border:1px solid rgba(184,192,255,0.3);border-radius:16px;padding:28px;text-align:center;}
+  .cta h3{font-family:var(--serif);font-size:28px;font-weight:500;margin-bottom:8px;} .cta p{color:var(--muted);font-size:15px;margin-bottom:0;}
+  .nextnav{margin-top:50px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;} .nextnav a{font-size:13px;color:var(--muted);text-decoration:none;padding:13px 22px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;} .nextnav a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:0.5;mix-blend-mode:overlay;} .top-bar,.wrap{position:relative;z-index:2;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Quant Academy<small>Lesson 9 · gross vs net</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 9 · The silent killer</div>
+  <h1>The cost of <em>trading.</em></h1>
+  <p class="standfirst">Every backtest you have ever seen shows the money you would make if trading were free. It is not. The spread, the commission, and the slippage take a bite out of every single trade, and that bite has quietly killed more strategies than any bad idea ever did.</p>
+  <p class="meta-line">~8 min · the number that flips winners to losers · with a cost-eats-edge simulator</p>
+
+  <h2>Gross is not net</h2>
+  <p>You know this one from MM2. The price someone will <span class="hl">buy</span> your knife for is lower than the price they will <span class="hl">sell</span> it to you for. That gap is the spread, and you pay it on every flip whether you win or lose. Markets are the same, just smaller and faster.</p>
+  <p>A backtest reports <span class="hl-2">gross</span> returns: the profit if you got every trade at the exact mid price for free. Real life charges you on the way in and the way out. Your true result is <span class="hl">net</span> of all that, and net is the only number that ever reaches your wallet.</p>
+
+  <div class="pull">A strategy is only as good as its edge <span style="font-style:normal;color:var(--accent-2)">minus its costs.</span> If the costs are bigger, the edge is a fantasy.</div>
+
+  <h2>The three bites</h2>
+  <p>Costs come in three flavours, and they all point the same way, against you:</p>
+  <div class="terms">
+    <dt>spread</dt><dd>The gap between the best buy and best sell price. You cross it every time you want to trade right now. Half the spread, each side.</dd>
+    <dt>commission</dt><dd>The flat fee or percentage your broker or the exchange charges per trade. Small per trade, brutal when you trade a lot.</dd>
+    <dt>slippage</dt><dd>The price moves while your order fills, especially if your order is big relative to what is available. You wanted that price; you got a worse one.</dd>
+    <dt>turnover</dt><dd>How often you trade. The multiplier on all of the above. Trade twice as often and you pay the costs twice as often.</dd>
+    <dt>break-even cost</dt><dd>The cost per trade that exactly cancels your edge per trade. Below it you make money; above it you lose, no matter how clever the signal.</dd>
+  </div>
+
+  <h2>Watch the cost eat the edge</h2>
+  <p>Below is a strategy with a small, <span class="hl">real</span> edge per trade, plus realistic noise. The green line is the gross equity curve, what the backtest brags about. The gold line is what you actually keep after costs. Slide the cost up and watch the gold line bend down, then dive. The moment <span class="hl-2">cost per trade</span> passes <span class="hl-2">edge per trade</span>, a profitable strategy becomes a money shredder. Then crank turnover and watch how fast it happens.</p>
+
+  <div class="sim">
+    <div class="sim-title">Cost eats edge · same signal, your costs</div>
+    <canvas id="cv" width="660" height="300"></canvas>
+    <div class="legend">
+      <span><i style="background:#6fe3a8"></i>gross (the backtest brag)</span>
+      <span><i style="background:#f3d59a"></i>net (what you keep)</span>
+      <span><i style="background:#6b6b88"></i>break even</span>
+    </div>
+    <div class="slider"><span class="nm">edge / trade</span><input id="edge" type="range" min="1" max="20" step="0.5" value="6"><b id="edgev">6.0 bps</b></div>
+    <div class="slider"><span class="nm">cost / trade</span><input id="cost" type="range" min="0" max="20" step="0.5" value="3"><b id="costv">3.0 bps</b></div>
+    <div class="slider"><span class="nm">trades / yr</span><input id="turn" type="range" min="50" max="2000" step="50" value="500"><b id="turnv">500</b></div>
+    <div class="twocol">
+      <div class="stat gross"><div class="lbl">Gross annual</div><div class="val" id="vGross">–</div><div class="sub">before costs</div></div>
+      <div class="stat net good" id="netBox"><div class="lbl">Net annual</div><div class="val" id="vNet">–</div><div class="sub">after costs</div></div>
+    </div>
+    <div class="ctrls"><button class="btn" id="reroll">New run</button></div>
+    <div class="readout" id="readout">Set cost below edge and net is positive. Push it above and the gold line dives. The break-even cost equals the edge, here that is the line you must stay under.</div>
+  </div>
+
+  <h2>Turnover is the multiplier</h2>
+  <p>Here is the trap that catches fast traders. A signal that earns <span class="hl">6 bps</span> per trade sounds tiny but harmless. Trade it once a week and a 3 bps cost barely matters. Trade it <span class="hl">2,000 times a year</span> and you are paying that cost 2,000 times. The same cost per trade becomes an enormous annual drag. This is why high-frequency strategies live or die on <strong>execution</strong>, not ideas. Their edge per trade is microscopic, so their costs have to be even smaller.</p>
+
+  <div class="callout warn">
+    <div class="tag">The rule that saves you</div>
+    <p>Always backtest <span class="hl">net of realistic costs</span>, not gross. Assume the spread, add a commission, and add slippage that grows with your size. If a strategy only works gross, it does not work. The graveyard is full of beautiful gross equity curves that lost money the day they went live.</p>
+  </div>
+
+  <div class="callout">
+    <div class="tag">A quick gut check</div>
+    <p><span class="mono">net edge per trade = edge - cost</span><br>
+    <span class="mono">net annual ≈ net edge × trades per year</span><br>
+    If net edge per trade is not comfortably positive, no amount of trading volume saves you. Volume just multiplies a negative number.</p>
+  </div>
+
+  <div class="check">
+    <div class="q">A strategy backtests at +40% a year gross. After you add realistic costs it is -5%. What is the honest conclusion?</div>
+    <button class="opt" data-c="0">Still great, 40% is huge, costs are an estimate.
+      <span class="verdict">No. Net is the only number that reaches your wallet, and net is negative. The gross figure is irrelevant.</span></button>
+    <button class="opt" data-c="1">It is a losing strategy. The edge does not survive its own trading costs.
+      <span class="verdict">Exactly. A negative net result means the costs are bigger than the edge. Either cut turnover and costs, or drop it.</span></button>
+    <button class="opt" data-c="0">Increase position size to make the 40% bigger.
+      <span class="verdict">No, bigger size means more slippage, which makes costs worse, not better. You would lose faster.</span></button>
+  </div>
+
+  <div class="cta">
+    <h3>Net, or nothing.</h3>
+    <p>Gross returns are a story. Net returns are the truth. Always ask what a strategy makes after it pays to trade.</p>
+  </div>
+
+  <div class="nextnav"><a href="08-neural-nets.html">← Lesson 8</a><a href="index.html">All lessons →</a></div>
+</div>
+<script>
+(function(){
+  // cost-eats-edge: simulate a year of trades, each gross return = edge + noise.
+  // net return = gross - cost. Plot cumulative gross vs net equity.
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d'), W=660, H=300, pad=30;
+  function randn(){ var u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+  var seed=null;
+  function newSeed(n){ seed=[]; for(var i=0;i<n;i++) seed.push(randn()); }
+  function eqCurve(rets){ var e=[1], v=1; for(var i=0;i<rets.length;i++){ v*=(1+rets[i]); e.push(v); } return e; }
+  function px(i,n){ return pad + i/n*(W-2*pad); }
+  function pyMaker(lo,hi){ return function(y){ return H-pad - (y-lo)/(hi-lo)*(H-2*pad); }; }
+  function curve(ctx,e,n,py,col){ ctx.beginPath(); for(var i=0;i<e.length;i++){ var X=px(i,n), Y=py(e[i]); if(i===0)ctx.moveTo(X,Y); else ctx.lineTo(X,Y); } ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.stroke(); }
+  function draw(){
+    var edge=parseFloat(document.getElementById('edge').value)/1e4;   // bps -> fraction
+    var cost=parseFloat(document.getElementById('cost').value)/1e4;
+    var n=parseInt(document.getElementById('turn').value);
+    if(!seed || seed.length!==n) newSeed(n);
+    var sd=0.0035; // per-trade noise (35 bps) so the curve wiggles but edge accumulates
+    var gross=[], net=[];
+    for(var i=0;i<n;i++){ var g=edge + seed[i]*sd; gross.push(g); net.push(g-cost); }
+    var eG=eqCurve(gross), eN=eqCurve(net);
+    var lo=Math.min(1,Math.min.apply(null,eG),Math.min.apply(null,eN));
+    var hi=Math.max(1,Math.max.apply(null,eG),Math.max.apply(null,eN));
+    var span=hi-lo||1; lo-=span*0.06; hi+=span*0.06; var py=pyMaker(lo,hi);
+    ctx.clearRect(0,0,W,H);
+    // break-even (equity = 1)
+    ctx.beginPath(); ctx.moveTo(pad,py(1)); ctx.lineTo(W-pad,py(1)); ctx.strokeStyle='rgba(150,150,170,0.45)'; ctx.setLineDash([5,5]); ctx.lineWidth=1.5; ctx.stroke(); ctx.setLineDash([]);
+    curve(ctx,eG,n,py,'#6fe3a8');   // gross
+    curve(ctx,eN,n,py,'#f3d59a');   // net
+    var grossAnn=(eG[eG.length-1]-1)*100, netAnn=(eN[eN.length-1]-1)*100;
+    document.getElementById('vGross').textContent=(grossAnn>=0?'+':'')+grossAnn.toFixed(1)+'%';
+    document.getElementById('vNet').textContent=(netAnn>=0?'+':'')+netAnn.toFixed(1)+'%';
+    var box=document.getElementById('netBox'); box.classList.toggle('good', netAnn>=0); box.classList.toggle('bad', netAnn<0);
+    var edgeB=parseFloat(document.getElementById('edge').value), costB=parseFloat(document.getElementById('cost').value), netEdge=edgeB-costB;
+    var msg;
+    if(netEdge>0.5) msg='<b>Edge survives.</b> Net edge is '+netEdge.toFixed(1)+' bps per trade, so the gold line stays above break-even and you keep '+(netAnn>=0?'+':'')+netAnn.toFixed(1)+'%.';
+    else if(netEdge>-0.5) msg='<b>On the knife edge.</b> Cost almost exactly cancels the edge. Net is basically zero, all that trading for nothing.';
+    else msg='<b>Costs win.</b> Cost ('+costB.toFixed(1)+' bps) is above edge ('+edgeB.toFixed(1)+' bps), so every trade loses '+(-netEdge).toFixed(1)+' bps net. The gold line dives, '+netAnn.toFixed(1)+'% a year.';
+    document.getElementById('readout').innerHTML=msg;
+  }
+  ['edge','cost','turn'].forEach(function(id){ document.getElementById(id).addEventListener('input',function(){
+    document.getElementById('edgev').textContent=parseFloat(document.getElementById('edge').value).toFixed(1)+' bps';
+    document.getElementById('costv').textContent=parseFloat(document.getElementById('cost').value).toFixed(1)+' bps';
+    document.getElementById('turnv').textContent=document.getElementById('turn').value;
+    if(id==='turn') seed=null; draw();
+  }); });
+  document.getElementById('reroll').addEventListener('click',function(){ seed=null; draw(); });
+  document.querySelectorAll('.opt').forEach(function(o){ o.addEventListener('click',function(){
+    document.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('right','wrong'); });
+    o.classList.add(o.dataset.c==='1'?'right':'wrong');
+  }); });
+  draw();
+})();
+</script>
+</body>
+</html>
