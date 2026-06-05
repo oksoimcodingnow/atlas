@@ -96,8 +96,27 @@
   </div>
 
   <div class="panel on" id="p-hira">
-    <p class="hint">あ い う え お &mdash; the 46 building blocks. Tap to hear each sound.</p>
+    <p class="hint">Start here! あ い う え お (a i u e o) &mdash; the 46 sounds all of Japanese is built from. Tap any to hear it. Learn ~5 a day, top row first. 🌱</p>
     <div class="hgrid" id="hgrid"></div>
+    <style>
+      .hquiz{margin-top:26px;text-align:center;}
+      .qbtn{font-family:var(--sans);font-size:14px;font-weight:700;color:#1a0a12;background:var(--pink);border:0;border-radius:999px;padding:12px 24px;cursor:pointer;}
+      .qkana{font-family:var(--jp);font-size:clamp(58px,16vw,92px);font-weight:500;line-height:1;margin:12px 0 18px;color:#fff;}
+      .qopts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:300px;margin:0 auto;}
+      .qopt{font-family:var(--sans);font-size:18px;font-weight:600;color:var(--text);background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:15px;cursor:pointer;transition:.12s;}
+      .qopt:hover{border-color:var(--pink);}
+      .qopt.right{background:rgba(95,211,154,0.2);border-color:var(--green);color:var(--green);}
+      .qopt.wrong{background:rgba(255,122,138,0.2);border-color:#ff7a8a;color:#ff9bab;}
+      .qscore{margin-top:16px;font-size:13.5px;color:var(--muted);}
+    </style>
+    <div class="hquiz" id="hquiz">
+      <button class="qbtn" id="qstart">Quiz me &#127919;</button>
+      <div id="qbody" style="display:none">
+        <div class="qkana" id="qkana">あ</div>
+        <div class="qopts" id="qopts"></div>
+        <div class="qscore" id="qscore">Score: 0 / 0</div>
+      </div>
+    </div>
   </div>
 
   <div class="panel" id="p-phrases">
@@ -225,6 +244,30 @@
     d.addEventListener('click',function(){ speak(p[0]); d.style.borderColor='var(--pink)'; setTimeout(function(){d.style.borderColor='';},400); });
     hg.appendChild(d);
   });
+
+  // ── hiragana quiz (see the kana, tap the sound) ──
+  (function(){
+    var pool=HIRA.filter(function(p){return p[0];}), cur=null, score=0, total=0;
+    var kanaEl=document.getElementById('qkana'), optsEl=document.getElementById('qopts'), scoreEl=document.getElementById('qscore');
+    function rand(a){ return a[Math.floor(Math.random()*a.length)]; }
+    function next(){
+      cur=rand(pool); kanaEl.textContent=cur[0]; speak(cur[0]);
+      var opts=[cur[1]]; while(opts.length<4){ var r=rand(pool)[1]; if(opts.indexOf(r)<0) opts.push(r); }
+      opts=shuffle(opts); optsEl.innerHTML='';
+      opts.forEach(function(romaji){
+        var b=document.createElement('button'); b.className='qopt'; b.textContent=romaji;
+        b.addEventListener('click',function(){
+          if(optsEl.dataset.locked) return; optsEl.dataset.locked='1'; total++;
+          if(romaji===cur[1]){ score++; b.classList.add('right'); }
+          else { b.classList.add('wrong'); optsEl.querySelectorAll('.qopt').forEach(function(x){ if(x.textContent===cur[1]) x.classList.add('right'); }); }
+          scoreEl.textContent='Score: '+score+' / '+total;
+          setTimeout(function(){ optsEl.dataset.locked=''; next(); }, 850);
+        });
+        optsEl.appendChild(b);
+      });
+    }
+    document.getElementById('qstart').addEventListener('click',function(){ document.getElementById('qbody').style.display='block'; this.style.display='none'; next(); });
+  })();
 
   // ── phrase + number cards ──
   function buildCards(into, rows){
