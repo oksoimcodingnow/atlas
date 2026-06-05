@@ -11,6 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -390,6 +391,7 @@
 
   <div class="controls">
     <button type="button" id="remind-btn" class="ghost-btn" title="Desktop notification when a timed task is due">Reminders: off</button>
+    <button type="button" id="gcal-btn" class="ghost-btn" title="Auto-add dated tasks to Google Calendar">Calendar sync: off</button>
     <button type="button" id="ics-btn" class="ghost-btn" title="Download dated tasks as a calendar file (.ics)">Add to calendar</button>
     <button type="button" id="export-btn" class="ghost-btn" title="Download all tasks as JSON">Export</button>
     <button type="button" id="import-btn" class="ghost-btn" title="Replace tasks from a JSON file">Import</button>
@@ -621,11 +623,60 @@ function renderAll() { renderTabs(); renderTasks(); }
 
 // ── Actions ──
 function addTask(text, due, time, priority) {
-  tasks.push({ id: Date.now() + Math.random().toString(36).slice(2,6), text: text.trim(), due: due || null, time: (due && time) ? time : null, priority: priority || 'med', done: false, created: Date.now() });
-  save(tasks); renderAll();
+  const t = { id: Date.now() + Math.random().toString(36).slice(2,6), text: text.trim(), due: due || null, time: (due && time) ? time : null, priority: priority || 'med', done: false, created: Date.now() };
+  tasks.push(t); save(tasks); renderAll();
+  gcalSyncTask(t);   // auto-add to Google Calendar if connected
 }
 function toggleDone(id) { const t = tasks.find(x => String(x.id) == String(id)); if (t) { t.done = !t.done; save(tasks); renderAll(); } }
-function deleteTask(id) { tasks = tasks.filter(x => String(x.id) != String(id)); save(tasks); renderAll(); }
+function deleteTask(id) { const t = tasks.find(x => String(x.id) == String(id)); if (t) gcalDeleteTask(t); tasks = tasks.filter(x => String(x.id) != String(id)); save(tasks); renderAll(); }
+
+// ════════ Google Calendar auto-sync ════════
+// Set this to your OAuth Web Client ID (Google Cloud Console -> Credentials).
+const GCAL_CLIENT_ID = '';   // <-- paste it here to activate auto-sync
+const GCAL_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
+let gcalTokenClient = null, gcalToken = null, gcalQueue = [];
+function gcalEnabled() { return localStorage.getItem('atlas_gcal') === 'on' && !!GCAL_CLIENT_ID; }
+function gcalConfigured() { return !!GCAL_CLIENT_ID && typeof google !== 'undefined' && google.accounts && google.accounts.oauth2; }
+function gcalInit() {
+  if (gcalTokenClient || !gcalConfigured()) return gcalTokenClient;
+  gcalTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GCAL_CLIENT_ID, scope: GCAL_SCOPE,
+    callback: (resp) => { if (resp && resp.access_token) { gcalToken = resp.access_token; const q = gcalQueue.slice(); gcalQueue = []; q.forEach(fn => fn()); } }
+  });
+  return gcalTokenClient;
+}
+function gcalGetToken(interactive) { const c = gcalInit(); if (c) c.requestAccessToken({ prompt: interactive ? 'consent' : '' }); }
+function icsNextISO(ds) { const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate()+1); return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+async function gcalApi(method, path, body) {
+  if (!gcalToken) { return new Promise(res => { gcalQueue.push(async () => res(await gcalApi(method, path, body))); gcalGetToken(false); }); }
+  const r = await fetch('https://www.googleapis.com/calendar/v3' + path, { method, headers: { Authorization: 'Bearer ' + gcalToken, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+  if (r.status === 401) { gcalToken = null; return new Promise(res => { gcalQueue.push(async () => res(await gcalApi(method, path, body))); gcalGetToken(false); }); }
+  return r.ok ? r.json().catch(() => true) : null;
+}
+function gcalBody(t) {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const b = { summary: t.text, description: 'Priority: ' + (t.priority || 'med') + ' · Atlas Schedule', reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: t.time ? 15 : 540 }] } };
+  if (t.time) { const s = new Date(t.due + 'T' + t.time + ':00'), e = new Date(s.getTime() + 3600000); b.start = { dateTime: s.toISOString(), timeZone: tz }; b.end = { dateTime: e.toISOString(), timeZone: tz }; }
+  else { b.start = { date: t.due }; b.end = { date: icsNextISO(t.due) }; }
+  return b;
+}
+async function gcalSyncTask(t) {
+  if (!gcalEnabled() || !t.due || t.done) return;
+  const ev = await gcalApi(t.gcalId ? 'PATCH' : 'POST', '/calendars/primary/events' + (t.gcalId ? '/' + t.gcalId : ''), gcalBody(t));
+  if (ev && ev.id && ev.id !== t.gcalId) { t.gcalId = ev.id; save(tasks); flashMsg('Added to Google Calendar'); }
+}
+async function gcalDeleteTask(t) { if (t.gcalId && gcalEnabled()) await gcalApi('DELETE', '/calendars/primary/events/' + t.gcalId); }
+function setGcalBtn() { const b = document.getElementById('gcal-btn'); if (!b) return; const on = gcalEnabled(); b.classList.toggle('on', on); b.textContent = 'Calendar sync: ' + (on ? 'on' : 'off'); }
+(function wireGcal() {
+  const b = document.getElementById('gcal-btn'); if (!b) return;
+  b.addEventListener('click', () => {
+    if (!GCAL_CLIENT_ID) { flashMsg('Calendar sync needs a one-time setup (ask Claude / see notes)', 'err'); return; }
+    if (gcalEnabled()) { localStorage.removeItem('atlas_gcal'); flashMsg('Calendar auto-sync off'); }
+    else { localStorage.setItem('atlas_gcal', 'on'); gcalGetToken(true); flashMsg('Connecting Google Calendar...'); tasks.filter(t => t.due && !t.done && !t.gcalId).forEach(gcalSyncTask); }
+    setGcalBtn();
+  });
+  setGcalBtn();
+})();
 function editTaskInline(id) {
   const el = document.querySelector(`.task-text[data-id="${id}"]`); if (!el) return;
   el.setAttribute('contenteditable', 'true'); el.focus();
