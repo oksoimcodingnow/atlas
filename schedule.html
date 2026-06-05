@@ -514,9 +514,62 @@ function fillTaskEl(el, t) {
     <div class="task-text" data-id="${t.id}">${esc(t.text)}</div>
     ${due ? `<span class="due ${due.cls}">${esc(due.text)}</span>` : '<span></span>'}
     <div class="task-actions">
+      ${t.due ? `<button class="icon-btn cal" data-id="${t.id}" title="Add to Outlook / Google Calendar" aria-label="Add to calendar">&#128197;</button>` : ''}
       <button class="icon-btn edit" data-id="${t.id}" title="Edit" aria-label="Edit">&#9998;</button>
       <button class="icon-btn del" data-id="${t.id}" title="Delete" aria-label="Delete">&times;</button>
     </div>`;
+}
+
+// ── One-click calendar links for a single task (Outlook / Google, pre-filled) ──
+function taskTimes(t) {
+  // returns {startUTC, endUTC, startISO, endISO, allDay, startDate, endDate}
+  if (t.time) {
+    const s = new Date(t.due + 'T' + t.time + ':00');
+    const e = new Date(s.getTime() + 3600000);
+    const u = d => d.getUTCFullYear()+pad2(d.getUTCMonth()+1)+pad2(d.getUTCDate())+'T'+pad2(d.getUTCHours())+pad2(d.getUTCMinutes())+'00Z';
+    return { allDay:false, gStart:u(s), gEnd:u(e), oStart:s.toISOString(), oEnd:e.toISOString() };
+  }
+  return { allDay:true, gStart:t.due.replace(/-/g,''), gEnd:icsNext(t.due), oStart:t.due, oEnd:t.due };
+}
+function googleUrl(t) {
+  const tm = taskTimes(t);
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(t.text)
+    + '&dates=' + tm.gStart + '/' + tm.gEnd
+    + '&details=' + encodeURIComponent('Priority: ' + (t.priority||'med') + ' · from Atlas Schedule');
+}
+function outlookUrl(t) {
+  const tm = taskTimes(t);
+  return 'https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent'
+    + '&subject=' + encodeURIComponent(t.text)
+    + '&startdt=' + encodeURIComponent(tm.oStart)
+    + '&enddt=' + encodeURIComponent(tm.oEnd)
+    + (tm.allDay ? '&allday=true' : '')
+    + '&body=' + encodeURIComponent('Priority: ' + (t.priority||'med') + ' · from Atlas Schedule');
+}
+function openCalMenu(btn, t) {
+  document.querySelectorAll('.cal-menu').forEach(m => m.remove());
+  const r = btn.getBoundingClientRect();
+  const m = document.createElement('div');
+  m.className = 'cal-menu';
+  m.innerHTML =
+    `<a href="${outlookUrl(t)}" target="_blank" rel="noopener">&#128231; Outlook</a>`
+    + `<a href="${googleUrl(t)}" target="_blank" rel="noopener">&#128197; Google Calendar</a>`
+    + `<button type="button" data-ics="${t.id}">&#11015; Download .ics</button>`;
+  m.style.cssText = 'position:fixed;z-index:120;left:' + Math.min(r.left, innerWidth-210) + 'px;top:' + (r.bottom+6) + 'px;'
+    + 'background:var(--surface,#15152b);border:1px solid rgba(184,192,255,0.3);border-radius:11px;padding:6px;min-width:190px;'
+    + 'box-shadow:0 14px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;gap:2px;';
+  m.querySelectorAll('a,button').forEach(x => { x.style.cssText = 'display:block;text-align:left;font:600 13px/1 inherit;color:#e8e6f5;background:none;border:0;border-radius:7px;padding:10px 12px;cursor:pointer;text-decoration:none;'; x.addEventListener('mouseenter',()=>x.style.background='rgba(184,192,255,0.12)'); x.addEventListener('mouseleave',()=>x.style.background='none'); });
+  m.querySelector('[data-ics]').addEventListener('click', () => { downloadSingleIcs(t); m.remove(); });
+  document.body.appendChild(m);
+  setTimeout(() => document.addEventListener('click', function cl(e){ if(!m.contains(e.target)){ m.remove(); document.removeEventListener('click', cl);} }), 0);
+}
+function downloadSingleIcs(t) {
+  const stamp = icsStamp(); const L = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Atlas//Schedule//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH','BEGIN:VEVENT','UID:atlas-'+t.id+'@atlas.schedule','DTSTAMP:'+stamp];
+  if (t.time) { const s=new Date(t.due+'T'+t.time+':00'), en=new Date(s.getTime()+3600000); const f=d=>d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+'T'+pad2(d.getHours())+pad2(d.getMinutes())+'00'; L.push('DTSTART:'+f(s),'DTEND:'+f(en),'BEGIN:VALARM','TRIGGER:-PT15M','ACTION:DISPLAY','DESCRIPTION:'+icsEscape(t.text),'END:VALARM'); }
+  else { L.push('DTSTART;VALUE=DATE:'+t.due.replace(/-/g,''),'DTEND;VALUE=DATE:'+icsNext(t.due),'BEGIN:VALARM','TRIGGER:PT9H','ACTION:DISPLAY','DESCRIPTION:'+icsEscape(t.text),'END:VALARM'); }
+  L.push('SUMMARY:'+icsEscape(t.text),'DESCRIPTION:'+icsEscape('Priority: '+(t.priority||'med')+' · Atlas'),'END:VEVENT','END:VCALENDAR');
+  const blob=new Blob([L.join('\r\n')],{type:'text/calendar;charset=utf-8'}); const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download='task.ics'; a.click(); URL.revokeObjectURL(u);
 }
 function animateIn(el) { if (REDUCED) return; el.animate([{opacity:0, transform:'translateY(-6px)'},{opacity:1, transform:'none'}], {duration:200, easing:'cubic-bezier(0.22,1,0.36,1)'}); }
 function animateOut(el, done) {
@@ -584,6 +637,7 @@ function editTaskInline(id) {
 document.getElementById('tasks').addEventListener('click', e => {
   const cb = e.target.closest('.task-check'); if (cb) return toggleDone(cb.dataset.id);
   const del = e.target.closest('.icon-btn.del'); if (del) return deleteTask(del.dataset.id);
+  const cal = e.target.closest('.icon-btn.cal'); if (cal) { e.stopPropagation(); const t = tasks.find(x => String(x.id) === String(cal.dataset.id)); if (t) openCalMenu(cal, t); return; }
   const ed = e.target.closest('.icon-btn.edit'); if (ed) return editTaskInline(ed.dataset.id);
   const tx = e.target.closest('.task-text'); if (tx && !tx.getAttribute('contenteditable')) editTaskInline(tx.dataset.id);
 });
