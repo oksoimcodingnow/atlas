@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Constellation · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#06060e; --text:#f1efe6; --muted:#9a9ab8; --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a;
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; }
+  html,body{height:100%;background:var(--bg);color:var(--text);overflow:hidden;}
+  body{font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+  .top-bar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px clamp(16px,4vw,34px);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;background:rgba(10,10,20,0.4);backdrop-filter:blur(6px);transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);}
+  #stage{position:fixed;inset:0;z-index:1;touch-action:none;}
+  #stage canvas{display:block;}
+  #labels{position:fixed;inset:0;z-index:5;pointer-events:none;}
+  .clabel{position:absolute;transform:translate(-50%,-140%);pointer-events:auto;cursor:pointer;white-space:nowrap;
+    font-size:12.5px;font-weight:600;color:var(--text);padding:3px 9px;border-radius:999px;
+    background:rgba(8,8,18,0.55);border:1px solid rgba(241,239,230,0.12);backdrop-filter:blur(4px);
+    transition:color .15s,border-color .15s,background .15s;will-change:transform,opacity;}
+  .clabel:hover{color:#fff;border-color:var(--accent);background:rgba(184,192,255,0.18);}
+  .clabel.center{font-family:var(--serif);font-size:16px;font-weight:500;font-style:italic;}
+  .hint{position:fixed;left:0;right:0;bottom:18px;z-index:8;text-align:center;font-size:12px;color:var(--muted);pointer-events:none;}
+  .hint b{color:var(--accent);font-weight:600;}
+  .title-card{position:fixed;left:clamp(16px,4vw,34px);bottom:54px;z-index:8;pointer-events:none;max-width:min(420px,80vw);}
+  .title-card .eyebrow{font-size:10.5px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+  .title-card h1{font-family:var(--serif);font-weight:500;font-size:clamp(28px,6vw,46px);line-height:1;margin-top:8px;}
+  .title-card h1 em{font-style:italic;color:var(--accent);}
+  .nofx{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:14px;padding:40px;z-index:6;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Constellation</span></div><a class="back" href="index.html">&larr; Home</a></div>
+<div id="stage"></div>
+<div id="labels"></div>
+<div class="nofx" id="nofx">Couldn't start the 3D view. <a href="index.html" style="color:var(--accent);margin-left:6px">Back to Atlas &rarr;</a></div>
+<div class="title-card"><div class="eyebrow">The whole map, in 3D</div><h1>Everything is <em>connected.</em></h1></div>
+<div class="hint"><b>Drag</b> to spin &middot; <b>scroll / pinch</b> to zoom &middot; <b>tap a star</b> to open it</div>
+
+<script type="importmap">
+{ "imports": { "three": "./lib/three.module.min.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+try {
+  const stage = document.getElementById('stage');
+  const labelsEl = document.getElementById('labels');
+
+  // ── the map: every project / toy / lesson hub as a star ──
+  const NODES = [
+    { label:'Atlas',            href:'index.html',            color:0xf1efe6, size:1.7, center:true },
+    { label:'Neural Net',       href:'neural.html',           color:0xff8d6b, size:1.05 },
+    { label:'Flock',            href:'flock.html',            color:0xb8c0ff, size:1.05 },
+    { label:'Luck vs Skill',    href:'luck.html',             color:0xf3d59a, size:1.05 },
+    { label:'Quant Academy',    href:'learn/',                color:0xb8c0ff, size:1.25 },
+    { label:'Knowledge Graph',  href:'graphify/graph.html',   color:0x22d3ee, size:1.0 },
+    { label:'Connected Economy',href:'economy.html',          color:0x6fcf8e, size:1.05 },
+    { label:'Macro Map',        href:'macro-map.html',        color:0x6fe3a8, size:0.95 },
+    { label:'Big Picture',      href:'overview.html',         color:0x6fcf8e, size:0.95 },
+    { label:'Semiconductors',   href:'semiconductors.html',   color:0xb8c0ff, size:0.95 },
+    { label:'AI Ripple',        href:'ai-ripple.html',        color:0xf3d59a, size:0.95 },
+    { label:'Stock Spotlight',  href:'spotlight.html',        color:0xb8c0ff, size:0.95 },
+    { label:'Japanese',         href:'japanese.html',         color:0xff8db3, size:0.95 },
+    { label:'Schedule',         href:'schedule.html',         color:0xb8c0ff, size:0.9 },
+    { label:'Library',          href:'library/',              color:0xf3d59a, size:0.9 },
+    { label:'Skills',           href:'skills.html',           color:0xa78bfa, size:0.9 },
+  ];
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x06060e);
+  scene.fog = new THREE.FogExp2(0x06060e, 0.022);
+
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+  let camZ = 17; camera.position.set(0, 0, camZ);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  stage.appendChild(renderer.domElement);
+
+  const world = new THREE.Group(); scene.add(world);
+
+  // shared glow sprite texture (radial gradient → additive halo)
+  const glowTex = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const g = c.getContext('2d'); const grd = g.createRadialGradient(64,64,0,64,64,64);
+    grd.addColorStop(0,'rgba(255,255,255,1)'); grd.addColorStop(0.25,'rgba(255,255,255,0.55)');
+    grd.addColorStop(0.55,'rgba(255,255,255,0.12)'); grd.addColorStop(1,'rgba(255,255,255,0)');
+    g.fillStyle = grd; g.fillRect(0,0,128,128);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+  })();
+
+  const sphereGeo = new THREE.SphereGeometry(0.16, 20, 20);
+
+  // position: center at origin, the rest spread on a Fibonacci sphere
+  const shell = NODES.filter(n => !n.center);
+  const R = 7, GA = Math.PI * (3 - Math.sqrt(5));
+  shell.forEach((n, i) => {
+    const y = 1 - (i / (shell.length - 1)) * 2, r = Math.sqrt(Math.max(0, 1 - y*y)), th = i * GA;
+    n.pos = new THREE.Vector3(Math.cos(th)*r, y, Math.sin(th)*r).multiplyScalar(R);
+  });
+  NODES.find(n => n.center).pos = new THREE.Vector3(0,0,0);
+
+  // build each star: a small bright sphere + a colored glow halo
+  NODES.forEach(n => {
+    const col = new THREE.Color(n.color);
+    const mesh = new THREE.Mesh(sphereGeo, new THREE.MeshBasicMaterial({ color: col }));
+    mesh.position.copy(n.pos); mesh.scale.setScalar(n.size); world.add(mesh);
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: col, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.9 }));
+    glow.position.copy(n.pos); glow.scale.setScalar(n.size * 1.9); world.add(glow);
+    n.mesh = mesh;
+    // clickable HTML label
+    const a = document.createElement('a'); a.className = 'clabel' + (n.center ? ' center' : '');
+    a.href = n.href; a.textContent = n.label; labelsEl.appendChild(a); n.el = a;
+  });
+
+  // constellation lines: spokes from the centre + each shell star to its nearest neighbour
+  const center = NODES.find(n => n.center);
+  const linePts = [];
+  shell.forEach(n => { linePts.push(center.pos.clone(), n.pos.clone()); });
+  shell.forEach((n, i) => {
+    let best = -1, bd = Infinity;
+    shell.forEach((m, j) => { if (i === j) return; const d = n.pos.distanceTo(m.pos); if (d < bd) { bd = d; best = j; } });
+    if (best > i) linePts.push(n.pos.clone(), shell[best].pos.clone());
+  });
+  const lineGeo = new THREE.BufferGeometry().setFromPoints(linePts);
+  world.add(new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({ color: 0xb8c0ff, transparent: true, opacity: 0.13 })));
+
+  // faint background star field for depth
+  const starN = 500, sp = new Float32Array(starN * 3);
+  for (let i = 0; i < starN; i++) { const r = 40 + Math.random()*60, u = Math.random()*2-1, t = Math.random()*Math.PI*2, s = Math.sqrt(1-u*u);
+    sp[i*3] = Math.cos(t)*s*r; sp[i*3+1] = u*r; sp[i*3+2] = Math.sin(t)*s*r; }
+  const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xb8c0ff, size: 0.12, transparent: true, opacity: 0.5, depthWrite: false })));
+
+  // ── custom controls: drag to spin, wheel/pinch to zoom, touch friendly ──
+  let rotX = 0.2, rotY = 0, targX = 0.2, targY = 0, vY = 0, dragging = false, lastX = 0, lastY = 0, lastT = 0, pinch = 0;
+  const dom = renderer.domElement;
+  function down(x, y) { dragging = true; lastX = x; lastY = y; lastT = performance.now(); vY = 0; }
+  function move(x, y) { if (!dragging) return; const dx = x-lastX, dy = y-lastY; targY += dx*0.006; targX += dy*0.006; targX = Math.max(-1.3, Math.min(1.3, targX));
+    const now = performance.now(), dt = now-lastT || 16; vY = (dx*0.006)/dt*16; lastX = x; lastY = y; lastT = now; }
+  function up() { dragging = false; }
+  dom.addEventListener('mousedown', e => down(e.clientX, e.clientY));
+  window.addEventListener('mousemove', e => move(e.clientX, e.clientY));
+  window.addEventListener('mouseup', up);
+  dom.addEventListener('wheel', e => { e.preventDefault(); camZ = Math.max(9, Math.min(34, camZ + e.deltaY*0.012)); }, { passive:false });
+  dom.addEventListener('touchstart', e => { if (e.touches.length === 1) down(e.touches[0].clientX, e.touches[0].clientY);
+    else if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY); }, { passive:true });
+  dom.addEventListener('touchmove', e => { if (e.touches.length === 1) move(e.touches[0].clientX, e.touches[0].clientY);
+    else if (e.touches.length === 2) { const d = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+      if (pinch) { camZ = Math.max(9, Math.min(34, camZ + (pinch-d)*0.03)); } pinch = d; e.preventDefault(); } }, { passive:false });
+  dom.addEventListener('touchend', () => { up(); pinch = 0; });
+
+  function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+  window.addEventListener('resize', resize); resize();
+
+  // ── render loop ──
+  const v = new THREE.Vector3();
+  const auto = reduce ? 0 : 0.0016;
+  function frame() {
+    if (!dragging) { targY += auto + vY; vY *= 0.94; if (Math.abs(vY) < 1e-4) vY = 0; }
+    rotX += (targX - rotX) * 0.08; rotY += (targY - rotY) * 0.08;
+    world.rotation.x = rotX; world.rotation.y = rotY;
+    camera.position.z += (camZ - camera.position.z) * 0.1;
+
+    // project each star to screen, place + fade its label by depth
+    const w = stage.clientWidth, h = stage.clientHeight;
+    for (const n of NODES) {
+      n.mesh.getWorldPosition(v); const dz = v.z; v.project(camera);
+      const onScreen = v.z < 1 && v.x > -1.2 && v.x < 1.2 && v.y > -1.2 && v.y < 1.2;
+      if (!onScreen) { n.el.style.opacity = 0; n.el.style.pointerEvents = 'none'; continue; }
+      const sx = (v.x*0.5+0.5)*w, sy = (-v.y*0.5+0.5)*h;
+      const depth = Math.max(0, Math.min(1, (dz + R) / (2*R)));   // 1 = near, 0 = far
+      n.el.style.left = sx + 'px'; n.el.style.top = sy + 'px';
+      n.el.style.opacity = (0.35 + depth*0.65).toFixed(2);
+      n.el.style.pointerEvents = depth > 0.45 ? 'auto' : 'none';
+      n.el.style.zIndex = (1000 + (depth*1000|0));
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  frame();
+} catch (err) {
+  console.error(err);
+  document.getElementById('nofx').style.display = 'flex';
+  document.getElementById('labels').style.display = 'none';
+}
+</script>
+</body>
+</html>
