@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luck vs Skill · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --up:#6fe3a8; --down:#f0857d;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,34px) var(--gutter) 70px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(34px,7vw,60px);line-height:1;letter-spacing:-0.01em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{color:var(--muted);max-width:640px;margin-top:12px;font-size:15px;}
+  .field{margin-top:22px;border:1px solid var(--rule);border-radius:16px;overflow:hidden;background:#0b0b16;position:relative;}
+  canvas{display:block;width:100%;height:clamp(320px,50vh,460px);}
+  .ctrls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin-top:18px;}
+  .sl{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted);} .sl input{accent-color:var(--accent);width:104px;} .sl b{font-family:var(--mono);color:var(--text);min-width:4ch;}
+  .btn{font-family:var(--sans);font-size:13px;font-weight:700;border-radius:999px;padding:10px 20px;cursor:pointer;border:0;}
+  .btn.go{background:var(--accent);color:var(--bg);} .btn.reset{background:transparent;border:1px solid var(--rule);color:var(--text);} .btn.reset:hover{border-color:var(--accent);}
+  .stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;}
+  .stat{flex:1;min-width:150px;border:1px solid var(--rule);border-radius:12px;padding:14px 16px;background:var(--panel);text-align:center;}
+  .stat .lbl{font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);font-weight:700;}
+  .stat .val{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums;}
+  .stat.star .val{color:var(--gold);} .stat.rank .val{color:var(--accent);}
+  .caption{margin-top:16px;border:1px solid var(--rule);border-radius:12px;padding:14px 16px;background:var(--bg-2);font-size:13.5px;color:#ded6ea;line-height:1.55;min-height:52px;} .caption b{color:var(--gold);} .caption .hl{color:var(--accent);}
+  .note{margin-top:20px;border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:16px 18px;font-size:13.5px;color:#ded6ea;line-height:1.55;} .note b{color:var(--accent);}
+  .foot{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;} .foot a{font-size:13px;color:var(--muted);padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:.2s;} .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Luck vs Skill</span></div><a class="back" href="index.html">&larr; Home</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Survivorship &amp; selection bias</div>
+  <h1>How to spot a <em>fake genius.</em></h1>
+  <p class="lede">A hundred traders. None of them have any skill at all, every move is a literal coin flip. Run a year and one of them will look like a star. Then bet on that star and watch the magic vanish. This is the most expensive illusion in markets.</p>
+
+  <div class="field"><canvas id="cv"></canvas></div>
+
+  <div class="ctrls">
+    <button class="btn go" id="go">&#9654; Run a year</button>
+    <button class="btn reset" id="reset">&#8635; Reset</button>
+    <div class="sl">traders<input id="num" type="range" min="20" max="200" step="10" value="100"><b id="numv">100</b></div>
+    <div class="sl">bet size<input id="bet" type="range" min="1" max="8" step="0.5" value="4"><b id="betv">4%</b></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat star"><div class="lbl">Best track record</div><div class="val" id="vBest">&ndash;</div></div>
+    <div class="stat rank"><div class="lbl">The star's rank, year 2</div><div class="val" id="vRank">&ndash;</div></div>
+  </div>
+
+  <div class="caption" id="caption">Hit <b>Run a year</b>. A hundred coin-flippers will fan out by pure luck, and the luckiest will look like a market wizard.</div>
+
+  <div class="note">
+    <b>What you're watching:</b> every trader here is identical and has zero skill, each step is a 50/50 coin flip. Yet after a year their paths fan out, and someone always ends up on top with a gorgeous track record. That track record is <i>pure noise</i>. When you "bet on the star" and run year two, the gold line drops back into the crowd, because there was never anything to persist. This is <b>survivorship bias</b> (you only notice the winners) and <b>selection bias</b> (the more people you watch, the more impressive the luckiest one looks). It is why a fund's past returns tell you almost nothing, and why <a href="learn/07-alt-data.html" style="color:var(--accent)">Lesson 7</a> and <a href="learn/12-putting-it-together.html" style="color:var(--accent)">Lesson 12</a> beg you to discount them.
+  </div>
+
+  <div class="foot">
+    <a href="neural.html">Neural Net &rarr;</a>
+    <a href="flock.html">Flock &rarr;</a>
+    <a href="learn/">Quant Academy &rarr;</a>
+    <a href="index.html">&larr; Atlas home</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d'), W=0, H=0, pad=14;
+  var T=60, traders=[], step=0, phase='idle', starIdx=null, raf=null;
+  function resize(){ var r=cv.getBoundingClientRect(); W=cv.width=Math.round(r.width); H=cv.height=Math.round(r.height); draw(); }
+  function reset(){ var n=+document.getElementById('num').value; traders=[]; for(var i=0;i<n;i++) traders.push([1]); step=0; phase='idle'; starIdx=null;
+    document.getElementById('vBest').innerHTML='&ndash;'; document.getElementById('vRank').innerHTML='&ndash;';
+    document.getElementById('go').innerHTML='&#9654; Run a year';
+    document.getElementById('caption').innerHTML='Hit <b>Run a year</b>. A hundred coin-flippers will fan out by pure luck, and the luckiest will look like a market wizard.';
+    draw(); }
+  function advance(){ var b=(+document.getElementById('bet').value)/100;
+    for(var i=0;i<traders.length;i++){ var r=(Math.random()<0.5? b : -b); var e=traders[i]; e.push(e[e.length-1]*(1+r)); } step++; }
+  function rankOfStar(){ var fin=traders.map(function(e){return e[e.length-1];}); var sv=fin[starIdx]; var better=0; for(var i=0;i<fin.length;i++) if(fin[i]>sv) better++; return better+1; }
+  function px(s){ return pad + s/(2*T)*(W-2*pad); }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    if(!traders.length) return;
+    // autoscale y across all equity so far
+    var lo=1, hi=1; for(var i=0;i<traders.length;i++){ var e=traders[i]; for(var k=0;k<e.length;k++){ if(e[k]<lo)lo=e[k]; if(e[k]>hi)hi=e[k]; } }
+    var span=hi-lo||1; lo-=span*0.06; hi+=span*0.06;
+    function py(v){ return H-pad-(v-lo)/(hi-lo)*(H-2*pad); }
+    // year divider
+    var dx=px(T);
+    if(step>=T){ ctx.beginPath(); ctx.moveTo(dx,pad); ctx.lineTo(dx,H-pad); ctx.strokeStyle='rgba(241,239,230,0.18)'; ctx.setLineDash([4,4]); ctx.lineWidth=1; ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='rgba(154,154,184,0.8)'; ctx.font='10px Inter Tight, sans-serif'; ctx.textAlign='center';
+      ctx.fillText('YEAR 1 · the track record',(pad+dx)/2,pad+11); ctx.fillText('YEAR 2 · the test',(dx+W-pad)/2,pad+11); }
+    // break-even
+    ctx.beginPath(); ctx.moveTo(pad,py(1)); ctx.lineTo(W-pad,py(1)); ctx.strokeStyle='rgba(150,150,170,0.28)'; ctx.lineWidth=1; ctx.stroke();
+    // crowd
+    for(i=0;i<traders.length;i++){ if(i===starIdx) continue; var e=traders[i]; ctx.beginPath();
+      for(var k=0;k<e.length;k++){ var X=px(k),Y=py(e[k]); if(k===0)ctx.moveTo(X,Y); else ctx.lineTo(X,Y); }
+      ctx.strokeStyle='rgba(184,192,255,0.16)'; ctx.lineWidth=1; ctx.stroke(); }
+    // star on top
+    if(starIdx!==null){ var s=traders[starIdx]; ctx.beginPath();
+      for(k=0;k<s.length;k++){ var Xs=px(k),Ys=py(s[k]); if(k===0)ctx.moveTo(Xs,Ys); else ctx.lineTo(Xs,Ys); }
+      ctx.strokeStyle='#f3d59a'; ctx.lineWidth=2.8; ctx.stroke();
+      var lx=px(s.length-1), ly=py(s[s.length-1]); ctx.beginPath(); ctx.arc(lx,ly,4,0,7); ctx.fillStyle='#f3d59a'; ctx.fill(); }
+  }
+  function pickStar(){ var best=-1, bi=0; for(var i=0;i<traders.length;i++){ var v=traders[i][traders[i].length-1]; if(v>best){best=v;bi=i;} } starIdx=bi;
+    var ret=(best-1)*100; document.getElementById('vBest').textContent=(ret>=0?'+':'')+ret.toFixed(0)+'%';
+    document.getElementById('go').innerHTML='Test the star next year &rarr;';
+    document.getElementById('caption').innerHTML='Meet your <b>genius</b>: up <b>'+(ret>=0?'+':'')+ret.toFixed(0)+'%</b> on the year, the best of '+traders.length+'. Looks unstoppable, right? But every trade was a coin flip. Now <span class="hl">bet on the star</span> and run year two.'; }
+  function reveal(){ var rank=rankOfStar(), n=traders.length;
+    document.getElementById('vRank').textContent='#'+rank+' / '+n;
+    document.getElementById('go').innerHTML='&#8635; Reset';
+    var pct=Math.round(rank/n*100);
+    document.getElementById('caption').innerHTML='Year two: the "genius" finished <b>#'+rank+' of '+n+'</b>, back in the crowd. The track record was <span class="hl">luck</span>, and luck does not persist. With '+n+' coin-flippers, someone always looks brilliant by accident. That is why past returns prove almost nothing.'; }
+  function loop(){
+    var end = phase==='run1'? T : 2*T;
+    advance(); if(step<end) advance();   // ~2 steps/frame
+    draw();
+    if(step>=end){ if(phase==='run1'){ phase='pause1'; pickStar(); draw(); } else { phase='done'; reveal(); } return; }
+    raf=requestAnimationFrame(loop);
+  }
+  document.getElementById('go').addEventListener('click',function(){
+    if(phase==='idle'){ phase='run1'; loop(); }
+    else if(phase==='pause1'){ phase='run2'; loop(); }
+    else if(phase==='done'){ reset(); }
+  });
+  document.getElementById('reset').addEventListener('click',function(){ if(raf)cancelAnimationFrame(raf); reset(); });
+  document.getElementById('num').addEventListener('input',function(){ document.getElementById('numv').textContent=this.value; if(raf)cancelAnimationFrame(raf); reset(); });
+  document.getElementById('bet').addEventListener('input',function(){ document.getElementById('betv').textContent=(+this.value)+'%'; });
+  window.addEventListener('resize',resize);
+  resize(); reset();
+})();
+</script>
+</body>
+</html>
