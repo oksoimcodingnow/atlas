@@ -1,7 +1,7 @@
 /* Atlas service worker — cache-first with on-the-fly population.
  * Bump CACHE_VERSION to force a refresh after deploying changes.
  */
-const CACHE_VERSION = 'atlas-v66';
+const CACHE_VERSION = 'atlas-v67';
 const ASSETS = [
   './',
   './index.html',
@@ -15,8 +15,6 @@ const ASSETS = [
   './neural.html',
   './flock.html',
   './luck.html',
-  './constellation.html',
-  './lib/three.module.min.js',
   './graphify/graph.html',
   './graphify/vis-network.min.js',
   './graphify/GRAPH_REPORT.md',
