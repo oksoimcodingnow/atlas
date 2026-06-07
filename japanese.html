@@ -89,14 +89,61 @@
   <p class="lede">Tap anything to <b>hear it spoken</b>. Start with hiragana, learn real phrases, then practice with flashcards.</p>
 
   <div class="tabs" id="tabs">
-    <button class="tab on" data-p="hira">Hiragana</button>
+    <button class="tab on" data-p="start">🌱 Start here</button>
+    <button class="tab" data-p="hira">All hiragana</button>
     <button class="tab" data-p="words">Words</button>
     <button class="tab" data-p="phrases">Phrases</button>
     <button class="tab" data-p="practice">Practice</button>
   </div>
 
-  <div class="panel on" id="p-hira">
-    <p class="hint">Start here! あ い う え お (a i u e o) &mdash; the 46 sounds all of Japanese is built from. Tap any to hear it. Learn ~5 a day, top row first. 🌱</p>
+  <style>
+    /* ── guided Start path ── */
+    .s-intro{border:1px solid var(--rule);border-radius:18px;background:var(--panel);padding:22px 20px;text-align:center;}
+    .s-intro h2{font-size:19px;font-weight:700;margin-bottom:10px;}
+    .s-intro p{color:var(--muted);font-size:14px;line-height:1.6;max-width:440px;margin:0 auto 8px;}
+    .s-intro p b{color:var(--gold);}
+    .s-go{font-family:var(--sans);font-size:15px;font-weight:700;color:#1a0a12;background:var(--pink);border:0;border-radius:999px;padding:14px 30px;cursor:pointer;margin-top:16px;}
+    .s-go:active{transform:translateY(1px);}
+
+    .s-status{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:12px 16px;margin-bottom:16px;}
+    .s-status .lv{font-size:13.5px;font-weight:600;}
+    .s-status .lv b{color:var(--green);}
+    .s-status .streak{font-size:13px;color:var(--gold);font-weight:600;}
+    .s-bar{height:7px;border-radius:999px;background:rgba(241,239,230,0.1);overflow:hidden;margin-top:14px;}
+    .s-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--gold));width:0;transition:width .35s;}
+
+    /* one big learn card */
+    .s-card{border:1px solid var(--rule);border-radius:22px;background:var(--panel);padding:34px 22px;text-align:center;}
+    .s-step{font-size:12.5px;color:var(--faint);margin-bottom:6px;}
+    .s-big{font-family:var(--jp);font-size:clamp(72px,22vw,128px);font-weight:500;line-height:1;color:#fff;cursor:pointer;}
+    .s-ro{font-size:26px;color:var(--gold);margin-top:8px;font-weight:600;}
+    .s-say{font-size:13px;color:var(--muted);margin-top:10px;}
+    .s-say span{color:var(--pink);}
+    .s-next{font-family:var(--sans);font-size:15px;font-weight:700;color:#0a0a14;background:var(--accent);border:0;border-radius:999px;padding:13px 30px;cursor:pointer;margin-top:22px;}
+    .s-replay{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:10px 18px;cursor:pointer;margin-top:22px;margin-right:8px;}
+
+    /* mini check */
+    .s-check .s-q{font-size:14px;color:var(--muted);margin-bottom:4px;}
+    .s-check .s-big{cursor:default;}
+    .s-copts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:300px;margin:18px auto 0;}
+    .s-copt{font-family:var(--sans);font-size:19px;font-weight:600;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:12px;padding:15px;cursor:pointer;transition:.12s;}
+    .s-copt:hover{border-color:var(--pink);}
+    .s-copt.right{background:rgba(95,211,154,0.2);border-color:var(--green);color:var(--green);}
+    .s-copt.wrong{background:rgba(255,122,138,0.2);border-color:#ff7a8a;color:#ff9bab;}
+
+    /* done / come-back */
+    .s-done{text-align:center;border:1px solid var(--rule);border-radius:22px;background:var(--panel);padding:34px 22px;}
+    .s-done .big{font-size:46px;}
+    .s-done h2{font-size:20px;font-weight:700;margin:10px 0 6px;}
+    .s-done p{color:var(--muted);font-size:14px;line-height:1.6;max-width:380px;margin:0 auto;}
+    .s-done .learned{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0;}
+    .s-done .learned span{font-family:var(--jp);font-size:24px;color:var(--gold);}
+    .s-more{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:11px 20px;cursor:pointer;margin-top:6px;}
+  </style>
+  <div class="panel on" id="p-start"></div>
+
+  <div class="panel" id="p-hira">
+    <p class="hint">All 46 hiragana — あ い う え お (a i u e o), the sounds Japanese is built from. Tap any to hear it. 🌱</p>
     <div class="hgrid" id="hgrid"></div>
     <style>
       .hquiz{margin-top:26px;text-align:center;}
@@ -233,6 +280,142 @@
       ['何','nani','what'],['どこ','doko','where'],['いつ','itsu','when'],['誰','dare','who'],
       ['なぜ','naze','why'],['どう','dō','how'],['いくら','ikura','how much'],['どれ','dore','which']]
   };
+
+  // ── guided Start path (zero-beginner: one step at a time) ──
+  // All display copy lives here so a Thai version is a single swap later.
+  var T={
+    introTitle:'Never seen Japanese before? Perfect.',
+    introBody1:'Japanese has 3 alphabets. We’ll learn the first one — <b>hiragana</b> — just <b>5 sounds at a time</b>.',
+    introBody2:'You don’t need to memorize anything. Tap the character to hear it, listen, move on. That’s the whole job.',
+    introBtn:'Start lesson 1 →',
+    contBtn:'Continue →',
+    sayTap:'Tap the character to hear it again',
+    gotIt:'Got it →',
+    checkQ:'Which one says…',
+    doneBig:'🎉',
+    doneTitle:'You learned 5 new sounds!',
+    comeBack:'Come back tomorrow for 5 more. Little and often beats cramming.',
+    keepGoing:'Feeling good? You can keep going, or stop here — both are fine.',
+    moreBtn:'One more lesson',
+    allDoneTitle:'You’ve seen all of hiragana! 🏵️',
+    allDoneBody:'Huge. Now drill them in <b>Practice</b> until they stick, and start picking up <b>Words</b>.',
+    lvWord:'Sounds learned',
+    streakWord:'day streak'
+  };
+  // Build lessons of 5 real kana each (skip the blank grid cells).
+  var KANA=HIRA.filter(function(p){return p[0];});           // 46 real sounds
+  var LESSONS=[]; for(var i=0;i<KANA.length;i+=5){ LESSONS.push(KANA.slice(i,i+5)); }
+
+  var SKEY='atlas_jp_start';
+  function loadP(){ try{ return JSON.parse(localStorage.getItem(SKEY))||{}; }catch(e){ return {}; } }
+  function saveP(p){ try{ localStorage.setItem(SKEY,JSON.stringify(p)); }catch(e){} }
+  function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function yestStr(){ var d=new Date(Date.now()-864e5); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+
+  var sp=document.getElementById('p-start');
+  var P=loadP();
+  if(typeof P.lesson!=='number') P.lesson=0;      // index of next lesson to do
+  if(typeof P.streak!=='number') P.streak=0;
+  if(!P.lastDay) P.lastDay=null;
+
+  function statusBar(){
+    var learned=P.lesson*5; if(learned>KANA.length) learned=KANA.length;
+    return '<div class="s-status"><div class="lv">'+T.lvWord+': <b>'+learned+'</b> / '+KANA.length+
+           '</div><div class="streak">🔥 '+P.streak+' '+T.streakWord+'</div></div>';
+  }
+
+  function renderStart(){
+    P=loadP();
+    if(typeof P.lesson!=='number') P.lesson=0;
+    if(typeof P.streak!=='number') P.streak=0;
+    // all lessons finished?
+    if(P.lesson>=LESSONS.length){
+      sp.innerHTML=statusBar()+'<div class="s-done"><div class="big">🏵️</div><h2>'+T.allDoneTitle+
+        '</h2><p>'+T.allDoneBody+'</p></div>';
+      return;
+    }
+    // first ever visit → friendly intro; otherwise jump straight to the lesson card
+    if(!P.lastDay && P.lesson===0){
+      sp.innerHTML='<div class="s-intro"><h2>'+T.introTitle+'</h2><p>'+T.introBody1+'</p><p>'+T.introBody2+
+        '</p><button class="s-go" id="sGo">'+T.introBtn+'</button></div>';
+      document.getElementById('sGo').onclick=function(){ runLesson(P.lesson); };
+      return;
+    }
+    // returning: show status + a continue card for the current lesson
+    var doneToday = P.lastDay===todayStr();
+    sp.innerHTML=statusBar()+
+      '<div class="s-intro"><h2>Lesson '+(P.lesson+1)+' of '+LESSONS.length+'</h2>'+
+      '<p>Next up: <b>'+LESSONS[P.lesson].map(function(k){return k[0];}).join(' ')+'</b></p>'+
+      (doneToday?'<p>'+T.keepGoing+'</p>':'')+
+      '<button class="s-go" id="sGo">'+(doneToday?T.moreBtn:T.contBtn)+'</button></div>';
+    document.getElementById('sGo').onclick=function(){ runLesson(P.lesson); };
+  }
+
+  function runLesson(li){
+    var set=LESSONS[li], pos=0;
+    function card(){
+      var k=set[pos];
+      sp.innerHTML='<div class="s-card"><div class="s-step">'+(pos+1)+' of '+set.length+'</div>'+
+        '<div class="s-big" id="sBig">'+k[0]+'</div><div class="s-ro">'+k[1]+'</div>'+
+        '<div class="s-say">'+T.sayTap+'</div>'+
+        '<div><button class="s-next" id="sNext">'+T.gotIt+'</button></div></div>';
+      speak(k[0]);
+      document.getElementById('sBig').onclick=function(){ speak(k[0]); };
+      document.getElementById('sNext').onclick=function(){
+        pos++; if(pos<set.length) card(); else check();
+      };
+    }
+    // mini-check: 2 quick "which says X?" questions drawn from this lesson
+    function check(){
+      var qs=shuffle(set).slice(0,2), qi=0;
+      function ask(){
+        var ans=qs[qi];
+        var opts=[ans]; var pool=shuffle(set);
+        for(var j=0;j<pool.length && opts.length<4;j++){ if(opts.indexOf(pool[j])<0) opts.push(pool[j]); }
+        opts=shuffle(opts);
+        sp.innerHTML='<div class="s-card s-check"><div class="s-step">Quick check '+(qi+1)+' of '+qs.length+'</div>'+
+          '<div class="s-q">'+T.checkQ+'</div><div class="s-ro" style="font-size:30px">'+ans[1]+'</div>'+
+          '<div class="s-copts" id="sCopts"></div></div>';
+        var box=document.getElementById('sCopts');
+        opts.forEach(function(o){
+          var b=document.createElement('button'); b.className='s-copt'; b.textContent=o[0];
+          b.onclick=function(){
+            if(box.dataset.lock) return; box.dataset.lock='1';
+            speak(o[0]);
+            if(o===ans){ b.classList.add('right'); }
+            else { b.classList.add('wrong');
+              Array.prototype.forEach.call(box.children,function(x){ if(x.textContent===ans[0]) x.classList.add('right'); }); }
+            setTimeout(function(){ qi++; if(qi<qs.length) ask(); else finish(); }, 800);
+          };
+          box.appendChild(b);
+        });
+      }
+      ask();
+    }
+    function finish(){
+      // advance progress + update streak (once per day)
+      P=loadP();
+      P.lesson=(typeof P.lesson==='number'?P.lesson:0)+1;
+      var t=todayStr();
+      if(P.lastDay!==t){
+        P.streak = (P.lastDay===yestStr()) ? (P.streak||0)+1 : 1;
+        P.lastDay=t;
+      }
+      saveP(P);
+      var learnedSet=set.map(function(k){return '<span>'+k[0]+'</span>';}).join('');
+      var last = P.lesson>=LESSONS.length;
+      sp.innerHTML=statusBar()+'<div class="s-done"><div class="big">'+T.doneBig+'</div>'+
+        '<h2>'+(last?T.allDoneTitle:T.doneTitle)+'</h2>'+
+        '<div class="learned">'+learnedSet+'</div>'+
+        '<p>'+(last?T.allDoneBody:T.comeBack)+'</p>'+
+        (last?'':'<div style="margin-top:16px"><button class="s-more" id="sMore">'+T.moreBtn+'</button></div>')+
+        '</div>';
+      var more=document.getElementById('sMore');
+      if(more) more.onclick=function(){ runLesson(P.lesson); };
+    }
+    card();
+  }
+  renderStart();
 
   // ── hiragana grid ──
   var hg=document.getElementById('hgrid');
