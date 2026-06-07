@@ -31,10 +31,13 @@
 ```powershell
 cd C:\Users\HOME\atlas
 git checkout feat/japanese-beginner-path   # get back on the Japanese work
-git log --oneline -1                        # should show 12a86fd
+git log --oneline -5                        # the Japanese feature is commit 12a86fd
+                                            # (the branch tip may be later, e.g. RESUME/doc commits)
 ```
 
 Then open `japanese.html`. To continue: add the Thai toggle, or merge to main to deploy.
+The beginner "Start here" feature itself is commit **12a86fd** — look for it in the log
+rather than expecting it to be the tip, since later doc commits sit on top of it.
 
 ## 🧹 Cleanup leftover (do once, after closing the session that's locked in it)
 
