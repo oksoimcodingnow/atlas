@@ -241,7 +241,11 @@
 
   <div id="sections"></div>
 
-  <footer>v1 &middot; built locally</footer>
+  <footer>
+    v1 &middot; built locally<br>
+    <span id="atlasPath" title="Click to copy" style="cursor:pointer;color:#6b6b8a;">📁 C:\Users\HOME\atlas</span>
+    <span id="pathCopied" style="color:#5fd39a;opacity:0;transition:opacity .2s;">&nbsp;copied!</span>
+  </footer>
 </div>
 
 <script>
@@ -600,6 +604,28 @@ function tick() {
 }
 tick();
 setInterval(tick, 30000);
+
+// Click the footer path to copy it (so you can always find the real Atlas folder)
+(function(){
+  var el = document.getElementById('atlasPath');
+  if (!el) return;
+  el.addEventListener('click', function(){
+    var path = 'C:\\Users\\HOME\\atlas';
+    var done = function(){
+      var c = document.getElementById('pathCopied');
+      if (!c) return; c.style.opacity = '1';
+      setTimeout(function(){ c.style.opacity = '0'; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(path).then(done).catch(done);
+    } else {
+      var t = document.createElement('textarea'); t.value = path;
+      document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); } catch(e){}
+      document.body.removeChild(t); done();
+    }
+  });
+})();
 
 // Guided tour (the "? Tour" button, bottom-right)
 window.atlasTourId = 'home';
