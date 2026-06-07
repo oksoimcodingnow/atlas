@@ -32,6 +32,11 @@ same. These are not optional niceties; they are how the owner wants to be worked
    menus — before: deleting files, pushing live, merging to main, force operations, or
    anything irreversible. Approval for one action does not extend to the next.
 
+6. **Don't over-ask.** The owner dislikes a question-menu after every step. Default to
+   doing the obvious next thing and reporting it. Only stop to ask when it's genuinely
+   risky/irreversible (rule 4) or a real either/or only the owner can settle — and batch
+   needed questions into ONE menu, not several. Routine progress = just continue.
+
 5. **Guard against the "lost terminal" fear.** The owner worries about losing work and
    about a new session feeling like a "different you." Counter both: keep things backed
    up to GitHub, keep `RESUME.md` current, and reassure with evidence, not just words.
