@@ -225,6 +225,25 @@
 </div>
 
 <script>
+  // file:// safety net — this page now uses ES modules (import), which browsers
+  // BLOCK when opened directly off disk (file://). On the live HTTPS site it's
+  // fine. If we detect file://, drop a friendly note into the Start panel; the
+  // module below overwrites it when it loads successfully over http(s).
+  if (location.protocol === 'file:') {
+    document.addEventListener('DOMContentLoaded', function () {
+      var sp = document.getElementById('p-start');
+      if (sp && !sp.innerHTML.trim()) {
+        sp.innerHTML = '<div class="s-intro"><h2>Open this on the web 🌐</h2>' +
+          '<p>This page loads its game engine as a module, which browsers block when ' +
+          'opened straight from a file. Visit the live site, or run a local server.</p>' +
+          '<p style="font-family:var(--jp)">頑張って!</p>' +
+          '<a class="s-go" href="https://oksoimcodingnow.github.io/atlas/japanese.html">Open the live version →</a></div>';
+      }
+    });
+  }
+</script>
+<script type="module">
+import { RARITY, RMAP, rollRarity, LootEngine } from './lib/loot.js';
 (function(){
   // ── speak (browser TTS) ──
   function jpVoice(){
@@ -349,23 +368,10 @@
   var KANA=HIRA.filter(function(p){return p[0];});           // 46 real sounds
   var LESSONS=[]; for(var i=0;i<KANA.length;i+=5){ LESSONS.push(KANA.slice(i,i+5)); }
 
-  // ── loot / Spirit system (inspired by collect-the-kana reward loops) ──
-  // Each kana you learn is "caught" with a random rarity. Rarer = more Spirit.
-  // RARITY order matters: rolled top→bottom by cumulative weight.
-  var RARITY=[
-    {key:'common', name:'Common',    w:60, spirit:5,  col:'#9a9ab8', glow:'rgba(154,154,184,0.5)'},
-    {key:'rare',   name:'Rare',      w:30, spirit:15, col:'#5fd39a', glow:'rgba(95,211,154,0.6)'},
-    {key:'epic',   name:'Epic',      w:9,  spirit:40, col:'#b8a0ff', glow:'rgba(184,160,255,0.7)'},
-    {key:'legend', name:'Legendary', w:1,  spirit:120,col:'#f3d59a', glow:'rgba(243,213,154,0.85)'}
-  ];
-  var RMAP={}; RARITY.forEach(function(r){ RMAP[r.key]=r; });
-  function rollRarity(){
-    var roll=Math.random()*100, acc=0;
-    for(var i=0;i<RARITY.length;i++){ acc+=RARITY[i].w; if(roll<acc) return RARITY[i]; }
-    return RARITY[0];
-  }
-
+  // Loot rarity tiers + the engine come from lib/loot.js (the reusable game core).
+  // This page just configures it (which storage key) and drives the UI.
   var SKEY='atlas_jp_start';
+  var loot=new LootEngine({storageKey:SKEY});
   function loadP(){ try{ return JSON.parse(localStorage.getItem(SKEY))||{}; }catch(e){ return {}; } }
   function saveP(p){ try{ localStorage.setItem(SKEY,JSON.stringify(p)); }catch(e){} }
   function todayStr(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
@@ -376,33 +382,22 @@
   if(typeof P.lesson!=='number') P.lesson=0;      // index of next lesson to do
   if(typeof P.streak!=='number') P.streak=0;
   if(!P.lastDay) P.lastDay=null;
-  if(typeof P.spirit!=='number') P.spirit=0;      // total Spirit earned
-  if(!P.col) P.col={};                            // collection: {kana: {rarity, lv}}
+  // Spirit + collection now live in the LootEngine (same storage key, it owns
+  // those fields). The page keeps lesson/streak in P.
 
-  // Catch a kana: roll rarity if new, or level it up + small re-roll if already owned.
-  // Returns the drop {kana, romaji, rarity, lv, isNew, spirit} for the reveal UI.
+  // Catch a kana via the engine, then adapt the drop for this page's reveal UI
+  // (engine speaks generic {id}; the page wants {kana, romaji}). The engine
+  // re-reads storage on save, so P's lesson/streak survive untouched.
   function catchKana(k){
-    P=loadP();
-    if(!P.col) P.col={};
-    var ch=k[0], have=P.col[ch], r;
-    if(!have){ r=rollRarity(); P.col[ch]={rarity:r.key, lv:1}; }
-    else {
-      // duplicate: a fresh roll can upgrade rarity; either way it levels up.
-      var nr=rollRarity(), cur=RMAP[have.rarity];
-      r = (RARITY.indexOf(nr)>RARITY.indexOf(cur)) ? nr : cur;
-      P.col[ch]={rarity:r.key, lv:(have.lv||1)+1};
-    }
-    var gained=r.spirit + (have?0:0);             // (dupes still give full Spirit)
-    P.spirit=(P.spirit||0)+r.spirit;
-    saveP(P);
-    return {kana:ch, romaji:k[1], rarity:r, lv:P.col[ch].lv, isNew:!have, spirit:r.spirit};
+    var d=loot.refresh().catch(k[0]);             // k[0] is the kana char = the id
+    return {kana:d.id, romaji:k[1], rarity:d.rarity, lv:d.lv, isNew:d.isNew, spirit:d.spirit};
   }
-  function collectedCount(){ return P.col?Object.keys(P.col).length:0; }
+  function collectedCount(){ return loot.count(); }
 
   function statusBar(){
     var learned=P.lesson*5; if(learned>KANA.length) learned=KANA.length;
     return '<div class="s-status"><div class="lv">'+T.lvWord+': <b>'+learned+'</b> / '+KANA.length+
-           '</div><div class="streak"><span class="spirit-chip">🔮 '+(P.spirit||0)+' Spirit</span>&nbsp; 🔥 '+P.streak+' '+T.streakWord+'</div></div>';
+           '</div><div class="streak"><span class="spirit-chip">🔮 '+loot.refresh().spirit+' Spirit</span>&nbsp; 🔥 '+P.streak+' '+T.streakWord+'</div></div>';
   }
 
   function renderStart(){
@@ -515,7 +510,7 @@
   // ── Spirit Collection panel ──
   var collEl=document.getElementById('p-collection');
   function renderCollection(){
-    P=loadP(); if(!P.col) P.col={};
+    loot.refresh();
     var got=collectedCount();
     var legend=RARITY.map(function(r){
       return '<span><i style="background:'+r.col+'"></i>'+r.name+'</span>';
@@ -531,7 +526,7 @@
     html+='<div class="cgrid">';
     HIRA.forEach(function(p){
       if(!p[0]){ html+='<div class="cslot empty"></div>'; return; }
-      var owned=P.col[p[0]];
+      var owned=loot.entry(p[0]);
       if(owned){
         var r=RMAP[owned.rarity]||RARITY[0];
         html+='<div class="cslot got" data-k="'+p[0]+'" style="--rc:'+r.col+';--rg:'+r.glow+'">'+
