@@ -13,23 +13,47 @@
 ## 🟢 What is safe / backed up
 
 - `main` branch: fully pushed to GitHub. The whole real Atlas is in the cloud.
-- The **Japanese kana-loot feature is now MERGED to `main`** and live (2026-06-08).
+- **Live on main:** Japanese kana-loot + the full **Fin-Eng Studio** (6 pages).
+- **NOT yet merged:** branch `feat/jp-timed-challenge` (commit `f28481a`) — the
+  Japanese Drill + Trace tabs. Backed up locally only until tested & merged.
 
-## ✅ Just landed: Japanese "Spirit Collection" + a real loot engine
+## ✅ Live on main: Fin-Eng Studio (a study hub for the owner's degree)
 
-- **`japanese.html`** now has, on top of the beginner "🌱 Start here" path:
-  - **🔮 Collection tab** — the 46 hiragana as a collectible album (Caught X / 46).
-  - **Loot on learning** — finishing a kana "catches" it with a weighted rarity
-    (Common 60 / Rare 30 / Epic 9 / Legendary 1), awards **Spirit**, and dupes level up.
-  - Streak + Spirit live in the existing `atlas_jp_start` localStorage key.
-- **Architecture (the important part):** the game logic was extracted into
-  **`lib/loot.js`** — a reusable ES-module engine that knows nothing about Japanese
-  or the DOM (it speaks generic `id`s). `japanese.html` imports and drives it.
-  - **Tests:** `test/loot.test.mjs` — run with **`npm test`** (23 assertions, zero deps,
-    its own tiny runner). Injectable RNG + storage make the engine deterministically testable.
-  - **Tradeoff to remember:** because the page now uses `import`, it will NOT run over
-    `file://` (double-click). It works on the live HTTPS site, or via a local server
-    (`python -m http.server`). There's a friendly file:// fallback note baked in.
+Owner is a **3rd-year Financial Engineering student** (courses: Stochastic Processes
+01006743, Data Science 01526125, Portfolio Analysis 01526228, Valuation 01526229,
+Markets & Institutions 01526230). Built interactive study tools, one per course, at
+**`fineng/`** — each with math **verified numerically against the finance skills**:
+- `fineng/index.html` — hub (courses are a `COURSES` data array).
+- `portfolio.html` — efficient frontier (verified: 60/40 → 12.55%).
+- `valuation.html` — bond pricer + stock DCF (par/premium/parity checks).
+- `stochastic.html` — geometric Brownian-motion lab (mean→S₀e^μT, std→σ√T).
+- `datascience.html` — return explorer (skew/excess-kurtosis/Sharpe).
+- `markets.html` — interactive institutions flow-map (tap a node).
+- `options.html` — ★ Black–Scholes capstone (verified exact: call 10.4506 / put 5.5735).
+- Home `index.html` has a "Fin-Eng Studio" tile. Service worker at **v73**.
+- **Offer standing:** owner can drop real course materials (PDFs/slides) in
+  `fineng/materials/` (or paste/screenshot) → rebuild pages to match their actual
+  syllabus/professor notation. They chose "keep building generically" for now.
+
+## ✅ Live on main: Japanese "Spirit Collection" + reusable loot engine
+
+- **`japanese.html`** beginner "🌱 Start here" path + **🔮 Collection** (46 kana as a
+  rarity album), loot-on-learning, streak + Spirit in the `atlas_jp_start` key.
+- **Architecture:** game logic lives in **`lib/loot.js`** — a reusable ES-module engine
+  (generic `id`s, no DOM/Japanese knowledge). Has `catch(id)` (rolls loot) and
+  `award(n)` (plain Spirit). Tests in **`test/loot.test.mjs`** — `npm test` (26 assertions).
+- **Tradeoff to remember:** the page uses `import`, so it will NOT run over `file://`
+  (double-click). Use the live HTTPS site or a local server (`python -m http.server`).
+  A friendly file:// fallback note is baked in.
+
+## 🚧 In flight (branch feat/jp-timed-challenge, f28481a — test then merge)
+
+- **⏱️ Drill tab:** 60-second romaji sprint, awards 5 Spirit per correct (via `award`),
+  wrong = −2s. Score banks into the Collection total.
+- **✍️ Trace tab:** writing pad — pick a kana, trace over a faint guide, clear/next,
+  toggle guide, hear it. **No auto-grading** (honest: stroke recognition would be
+  unreliable) — it's a muscle-memory surface.
+- Next: owner tests locally, then merge to main + bump service worker.
 
 ## 🧭 Engineering direction (owner's stated goal)
 
@@ -76,3 +100,8 @@ Remove-Item "C:\Users\HOME\Documents\Codex\2026-06-01" -Recurse -Force
   already solves the same "stay the same across sessions" problem. Revisit only if always-on
   memory / an agent that messages you is actually wanted.
 - Rescued Codex review notes: atlas ×2 in `C:\Users\HOME\atlas\REVIEWS\`, quant ×2 in `C:\Users\HOME\quant\REVIEWS\`.
+- **PC slowness (2026-06-08):** diagnosed — **C: drive 93% full** (17 GB free of 232)
+  while **D: is 69% empty** (639 GB free). That, plus a huge startup-program list
+  (Steam/Epic/EA/Riot/Nexon/Roblox/Nox/Overwolf/Medal…), is the cause. Fix in progress:
+  guide owner to **move games C: → D:** (biggest win). Do NOT move Atlas to D: — it's
+  tiny and would break the "one true path." Owner plays a lot of games (Roblox/Valorant etc.).
