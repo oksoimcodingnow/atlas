@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markets & Institutions · Fin-Eng Studio</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.08), transparent 65%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,34px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,6vw,54px);line-height:1;letter-spacing:-0.01em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{color:var(--muted);max-width:640px;margin-top:12px;font-size:15px;}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:24px;}
+  @media(min-width:880px){ .grid{grid-template-columns:1.5fr 1fr;align-items:start;} }
+  .card{border:1px solid var(--rule);border-radius:16px;background:#0b0b16;padding:18px;}
+  .card h2{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  canvas{display:block;width:100%;height:auto;border-radius:10px;background:var(--panel);cursor:pointer;}
+
+  .info{min-height:200px;}
+  .info .tag{display:inline-block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:999px;margin-bottom:10px;}
+  .info h3{font-family:var(--serif);font-size:26px;font-weight:500;margin-bottom:8px;}
+  .info p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:10px;}
+  .info .role{font-size:12.5px;color:#ded6ea;}
+  .info .links{margin-top:12px;font-size:12px;color:var(--faint);}
+  .info .links b{color:var(--accent);}
+  .hint{font-size:12px;color:var(--faint);margin-top:8px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Fin-Eng · <span>Markets &amp; Institutions</span></div><a class="back" href="index.html">&larr; Studio</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">01526230 · Financial Markets &amp; Institutions</div>
+  <h1>The plumbing of <em>money.</em></h1>
+  <p class="lede">Every dollar of capital flows through a handful of institutions before it reaches a company and comes back as a return. Tap any node to see who it is, what it does, and how it connects to the rest. This is the map behind every other course in the Studio.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Tap a node to inspect</h2>
+      <canvas id="cv"></canvas>
+      <div class="hint">Lines show how money &amp; risk flow between players.</div>
+    </div>
+    <div class="card info" id="info"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+  var W=620,H=480;
+
+  // Nodes positioned on a normalized 0..1 grid (scaled to canvas). Colors group roles.
+  var NODES = {
+    cb:   { x:0.5,  y:0.12, label:'Central Bank',    col:'#f3d59a', short:'Sets the price of money',
+            desc:'The Bank of Thailand / the Fed. Sets the benchmark interest rate and supplies liquidity to the banking system. When it moves rates, every bond price and discount rate in the other courses moves with it.',
+            role:'Issues base money · sets policy rate · lender of last resort', links:'Feeds: Commercial Banks, Bond Market' },
+    banks:{ x:0.22, y:0.40, label:'Commercial Banks',col:'#b8c0ff', short:'Take deposits, make loans',
+            desc:'Where households park cash and where businesses borrow. They turn short-term deposits into long-term loans — the maturity transformation that powers the economy and creates most of its systemic risk.',
+            role:'Deposits → loans · credit creation · payment rails', links:'Borrow from: Central Bank · Lend to: Companies' },
+    exch: { x:0.5,  y:0.45, label:'Stock Exchange',  col:'#5fd39a', short:'Where shares trade',
+            desc:'The SET / NYSE. A regulated venue matching buyers and sellers of equity. Companies raise capital here (IPOs); investors trade ownership. Prices set here are the inputs to your Valuation and Data Science work.',
+            role:'Lists shares · matches orders · price discovery', links:'Connects: Companies ↔ Investors' },
+    bond: { x:0.78, y:0.40, label:'Bond Market',     col:'#ff8db3', short:'Where debt trades',
+            desc:'Governments and companies borrow by selling bonds; investors buy a stream of coupons. The yield set here IS the discount rate everything else is valued against — the heart of fixed-income.',
+            role:'Issues & trades debt · sets yields · prices credit risk', links:'Driven by: Central Bank · Funds: Companies, Govt' },
+    clear:{ x:0.5,  y:0.70, label:'Clearing House', col:'#9a9ab8', short:'Guarantees the trade settles',
+            desc:'The invisible middleman. After a trade matches, the clearing house steps between both sides so neither has to trust the other — it nets exposures and guarantees settlement. Quietly prevents one default from cascading.',
+            role:'Central counterparty · nets trades · margin & settlement', links:'Sits behind: Exchange, Bond Market' },
+    comp: { x:0.26, y:0.86, label:'Companies',       col:'#b8c0ff', short:'Use the capital, create value',
+            desc:'The point of it all. Firms raise money (shares + bonds), invest it in real projects, and return profits as dividends and coupons. Their cash flows are what your DCF models try to value.',
+            role:'Raise capital · invest · pay dividends/coupons', links:'Funded by: Banks, Exchange, Bond Market' },
+    inv:  { x:0.74, y:0.86, label:'Investors',       col:'#f3d59a', short:'Supply the capital, bear the risk',
+            desc:'You, funds, pensions, foreigners. They provide capital hoping for return, and bear the risk if it goes wrong. Portfolio theory (course 228) is entirely about how this group should allocate.',
+            role:'Provide capital · demand return · allocate & diversify', links:'Trade via: Exchange, Bond Market' }
+  };
+  // edges: pairs of node keys
+  var EDGES = [['cb','banks'],['cb','bond'],['banks','comp'],['exch','comp'],['exch','inv'],['bond','comp'],['bond','inv'],['clear','exch'],['clear','bond'],['banks','exch']];
+
+  var selected='cb';
+  var R=34; // node radius (logical px, scaled)
+
+  function px(n){ return { x:n.x*W, y:n.y*H }; }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // edges
+    ctx.lineWidth=1.4;
+    EDGES.forEach(function(e){
+      var a=px(NODES[e[0]]), b=px(NODES[e[1]]);
+      var hot = (e[0]===selected||e[1]===selected);
+      ctx.strokeStyle = hot ? 'rgba(184,192,255,0.55)' : 'rgba(241,239,230,0.12)';
+      ctx.lineWidth = hot ? 2 : 1.2;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+    });
+    // nodes
+    Object.keys(NODES).forEach(function(k){
+      var n=NODES[k], p=px(n), sel=(k===selected);
+      var r=R*(W/620); // scale radius a touch with width
+      ctx.beginPath(); ctx.arc(p.x,p.y,r,0,7);
+      ctx.fillStyle = sel ? n.col : '#12122a';
+      ctx.fill();
+      ctx.lineWidth = sel?3:1.5; ctx.strokeStyle=n.col; ctx.stroke();
+      if(sel){ ctx.beginPath(); ctx.arc(p.x,p.y,r+5,0,7); ctx.strokeStyle='rgba(184,192,255,0.3)'; ctx.lineWidth=1; ctx.stroke(); }
+      // label
+      ctx.fillStyle = sel ? '#0a0a14' : n.col;
+      ctx.font='600 11px Inter Tight, sans-serif'; ctx.textAlign='center';
+      var words=n.label.split(' ');
+      if(words.length>1 && r<40){ ctx.fillText(words[0],p.x,p.y-1); ctx.fillText(words.slice(1).join(' '),p.x,p.y+11); }
+      else ctx.fillText(n.label,p.x,p.y+4);
+      ctx.textAlign='start';
+    });
+  }
+
+  function showInfo(k){
+    var n=NODES[k];
+    document.getElementById('info').innerHTML=
+      '<span class="tag" style="background:'+n.col+'22;color:'+n.col+';border:1px solid '+n.col+'55">'+n.short+'</span>'+
+      '<h3 style="color:'+n.col+'">'+n.label+'</h3>'+
+      '<p>'+n.desc+'</p>'+
+      '<div class="role">⚙️ '+n.role+'</div>'+
+      '<div class="links">🔗 '+n.links+'</div>';
+  }
+
+  cv.addEventListener('click', function(ev){
+    var rect=cv.getBoundingClientRect();
+    var mx=(ev.clientX-rect.left), my=(ev.clientY-rect.top);
+    var r=R*(W/620);
+    var hit=null;
+    Object.keys(NODES).forEach(function(k){
+      var p=px(NODES[k]); if(Math.hypot(mx-p.x,my-p.y)<=r+4) hit=k;
+    });
+    if(hit){ selected=hit; draw(); showInfo(hit); }
+  });
+
+  function setup(){
+    var rect=cv.getBoundingClientRect(); if(rect.width===0) return;
+    var dpr=window.devicePixelRatio||1;
+    W=Math.max(rect.width,280); H=Math.min(Math.max(W*0.82,360),560);
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); cv.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+  window.addEventListener('resize', setup);
+  setup();
+  showInfo(selected);
+})();
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valuation · Fin-Eng Studio</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  /* keep page content above the atlas-fx 3D background canvas (z-index:0) */
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.08), transparent 65%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,34px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,6vw,54px);line-height:1;letter-spacing:-0.01em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{color:var(--muted);max-width:640px;margin-top:12px;font-size:15px;}
+
+  /* sub-tabs (Bond / Stock) */
+  .seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;overflow:hidden;margin-top:22px;}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:0;padding:9px 18px;cursor:pointer;transition:.15s;}
+  .seg button.on{background:var(--accent);color:var(--bg);} .seg button:not(.on):hover{color:var(--text);background:rgba(184,192,255,0.08);}
+
+  .view{display:none;} .view.on{display:block;}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px;}
+  @media(min-width:880px){ .grid{grid-template-columns:1.3fr 1fr;align-items:start;} }
+
+  .card{border:1px solid var(--rule);border-radius:16px;background:#0b0b16;padding:18px;}
+  .card h2{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  canvas{display:block;width:100%;height:auto;border-radius:10px;background:var(--panel);}
+
+  .ctrl{border:1px solid var(--rule);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .sl{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);margin:8px 0;}
+  .sl input[type=range]{flex:1;max-width:150px;accent-color:var(--accent);}
+  .sl .v{font-family:var(--mono);font-size:12px;color:var(--text);min-width:58px;text-align:right;}
+
+  .read{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat{border:1px solid var(--rule);border-radius:10px;padding:11px 13px;background:var(--panel);}
+  .stat .k{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .n{font-family:var(--mono);font-size:19px;font-weight:500;margin-top:3px;}
+  .stat.hi .n{color:var(--green);} .stat.lo .n{color:var(--pink);}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;font-size:11.5px;color:var(--muted);margin-top:10px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;} .legend i{width:12px;height:3px;border-radius:2px;display:inline-block;}
+
+  .note{margin-top:22px;border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:16px 18px;font-size:13.5px;color:#ded6ea;line-height:1.6;}
+  .note b{color:var(--accent);} .note code{font-family:var(--mono);font-size:12.5px;color:var(--gold);background:rgba(243,213,154,0.08);padding:1px 5px;border-radius:4px;}
+  .formula{font-family:var(--mono);font-size:12.5px;color:var(--gold);background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;margin-top:10px;overflow-x:auto;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Fin-Eng · <span>Valuation</span></div><a class="back" href="index.html">&larr; Studio</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">01526229 · Equity & Fixed Income Valuation</div>
+  <h1>What is it <em>worth?</em></h1>
+  <p class="lede">Two ways to answer. A <b>bond</b> is a fixed stream of cash you discount at the market yield — change the yield and watch price move the opposite way. A <b>stock</b> is an uncertain stream you discount at a higher rate. Same idea, different risk. Play with both.</p>
+
+  <div class="seg" id="seg">
+    <button class="on" data-v="bond">Bond pricer</button>
+    <button data-v="stock">Stock DCF</button>
+  </div>
+
+  <!-- ── BOND ── -->
+  <div class="view on" id="v-bond">
+    <div class="grid">
+      <div class="card">
+        <h2>Price vs Yield</h2>
+        <canvas id="bondCv"></canvas>
+        <div class="legend">
+          <span><i style="background:var(--accent)"></i>Price–yield curve</span>
+          <span><i style="background:var(--green)"></i>Your bond now</span>
+          <span><i style="background:var(--gold)"></i>Par (price = 100)</span>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ctrl" style="margin:0;border:0;padding:0">
+            <div class="sl">Coupon rate <input id="cpn" type="range" min="0" max="12" step="0.25" value="4"><span class="v" id="cpnv">4.00%</span></div>
+            <div class="sl">Market yield (YTM) <input id="ytm" type="range" min="0.5" max="14" step="0.25" value="5"><span class="v" id="ytmv">5.00%</span></div>
+            <div class="sl">Years to maturity <input id="yrs" type="range" min="1" max="30" step="1" value="5"><span class="v" id="yrsv">5 yr</span></div>
+            <div class="sl">Payments / year <input id="freq" type="range" min="1" max="2" step="1" value="2"><span class="v" id="freqv">2 (semi)</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Result (face = 100)</h2>
+          <div class="read">
+            <div class="stat hi"><div class="k">Price</div><div class="n" id="bPrice">–</div></div>
+            <div class="stat"><div class="k">Current yield</div><div class="n" id="bCur">–</div></div>
+            <div class="stat"><div class="k">Mod. duration</div><div class="n" id="bDur">–</div></div>
+            <div class="stat"><div class="k">DV01 (per 100)</div><div class="n" id="bDv">–</div></div>
+          </div>
+          <div id="bTag" style="margin-top:12px;font-size:12.5px;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <b>The see-saw.</b> Coupon is fixed the day the bond is issued. When the market yield <em>rises</em>, your fixed coupons look worse, so the price <em>falls</em> — and vice-versa. That inverse is the whole game. If coupon &gt; yield the bond is <b style="color:var(--green)">above par</b>; if coupon &lt; yield it's <b style="color:var(--pink)">below par</b>; equal = exactly par.
+      <div class="formula">P = Σ C/(1+y)ᵗ + F/(1+y)ⁿ   (per period: y/m, n = years×m)</div>
+      <div style="margin-top:8px;font-size:12.5px;color:var(--muted)"><b>Modified duration</b> ≈ % price drop per +1% yield. Longer maturity + lower coupon ⇒ more rate-sensitive.</div>
+    </div>
+  </div>
+
+  <!-- ── STOCK ── -->
+  <div class="view" id="v-stock">
+    <div class="grid">
+      <div class="card">
+        <h2>Value built from future cash</h2>
+        <canvas id="stockCv"></canvas>
+        <div class="legend">
+          <span><i style="background:var(--accent)"></i>PV of each year's dividend</span>
+          <span><i style="background:var(--gold)"></i>PV of terminal value</span>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ctrl" style="margin:0;border:0;padding:0">
+            <div class="sl">Next dividend D₁ <input id="div" type="range" min="0.5" max="10" step="0.25" value="2"><span class="v" id="divv">$2.00</span></div>
+            <div class="sl">Growth g <input id="g" type="range" min="0" max="8" step="0.25" value="3"><span class="v" id="gv">3.0%</span></div>
+            <div class="sl">Discount rate r <input id="r" type="range" min="4" max="16" step="0.25" value="9"><span class="v" id="rv">9.0%</span></div>
+            <div class="sl">Explicit years <input id="ny" type="range" min="3" max="15" step="1" value="8"><span class="v" id="nyv">8 yr</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Fair value per share</h2>
+          <div class="read">
+            <div class="stat hi"><div class="k">Gordon model</div><div class="n" id="sGordon">–</div></div>
+            <div class="stat"><div class="k">DCF (explicit)</div><div class="n" id="sDcf">–</div></div>
+          </div>
+          <div id="sTag" style="margin-top:12px;font-size:12.5px;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <b>A stock is a bond with no maturity and uncertain coupons.</b> The simplest fair value is the <b>Gordon growth model</b>: value = next dividend ÷ (discount rate − growth). It only works when <code>r &gt; g</code> — if growth ≥ your discount rate the formula explodes (and so does reality's patience).
+      <div class="formula">Gordon:  V = D₁ / (r − g)        DCF:  V = Σ Dₜ/(1+r)ᵗ + TV/(1+r)ⁿ</div>
+      <div style="margin-top:8px;font-size:12.5px;color:var(--muted)">Watch the bars: early dividends are worth almost their face; far-future ones shrink hard once discounted. That shrinking is why a high discount rate crushes value.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function val(id){ return parseFloat(document.getElementById(id).value); }
+  function fmt(n){ return n.toFixed(2); }
+
+  // ───────────────────────── BOND ─────────────────────────
+  // Price per 100 face: sum of discounted coupons + discounted face.
+  function bondPrice(couponRate, ytm, years, m){
+    var F=100, c=F*(couponRate/100)/m, y=(ytm/100)/m, n=Math.round(years*m), p=0;
+    for(var t=1;t<=n;t++) p += c/Math.pow(1+y,t);
+    p += F/Math.pow(1+y,n);
+    return p;
+  }
+  // Macaulay & modified duration (in years) for the price-sensitivity readout.
+  function bondDuration(couponRate, ytm, years, m){
+    var F=100, c=F*(couponRate/100)/m, y=(ytm/100)/m, n=Math.round(years*m);
+    var P=bondPrice(couponRate,ytm,years,m), wsum=0;
+    for(var t=1;t<=n;t++){ var cf=(t<n)?c:c+F; wsum += t*cf/Math.pow(1+y,t); }
+    var macPeriods=wsum/P;            // in periods
+    var mac=macPeriods/m;             // in years
+    var mod=mac/(1+y);               // modified duration (years)
+    return { mac:mac, mod:mod };
+  }
+
+  var bondCv=document.getElementById('bondCv'), bctx=bondCv.getContext('2d');
+  var BW=640,BH=440;
+
+  function drawBond(){
+    var cpn=val('cpn'), ytm=val('ytm'), yrs=val('yrs'), m=val('freq');
+    document.getElementById('cpnv').textContent=cpn.toFixed(2)+'%';
+    document.getElementById('ytmv').textContent=ytm.toFixed(2)+'%';
+    document.getElementById('yrsv').textContent=yrs+' yr';
+    document.getElementById('freqv').textContent=(m==1?'1 (annual)':'2 (semi)');
+
+    var price=bondPrice(cpn,ytm,yrs,m);
+    var dur=bondDuration(cpn,ytm,yrs,m);
+    var curYield=(cpn/100*100)/price*100; // annual coupon / price, in %
+    var dv01=dur.mod*price*0.0001;
+
+    document.getElementById('bPrice').textContent=fmt(price);
+    document.getElementById('bCur').textContent=fmt(curYield)+'%';
+    document.getElementById('bDur').textContent=fmt(dur.mod)+' yr';
+    document.getElementById('bDv').textContent=dv01.toFixed(4);
+    var rel = price>100.05 ? '<b style="color:var(--green)">above par</b> — coupon beats the market yield'
+            : price<99.95 ? '<b style="color:var(--pink)">below par</b> — coupon trails the market yield'
+            : '<b style="color:var(--gold)">at par</b> — coupon equals the market yield';
+    document.getElementById('bTag').innerHTML='Trading '+rel+'.';
+
+    // curve: price across a yield range around the current ytm
+    var ctx=bctx, W=BW, H=BH, pad=46;
+    var yMin=0.5, yMax=14;
+    var pricesAll=[]; for(var yy=yMin; yy<=yMax; yy+=0.25) pricesAll.push(bondPrice(cpn,yy,yrs,m));
+    var pMax=Math.max.apply(null,pricesAll)*1.05, pMin=Math.min.apply(null,pricesAll)*0.95;
+    function X(yld){ return pad+((yld-yMin)/(yMax-yMin))*(W-pad-16); }
+    function Y(p){ return H-pad-((p-pMin)/(pMax-pMin))*(H-pad-16); }
+
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(241,239,230,0.08)'; ctx.lineWidth=1; ctx.fillStyle='#6b6b78'; ctx.font='11px JetBrains Mono, monospace';
+    for(var g=0; g<=5; g++){ var gx=pad+(g/5)*(W-pad-16); ctx.beginPath(); ctx.moveTo(gx,16); ctx.lineTo(gx,H-pad); ctx.stroke();
+      ctx.fillText((yMin+(g/5)*(yMax-yMin)).toFixed(0)+'%', gx-8, H-pad+16); }
+    for(var h=0; h<=4; h++){ var gy=16+(h/4)*(H-pad-16); ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-16,gy); ctx.stroke();
+      ctx.fillText((pMax-(h/4)*(pMax-pMin)).toFixed(0), 8, gy+4); }
+    ctx.fillStyle='#9a9ab8'; ctx.fillText('market yield →', W-130, H-10);
+
+    // par line at 100 (if in range)
+    if(100<=pMax && 100>=pMin){ ctx.strokeStyle='rgba(243,213,154,0.5)'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(pad,Y(100)); ctx.lineTo(W-16,Y(100)); ctx.stroke(); ctx.setLineDash([]); }
+
+    // curve
+    ctx.lineWidth=2.4; ctx.strokeStyle='#b8c0ff'; ctx.beginPath(); var first=true;
+    for(var yv=yMin; yv<=yMax; yv+=0.25){ var x=X(yv), yp=Y(bondPrice(cpn,yv,yrs,m)); if(first){ctx.moveTo(x,yp);first=false;} else ctx.lineTo(x,yp); }
+    ctx.stroke();
+
+    // current point
+    ctx.beginPath(); ctx.arc(X(ytm),Y(price),6,0,7); ctx.fillStyle='#5fd39a'; ctx.fill(); ctx.strokeStyle='#0a0a14'; ctx.lineWidth=2; ctx.stroke();
+  }
+
+  // ───────────────────────── STOCK ─────────────────────────
+  function gordon(D1,g,r){ var gg=g/100, rr=r/100; if(rr<=gg) return Infinity; return D1/(rr-gg); }
+  // explicit DCF: discount each year's growing dividend, plus a Gordon terminal value.
+  function dcf(D1,g,r,n){
+    var gg=g/100, rr=r/100, pv=0, parts=[];
+    var d=D1;
+    for(var t=1;t<=n;t++){
+      if(t>1) d=d*(1+gg);
+      var p=d/Math.pow(1+rr,t); pv+=p; parts.push(p);
+    }
+    // terminal value at year n = D(n+1)/(r-g), discounted back
+    var tv=0, tvpv=0;
+    if(rr>gg){ var dN1=d*(1+gg); tv=dN1/(rr-gg); tvpv=tv/Math.pow(1+rr,n); pv+=tvpv; }
+    return { value:pv, parts:parts, tvpv:tvpv };
+  }
+
+  var stockCv=document.getElementById('stockCv'), sctx=stockCv.getContext('2d');
+  var SW=640,SH=440;
+
+  function drawStock(){
+    var D1=val('div'), g=val('g'), r=val('r'), n=val('ny');
+    document.getElementById('divv').textContent='$'+D1.toFixed(2);
+    document.getElementById('gv').textContent=g.toFixed(1)+'%';
+    document.getElementById('rv').textContent=r.toFixed(1)+'%';
+    document.getElementById('nyv').textContent=n+' yr';
+
+    var gor=gordon(D1,g,r);
+    var d=dcf(D1,g,r,n);
+    document.getElementById('sGordon').textContent = isFinite(gor)?('$'+fmt(gor)):'∞';
+    document.getElementById('sDcf').textContent = isFinite(d.value)?('$'+fmt(d.value)):'∞';
+    document.getElementById('sTag').innerHTML = (r/100<=g/100)
+      ? '<b style="color:var(--pink)">r ≤ g:</b> the model blows up — growth can’t outrun the discount rate forever.'
+      : 'Gordon assumes the dividend grows at g <b>forever</b>; the DCF splits it into '+n+' explicit years + a terminal value.';
+
+    // bar chart of PV per year + terminal value
+    var ctx=sctx, W=SW, H=SH, pad=46;
+    var bars=d.parts.slice(); var labels=[]; for(var i=0;i<bars.length;i++) labels.push('Y'+(i+1));
+    bars.push(d.tvpv); labels.push('TV');
+    var maxB=Math.max.apply(null,bars)||1;
+    var bw=(W-pad-16)/bars.length*0.7, gap=(W-pad-16)/bars.length;
+
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#6b6b78'; ctx.font='10px JetBrains Mono, monospace';
+    ctx.strokeStyle='rgba(241,239,230,0.08)'; ctx.lineWidth=1;
+    for(var h=0; h<=4; h++){ var gy=16+(h/4)*(H-pad-16); ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-16,gy); ctx.stroke();
+      ctx.fillText('$'+(maxB-(h/4)*maxB).toFixed(1), 6, gy+4); }
+
+    for(var b=0;b<bars.length;b++){
+      var x=pad+b*gap+ (gap-bw)/2;
+      var bh=(bars[b]/maxB)*(H-pad-16);
+      var y=H-pad-bh;
+      ctx.fillStyle = (b===bars.length-1) ? '#f3d59a' : '#b8c0ff';
+      ctx.fillRect(x,y,bw,bh);
+      ctx.fillStyle='#6b6b78'; ctx.fillText(labels[b], x-1, H-pad+14);
+    }
+    ctx.fillStyle='#9a9ab8'; ctx.font='11px JetBrains Mono, monospace'; ctx.fillText('present value of each future payment →', pad, 12);
+  }
+
+  // ── tab switching ──
+  document.getElementById('seg').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    document.querySelectorAll('#seg button').forEach(function(x){x.classList.toggle('on',x===b);});
+    document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+    document.getElementById('v-'+b.dataset.v).classList.add('on');
+    setup(); // re-fit the now-visible canvas
+  });
+
+  ['cpn','ytm','yrs','freq'].forEach(function(id){ document.getElementById(id).addEventListener('input',drawBond); });
+  ['div','g','r','ny'].forEach(function(id){ document.getElementById(id).addEventListener('input',drawStock); });
+
+  // size whichever canvas is visible, sharp on hi-DPI
+  function sizeCanvas(cv, ctx){
+    var rect=cv.getBoundingClientRect(); if(rect.width===0) return null;
+    var dpr=window.devicePixelRatio||1;
+    var w=Math.max(rect.width,280), h=Math.min(Math.max(w*0.66,280),480);
+    cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); cv.style.height=h+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    return {w:w,h:h};
+  }
+  function setup(){
+    var b=sizeCanvas(bondCv,bctx); if(b){ BW=b.w; BH=b.h; drawBond(); }
+    var s=sizeCanvas(stockCv,sctx); if(s){ SW=s.w; SH=s.h; drawStock(); }
+  }
+  window.addEventListener('resize', setup);
+  setup();
+})();
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>
