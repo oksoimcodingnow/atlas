@@ -616,13 +616,16 @@ import { RARITY, RMAP, rollRarity, LootEngine } from './lib/loot.js';
         timeEl=document.getElementById('dTime'), scEl=document.getElementById('dScore'), barEl=document.getElementById('dBar');
     function rand(a){ return a[Math.floor(Math.random()*a.length)]; }
     function nextQ(){
-      cur=rand(pool); kanaEl.textContent=cur[0]; speak(cur[0]);
+      // Show the kana SILENTLY — this is a reading test, so we must NOT speak the
+      // answer up front. The sound plays only after you pick (feedback below).
+      cur=rand(pool); kanaEl.textContent=cur[0];
       var opts=[cur[1]]; while(opts.length<4){ var r=rand(pool)[1]; if(opts.indexOf(r)<0) opts.push(r); }
       opts=shuffle(opts); optsEl.innerHTML='';
       opts.forEach(function(romaji){
         var b=document.createElement('button'); b.className='drill-opt'; b.textContent=romaji;
         b.onclick=function(){
           if(optsEl.dataset.lock || remaining<=0) return; optsEl.dataset.lock='1';
+          speak(cur[0]);   // now reveal the sound as feedback (right or wrong)
           if(romaji===cur[1]){ b.classList.add('ok'); score+=5; correct++; loot.refresh().award(5); }
           else { b.classList.add('no'); remaining=Math.max(0,remaining-2);   // wrong = -2s
             Array.prototype.forEach.call(optsEl.children,function(x){ if(x.textContent===cur[1]) x.classList.add('ok'); }); }
