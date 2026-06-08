@@ -91,6 +91,8 @@
   <div class="tabs" id="tabs">
     <button class="tab on" data-p="start">🌱 Start here</button>
     <button class="tab" data-p="collection">🔮 Collection</button>
+    <button class="tab" data-p="drill">⏱️ Drill</button>
+    <button class="tab" data-p="trace">✍️ Trace</button>
     <button class="tab" data-p="hira">All hiragana</button>
     <button class="tab" data-p="words">Words</button>
     <button class="tab" data-p="phrases">Phrases</button>
@@ -176,10 +178,57 @@
     .cslot .clv{position:absolute;top:4px;right:5px;font-size:9px;font-weight:700;color:var(--rc);}
     .coll-empty{text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--rule);border-radius:16px;padding:30px 18px;}
     .coll-empty b{color:var(--pink);}
+
+    /* ── timed Drill ── */
+    .drill-wrap{text-align:center;}
+    .drill-start{border:1px solid var(--rule);border-radius:18px;background:var(--panel);padding:26px 20px;}
+    .drill-start h2{font-size:19px;font-weight:700;margin-bottom:8px;}
+    .drill-start p{color:var(--muted);font-size:13.5px;max-width:380px;margin:0 auto 6px;}
+    .drill-go{font-family:var(--sans);font-size:15px;font-weight:700;color:#1a0a12;background:var(--pink);border:0;border-radius:999px;padding:14px 30px;cursor:pointer;margin-top:14px;}
+    .drill-hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-family:var(--mono);font-size:14px;}
+    .drill-hud .time{color:var(--gold);font-weight:600;} .drill-hud .sc{color:var(--green);font-weight:600;}
+    .drill-bar{height:6px;border-radius:999px;background:rgba(241,239,230,0.1);overflow:hidden;margin-bottom:18px;}
+    .drill-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--gold));width:100%;}
+    .drill-kana{font-family:var(--jp);font-size:clamp(64px,18vw,110px);font-weight:500;line-height:1;color:#fff;text-align:center;margin:6px 0 18px;}
+    .drill-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:320px;margin:0 auto;}
+    .drill-opt{font-family:var(--sans);font-size:19px;font-weight:600;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:12px;padding:15px;cursor:pointer;transition:.1s;}
+    .drill-opt:hover{border-color:var(--pink);}
+    .drill-opt.ok{background:rgba(95,211,154,0.22);border-color:var(--green);color:var(--green);}
+    .drill-opt.no{background:rgba(255,122,138,0.2);border-color:#ff7a8a;color:#ff9bab;}
+
+    /* ── tracing pad ── */
+    .trace-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:14px;}
+    .trace-pick{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);}
+    .trace-pick select{font-family:var(--jp);font-size:18px;background:var(--panel);color:var(--text);border:1px solid var(--rule);border-radius:10px;padding:7px 10px;}
+    .trace-btns{display:flex;gap:8px;}
+    .trace-btns button{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--text);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:9px 15px;cursor:pointer;}
+    .trace-btns button:hover{border-color:var(--accent);background:rgba(184,192,255,0.08);}
+    .trace-stage{position:relative;border:1px solid var(--rule);border-radius:16px;background:var(--panel);overflow:hidden;}
+    #traceCv{display:block;width:100%;touch-action:none;cursor:crosshair;}
+    .trace-hint{font-size:12.5px;color:var(--faint);text-align:center;margin-top:10px;}
   </style>
   <div class="panel on" id="p-start"></div>
 
   <div class="panel" id="p-collection"></div>
+
+  <div class="panel" id="p-drill">
+    <div class="drill-wrap" id="drillWrap"></div>
+  </div>
+
+  <div class="panel" id="p-trace">
+    <div class="trace-top">
+      <div class="trace-pick">Character
+        <select id="traceSel"></select>
+        <button class="trace-btns" id="traceHear" style="border:1px solid var(--rule);border-radius:999px;background:transparent;color:var(--text);padding:9px 13px;cursor:pointer">🔊</button>
+      </div>
+      <div class="trace-btns">
+        <button id="traceClear">Clear</button>
+        <button id="traceGuide">Toggle guide</button>
+      </div>
+    </div>
+    <div class="trace-stage"><canvas id="traceCv"></canvas></div>
+    <p class="trace-hint">Trace over the faint character with your mouse or finger. Clear and repeat — this builds the muscle memory the quizzes can’t.</p>
+  </div>
 
   <div class="panel" id="p-hira">
     <p class="hint">All 46 hiragana — あ い う え お (a i u e o), the sounds Japanese is built from. Tap any to hear it. 🌱</p>
@@ -545,6 +594,112 @@ import { RARITY, RMAP, rollRarity, LootEngine } from './lib/loot.js';
   }
   renderCollection();
 
+  // ── timed Drill: 60s romaji sprint that awards Spirit ──
+  var drillWrap=document.getElementById('drillWrap');
+  var drillTimer=null;
+  function drillIntro(){
+    if(drillTimer){ clearInterval(drillTimer); drillTimer=null; }
+    drillWrap.innerHTML=statusBar()+
+      '<div class="drill-start"><h2>⏱️ 60-second Spirit sprint</h2>'+
+      '<p>See a kana, tap the right sound. Each correct answer earns <b style="color:var(--accent)">🔮 Spirit</b> — wrong ones cost a little time. How many can you get?</p>'+
+      '<button class="drill-go" id="drillGo">Start sprint →</button></div>';
+    document.getElementById('drillGo').onclick=drillRun;
+  }
+  function drillRun(){
+    var pool=KANA.slice(), score=0, correct=0, cur=null, remaining=60;
+    drillWrap.innerHTML=
+      '<div class="drill-hud"><span class="time" id="dTime">⏱️ 60.0s</span><span class="sc" id="dScore">🔮 0 · 0 right</span></div>'+
+      '<div class="drill-bar"><i id="dBar"></i></div>'+
+      '<div class="drill-kana" id="dKana">…</div>'+
+      '<div class="drill-opts" id="dOpts"></div>';
+    var kanaEl=document.getElementById('dKana'), optsEl=document.getElementById('dOpts'),
+        timeEl=document.getElementById('dTime'), scEl=document.getElementById('dScore'), barEl=document.getElementById('dBar');
+    function rand(a){ return a[Math.floor(Math.random()*a.length)]; }
+    function nextQ(){
+      cur=rand(pool); kanaEl.textContent=cur[0]; speak(cur[0]);
+      var opts=[cur[1]]; while(opts.length<4){ var r=rand(pool)[1]; if(opts.indexOf(r)<0) opts.push(r); }
+      opts=shuffle(opts); optsEl.innerHTML='';
+      opts.forEach(function(romaji){
+        var b=document.createElement('button'); b.className='drill-opt'; b.textContent=romaji;
+        b.onclick=function(){
+          if(optsEl.dataset.lock || remaining<=0) return; optsEl.dataset.lock='1';
+          if(romaji===cur[1]){ b.classList.add('ok'); score+=5; correct++; loot.refresh().award(5); }
+          else { b.classList.add('no'); remaining=Math.max(0,remaining-2);   // wrong = -2s
+            Array.prototype.forEach.call(optsEl.children,function(x){ if(x.textContent===cur[1]) x.classList.add('ok'); }); }
+          scEl.textContent='🔮 '+score+' · '+correct+' right';
+          setTimeout(function(){ optsEl.dataset.lock=''; if(remaining>0) nextQ(); }, 360);
+        };
+        optsEl.appendChild(b);
+      });
+    }
+    nextQ();
+    if(drillTimer) clearInterval(drillTimer);
+    drillTimer=setInterval(function(){
+      remaining-=0.1;
+      if(remaining<=0){ remaining=0; clearInterval(drillTimer); drillTimer=null; drillEnd(score,correct); }
+      timeEl.textContent='⏱️ '+Math.max(0,remaining).toFixed(1)+'s';
+      barEl.style.width=(Math.max(0,remaining)/60*100)+'%';
+    },100);
+  }
+  function drillEnd(score,correct){
+    drillWrap.innerHTML=statusBar()+
+      '<div class="drill-start"><h2>⏱️ Time! You earned 🔮 '+score+' Spirit</h2>'+
+      '<p>'+correct+' correct. That Spirit is banked in your <b style="color:var(--accent)">Collection</b> total. Beat it next time?</p>'+
+      '<button class="drill-go" id="drillAgain">Go again →</button></div>';
+    document.getElementById('drillAgain').onclick=drillRun;
+  }
+
+  // ── tracing pad ──
+  var traceCv=document.getElementById('traceCv'), tctx=traceCv.getContext('2d');
+  var traceSel=document.getElementById('traceSel');
+  var traceChar=KANA[0][0], showGuide=true, TW=0, TH=0;
+  KANA.forEach(function(k){ var o=document.createElement('option'); o.value=k[0]; o.textContent=k[0]+'  ('+k[1]+')'; traceSel.appendChild(o); });
+  var strokes=[], drawing=false;
+  function traceBg(){
+    tctx.clearRect(0,0,TW,TH);
+    // light grid + center cross to guide proportions
+    tctx.strokeStyle='rgba(241,239,230,0.06)'; tctx.lineWidth=1;
+    tctx.beginPath(); tctx.moveTo(TW/2,0); tctx.lineTo(TW/2,TH); tctx.moveTo(0,TH/2); tctx.lineTo(TW,TH/2); tctx.stroke();
+    tctx.setLineDash([6,8]); tctx.strokeRect(TW*0.12,TH*0.12,TW*0.76,TH*0.76); tctx.setLineDash([]);
+    // faint guide character
+    if(showGuide){
+      tctx.fillStyle='rgba(184,192,255,0.16)';
+      tctx.font='600 '+Math.round(TH*0.74)+'px "Noto Sans JP", sans-serif';
+      tctx.textAlign='center'; tctx.textBaseline='middle';
+      tctx.fillText(traceChar, TW/2, TH/2+TH*0.02);
+      tctx.textAlign='start'; tctx.textBaseline='alphabetic';
+    }
+  }
+  function traceRedraw(){
+    traceBg();
+    tctx.strokeStyle='#ff8db3'; tctx.lineWidth=Math.max(5,TW*0.012); tctx.lineCap='round'; tctx.lineJoin='round';
+    strokes.forEach(function(s){ if(s.length<1)return; tctx.beginPath(); tctx.moveTo(s[0].x,s[0].y); for(var i=1;i<s.length;i++)tctx.lineTo(s[i].x,s[i].y); tctx.stroke(); });
+  }
+  function tracePos(ev){
+    var rect=traceCv.getBoundingClientRect();
+    var src=ev.touches?ev.touches[0]:ev;
+    return { x:(src.clientX-rect.left), y:(src.clientY-rect.top) };
+  }
+  function tStart(ev){ ev.preventDefault(); drawing=true; strokes.push([tracePos(ev)]); traceRedraw(); }
+  function tMove(ev){ if(!drawing)return; ev.preventDefault(); strokes[strokes.length-1].push(tracePos(ev)); traceRedraw(); }
+  function tEnd(){ drawing=false; }
+  traceCv.addEventListener('mousedown',tStart); traceCv.addEventListener('mousemove',tMove);
+  window.addEventListener('mouseup',tEnd);
+  traceCv.addEventListener('touchstart',tStart,{passive:false}); traceCv.addEventListener('touchmove',tMove,{passive:false}); traceCv.addEventListener('touchend',tEnd);
+  traceSel.addEventListener('change',function(){ traceChar=this.value; strokes=[]; traceRedraw(); });
+  document.getElementById('traceClear').onclick=function(){ strokes=[]; traceRedraw(); };
+  document.getElementById('traceGuide').onclick=function(){ showGuide=!showGuide; traceRedraw(); };
+  document.getElementById('traceHear').onclick=function(){ speak(traceChar); };
+  function traceSetup(){
+    var rect=traceCv.getBoundingClientRect(); if(rect.width===0) return;
+    var dpr=window.devicePixelRatio||1;
+    TW=Math.max(rect.width,260); TH=Math.min(TW,420);
+    traceCv.width=Math.round(TW*dpr); traceCv.height=Math.round(TH*dpr); traceCv.style.height=TH+'px';
+    tctx.setTransform(dpr,0,0,dpr,0,0);
+    traceRedraw();
+  }
+  window.addEventListener('resize',traceSetup);
+
   // ── hiragana grid ──
   var hg=document.getElementById('hgrid');
   HIRA.forEach(function(p){
@@ -612,6 +767,8 @@ import { RARITY, RMAP, rollRarity, LootEngine } from './lib/loot.js';
     document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on');});
     document.getElementById('p-'+b.dataset.p).classList.add('on');
     if(b.dataset.p==='collection') renderCollection();   // refresh on open
+    if(b.dataset.p==='drill') drillIntro();
+    if(b.dataset.p==='trace') traceSetup();
   });
 
   // ── practice (flashcards) ──

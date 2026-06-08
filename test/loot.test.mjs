@@ -48,6 +48,15 @@ console.log('catch: new item');
   eq('starts at level 1', d.lv, 1);
 }
 
+console.log('award: adds plain Spirit without collecting');
+{
+  const e = new LootEngine({ storageKey: 't', storage: fakeStore() });
+  e.award(10); e.award(5);
+  eq('award accumulates', e.spirit, 15);
+  eq('award ignores non-positive', e.award(-3), 15);
+  eq('award did not collect anything', e.count(), 0);
+}
+
 console.log('catch: duplicate levels up, never downgrades');
 {
   const e = new LootEngine({ storageKey: 't', storage: fakeStore(), rng: () => 0.999 }); // legendary
