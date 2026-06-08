@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fin-Eng Studio · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a14; --bg-2: #11112a; --text: #f1efe6; --muted: #8a8aa8; --faint:#6b6b78; --rule: rgba(241,239,230,0.16);
+    --accent: #b8c0ff; --accent-2: #f3d59a; --green:#5fd39a;
+    --max: 820px; --gutter: clamp(22px,5vw,48px);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', Consolas, monospace;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body { font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; min-height: 100vh; }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 7px; } ::-webkit-scrollbar-thumb { background: rgba(184,192,255,0.25); }
+  body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.10), transparent 65%); }
+
+  .top-bar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--gutter); }
+  .brand { font-family: var(--serif); font-style: italic; font-size: 16px; }
+  .back { font-size: 12px; color: var(--muted); text-decoration: none; padding: 7px 13px; border: 1px solid var(--rule); border-radius: 999px; transition: all .2s; }
+  .back:hover { color: var(--text); border-color: var(--accent); background: rgba(184,192,255,0.08); }
+
+  .wrap { position: relative; z-index: 2; max-width: var(--max); margin: 0 auto; padding: clamp(36px,6vw,64px) var(--gutter) 100px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; margin-bottom: 20px; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(44px,9vw,96px); line-height: 0.92; letter-spacing: -0.02em; margin-bottom: 22px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { font-family: var(--serif); font-size: clamp(19px,2.3vw,26px); line-height: 1.45; color: var(--text); max-width: 620px; margin-bottom: 12px; }
+  .note { font-size: 13px; color: var(--muted); max-width: 580px; margin-bottom: 44px; }
+
+  .courses { display: flex; flex-direction: column; gap: 12px; }
+  .course { display: grid; grid-template-columns: 1fr auto; gap: 12px 18px; align-items: center; padding: 20px 22px; background: var(--bg-2); border: 1px solid var(--rule); border-radius: 14px; text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s, background .2s; }
+  .course.ready:hover { border-color: rgba(184,192,255,0.45); transform: translateY(-2px); background: #15152e; }
+  .course.soon { opacity: 0.6; }
+  .course .code { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .04em; }
+  .course .t { font-family: var(--serif); font-size: clamp(21px,3vw,27px); font-weight: 500; line-height: 1.1; margin: 3px 0 5px; }
+  .course .d { font-size: 13.5px; color: var(--muted); max-width: 560px; }
+  .course .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 9px; font-size: 11.5px; color: var(--faint); font-family: var(--mono); }
+  .course .meta b { color: var(--muted); font-weight: 500; }
+  .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; padding: 5px 11px; border-radius: 999px; white-space: nowrap; align-self: start; }
+  .pill.ready { color: var(--green); border: 1px solid rgba(95,211,154,0.4); background: rgba(95,211,154,0.08); }
+  .pill.soon { color: var(--muted); border: 1px solid var(--rule); }
+
+  .foot { margin-top: 54px; padding-top: 30px; border-top: 1px solid var(--rule); }
+  .foot h2 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 24px; margin-bottom: 12px; }
+  .foot p { font-size: 14px; color: var(--muted); max-width: 620px; }
+  .foot p b { color: var(--accent-2); }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="brand">Atlas · <span style="font-style:italic;">Fin-Eng Studio</span></div>
+  <a class="back" href="../index.html">← Atlas</a>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Financial Engineering · Year 3 · interactive study</div>
+  <h1>The math, <em>made playable.</em></h1>
+  <p class="lede">Every course this semester, turned into something you can drag, tweak, and watch — because you understand a formula best once you've built the thing that runs it.</p>
+  <p class="note">One studio per course. Pick a topic, move the sliders, see the idea move. Built on the same finance references that back the rest of Atlas, so the math is the math your exams use.</p>
+
+  <div class="courses" id="courses"></div>
+
+  <div class="foot">
+    <h2>Why build instead of just read?</h2>
+    <p>You can't fake an efficient frontier. Either the variance formula is right and the curve bends, or it isn't and the curve is wrong. Building each tool is the cheapest way to find out whether you <b>actually</b> understand the material — long before the exam does it for you.</p>
+  </div>
+</div>
+
+<script>
+  // Courses are DATA, not markup — to add/flip one, edit this array (Atlas convention).
+  // Exam dates are pulled straight from the registration page (Thai B.E. years kept as-is).
+  const COURSES = [
+    {
+      code: '01526228', title: 'Portfolio Analysis & Management',
+      href: 'portfolio.html', status: 'ready',
+      d: 'Build the efficient frontier by hand: drag two assets’ risk, return, and correlation and watch the optimal mix appear. Minimum-variance portfolio, diversification benefit, the works.',
+      meta: '3 credits (3-0-6) · Group 91 · exams self-scheduled'
+    },
+    {
+      code: '01526229', title: 'Equity & Fixed Income Valuation',
+      href: '#', status: 'soon',
+      d: 'Interactive DCF for stocks + a bond pricer: change growth, discount rate, coupon and yield, and watch fair value move. See why prices and yields pull against each other.',
+      meta: '3 credits (3-0-6) · Group 91 · exams self-scheduled'
+    },
+    {
+      code: '01006743', title: 'Stochastic Processes & Calculus',
+      href: '#', status: 'soon',
+      d: 'A live Brownian-motion lab: set drift and volatility, generate price paths, and see the random walk that sits underneath every option-pricing model you’ll meet.',
+      meta: '3 credits (3-0-6) · Group 91 · Final: 28 Oct 2569, 09:30–12:30'
+    },
+    {
+      code: '01526230', title: 'Financial Markets & Institutions',
+      href: '#', status: 'soon',
+      d: 'A connected map of who’s who — exchanges, banks, central banks, clearing — and how money and risk flow between them. The plumbing behind everything else.',
+      meta: '3 credits (3-0-6) · Group 91 · exams self-scheduled'
+    },
+    {
+      code: '01526125', title: 'Data Science',
+      href: '#', status: 'soon',
+      d: 'A small return-data explorer: load a series, see distribution, volatility, and correlation come alive — the empirical side that feeds every model above.',
+      meta: '3 credits (2-2-5) · Groups 91 + 92 (lab) · Final: 26 Oct 2569, 13:30–16:30'
+    }
+  ];
+
+  const box = document.getElementById('courses');
+  COURSES.forEach(c => {
+    const ready = c.status === 'ready';
+    const el = document.createElement(ready ? 'a' : 'div');
+    el.className = 'course ' + c.status;
+    if (ready) el.href = c.href;
+    el.innerHTML =
+      '<div class="body">' +
+        '<div class="code">' + c.code + '</div>' +
+        '<div class="t">' + c.title + '</div>' +
+        '<div class="d">' + c.d + '</div>' +
+        '<div class="meta"><b>' + c.meta + '</b></div>' +
+      '</div>' +
+      '<span class="pill ' + c.status + '">' + (ready ? 'Ready' : 'Soon') + '</span>';
+    box.appendChild(el);
+  });
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>

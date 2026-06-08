@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Analysis · Fin-Eng Studio</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,34px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,6vw,54px);line-height:1;letter-spacing:-0.01em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{color:var(--muted);max-width:640px;margin-top:12px;font-size:15px;}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:24px;}
+  @media(min-width:880px){ .grid{grid-template-columns:1.3fr 1fr;align-items:start;} }
+
+  .card{border:1px solid var(--rule);border-radius:16px;background:#0b0b16;padding:18px;}
+  .card h2{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  canvas{display:block;width:100%;height:auto;border-radius:10px;background:var(--panel);}
+
+  /* asset controls */
+  .asset{border:1px solid var(--rule);border-radius:12px;padding:14px;margin-bottom:12px;}
+  .asset .h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;margin-bottom:10px;}
+  .dot{width:11px;height:11px;border-radius:50%;}
+  .sl{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);margin:7px 0;}
+  .sl input[type=range]{flex:1;max-width:160px;}
+  .sl .v{font-family:var(--mono);font-size:12px;color:var(--text);min-width:46px;text-align:right;}
+  input[type=range]{accent-color:var(--accent);}
+  #aA input[type=range]{accent-color:var(--accent);} #aB input[type=range]{accent-color:var(--gold);}
+  #corr input[type=range]{accent-color:var(--pink);}
+
+  /* readout */
+  .read{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px;}
+  .stat{border:1px solid var(--rule);border-radius:10px;padding:11px 13px;background:var(--panel);}
+  .stat .k{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .n{font-family:var(--mono);font-size:19px;font-weight:500;margin-top:3px;}
+  .stat.mv .n{color:var(--green);}
+  .mix{margin-top:12px;font-size:12.5px;color:var(--muted);}
+  .mixbar{height:9px;border-radius:999px;overflow:hidden;display:flex;margin-top:6px;border:1px solid var(--rule);}
+  .mixbar i{display:block;height:100%;} .mixbar .a{background:var(--accent);} .mixbar .b{background:var(--gold);}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;font-size:11.5px;color:var(--muted);margin-top:10px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:12px;height:3px;border-radius:2px;display:inline-block;}
+
+  .note{margin-top:22px;border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:16px 18px;font-size:13.5px;color:#ded6ea;line-height:1.6;}
+  .note b{color:var(--accent);} .note code{font-family:var(--mono);font-size:12.5px;color:var(--gold);background:rgba(243,213,154,0.08);padding:1px 5px;border-radius:4px;}
+  .formula{font-family:var(--mono);font-size:12.5px;color:var(--gold);background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;margin-top:10px;overflow-x:auto;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Fin-Eng · <span>Portfolio Analysis</span></div><a class="back" href="index.html">&larr; Studio</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">01526228 · Modern Portfolio Theory</div>
+  <h1>The efficient <em>frontier,</em> by hand.</h1>
+  <p class="lede">Two assets. Mix them in every proportion from 100% A to 100% B, and each mix is a dot of (risk, return). Join the dots and you get the curve Markowitz built a Nobel on. Drag the sliders — watch the curve bend as correlation falls. That bend <em>is</em> diversification.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Risk ↔ Return</h2>
+      <canvas id="cv" width="640" height="480"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>Asset A</span>
+        <span><i style="background:var(--gold)"></i>Asset B</span>
+        <span><i style="background:var(--green)"></i>Min-variance portfolio</span>
+        <span><i style="background:#6b6b9a"></i>All mixes (the frontier)</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" id="aA" style="margin-bottom:14px">
+        <div class="asset" style="margin:0;border:0;padding:0">
+          <div class="h"><span class="dot" style="background:var(--accent)"></span>Asset A <span style="color:var(--faint);font-weight:400;font-size:12px">· e.g. stocks</span></div>
+          <div class="sl">Expected return <input id="rA" type="range" min="0" max="20" step="0.5" value="12"><span class="v" id="rAv">12%</span></div>
+          <div class="sl">Volatility (risk) <input id="vA" type="range" min="1" max="40" step="0.5" value="20"><span class="v" id="vAv">20%</span></div>
+        </div>
+      </div>
+      <div class="card" id="aB" style="margin-bottom:14px">
+        <div class="asset" style="margin:0;border:0;padding:0">
+          <div class="h"><span class="dot" style="background:var(--gold)"></span>Asset B <span style="color:var(--faint);font-weight:400;font-size:12px">· e.g. bonds</span></div>
+          <div class="sl">Expected return <input id="rB" type="range" min="0" max="20" step="0.5" value="5"><span class="v" id="rBv">5%</span></div>
+          <div class="sl">Volatility (risk) <input id="vB" type="range" min="1" max="40" step="0.5" value="7"><span class="v" id="vBv">7%</span></div>
+        </div>
+      </div>
+      <div class="card" id="corr">
+        <div class="asset" style="margin:0;border:0;padding:0">
+          <div class="h"><span class="dot" style="background:var(--pink)"></span>Correlation ρ</div>
+          <div class="sl">A vs B move together <input id="rho" type="range" min="-1" max="1" step="0.05" value="0.2"><span class="v" id="rhov">0.20</span></div>
+          <div style="font-size:11.5px;color:var(--faint);margin-top:2px">−1 = perfect opposite · 0 = unrelated · +1 = identical</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h2>Minimum-variance portfolio</h2>
+        <div class="read">
+          <div class="stat mv"><div class="k">Lowest risk</div><div class="n" id="mvRisk">–</div></div>
+          <div class="stat mv"><div class="k">Its return</div><div class="n" id="mvRet">–</div></div>
+        </div>
+        <div class="mix">Mix: <b id="mixTxt">–</b>
+          <div class="mixbar"><i class="a" id="mixA"></i><i class="b" id="mixB"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>What you're looking at.</b> Each grey dot is a portfolio: some % in A, the rest in B. As you slide from all-B to all-A, the dot traces a curve. The <b style="color:var(--green)">green point</b> is the <b>minimum-variance portfolio</b> — the single mix with the least possible risk. Notice: when ρ is high (near +1) the curve is almost a straight line — mixing barely helps. As you drag ρ down, the curve <b>bows left</b>: you can get the same return for <em>less</em> risk than either asset alone. That leftward bow is the entire point of diversification.
+    <div class="formula">σ²ₚ = wₐ²σₐ² + w_b²σ_b² + 2·wₐ·w_b·σₐ·σ_b·ρ</div>
+    <div style="margin-top:8px;font-size:12.5px;color:var(--muted)">The min-variance weight in A: <code>wₐ = (σ_b² − ρσₐσ_b) / (σₐ² + σ_b² − 2ρσₐσ_b)</code></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var ids = ['rA','vA','rB','vB','rho'];
+  function val(id){ return parseFloat(document.getElementById(id).value); }
+
+  // ── portfolio math (decimals internally; UI is in %) ──
+  // Two-asset variance: σ²ₚ = wA²σA² + wB²σB² + 2 wA wB σA σB ρ
+  function portfolio(wA, rA, vA, rB, vB, rho){
+    var wB = 1 - wA;
+    var ret = wA*rA + wB*rB;
+    var varr = wA*wA*vA*vA + wB*wB*vB*vB + 2*wA*wB*vA*vB*rho;
+    return { ret: ret, risk: Math.sqrt(Math.max(varr,0)) };
+  }
+  // Minimum-variance weight in A (closed form, from the variance derivative = 0).
+  function minVarWeightA(vA, vB, rho){
+    var denom = vA*vA + vB*vB - 2*rho*vA*vB;
+    if (Math.abs(denom) < 1e-9) return 0.5;
+    var w = (vB*vB - rho*vA*vB) / denom;
+    return Math.min(1, Math.max(0, w)); // long-only clamp (no short selling)
+  }
+
+  // Logical (CSS-pixel) canvas size; setup() keeps these in sync with the element.
+  var W = 640, H = 480;
+  var pad = 46;
+
+  function draw(){
+    var rA=val('rA')/100, vA=val('vA')/100, rB=val('rB')/100, vB=val('vB')/100, rho=val('rho');
+    // live labels
+    document.getElementById('rAv').textContent=val('rA')+'%';
+    document.getElementById('vAv').textContent=val('vA')+'%';
+    document.getElementById('rBv').textContent=val('rB')+'%';
+    document.getElementById('vBv').textContent=val('vB')+'%';
+    document.getElementById('rhov').textContent=val('rho').toFixed(2);
+
+    // axes scale to the data with a little headroom
+    var maxRisk = Math.max(vA, vB, 0.01)*1.18;
+    var rets=[rA,rB], minRet=Math.min(rA,rB), maxRet=Math.max(rA,rB);
+    var rPad=(maxRet-minRet)*0.25+0.01; minRet-=rPad; maxRet+=rPad;
+    function X(risk){ return pad + (risk/maxRisk)*(W-pad-16); }
+    function Y(ret){ return H-pad - ((ret-minRet)/(maxRet-minRet))*(H-pad-16); }
+
+    ctx.clearRect(0,0,W,H);
+    // grid + axes
+    ctx.strokeStyle='rgba(241,239,230,0.08)'; ctx.lineWidth=1; ctx.fillStyle='#6b6b78'; ctx.font='11px JetBrains Mono, monospace';
+    for(var g=0; g<=5; g++){
+      var gx=pad+(g/5)*(W-pad-16); ctx.beginPath(); ctx.moveTo(gx,16); ctx.lineTo(gx,H-pad); ctx.stroke();
+      ctx.fillText(((g/5)*maxRisk*100).toFixed(0)+'%', gx-8, H-pad+16);
+    }
+    for(var h=0; h<=4; h++){
+      var gy=16+(h/4)*(H-pad-16); ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-16,gy); ctx.stroke();
+      var rv=(maxRet-(h/4)*(maxRet-minRet))*100; ctx.fillText(rv.toFixed(0)+'%', 6, gy+4);
+    }
+    ctx.fillStyle='#9a9ab8'; ctx.fillText('risk (volatility) →', W-150, H-10);
+    ctx.save(); ctx.translate(14,70); ctx.rotate(-Math.PI/2); ctx.fillText('return →',0,0); ctx.restore();
+
+    // the frontier: 0..100% in A
+    ctx.lineWidth=2.4;
+    var first=true;
+    ctx.beginPath();
+    for(var i=0;i<=100;i++){
+      var p=portfolio(i/100, rA,vA,rB,vB,rho);
+      var x=X(p.risk), y=Y(p.ret);
+      if(first){ctx.moveTo(x,y);first=false;} else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle='#6b6b9a'; ctx.stroke();
+    // dots along it
+    for(var j=0;j<=100;j+=10){
+      var pp=portfolio(j/100, rA,vA,rB,vB,rho);
+      ctx.beginPath(); ctx.arc(X(pp.risk),Y(pp.ret),2.2,0,7); ctx.fillStyle='rgba(184,192,255,0.35)'; ctx.fill();
+    }
+
+    // endpoints A (100% A) and B (100% B)
+    function marker(x,y,col,label){
+      ctx.beginPath(); ctx.arc(x,y,6,0,7); ctx.fillStyle=col; ctx.fill();
+      ctx.strokeStyle='#0a0a14'; ctx.lineWidth=2; ctx.stroke();
+      ctx.fillStyle=col; ctx.font='600 12px Inter Tight, sans-serif'; ctx.fillText(label,x+10,y+4);
+    }
+    marker(X(vA),Y(rA),'#b8c0ff','A'); marker(X(vB),Y(rB),'#f3d59a','B');
+
+    // min-variance point
+    var wA=minVarWeightA(vA,vB,rho), mv=portfolio(wA, rA,vA,rB,vB,rho);
+    ctx.beginPath(); ctx.arc(X(mv.risk),Y(mv.ret),7,0,7); ctx.fillStyle='#5fd39a'; ctx.fill();
+    ctx.strokeStyle='#0a0a14'; ctx.lineWidth=2; ctx.stroke();
+
+    // readout
+    document.getElementById('mvRisk').textContent=(mv.risk*100).toFixed(2)+'%';
+    document.getElementById('mvRet').textContent=(mv.ret*100).toFixed(2)+'%';
+    var pctA=Math.round(wA*100);
+    document.getElementById('mixTxt').textContent=pctA+'% A · '+(100-pctA)+'% B';
+    document.getElementById('mixA').style.width=pctA+'%';
+    document.getElementById('mixB').style.width=(100-pctA)+'%';
+  }
+
+  ids.forEach(function(id){ document.getElementById(id).addEventListener('input', draw); });
+
+  // Size the canvas to its CSS box, sharp on hi-DPI: set the backing store to
+  // CSS-size × devicePixelRatio, then scale the context so we can draw in CSS px.
+  // draw() reads the logical W/H, which we keep in sync here.
+  function setup(){
+    var rect = cv.getBoundingClientRect();
+    var dpr = window.devicePixelRatio || 1;
+    W = Math.max(rect.width, 280);
+    H = Math.min(Math.max(W * 0.74, 300), 520);
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    cv.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // 1 unit = 1 CSS px
+    draw();
+  }
+  window.addEventListener('resize', setup);
+  setup();
+})();
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>
