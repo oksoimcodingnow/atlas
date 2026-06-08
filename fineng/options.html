@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Options & Black–Scholes · Fin-Eng Studio</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.08), transparent 65%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,34px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,6vw,54px);line-height:1;letter-spacing:-0.01em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{color:var(--muted);max-width:640px;margin-top:12px;font-size:15px;}
+
+  .seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;overflow:hidden;margin-top:22px;}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--muted);background:transparent;border:0;padding:9px 18px;cursor:pointer;transition:.15s;}
+  .seg button.on{background:var(--accent);color:var(--bg);} .seg button:not(.on):hover{color:var(--text);background:rgba(184,192,255,0.08);}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px;}
+  @media(min-width:880px){ .grid{grid-template-columns:1.3fr 1fr;align-items:start;} }
+  .card{border:1px solid var(--rule);border-radius:16px;background:#0b0b16;padding:18px;}
+  .card h2{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  canvas{display:block;width:100%;height:auto;border-radius:10px;background:var(--panel);}
+
+  .ctrl{border:1px solid var(--rule);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .sl{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);margin:8px 0;}
+  .sl input[type=range]{flex:1;max-width:150px;accent-color:var(--accent);}
+  .sl .v{font-family:var(--mono);font-size:12px;color:var(--text);min-width:58px;text-align:right;}
+
+  .read{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat{border:1px solid var(--rule);border-radius:10px;padding:11px 13px;background:var(--panel);}
+  .stat .k{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .n{font-family:var(--mono);font-size:18px;font-weight:500;margin-top:3px;}
+  .stat.call .n{color:var(--green);} .stat.put .n{color:var(--pink);}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;font-size:11.5px;color:var(--muted);margin-top:10px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;} .legend i{width:12px;height:3px;border-radius:2px;display:inline-block;}
+
+  .note{margin-top:22px;border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:16px 18px;font-size:13.5px;color:#ded6ea;line-height:1.6;}
+  .note b{color:var(--accent);} .note code{font-family:var(--mono);font-size:12.5px;color:var(--gold);background:rgba(243,213,154,0.08);padding:1px 5px;border-radius:4px;}
+  .formula{font-family:var(--mono);font-size:12px;color:var(--gold);background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;margin-top:10px;overflow-x:auto;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Fin-Eng · <span>Options &amp; Black–Scholes</span></div><a class="back" href="index.html">&larr; Studio</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Capstone · derivatives pricing</div>
+  <h1>Pricing the <em>random walk.</em></h1>
+  <p class="lede">This is where it all meets. Take the geometric Brownian motion from Stochastic Processes, the discounting from Valuation, and the volatility from Data Science — and out pops the <b>Black–Scholes formula</b>, the most famous equation in finance. Drag the inputs; watch the option's fair price and its payoff diagram respond.</p>
+
+  <div class="seg" id="seg">
+    <button class="on" data-v="call">Call option</button>
+    <button data-v="put">Put option</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Payoff & value at expiry</h2>
+      <canvas id="cv"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>Payoff at expiry (intrinsic)</span>
+        <span><i style="background:var(--accent)"></i>Value today (Black–Scholes)</span>
+        <span><i style="background:rgba(154,154,184,0.7)"></i>Strike K</span>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="ctrl" style="margin:0;border:0;padding:0">
+          <div class="sl">Spot price S <input id="S" type="range" min="40" max="160" step="1" value="100"><span class="v" id="Sv">100</span></div>
+          <div class="sl">Strike K <input id="K" type="range" min="40" max="160" step="1" value="100"><span class="v" id="Kv">100</span></div>
+          <div class="sl">Volatility σ <input id="sig" type="range" min="5" max="80" step="1" value="20"><span class="v" id="sigv">20%</span></div>
+          <div class="sl">Time to expiry <input id="T" type="range" min="0.05" max="2" step="0.05" value="1"><span class="v" id="Tv">1.00 yr</span></div>
+          <div class="sl">Risk-free rate r <input id="r" type="range" min="0" max="10" step="0.25" value="5"><span class="v" id="rv">5.0%</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Fair value &amp; greeks</h2>
+        <div class="read">
+          <div class="stat call"><div class="k" id="priceK">Call price</div><div class="n" id="price">–</div></div>
+          <div class="stat"><div class="k">Delta Δ</div><div class="n" id="delta">–</div></div>
+          <div class="stat"><div class="k">Intrinsic now</div><div class="n" id="intr">–</div></div>
+          <div class="stat"><div class="k">Time value</div><div class="n" id="tval">–</div></div>
+        </div>
+        <div id="oTag" style="margin-top:12px;font-size:12.5px;color:var(--muted)"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>What the price is really saying.</b> An option is the right (not obligation) to buy (call) or sell (put) at strike K. Its value splits in two: <b>intrinsic</b> (what you'd get exercising right now) plus <b>time value</b> (the chance it gets better before expiry). More volatility or more time ⇒ more time value, because more can happen. <b>Delta</b> is how much the option price moves per $1 move in the stock — a call's delta runs 0→1, a put's 0→−1.
+    <div class="formula">C = S·N(d₁) − K·e^(−rT)·N(d₂)     P = C − S + K·e^(−rT)  (put–call parity)
+d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)        d₂ = d₁ − σ·√T</div>
+    <div style="margin-top:8px;font-size:12.5px;color:var(--muted)">N(·) is the standard-normal CDF — the probability the random walk lands in-the-money. That's the bridge from the <a href="stochastic.html" style="color:var(--accent)">Brownian-motion lab</a> to a dollar price.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function val(id){ return parseFloat(document.getElementById(id).value); }
+  // Standard normal CDF via Abramowitz & Stegun 7.1.26 (max error ~7.5e-8).
+  function normCDF(x){
+    var t=1/(1+0.2316419*Math.abs(x));
+    var d=0.3989422804014327*Math.exp(-x*x/2);
+    var p=d*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
+    return x>=0 ? 1-p : p;
+  }
+  // Black–Scholes call + greeks; put via parity.
+  function bs(S,K,sig,T,r){
+    sig=sig/100; r=r/100;
+    if(T<=0||sig<=0){ var ic=Math.max(S-K,0), ip=Math.max(K-S,0); return {call:ic,put:ip,d1:0,d2:0,deltaC:(S>K?1:0),deltaP:(S<K?-1:0)}; }
+    var d1=(Math.log(S/K)+(r+sig*sig/2)*T)/(sig*Math.sqrt(T));
+    var d2=d1-sig*Math.sqrt(T);
+    var call=S*normCDF(d1)-K*Math.exp(-r*T)*normCDF(d2);
+    var put=call-S+K*Math.exp(-r*T);
+    return { call:call, put:put, d1:d1, d2:d2, deltaC:normCDF(d1), deltaP:normCDF(d1)-1 };
+  }
+
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+  var W=640,H=440, mode='call';
+
+  function draw(){
+    var S=val('S'),K=val('K'),sig=val('sig'),T=val('T'),r=val('r');
+    document.getElementById('Sv').textContent=S;
+    document.getElementById('Kv').textContent=K;
+    document.getElementById('sigv').textContent=sig+'%';
+    document.getElementById('Tv').textContent=T.toFixed(2)+' yr';
+    document.getElementById('rv').textContent=r.toFixed(1)+'%';
+
+    var o=bs(S,K,sig,T,r);
+    var price = mode==='call'? o.call : o.put;
+    var delta = mode==='call'? o.deltaC : o.deltaP;
+    var intrinsic = mode==='call'? Math.max(S-K,0) : Math.max(K-S,0);
+    var timeValue = Math.max(price-intrinsic,0);
+
+    document.getElementById('priceK').textContent=(mode==='call'?'Call':'Put')+' price';
+    document.getElementById('price').textContent='$'+price.toFixed(2);
+    document.getElementById('delta').textContent=delta.toFixed(3);
+    document.getElementById('intr').textContent='$'+intrinsic.toFixed(2);
+    document.getElementById('tval').textContent='$'+timeValue.toFixed(2);
+    var moneiness = mode==='call'
+      ? (S>K?'in-the-money':S<K?'out-of-the-money':'at-the-money')
+      : (S<K?'in-the-money':S>K?'out-of-the-money':'at-the-money');
+    document.getElementById('oTag').innerHTML='Currently <b>'+moneiness+'</b>. '+
+      (timeValue>price*0.5?'Mostly time value — lots of uncertainty priced in.':'Mostly intrinsic — deep in/out, little optionality left.');
+
+    // chart: payoff (at expiry) + value today, across a spot range
+    var sMin=40, sMax=160;
+    var ys=[]; for(var s=sMin;s<=sMax;s+=2){ var oo=bs(s,K,sig,T,r); ys.push(mode==='call'?oo.call:oo.put); }
+    var payMax = mode==='call'? Math.max(sMax-K,0) : Math.max(K-sMin,0);
+    var vMax=Math.max(payMax, Math.max.apply(null,ys))*1.08;
+    var pad=42;
+    function X(s){ return pad+((s-sMin)/(sMax-sMin))*(W-pad-14); }
+    function Y(v){ return H-pad-(v/vMax)*(H-pad-16); }
+
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(241,239,230,0.08)'; ctx.lineWidth=1; ctx.fillStyle='#6b6b78'; ctx.font='10px JetBrains Mono, monospace';
+    for(var g=0;g<=5;g++){ var gx=pad+(g/5)*(W-pad-14); ctx.beginPath(); ctx.moveTo(gx,14); ctx.lineTo(gx,H-pad); ctx.stroke();
+      ctx.fillText((sMin+(g/5)*(sMax-sMin)).toFixed(0), gx-8, H-pad+15); }
+    for(var h=0;h<=4;h++){ var gy=14+(h/4)*(H-pad-16); ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-14,gy); ctx.stroke();
+      ctx.fillText('$'+(vMax-(h/4)*vMax).toFixed(0), 6, gy+4); }
+    ctx.fillStyle='#9a9ab8'; ctx.fillText('stock price at expiry →', W-150, H-9);
+
+    // strike line
+    ctx.strokeStyle='rgba(154,154,184,0.6)'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(X(K),14); ctx.lineTo(X(K),H-pad); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#9a9ab8'; ctx.fillText('K', X(K)-3, 11);
+
+    // payoff at expiry (intrinsic) — gold
+    ctx.strokeStyle='#f3d59a'; ctx.lineWidth=2.2; ctx.beginPath(); var f=true;
+    for(var s2=sMin;s2<=sMax;s2+=2){ var pay= mode==='call'? Math.max(s2-K,0) : Math.max(K-s2,0); var x=X(s2),y=Y(pay); if(f){ctx.moveTo(x,y);f=false;} else ctx.lineTo(x,y); }
+    ctx.stroke();
+
+    // value today — accent
+    ctx.strokeStyle='#b8c0ff'; ctx.lineWidth=2.4; ctx.beginPath(); f=true; var idx=0;
+    for(var s3=sMin;s3<=sMax;s3+=2){ var x=X(s3),y=Y(ys[idx++]); if(f){ctx.moveTo(x,y);f=false;} else ctx.lineTo(x,y); }
+    ctx.stroke();
+
+    // current spot marker on the value-today curve
+    ctx.beginPath(); ctx.arc(X(S),Y(price),5,0,7); ctx.fillStyle='#5fd39a'; ctx.fill(); ctx.strokeStyle='#0a0a14'; ctx.lineWidth=2; ctx.stroke();
+  }
+
+  document.getElementById('seg').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    document.querySelectorAll('#seg button').forEach(function(x){x.classList.toggle('on',x===b);});
+    mode=b.dataset.v; draw();
+  });
+  ['S','K','sig','T','r'].forEach(function(id){ document.getElementById(id).addEventListener('input',draw); });
+
+  function setup(){
+    var rect=cv.getBoundingClientRect(); if(rect.width===0) return;
+    var dpr=window.devicePixelRatio||1;
+    W=Math.max(rect.width,280); H=Math.min(Math.max(W*0.66,300),480);
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); cv.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+  window.addEventListener('resize', setup);
+  setup();
+})();
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>
