@@ -46,14 +46,34 @@ Markets & Institutions 01526230). Built interactive study tools, one per course,
   (double-click). Use the live HTTPS site or a local server (`python -m http.server`).
   A friendly file:// fallback note is baked in.
 
-## 🚧 In flight (branch feat/jp-timed-challenge, f28481a — test then merge)
+## 🅿️ Parked next: gamify schedule.html (planned, NOT started)
 
-- **⏱️ Drill tab:** 60-second romaji sprint, awards 5 Spirit per correct (via `award`),
-  wrong = −2s. Score banks into the Collection total.
-- **✍️ Trace tab:** writing pad — pick a kana, trace over a faint guide, clear/next,
-  toggle guide, hear it. **No auto-grading** (honest: stroke recognition would be
-  unreliable) — it's a muscle-memory surface.
-- Next: owner tests locally, then merge to main + bump service worker.
+Reuse `lib/loot.js` so completing a Schedule task awards Spirit + a rarity loot
+drop (decided: **shared Spirit pool** with the Japanese game; **loot-drop-with-rarity**
+feel; **study-tagged tasks roll better odds** — ties into the `STUDYING.md` loop).
+- **Key caution:** `schedule.html` has **Firebase + Google Calendar** integration and
+  its main script is a **classic `<script>` (line ~420), NOT a module.** Do NOT convert
+  it to a module (risks breaking Firebase/GCal). Instead add a *separate* small
+  `<script type="module">` that imports the engine and exposes `window.atlasLoot`,
+  then call `window.atlasLoot.award(...)` from `toggleDone(id)` (line ~630) when a
+  task flips undone→done. Bonus Spirit if the task text/tag is `study`.
+- Engine already has `award(n)` and `catch(id)`; tests cover both (28 passing).
+
+## ✅ Also done 2026-06-09: Drill reading-test fix + PC speedup
+
+- **Drill fix (live, bbe6dba):** the timed Drill no longer speaks the kana on show
+  (it was giving away the answer). Now silent until you answer, then speaks as feedback.
+- **PC speedup (owner's machine):** C: was 93% full → freed to ~14% (cleared Temp,
+  moved Downloads to D:\Medal, uninstalled Greenshot/PowerDVD/ACDSee). Trimmed ~17
+  startup apps (kept Vanguard/Defender/audio/PenTablet). Applies on next reboot.
+  See the "Other context" section for the diagnosis.
+
+## ✅ Live: japanese Drill + Trace tabs (merged f6df5ae, fixed bbe6dba)
+
+- **⏱️ Drill:** 60s romaji sprint, awards 5 Spirit per correct (via `award`), wrong = −2s,
+  banks into the Collection total. Kana is **silent until you answer** (reading test).
+- **✍️ Trace:** writing pad — pick a kana, trace over a faint guide, clear/next, toggle
+  guide, hear it. **No auto-grading** (stroke recognition would be unreliable) — practice surface.
 
 ## 🧭 Engineering direction (owner's stated goal)
 
