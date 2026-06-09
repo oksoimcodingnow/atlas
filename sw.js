@@ -1,7 +1,7 @@
 /* Atlas service worker — cache-first with on-the-fly population.
  * Bump CACHE_VERSION to force a refresh after deploying changes.
  */
-const CACHE_VERSION = 'atlas-v75';
+const CACHE_VERSION = 'atlas-v76';
 const ASSETS = [
   './',
   './index.html',
@@ -12,7 +12,6 @@ const ASSETS = [
   './japanese.html',
   './overview.html',
   './economy.html',
-  './neural.html',
   './flock.html',
   './luck.html',
   './trader.html',
