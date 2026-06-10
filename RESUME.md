@@ -1,7 +1,26 @@
 # RESUME — where we are, for any new session
 
 > **Purpose:** If this terminal/session is lost, read this file first. It says what's done,
-> what's in flight, and the one true path. Last updated: 2026-06-08.
+> what's in flight, and the one true path. Last updated: 2026-06-10.
+
+## ✅ Done 2026-06-10: Black–Scholes extracted to a tested module + SW bug fix
+
+A "proper engineering" pass on the Fin-Eng capstone (teaching session for the owner):
+- **`lib/blackscholes.js`** — the Black–Scholes math, pulled out of `options.html` into a
+  pure, DOM-free ES module (single source of truth). Contract: sigma & r are **decimals**
+  (0.20 = 20%), T in years. Exports `normCDF`, `d1d2`, `blackScholes`.
+- **`test/blackscholes.test.mjs`** — 17 assertions: textbook case (call 10.4506 / put 5.5735),
+  put–call parity to 1e-9, N(·) anchors, T=0 / σ=0 edges, vega-positive sanity.
+- **`npm test` is now 43 assertions** (26 loot + 17 Black–Scholes).
+- **`fineng/options.html`** now `import`s the module (so the page & tests can't drift). It's
+  a `<script type="module">` → needs http(s); a classic script shows a `file://` banner.
+- **SW registration bug fixed (`lib/atlas-fx.js`):** `register('sw.js')` resolved relative
+  to the *page*, so pages in `fineng/`, `learn/`, etc. tried to register a non-existent
+  `<subdir>/sw.js` and failed silently. Now resolved relative to the script's own URL
+  (`new URL('../sw.js', SELF_SRC)`) → always the root `sw.js`. Empty `.catch` → `console.warn`.
+- **`sw.js` bumped v76 → v77** and `lib/blackscholes.js` added to the precache list.
+- **`fineng/README.md`** added (frames the Studio as a portfolio piece).
+- Not yet committed/pushed — owner to review first.
 
 ## ⛳ The one true path (memorize this)
 
@@ -97,7 +116,7 @@ A Thai gamified-habit RPG the owner showed. Worth borrowing later, in **English*
 cd C:\Users\HOME\atlas
 git checkout main
 git log --oneline -6          # the merge + kana-loot commits should be at/near the top
-npm test                      # sanity-check the loot engine (expect: 23 passed)
+npm test                      # sanity-check both engines (expect: 26 + 17 = 43 passed)
 ```
 
 Then open the live site (or serve locally) and look at `japanese.html` → 🔮 Collection.

@@ -70,6 +70,13 @@
   <h1>Pricing the <em>random walk.</em></h1>
   <p class="lede">This is where it all meets. Take the geometric Brownian motion from Stochastic Processes, the discounting from Valuation, and the volatility from Data Science — and out pops the <b>Black–Scholes formula</b>, the most famous equation in finance. Drag the inputs; watch the option's fair price and its payoff diagram respond.</p>
 
+  <div id="fileNote" style="display:none;margin-top:16px;border:1px solid var(--gold);border-radius:12px;background:rgba(243,213,154,0.08);padding:12px 14px;font-size:13px;color:var(--gold);line-height:1.5">
+    <b>Live pricing is off because this page was opened from a file.</b> It loads the
+    Black–Scholes math as a JavaScript module, which browsers block over <code>file://</code>.
+    Open the live site (<b>oksoimcodingnow.github.io/atlas/fineng/options.html</b>) or run
+    <code>python -m http.server</code> in the atlas folder, then visit <code>localhost:8000/fineng/options.html</code>.
+  </div>
+
   <div class="seg" id="seg">
     <button class="on" data-v="call">Call option</button>
     <button data-v="put">Put option</button>
@@ -116,26 +123,17 @@ d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)        d₂ = d₁ − σ·√T<
   </div>
 </div>
 
-<script>
+<script type="module">
+// The Black–Scholes math now lives in a tested module — lib/blackscholes.js, the
+// single source of truth, verified by test/blackscholes.test.mjs. This page only
+// reads sliders and draws; it no longer re-implements the formula (no drift).
+// NOTE: ES-module imports need http(s); over file:// the browser blocks them, so a
+// classic script at the bottom shows the "use the live site" banner in that case.
+import { blackScholes } from '../lib/blackscholes.js';
 (function(){
   function val(id){ return parseFloat(document.getElementById(id).value); }
-  // Standard normal CDF via Abramowitz & Stegun 7.1.26 (max error ~7.5e-8).
-  function normCDF(x){
-    var t=1/(1+0.2316419*Math.abs(x));
-    var d=0.3989422804014327*Math.exp(-x*x/2);
-    var p=d*t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
-    return x>=0 ? 1-p : p;
-  }
-  // Black–Scholes call + greeks; put via parity.
-  function bs(S,K,sig,T,r){
-    sig=sig/100; r=r/100;
-    if(T<=0||sig<=0){ var ic=Math.max(S-K,0), ip=Math.max(K-S,0); return {call:ic,put:ip,d1:0,d2:0,deltaC:(S>K?1:0),deltaP:(S<K?-1:0)}; }
-    var d1=(Math.log(S/K)+(r+sig*sig/2)*T)/(sig*Math.sqrt(T));
-    var d2=d1-sig*Math.sqrt(T);
-    var call=S*normCDF(d1)-K*Math.exp(-r*T)*normCDF(d2);
-    var put=call-S+K*Math.exp(-r*T);
-    return { call:call, put:put, d1:d1, d2:d2, deltaC:normCDF(d1), deltaP:normCDF(d1)-1 };
-  }
+  // The module speaks decimals (0.20 = 20%); the sliders are in percents, so we
+  // convert at each call site: blackScholes(S, K, sig/100, T, r/100).
 
   var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
   var W=640,H=440, mode='call';
@@ -148,9 +146,9 @@ d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)        d₂ = d₁ − σ·√T<
     document.getElementById('Tv').textContent=T.toFixed(2)+' yr';
     document.getElementById('rv').textContent=r.toFixed(1)+'%';
 
-    var o=bs(S,K,sig,T,r);
+    var o=blackScholes(S,K,sig/100,T,r/100);
     var price = mode==='call'? o.call : o.put;
-    var delta = mode==='call'? o.deltaC : o.deltaP;
+    var delta = mode==='call'? o.deltaCall : o.deltaPut;
     var intrinsic = mode==='call'? Math.max(S-K,0) : Math.max(K-S,0);
     var timeValue = Math.max(price-intrinsic,0);
 
@@ -167,7 +165,7 @@ d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)        d₂ = d₁ − σ·√T<
 
     // chart: payoff (at expiry) + value today, across a spot range
     var sMin=40, sMax=160;
-    var ys=[]; for(var s=sMin;s<=sMax;s+=2){ var oo=bs(s,K,sig,T,r); ys.push(mode==='call'?oo.call:oo.put); }
+    var ys=[]; for(var s=sMin;s<=sMax;s+=2){ var oo=blackScholes(s,K,sig/100,T,r/100); ys.push(mode==='call'?oo.call:oo.put); }
     var payMax = mode==='call'? Math.max(sMax-K,0) : Math.max(K-sMin,0);
     var vMax=Math.max(payMax, Math.max.apply(null,ys))*1.08;
     var pad=42;
@@ -218,6 +216,14 @@ d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)        d₂ = d₁ − σ·√T<
   window.addEventListener('resize', setup);
   setup();
 })();
+</script>
+<script>
+  // Classic (non-module) script: runs even over file://, where the module above won't.
+  // If we're on file://, reveal the banner explaining why pricing is inert.
+  if (location.protocol === 'file:') {
+    var n = document.getElementById('fileNote');
+    if (n) n.style.display = 'block';
+  }
 </script>
 <script src="../lib/atlas-fx.js"></script>
 </body>
