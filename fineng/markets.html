@@ -65,6 +65,11 @@
     </div>
     <div class="card info" id="info"></div>
   </div>
+
+  <div style="display:flex;justify-content:space-between;gap:10px;margin-top:26px">
+    <a class="back" href="stochastic.html">&larr; Prev: Stochastic</a>
+    <a class="back" href="datascience.html">Next: Data Science &rarr;</a>
+  </div>
 </div>
 
 <script>
@@ -73,26 +78,27 @@
   var W=620,H=480;
 
   // Nodes positioned on a normalized 0..1 grid (scaled to canvas). Colors group roles.
+  // `m` = short label drawn instead of `label` when the circles get small on phones.
   var NODES = {
-    cb:   { x:0.5,  y:0.12, label:'Central Bank',    col:'#f3d59a', short:'Sets the price of money',
+    cb:   { x:0.5,  y:0.12, label:'Central Bank',    m:'Central', col:'#f3d59a', short:'Sets the price of money',
             desc:'The Bank of Thailand / the Fed. Sets the benchmark interest rate and supplies liquidity to the banking system. When it moves rates, every bond price and discount rate in the other courses moves with it.',
             role:'Issues base money · sets policy rate · lender of last resort', links:'Feeds: Commercial Banks, Bond Market' },
-    banks:{ x:0.22, y:0.40, label:'Commercial Banks',col:'#b8c0ff', short:'Take deposits, make loans',
+    banks:{ x:0.22, y:0.40, label:'Commercial Banks',m:'Banks', col:'#b8c0ff', short:'Take deposits, make loans',
             desc:'Where households park cash and where businesses borrow. They turn short-term deposits into long-term loans — the maturity transformation that powers the economy and creates most of its systemic risk.',
             role:'Deposits → loans · credit creation · payment rails', links:'Borrow from: Central Bank · Lend to: Companies' },
-    exch: { x:0.5,  y:0.45, label:'Stock Exchange',  col:'#5fd39a', short:'Where shares trade',
+    exch: { x:0.5,  y:0.45, label:'Stock Exchange',  m:'Exchange', col:'#5fd39a', short:'Where shares trade',
             desc:'The SET / NYSE. A regulated venue matching buyers and sellers of equity. Companies raise capital here (IPOs); investors trade ownership. Prices set here are the inputs to your Valuation and Data Science work.',
             role:'Lists shares · matches orders · price discovery', links:'Connects: Companies ↔ Investors' },
-    bond: { x:0.78, y:0.40, label:'Bond Market',     col:'#ff8db3', short:'Where debt trades',
+    bond: { x:0.78, y:0.40, label:'Bond Market',     m:'Bonds', col:'#ff8db3', short:'Where debt trades',
             desc:'Governments and companies borrow by selling bonds; investors buy a stream of coupons. The yield set here IS the discount rate everything else is valued against — the heart of fixed-income.',
             role:'Issues & trades debt · sets yields · prices credit risk', links:'Driven by: Central Bank · Funds: Companies, Govt' },
-    clear:{ x:0.5,  y:0.70, label:'Clearing House', col:'#9a9ab8', short:'Guarantees the trade settles',
+    clear:{ x:0.5,  y:0.70, label:'Clearing House', m:'Clearing', col:'#9a9ab8', short:'Guarantees the trade settles',
             desc:'The invisible middleman. After a trade matches, the clearing house steps between both sides so neither has to trust the other — it nets exposures and guarantees settlement. Quietly prevents one default from cascading.',
             role:'Central counterparty · nets trades · margin & settlement', links:'Sits behind: Exchange, Bond Market' },
-    comp: { x:0.26, y:0.86, label:'Companies',       col:'#b8c0ff', short:'Use the capital, create value',
+    comp: { x:0.26, y:0.86, label:'Companies',       m:'Firms', col:'#b8c0ff', short:'Use the capital, create value',
             desc:'The point of it all. Firms raise money (shares + bonds), invest it in real projects, and return profits as dividends and coupons. Their cash flows are what your DCF models try to value.',
             role:'Raise capital · invest · pay dividends/coupons', links:'Funded by: Banks, Exchange, Bond Market' },
-    inv:  { x:0.74, y:0.86, label:'Investors',       col:'#f3d59a', short:'Supply the capital, bear the risk',
+    inv:  { x:0.74, y:0.86, label:'Investors',       m:'Investors', col:'#f3d59a', short:'Supply the capital, bear the risk',
             desc:'You, funds, pensions, foreigners. They provide capital hoping for return, and bear the risk if it goes wrong. Portfolio theory (course 228) is entirely about how this group should allocate.',
             role:'Provide capital · demand return · allocate & diversify', links:'Trade via: Exchange, Bond Market' }
   };
@@ -103,6 +109,9 @@
   var R=34; // node radius (logical px, scaled)
 
   function px(n){ return { x:n.x*W, y:n.y*H }; }
+  // Radius shrinks with the canvas but never below a readable/tappable floor.
+  // Used by draw() AND the click handler so taps always match what's drawn.
+  function nodeR(){ return Math.max(24, R*(W/620)); }
 
   function draw(){
     ctx.clearRect(0,0,W,H);
@@ -118,18 +127,22 @@
     // nodes
     Object.keys(NODES).forEach(function(k){
       var n=NODES[k], p=px(n), sel=(k===selected);
-      var r=R*(W/620); // scale radius a touch with width
+      var r=nodeR();
       ctx.beginPath(); ctx.arc(p.x,p.y,r,0,7);
       ctx.fillStyle = sel ? n.col : '#12122a';
       ctx.fill();
       ctx.lineWidth = sel?3:1.5; ctx.strokeStyle=n.col; ctx.stroke();
       if(sel){ ctx.beginPath(); ctx.arc(p.x,p.y,r+5,0,7); ctx.strokeStyle='rgba(184,192,255,0.3)'; ctx.lineWidth=1; ctx.stroke(); }
-      // label
+      // label: font scales with the circle; below ~30px radius the full name
+      // can't fit, so switch to the short label (else text spills outside —
+      // invisible when selected, since selected text is dark-on-dark out there).
+      var fs=Math.max(9, Math.round(11*r/34));
       ctx.fillStyle = sel ? '#0a0a14' : n.col;
-      ctx.font='600 11px Inter Tight, sans-serif'; ctx.textAlign='center';
-      var words=n.label.split(' ');
-      if(words.length>1 && r<40){ ctx.fillText(words[0],p.x,p.y-1); ctx.fillText(words.slice(1).join(' '),p.x,p.y+11); }
-      else ctx.fillText(n.label,p.x,p.y+4);
+      ctx.font='600 '+fs+'px Inter Tight, sans-serif'; ctx.textAlign='center';
+      var name = (r<30) ? n.m : n.label;
+      var words=name.split(' ');
+      if(words.length>1 && r<40){ ctx.fillText(words[0],p.x,p.y-1); ctx.fillText(words.slice(1).join(' '),p.x,p.y+fs); }
+      else ctx.fillText(name,p.x,p.y+4);
       ctx.textAlign='start';
     });
   }
@@ -147,7 +160,7 @@
   cv.addEventListener('click', function(ev){
     var rect=cv.getBoundingClientRect();
     var mx=(ev.clientX-rect.left), my=(ev.clientY-rect.top);
-    var r=R*(W/620);
+    var r=nodeR();
     var hit=null;
     Object.keys(NODES).forEach(function(k){
       var p=px(NODES[k]); if(Math.hypot(mx-p.x,my-p.y)<=r+4) hit=k;
