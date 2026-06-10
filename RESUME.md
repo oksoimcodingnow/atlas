@@ -5,6 +5,34 @@
 
 ## ✅ Done 2026-06-11 (early AM): home redesign + design system docs + quant backtester
 
+- **Live price tape on overview.html (cbaeda0, live, SW v84):** `lib/tickers.js`
+  shared quote layer — stocks via Yahoo chart API through corsproxy.io, crypto/
+  commodity tokens via CoinGecko (CORS-open), 10-min localStorage cache,
+  graceful fallback (dead feed leaves the name, never blanks). Tape on overview
+  shows NVDA/TSM/AMD/ASML/PAXG/BTC with price+%+sparkline. Verified live.
+  IMPORTANT caveat: corsproxy.io is a fragile 3rd-party dependency — if the tape
+  ever shows only names, the proxy is down (not a bug). Module is reusable; next
+  step parked = drop the tape into semiconductors/ai-ripple/spotlight too.
+- **Backtesting stack completed tonight:** quant repo now has run.py (universal),
+  risk.py (sizing/stops/take-profit/leverage + liquidation guard), lab.py
+  (auto-propose → judge OOS → ledger), ml/vol_sizing.py (vol forecast → position
+  sizing), all leakage-safe + fees-on. See HOW_TO_BACKTEST.md + HOW_TO_RESEARCH_LAB.md.
+- **Security Academy live** (security/, 4 of 14 lessons), **Depths of the d20**
+  roguelike (dungeon.html), **Fin-Eng Exam Drill** (fineng/drill.html) all shipped.
+
+### 🔄 PARKED for a wide-awake session: 'works while I sleep' overnight agent
+Owner saw the 'agent works while you sleep' pattern (it's real — it's Paypers point
+#10 from the earlier writeup: an hourly bug-fixer routine, narrow/no-decision/no-DB).
+DECIDED to set it up later, awake, NOT at 3am — unsupervised automation with repo
+access needs a deliberate short leash. When revisiting:
+  - It needs an ALWAYS-ON host (the PC sleeps) — Claude Code cloud routines, a VPS,
+    or GitHub Actions. Not the local machine.
+  - Scope it READ-ONLY / TEST-ONLY first: e.g. nightly `lab.py` run logging
+    survivors to the ledger, or a 'site up + npm test passes' health check.
+    NEVER auto-push to live / main, NEVER let it make product decisions.
+  - Watch cost: an unsupervised loop burns tokens unwatched (recall the Hermes
+    screenshot — 6/15 agents blocked, 1.3M tokens wasted). Cap it.
+
 - **"Depths of the d20" roguelike shipped (700cc55, live, SW v82):** `dungeon.html` —
   turn-based dungeon crawler, real d20 combat (d20+bonus vs AC, crits), 3 difficulties
   (6/8/10 floors), 8 tiered monsters + dragon boss, rarity loot, fog of war, drunkard's-
