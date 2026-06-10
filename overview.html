@@ -37,6 +37,22 @@
   h1 em{font-style:italic;color:var(--gold);}
   .lede{font-family:var(--serif);font-size:clamp(19px,2.6vw,26px);color:var(--muted);max-width:30ch;margin:14px auto 0;line-height:1.35;text-wrap:balance;}
 
+  /* live tape */
+  .tape-wrap{margin:clamp(30px,5vw,48px) auto 0;text-align:left;}
+  .tape-head{font-family:var(--serif);font-style:italic;font-size:22px;text-align:center;margin-bottom:16px;}
+  .tape-head em{color:var(--gold);}
+  .tape{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;}
+  .tk{border:1px solid var(--rule);border-radius:12px;background:var(--panel);padding:12px 14px;position:relative;overflow:hidden;}
+  .tk .sym{font-weight:700;font-size:14px;letter-spacing:.02em;}
+  .tk .name{font-size:11px;color:var(--faint);margin-top:1px;}
+  .tk .row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:8px;}
+  .tk .px{font-family:'JetBrains Mono',Consolas,monospace;font-size:15px;color:var(--text);}
+  .tk .chg{font-size:12px;font-weight:600;font-family:'JetBrains Mono',Consolas,monospace;}
+  .tk .chg.up{color:#5fd39a;} .tk .chg.dn{color:#ff8db3;} .tk .chg.flat{color:var(--faint);}
+  .tk .spark{position:absolute;right:0;bottom:0;width:64px;height:26px;opacity:.5;}
+  .tk.live .px{color:var(--text);} .tk.pending .px{color:var(--faint);}
+  .tape-note{font-size:11.5px;color:var(--faint);text-align:center;margin-top:12px;}
+
   /* the cycle diagram */
   .cycle{margin:clamp(20px,4vw,40px) auto 0;max-width:460px;}
   svg.ring{display:block;width:100%;height:auto;overflow:visible;}
@@ -159,6 +175,15 @@
     </div>
   </div>
 
+  <!-- ── live tape: the thesis, priced ── -->
+  <div class="tape-wrap">
+    <div class="tape-head">The thesis, <em>priced live</em></div>
+    <div class="tape" id="tape">
+      <!-- rendered by lib/tickers.js; static names show until/if quotes load -->
+    </div>
+    <div class="tape-note" id="tapeNote">Live where the market is open · gold &amp; BTC trade 24/7 · falls back to names if a feed is asleep.</div>
+  </div>
+
   <!-- ── deep dives ── -->
   <div class="tiles">
     <a class="tile" href="economy.html"><span class="e">&#127760;</span><span><span class="t">The Connected Economy</span><span class="s">all 11 sectors, how they link</span></span><span class="arr">&rarr;</span></a>
@@ -170,5 +195,55 @@
 
   <p class="foot">A map for thinking, not a set of picks. The further right on the spectrum, the less priced-in, but also the more it leans on AI spending staying strong. Verify and value before you act.</p>
 </div>
+
+<script type="module">
+// Upgrade the tape with live quotes. Static names render instantly; if a feed
+// is asleep the tile keeps its name + "—" rather than ever going blank.
+import { getQuotes, sparkPath } from './lib/tickers.js';
+
+const TAPE = [
+  { sym: 'NVDA', name: 'the picks & shovels' },
+  { sym: 'TSM',  name: 'the foundry' },
+  { sym: 'AMD',  name: 'the challenger' },
+  { sym: 'ASML', name: 'the machine maker' },
+  { sym: 'PAXG', name: 'gold · the raw end' },
+  { sym: 'BTC',  name: 'risk appetite' },
+];
+
+const el = document.getElementById('tape');
+// render skeletons first (instant, never blank)
+el.innerHTML = TAPE.map(t =>
+  `<div class="tk pending" data-sym="${t.sym}">
+     <div class="sym">${t.sym}</div><div class="name">${t.name}</div>
+     <div class="row"><span class="px">—</span><span class="chg flat">·</span></div>
+   </div>`).join('');
+
+getQuotes(TAPE.map(t => t.sym)).then(quotes => {
+  TAPE.forEach(t => {
+    const q = quotes[t.sym];
+    const node = el.querySelector(`[data-sym="${t.sym}"]`);
+    if (!node || !q) return;                       // fallback: leave the name + —
+    const up = q.changePct >= 0;
+    const cls = Math.abs(q.changePct) < 0.005 ? 'flat' : (up ? 'up' : 'dn');
+    const price = q.price >= 1000 ? q.price.toLocaleString(undefined, {maximumFractionDigits:0})
+                                  : q.price.toFixed(2);
+    node.className = 'tk live';
+    node.querySelector('.px').textContent = '$' + price;
+    const chg = node.querySelector('.chg');
+    chg.className = 'chg ' + cls;
+    chg.textContent = (up ? '+' : '') + q.changePct.toFixed(2) + '%';
+    if (q.spark && q.spark.length > 1) {
+      const color = up ? '#5fd39a' : '#ff8db3';
+      node.insertAdjacentHTML('beforeend',
+        `<svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+           <path d="${sparkPath(q.spark)}" fill="none" stroke="${color}" stroke-width="1.5"/></svg>`);
+    }
+  });
+  const anyLive = TAPE.some(t => quotes[t.sym]);
+  if (!anyLive) document.getElementById('tapeNote').textContent =
+    'Live feed asleep right now — showing the names. Prices return when the market data is reachable.';
+});
+</script>
+<script src="lib/atlas-fx.js"></script>
 </body>
 </html>
