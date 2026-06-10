@@ -1,7 +1,36 @@
 # RESUME — where we are, for any new session
 
 > **Purpose:** If this terminal/session is lost, read this file first. It says what's done,
-> what's in flight, and the one true path. Last updated: 2026-06-10.
+> what's in flight, and the one true path. Last updated: 2026-06-11 (early AM).
+
+## ✅ Done 2026-06-11 (early AM): home redesign + design system docs + quant backtester
+
+- **Home page redesigned into the editorial system (b9efc87, live, SW v79→v80).**
+  index.html now matches fineng/demos: serif hero ("Everything I'm building, in one
+  place."), 4 featured rows (Fin-Eng, Japanese, Schedule, AI Investing Map), everything
+  else as a compact grouped index. Gradient wordmark / glass tiles / "live" pill spam
+  retired. ITEMS stays data-driven; `featured: true` promotes a flagship. Sacred objects
+  kept: constellation, clock, click-to-copy path, tour. Built via the **impeccable**
+  skill; verified with headless-Chrome screenshots at 1280/390px.
+- **Readability hotfix (c161669, live, SW v80), owner-reported:** index rows were
+  transparent so the starfield bled through text → rows now solid `--panel`, canvas
+  dimmed (`body #bg-canvas{opacity:.4}`). Owner confirmed "looks just fine".
+- **New design constitution: `PRODUCT.md`** (register: brand; quiet observatory;
+  anti-references; 5 principles) + **`DESIGN.md` hub section rewritten** (editorial
+  hub pattern, atlas-fx class contract). Read both before any design work.
+- **schedule.html critiqued (impeccable): 31/40 Good.** Snapshot in
+  `.impeccable/critique/2026-06-10T17-27-00Z__schedule-html.md`. Top finding (P1):
+  delete has no undo/confirm. P2s: static "saved & synced" header lie; "Calendar
+  sync" vs "Add to calendar" ambiguity. `/impeccable polish` can pick these up.
+- **Quant repo: real backtesting shipped (ff351ec, pushed).** `backtests/run.py` =
+  universal runner (any strategy/symbol/timeframe, `--strategy all` races everything
+  vs B&H, compact 8-metric table + chart). 3 new alphas: rsi_meanrev, breakout,
+  momentum. **`HOW_TO_BACKTEST.md`** = owner's manual. Verified on live Binance BTC/USDT
+  1d: sma Sharpe 0.87, momentum 0.83 (maxDD −25% vs B&H deeper), breakout 0.62, rsi 0.18
+  (6 trades = noise); all trail B&H +132% in this bull window — honest result. Next on
+  quant's list: generalize walk_forward.py over the STRATEGIES registry; sweep CSV.
+- Owner is running **Claude Fable 5** (`/model claude-fable-5[1m]`; free window ends
+  June 22, then 2× Opus pricing).
 
 ## ✅ Done 2026-06-10 (later): Studio polish pass + neural.html removed + Fable 5
 
