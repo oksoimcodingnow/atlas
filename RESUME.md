@@ -5,6 +5,17 @@
 
 ## ✅ Done 2026-06-11 (early AM): home redesign + design system docs + quant backtester
 
+- **"Depths of the d20" roguelike shipped (700cc55, live, SW v82):** `dungeon.html` —
+  turn-based dungeon crawler, real d20 combat (d20+bonus vs AC, crits), 3 difficulties
+  (6/8/10 floors), 8 tiered monsters + dragon boss, rarity loot, fog of war, drunkard's-
+  walk floor gen, mobile d-pad. **Daily Dungeon** = date-seeded identical map for friend
+  races (share-card copies result). Spirit via dynamic import of loot.js (shared pool;
+  game never depends on it — the schedule.html lesson applied). Home tile added.
+  v2 ideas parked: Firebase turn-based co-op, more item types, sound.
+- **Gold backtesting confirmed:** `run.py --symbol PAXG/USDT` works as-is (PAXG = gold-
+  backed token). Result: gold TRENDS — sma Sharpe 1.35 (vs 0.87 on BTC), maxDD −18%.
+  Standing offer: owner describes "my gold strategy" in words → encode as alphas/ file.
+
 - **Fin-Eng Exam Drill shipped (6aa22df, live, SW v81):** `fineng/drill.html` —
   randomized exam questions across all courses; correct = +5 Spirit (+3 streak
   bonus) into the SHARED pool with the Japanese game (`atlas_jp_start`); wrong =
