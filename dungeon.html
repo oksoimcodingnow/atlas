@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Depths of the d20 · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(14px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.08), transparent 65%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:clamp(14px,3vw,26px) var(--gutter) 60px;}
+
+  /* HUD */
+  .hud{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);
+    border:1px solid var(--rule);border-radius:12px;background:var(--panel);padding:9px 13px;margin-bottom:10px;}
+  .hud b{color:var(--text);font-weight:500;}
+  .hpbar{flex:1;min-width:90px;height:9px;border-radius:999px;background:var(--bg-2);overflow:hidden;border:1px solid var(--rule);}
+  .hpbar i{display:block;height:100%;background:var(--green);transition:width .2s, background .2s;}
+  .hud .spirit{color:var(--gold);}
+
+  canvas{display:block;width:100%;height:auto;border-radius:12px;background:#07070d;border:1px solid var(--rule);touch-action:none;}
+
+  /* log + controls */
+  .log{font-family:var(--mono);font-size:12px;color:var(--muted);min-height:54px;line-height:1.5;
+    border:1px solid var(--rule);border-radius:12px;background:var(--panel);padding:8px 12px;margin-top:10px;}
+  .log .hit{color:var(--pink);} .log .good{color:var(--green);} .log .loot{color:var(--gold);}
+  .pad{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .pad button{font-family:var(--sans);font-size:18px;font-weight:700;color:var(--text);width:52px;height:48px;flex:none;
+    border:1px solid var(--rule);border-radius:12px;background:var(--panel);cursor:pointer;transition:.15s;}
+  .pad button:hover{border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .pad button:active{transform:scale(0.93);}
+  .pad .wide{width:auto;padding:0 16px;font-size:13px;}
+  .hint{font-size:11.5px;color:var(--faint);text-align:center;margin-top:8px;}
+
+  /* overlays (start / end) */
+  .ov{position:fixed;inset:0;z-index:50;background:rgba(6,6,12,0.88);display:flex;align-items:center;justify-content:center;padding:18px;}
+  .ov[hidden]{display:none;}
+  .ov-card{max-width:480px;width:100%;border:1px solid var(--rule);border-radius:18px;background:#0b0b16;padding:26px;max-height:92vh;overflow-y:auto;}
+  .ov-card .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;}
+  .ov-card h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,6vw,42px);line-height:1.02;}
+  .ov-card h1 em{font-style:italic;color:var(--accent);}
+  .ov-card p{font-size:13.5px;color:var(--muted);margin-top:10px;line-height:1.6;}
+  .choices{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+  .choice{flex:1;min-width:110px;text-align:left;font-family:var(--sans);font-size:13px;color:var(--text);
+    border:1px solid var(--rule);border-radius:12px;background:var(--panel);padding:12px 13px;cursor:pointer;transition:.15s;}
+  .choice:hover{border-color:var(--accent);background:rgba(184,192,255,0.07);}
+  .choice.on{border-color:var(--accent);background:rgba(184,192,255,0.12);}
+  .choice b{display:block;font-size:14px;} .choice span{color:var(--faint);font-size:11.5px;}
+  .gobtn{display:block;width:100%;margin-top:16px;font-family:var(--sans);font-size:15px;font-weight:700;color:var(--bg);
+    background:var(--accent);border:0;border-radius:999px;padding:13px;cursor:pointer;}
+  .gobtn:hover{background:#cdd3ff;}
+  .endstats{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:12px;line-height:1.9;}
+  .endstats b{color:var(--gold);}
+  .sharebtn{display:inline-block;margin-top:12px;font-size:12.5px;font-weight:600;color:var(--muted);
+    border:1px solid var(--rule);border-radius:999px;background:transparent;padding:9px 16px;cursor:pointer;font-family:var(--sans);}
+  .sharebtn:hover{color:var(--text);border-color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Depths of the d20</span></div><a class="back" href="index.html">&larr; Home</a></div>
+
+<div class="wrap">
+  <div class="hud">
+    <span>❤️ <b id="hp">–</b></span>
+    <div class="hpbar"><i id="hpfill" style="width:100%"></i></div>
+    <span>🗡 <b id="wpn">–</b></span>
+    <span>🛡 <b id="ac">–</b></span>
+    <span>🧪 <b id="pots">0</b></span>
+    <span>💰 <b id="gold">0</b></span>
+    <span>🌀 floor <b id="floor">1</b>/<b id="floors">8</b></span>
+    <span class="spirit" id="spirit" hidden>🔮 <b id="spiritN">0</b></span>
+  </div>
+
+  <canvas id="cv"></canvas>
+
+  <div class="log" id="log">Welcome to the depths.</div>
+
+  <div class="pad">
+    <button data-mv="0,-1" aria-label="Up">▲</button>
+    <button data-mv="-1,0" aria-label="Left">◀</button>
+    <button data-mv="0,1" aria-label="Down">▼</button>
+    <button data-mv="1,0" aria-label="Right">▶</button>
+    <button class="wide" id="potbtn" aria-label="Drink potion">🧪 drink</button>
+    <button class="wide" data-mv="0,0" aria-label="Wait">wait</button>
+  </div>
+  <div class="hint">WASD / arrows to move · bump a monster to attack · find the ▼ stairs · slay the dragon at the bottom</div>
+</div>
+
+<!-- start screen -->
+<div class="ov" id="start">
+  <div class="ov-card">
+    <div class="eyebrow">Atlas · roguelike</div>
+    <h1>Depths of <em>the d20.</em></h1>
+    <p>A dungeon dive ruled by dice. Bump into monsters to attack (d20 vs their armor), loot chests, drink potions, find the stairs. Die and the run is over — but the dice always offer another.</p>
+    <div class="choices" id="diffPick">
+      <button class="choice" data-d="easy"><b>🌱 Easy</b><span>6 floors · gentle monsters · lots of potions</span></button>
+      <button class="choice on" data-d="normal"><b>⚔️ Normal</b><span>8 floors · a fair fight</span></button>
+      <button class="choice" data-d="hard"><b>💀 Hard</b><span>10 floors · brutal · for the bold</span></button>
+    </div>
+    <div class="choices" id="modePick">
+      <button class="choice on" data-m="free"><b>🎲 Free play</b><span>fresh random dungeon</span></button>
+      <button class="choice" data-m="daily"><b>📅 Daily dungeon</b><span>same dungeon for everyone today — race your friend</span></button>
+    </div>
+    <button class="gobtn" id="goBtn">Descend ▼</button>
+  </div>
+</div>
+
+<!-- end screen -->
+<div class="ov" id="end" hidden>
+  <div class="ov-card">
+    <div class="eyebrow" id="endEyebrow">run over</div>
+    <h1 id="endTitle">Slain.</h1>
+    <p id="endText"></p>
+    <div class="endstats" id="endStats"></div>
+    <button class="sharebtn" id="shareBtn">📋 Copy result for your friend</button>
+    <span id="shareOk" style="color:var(--green);font-size:12px;opacity:0;transition:opacity .2s;">&nbsp;copied!</span>
+    <button class="gobtn" id="againBtn">Run it back ▼</button>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ── deterministic RNG (daily mode shares a seed; free play rolls one) ── */
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+var rng = Math.random;
+function d(n){ return 1 + Math.floor(rng()*n); }                // roll a die
+function pick(arr){ return arr[Math.floor(rng()*arr.length)]; }
+
+/* ── difficulty table (the only knobs; keep it this simple) ── */
+var DIFFS = {
+  easy:   { label:'Easy',   floors:6,  hp:30, mHp:0.8,  mDmg:0.8,  potions:1.6, spiritWin:12 },
+  normal: { label:'Normal', floors:8,  hp:24, mHp:1.0,  mDmg:1.0,  potions:1.0, spiritWin:20 },
+  hard:   { label:'Hard',   floors:10, hp:18, mHp:1.25, mDmg:1.2,  potions:0.7, spiritWin:30 },
+};
+
+/* ── bestiary: tier = earliest floor they appear ── */
+var BEASTS = [
+  { g:'🐀', name:'rat',      tier:1, hp:4,  ac:9,  die:3,  bonus:0, gold:3  },
+  { g:'🦇', name:'bat',      tier:1, hp:5,  ac:11, die:3,  bonus:0, gold:4  },
+  { g:'👺', name:'goblin',   tier:2, hp:8,  ac:11, die:4,  bonus:1, gold:8  },
+  { g:'💀', name:'skeleton', tier:3, hp:11, ac:12, die:6,  bonus:1, gold:12 },
+  { g:'🧟', name:'zombie',   tier:4, hp:16, ac:10, die:6,  bonus:2, gold:15 },
+  { g:'👹', name:'orc',      tier:5, hp:18, ac:13, die:8,  bonus:2, gold:22 },
+  { g:'🧌', name:'troll',    tier:6, hp:24, ac:13, die:8,  bonus:3, gold:30 },
+  { g:'👻', name:'wraith',   tier:7, hp:20, ac:15, die:10, bonus:3, gold:38 },
+];
+var BOSS = { g:'🐉', name:'the dragon', hp:42, ac:14, die:10, bonus:4, gold:150, boss:true };
+
+/* ── loot tables (rarity matches the Atlas loot vocabulary) ── */
+var RARITY = [
+  { name:'Common',    col:'#9a9ab8', w:60 },
+  { name:'Rare',      col:'#b8c0ff', w:27 },
+  { name:'Epic',      col:'#d9b8ff', w:10 },
+  { name:'Legendary', col:'#f3d59a', w:3  },
+];
+var WEAPONS = [ // by rarity index
+  { name:'rusty sword',  die:6,  bonus:1 },
+  { name:'steel axe',    die:8,  bonus:1 },
+  { name:'runic blade',  die:10, bonus:2 },
+  { name:'dragonfang',   die:12, bonus:3 },
+];
+var ARMORS = [ { name:'leather', ac:1 }, { name:'chain', ac:2 }, { name:'plate', ac:3 }, { name:'aegis', ac:4 } ];
+function rollRarity(){ var t=rng()*100, acc=0; for(var i=0;i<RARITY.length;i++){ acc+=RARITY[i].w; if(t<acc) return i; } return 0; }
+
+/* ── state ── */
+var W=23, H=15;                     // dungeon grid
+var diff=DIFFS.normal, mode='free', seedLabel='';
+var map, seen, vis, monsters, items, stairs, floorN, player, over=false, turns=0, kills=0, bestLoot='—', bestLootCol='';
+
+/* ── Spirit (shared pool) — dynamic import so the GAME never depends on it.
+   Over file:// the import simply fails and the badge stays hidden. ── */
+var loot=null;
+import('./lib/loot.js').then(function(m){
+  loot = new m.LootEngine({ storageKey:'atlas_jp_start' });
+  document.getElementById('spirit').hidden = false;
+  syncSpirit(0);
+}).catch(function(){ /* file:// or offline: play on without Spirit */ });
+function syncSpirit(gain){
+  if(!loot) return;
+  if(gain>0) loot.award(gain);
+  document.getElementById('spiritN').textContent = loot.refresh().spirit;
+}
+
+/* ── dungeon generation: drunkard's walk = always connected ── */
+function genFloor(){
+  map=[]; seen=[]; vis=[];
+  for(var y=0;y<H;y++){ map.push(new Array(W).fill(1)); seen.push(new Array(W).fill(false)); vis.push(new Array(W).fill(false)); }
+  var x=(W>>1), y2=(H>>1), carved=0, target=Math.floor(W*H*0.42);
+  map[y2][x]=0; carved++;
+  while(carved<target){
+    var dir=pick([[1,0],[-1,0],[0,1],[0,-1]]);
+    x=Math.min(W-2,Math.max(1,x+dir[0])); y2=Math.min(H-2,Math.max(1,y2+dir[1]));
+    if(map[y2][x]===1){ map[y2][x]=0; carved++; }
+  }
+  // player starts center; stairs at the farthest floor tile (BFS)
+  player.x=(W>>1); player.y=(H>>1);
+  var q=[[player.x,player.y]], dist={}, key=function(a,b){return a+','+b;};
+  dist[key(player.x,player.y)]=0; var far=[player.x,player.y], fd=0;
+  while(q.length){
+    var c=q.shift(), cd=dist[key(c[0],c[1])];
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(function(dv){
+      var nx=c[0]+dv[0], ny=c[1]+dv[1];
+      if(nx<0||ny<0||nx>=W||ny>=H||map[ny][nx]===1) return;
+      if(dist[key(nx,ny)]!==undefined) return;
+      dist[key(nx,ny)]=cd+1; q.push([nx,ny]);
+      if(cd+1>fd){ fd=cd+1; far=[nx,ny]; }
+    });
+  }
+  stairs={x:far[0], y:far[1]};
+
+  // spawn monsters + loot on free floor tiles, away from the player
+  monsters=[]; items=[];
+  var spots=[];
+  for(var yy=0; yy<H; yy++) for(var xx=0; xx<W; xx++){
+    if(map[yy][xx]===0 && Math.abs(xx-player.x)+Math.abs(yy-player.y)>4 && !(xx===stairs.x&&yy===stairs.y)) spots.push([xx,yy]);
+  }
+  spots.sort(function(){ return rng()-0.5; });
+  var last=(floorN===diff.floors);
+  var nMon = last ? 3 : 3 + Math.floor(floorN*0.8);
+  var pool = BEASTS.filter(function(b){ return b.tier<=floorN && b.tier>=Math.max(1,floorN-3); });
+  for(var m2=0; m2<nMon && spots.length; m2++){
+    var s=spots.pop(), b=pick(pool);
+    monsters.push({ x:s[0], y:s[1], g:b.g, name:b.name, ac:b.ac, die:b.die,
+      bonus:Math.round(b.bonus*diff.mDmg), hp:Math.max(2,Math.round(b.hp*diff.mHp)), maxhp:b.hp, gold:b.gold });
+  }
+  if(last && spots.length){ var sb=spots.pop();
+    monsters.push({ x:sb[0], y:sb[1], g:BOSS.g, name:BOSS.name, ac:BOSS.ac, die:BOSS.die,
+      bonus:Math.round(BOSS.bonus*diff.mDmg), hp:Math.round(BOSS.hp*diff.mHp), gold:BOSS.gold, boss:true });
+  }
+  var nPot=Math.round(2*diff.potions), nChest=2, nGold=3;
+  for(var i3=0;i3<nPot && spots.length;i3++){ var sp=spots.pop(); items.push({x:sp[0],y:sp[1],t:'potion',g:'🧪'}); }
+  for(var i4=0;i4<nChest && spots.length;i4++){ var sc=spots.pop(); items.push({x:sc[0],y:sc[1],t:'chest',g:'📦'}); }
+  for(var i5=0;i5<nGold && spots.length;i5++){ var sg=spots.pop(); items.push({x:sg[0],y:sg[1],t:'gold',g:'💰',amt:5+d(10)+floorN*3}); }
+  reveal();
+}
+
+function reveal(){
+  for(var y=0;y<H;y++) for(var x=0;x<W;x++) vis[y][x]=false;
+  for(var dy=-4; dy<=4; dy++) for(var dx=-4; dx<=4; dx++){
+    var nx=player.x+dx, ny=player.y+dy;
+    if(nx<0||ny<0||nx>=W||ny>=H) continue;
+    if(dx*dx+dy*dy<=13){ vis[ny][nx]=true; seen[ny][nx]=true; }
+  }
+}
+
+/* ── rendering: canvas tiles + emoji glyphs + torch glow ── */
+var cv=document.getElementById('cv'), ctx=cv.getContext('2d'), TILE=28;
+function sizeCanvas(){
+  // the canvas is width:100%; trust its rect but never exceed the real window
+  // (first measure can run before a small viewport settles -> blurry downscale)
+  var rect=cv.getBoundingClientRect().width || 600;
+  var w=Math.max(260, Math.min(rect, window.innerWidth - 30));
+  TILE=Math.max(14, Math.floor(w/W));
+  var dpr=window.devicePixelRatio||1;
+  cv.width=W*TILE*dpr; cv.height=H*TILE*dpr;
+  cv.style.height=(H*TILE)+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  draw();
+}
+function draw(){
+  if(!map) return;
+  ctx.clearRect(0,0,W*TILE,H*TILE);
+  for(var y=0;y<H;y++) for(var x=0;x<W;x++){
+    if(!seen[y][x]) continue;
+    var lit=vis[y][x], px=x*TILE, py=y*TILE;
+    if(map[y][x]===1){ // wall with a simple top highlight (the "modeling")
+      ctx.fillStyle = lit ? '#23233c' : '#14141f';
+      ctx.fillRect(px,py,TILE,TILE);
+      ctx.fillStyle = lit ? '#2e2e4e' : '#191926';
+      ctx.fillRect(px,py,TILE,3);
+    } else {
+      ctx.fillStyle = lit ? '#101022' : '#0a0a15';
+      ctx.fillRect(px,py,TILE,TILE);
+      if(lit){ ctx.fillStyle='rgba(184,192,255,0.03)'; if((x+y)%2===0) ctx.fillRect(px,py,TILE,TILE); }
+    }
+  }
+  // torch glow around the player
+  var g=ctx.createRadialGradient((player.x+0.5)*TILE,(player.y+0.5)*TILE,TILE*0.5,(player.x+0.5)*TILE,(player.y+0.5)*TILE,TILE*4.4);
+  g.addColorStop(0,'rgba(243,213,154,0.12)'); g.addColorStop(1,'rgba(243,213,154,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W*TILE,H*TILE);
+
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  function glyph(gl,x,y,size){ ctx.font=(size||TILE*0.72)+'px serif'; ctx.fillText(gl,(x+0.5)*TILE,(y+0.56)*TILE); }
+  if(seen[stairs.y][stairs.x]){ ctx.fillStyle=vis[stairs.y][stairs.x]?'#b8c0ff':'#55557a'; ctx.font='700 '+(TILE*0.7)+'px monospace'; ctx.fillText('▼',(stairs.x+0.5)*TILE,(stairs.y+0.56)*TILE); }
+  items.forEach(function(it){ if(vis[it.y][it.x]) glyph(it.g,it.x,it.y); });
+  monsters.forEach(function(m){
+    if(!vis[m.y][m.x]) return;
+    glyph(m.g,m.x,m.y, m.boss?TILE*0.95:undefined);
+    var w=TILE*0.7, frac=Math.max(0,m.hp/( (m.boss?BOSS.hp:m.maxhp)*diff.mHp ));
+    ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.fillRect((m.x+0.15)*TILE,(m.y+0.04)*TILE,w,3);
+    ctx.fillStyle= frac>0.5?'#5fd39a':frac>0.25?'#f3d59a':'#ff8db3';
+    ctx.fillRect((m.x+0.15)*TILE,(m.y+0.04)*TILE,w*Math.min(frac,1),3);
+  });
+  glyph('🧙',player.x,player.y,TILE*0.8);
+}
+
+/* ── log + HUD ── */
+var logEl=document.getElementById('log'), logLines=[];
+function log(html){ logLines.push(html); if(logLines.length>3) logLines.shift(); logEl.innerHTML=logLines.join('<br>'); }
+function hud(){
+  document.getElementById('hp').textContent=player.hp+'/'+player.maxhp;
+  var f=Math.max(0,player.hp/player.maxhp);
+  var fill=document.getElementById('hpfill');
+  fill.style.width=(f*100)+'%';
+  fill.style.background = f>0.5?'var(--green)':f>0.25?'var(--gold)':'var(--pink)';
+  document.getElementById('wpn').textContent='d'+player.die+'+'+player.bonus;
+  document.getElementById('ac').textContent=player.ac;
+  document.getElementById('pots').textContent=player.potions;
+  document.getElementById('gold').textContent=player.gold;
+  document.getElementById('floor').textContent=floorN;
+  document.getElementById('floors').textContent=diff.floors;
+}
+
+/* ── combat: d20 + bonus vs AC, like the tabletop ── */
+function attackRoll(atkBonus, ac){ var roll=d(20); return { roll:roll, hit: roll===20 || (roll!==1 && roll+atkBonus>=ac), crit: roll===20 }; }
+function playerAttack(m){
+  var r=attackRoll(2, m.ac);
+  if(!r.hit){ log('You swing at the '+m.name+' — d20→'+r.roll+' — <span class="hit">miss.</span>'); return; }
+  var dmg=d(player.die)+player.bonus; if(r.crit){ dmg+=d(player.die); }
+  m.hp-=dmg;
+  log('You hit the '+m.name+(r.crit?' — <b>CRIT!</b>':'')+' for <span class="good">'+dmg+'</span>.');
+  if(m.hp<=0){
+    kills++;
+    player.gold+=m.gold;
+    log('<span class="loot">The '+m.name+' falls. +'+m.gold+' gold.</span>');
+    monsters=monsters.filter(function(x){return x!==m;});
+    if(m.boss) win();
+  }
+}
+function monsterTurn(){
+  monsters.forEach(function(m){
+    var dx=player.x-m.x, dy=player.y-m.y, dist=Math.abs(dx)+Math.abs(dy);
+    if(dist===1){
+      var r=attackRoll(m.bonus, player.ac);
+      if(!r.hit){ log('The '+m.name+' attacks — d20→'+r.roll+' — <span class="good">it misses you.</span>'); return; }
+      var dmg=d(m.die)+m.bonus; if(r.crit) dmg+=d(m.die);
+      player.hp-=dmg;
+      log('The '+m.name+' hits you'+(r.crit?' — <b>CRIT!</b>':'')+' for <span class="hit">'+dmg+'</span>.');
+      if(player.hp<=0) die(m);
+    } else if(dist<=7 && vis[m.y][m.x]){
+      // step toward the player (greedy, axis with the bigger gap first)
+      var sx=dx===0?0:(dx>0?1:-1), sy=dy===0?0:(dy>0?1:-1);
+      var tries = Math.abs(dx)>Math.abs(dy) ? [[sx,0],[0,sy]] : [[0,sy],[sx,0]];
+      for(var i=0;i<tries.length;i++){
+        var nx=m.x+tries[i][0], ny=m.y+tries[i][1];
+        if(map[ny][nx]===0 && !(nx===player.x&&ny===player.y) &&
+           !monsters.some(function(o){return o!==m&&o.x===nx&&o.y===ny;})){ m.x=nx; m.y=ny; break; }
+      }
+    }
+  });
+}
+
+/* ── items ── */
+function pickup(){
+  var it=items.find(function(i){return i.x===player.x&&i.y===player.y;});
+  if(!it) return;
+  if(it.t==='potion'){ player.potions++; log('<span class="loot">You pocket a potion. 🧪</span>'); }
+  if(it.t==='gold'){ player.gold+=it.amt; log('<span class="loot">+'+it.amt+' gold.</span>'); }
+  if(it.t==='chest'){
+    var ri=rollRarity(), r=RARITY[ri];
+    if(rng()<0.55){ var w=WEAPONS[ri];
+      var better = w.die>player.die || (w.die===player.die && w.bonus>player.bonus);
+      log('<span class="loot" style="color:'+r.col+'">'+r.name+' '+w.name+'! (d'+w.die+'+'+w.bonus+')'+(better?'':' — kept your old one')+'</span>');
+      if(better){ player.die=w.die; player.bonus=w.bonus; bestLoot=r.name+' '+w.name; bestLootCol=r.col; }
+    } else { var a=ARMORS[ri];
+      var betterA = (11+a.ac)>player.ac;
+      log('<span class="loot" style="color:'+r.col+'">'+r.name+' '+a.name+' armor! (AC '+(11+a.ac)+')'+(betterA?'':' — kept your old one')+'</span>');
+      if(betterA){ player.ac=11+a.ac; if(ri>=2){ bestLoot=r.name+' '+a.name; bestLootCol=r.col; } }
+    }
+  }
+  items=items.filter(function(i){return i!==it;});
+}
+function drinkPotion(){
+  if(over) return;
+  if(player.potions<=0){ log('No potions left.'); return; }
+  if(player.hp>=player.maxhp){ log('Already at full health.'); return; }
+  player.potions--;
+  var heal=d(4)+d(4)+2;
+  player.hp=Math.min(player.maxhp, player.hp+heal);
+  log('<span class="good">You drink a potion: +'+heal+' HP.</span>');
+  monsterTurn(); turns++; afterTurn();
+}
+
+/* ── turn flow ── */
+function move(dx,dy){
+  if(over) return;
+  turns++;
+  if(dx!==0||dy!==0){
+    var nx=player.x+dx, ny=player.y+dy;
+    if(nx<0||ny<0||nx>=W||ny>=H||map[ny][nx]===1){ /* bump wall: turn still passes */ }
+    else {
+      var m=monsters.find(function(mm){return mm.x===nx&&mm.y===ny;});
+      if(m) playerAttack(m);
+      else { player.x=nx; player.y=ny; pickup();
+        if(player.x===stairs.x&&player.y===stairs.y) return descend(); }
+    }
+  }
+  if(!over){ monsterTurn(); afterTurn(); }
+}
+function afterTurn(){ reveal(); hud(); draw(); }
+function descend(){
+  syncSpirit(2);
+  floorN++;
+  if(floorN>diff.floors){ return win(); } // safety net; boss normally ends it
+  player.maxhp+=2; player.hp=Math.min(player.maxhp, player.hp+4);
+  log('<b>You descend to floor '+floorN+'.</b> You feel stronger (+2 max HP).'+(loot?' <span class="loot">+2 🔮</span>':''));
+  genFloor(); afterTurn();
+}
+
+/* ── end states ── */
+function summaryText(result){
+  var date=new Date().toISOString().slice(0,10);
+  return '🎲 Depths of the d20 — '+(mode==='daily'?('Daily '+date):'Free run')+' ('+diff.label+')\n'
+    + result+' · floor '+floorN+'/'+diff.floors+' · 💰 '+player.gold+' gold · ⚔️ '+kills+' kills · 🎒 '+bestLoot+'\n'
+    + 'play: oksoimcodingnow.github.io/atlas/dungeon.html';
+}
+var shareText='';
+function endScreen(eyebrow, title, text, result){
+  over=true;
+  shareText=summaryText(result);
+  document.getElementById('endEyebrow').textContent=eyebrow;
+  document.getElementById('endTitle').innerHTML=title;
+  document.getElementById('endText').innerHTML=text;
+  document.getElementById('endStats').innerHTML=
+    'floor <b>'+floorN+'/'+diff.floors+'</b> · gold <b>'+player.gold+'</b> · kills <b>'+kills+'</b> · turns <b>'+turns+'</b><br>best find: <b style="color:'+(bestLootCol||'var(--gold)')+'">'+bestLoot+'</b>'
+    +(mode==='daily'?'<br>📅 daily seed — your friend gets the SAME dungeon today':'');
+  document.getElementById('end').hidden=false;
+}
+function die(m){
+  endScreen('☠️ run over','Slain<em>.</em>','A '+m.name+' got you on floor '+floorN+'. The dungeon keeps your gold — the dice owe you nothing. Run it back?','☠️ slain by '+(m.boss?'the dragon':'a '+m.name));
+}
+function win(){
+  syncSpirit(diff.spiritWin);
+  endScreen('🏆 victory','The dragon <em>falls.</em>','You conquered all '+diff.floors+' floors on '+diff.label+'.'+(loot?' <b style="color:var(--gold)">+'+diff.spiritWin+' 🔮 Spirit</b> banked to your collection.':''),'🏆 SLEW THE DRAGON');
+}
+
+/* ── input ── */
+document.addEventListener('keydown', function(e){
+  var k=e.key.toLowerCase();
+  var mvs={ arrowup:[0,-1], w:[0,-1], arrowdown:[0,1], s:[0,1], arrowleft:[-1,0], a:[-1,0], arrowright:[1,0], d:[1,0] };
+  if(mvs[k]){ e.preventDefault(); move(mvs[k][0], mvs[k][1]); }
+  if(k==='q'||k==='p') drinkPotion();
+  if(k==='.') move(0,0);
+});
+document.querySelectorAll('.pad button[data-mv]').forEach(function(b){
+  b.addEventListener('click', function(){ var p=b.dataset.mv.split(','); move(+p[0],+p[1]); });
+});
+document.getElementById('potbtn').addEventListener('click', drinkPotion);
+
+/* ── start / restart ── */
+function pickGroup(groupId, attr){
+  var el=document.getElementById(groupId);
+  el.addEventListener('click', function(e){
+    var b=e.target.closest('.choice'); if(!b) return;
+    el.querySelectorAll('.choice').forEach(function(x){x.classList.toggle('on',x===b);});
+  });
+  return function(){ return el.querySelector('.choice.on').dataset[attr]; };
+}
+var getDiff=pickGroup('diffPick','d'), getMode=pickGroup('modePick','m');
+
+function newRun(){
+  diff=DIFFS[getDiff()]; mode=getMode();
+  if(mode==='daily'){
+    var ds=new Date().toISOString().slice(0,10);
+    var h=2166136261; for(var i=0;i<ds.length;i++){ h^=ds.charCodeAt(i); h=Math.imul(h,16777619); }
+    rng=mulberry32(h ^ (getDiff()==='easy'?17:getDiff()==='hard'?29:0));
+    seedLabel=ds;
+  } else { rng=mulberry32((Math.random()*1e9)|0); }
+  over=false; turns=0; kills=0; bestLoot='—'; bestLootCol=''; floorN=1; logLines=[];
+  player={ x:0, y:0, hp:diff.hp, maxhp:diff.hp, ac:11, die:6, bonus:1, potions:1, gold:0 };
+  genFloor();
+  log('Floor 1. '+(mode==='daily'?'📅 Daily dungeon — same map for everyone today.':'The dice are fresh.')+' Find the ▼ stairs.');
+  document.getElementById('start').hidden=true;
+  document.getElementById('end').hidden=true;
+  sizeCanvas(); hud(); syncSpirit(0);
+}
+document.getElementById('goBtn').addEventListener('click', newRun);
+document.getElementById('againBtn').addEventListener('click', function(){
+  document.getElementById('end').hidden=true;
+  document.getElementById('start').hidden=false;
+});
+document.getElementById('shareBtn').addEventListener('click', function(){
+  var done=function(){ var ok=document.getElementById('shareOk'); ok.style.opacity='1'; setTimeout(function(){ok.style.opacity='0';},1500); };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(shareText).then(done).catch(done);
+  else done();
+});
+window.addEventListener('resize', sizeCanvas);
+
+/* boot: show the start screen over an empty board.
+   #play deep-link skips the menu (quick restart + headless testing). */
+player={x:(W>>1),y:(H>>1),hp:1,maxhp:1,ac:11,die:6,bonus:1,potions:0,gold:0};
+sizeCanvas();
+if(location.hash==='#play') newRun();
+})();
+</script>
+<script src="lib/atlas-fx.js"></script>
+</body>
+</html>
