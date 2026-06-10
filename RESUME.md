@@ -3,6 +3,24 @@
 > **Purpose:** If this terminal/session is lost, read this file first. It says what's done,
 > what's in flight, and the one true path. Last updated: 2026-06-10.
 
+## ✅ Done 2026-06-10 (later): Studio polish pass + neural.html removed + Fable 5
+
+- **Fin-Eng polish (f2d63c6, live, SW v78):** full review of all 6 Studio pages found
+  3 rough edges, fixed: (1) `markets.html` node labels no longer spill outside their
+  circles on phones (24px radius floor, font scales, short labels under 30px;
+  `nodeR()` shared by draw + click hit-testing); (2) every course page now has a
+  **prev/next footer trail** in hub order (portfolio→valuation→stochastic→markets→
+  datascience→options→Studio); (3) valuation DCF bar labels skip every other year
+  when >10 bars (collided on mobile).
+- **`neural.html` deleted (4491f86, live):** Neural Net Playground removed at owner's
+  request, plus ALL references (home tile, sw.js precache, footers in flock/luck/learn-12).
+  `learn/08-neural-nets.html` is a different file (a lesson) — kept.
+- **schedule.html gamification: attempted and REVERTED** (see parked section below —
+  plan updated with what went wrong).
+- **Owner switched the session model to Claude Fable 5** (`/model claude-fable-5[1m]`,
+  released 2026-06-09; free on the plan until June 22, then 2× Opus pricing). The
+  continuity contract (CLAUDE.md + this file) applies to whichever model reads it.
+
 ## ✅ Done 2026-06-10: Black–Scholes extracted to a tested module + SW bug fix
 
 A "proper engineering" pass on the Fin-Eng capstone (teaching session for the owner):
@@ -20,7 +38,7 @@ A "proper engineering" pass on the Fin-Eng capstone (teaching session for the ow
   (`new URL('../sw.js', SELF_SRC)`) → always the root `sw.js`. Empty `.catch` → `console.warn`.
 - **`sw.js` bumped v76 → v77** and `lib/blackscholes.js` added to the precache list.
 - **`fineng/README.md`** added (frames the Studio as a portfolio piece).
-- Not yet committed/pushed — owner to review first.
+- Committed as `0325444`, merged to main, pushed — live.
 
 ## ⛳ The one true path (memorize this)
 
@@ -32,9 +50,8 @@ A "proper engineering" pass on the Fin-Eng capstone (teaching session for the ow
 ## 🟢 What is safe / backed up
 
 - `main` branch: fully pushed to GitHub. The whole real Atlas is in the cloud.
-- **Live on main:** Japanese kana-loot + the full **Fin-Eng Studio** (6 pages).
-- **NOT yet merged:** branch `feat/jp-timed-challenge` (commit `f28481a`) — the
-  Japanese Drill + Trace tabs. Backed up locally only until tested & merged.
+- **Live on main:** Japanese kana-loot (incl. Drill + Trace tabs, merged f6df5ae)
+  + the full **Fin-Eng Studio** (6 pages, polished). Nothing unmerged is pending.
 
 ## ✅ Live on main: Fin-Eng Studio (a study hub for the owner's degree)
 
@@ -49,7 +66,7 @@ Markets & Institutions 01526230). Built interactive study tools, one per course,
 - `datascience.html` — return explorer (skew/excess-kurtosis/Sharpe).
 - `markets.html` — interactive institutions flow-map (tap a node).
 - `options.html` — ★ Black–Scholes capstone (verified exact: call 10.4506 / put 5.5735).
-- Home `index.html` has a "Fin-Eng Studio" tile. Service worker at **v73**.
+- Home `index.html` has a "Fin-Eng Studio" tile. Service worker at **v78**.
 - **Offer standing:** owner can drop real course materials (PDFs/slides) in
   `fineng/materials/` (or paste/screenshot) → rebuild pages to match their actual
   syllabus/professor notation. They chose "keep building generically" for now.
@@ -65,7 +82,14 @@ Markets & Institutions 01526230). Built interactive study tools, one per course,
   (double-click). Use the live HTTPS site or a local server (`python -m http.server`).
   A friendly file:// fallback note is baked in.
 
-## 🅿️ Parked next: gamify schedule.html (planned, NOT started)
+## 🅿️ Parked: gamify schedule.html (ATTEMPTED 2026-06-10, REVERTED — read before retrying)
+
+**What happened:** the plan below was implemented (module script + `window.atlasLoot`
++ reward in `toggleDone`), but at runtime NOTHING executed — not even `console.log`
+diagnostics in the main classic script fired, even after cache-busted reloads. Root
+cause never confirmed (suspects: stale SW/browser cache on localhost, or the module/
+classic script interaction). Owner chose to revert cleanly (working tree restored,
+branch deleted) rather than keep debugging. The plan itself is still considered sound:
 
 Reuse `lib/loot.js` so completing a Schedule task awards Spirit + a rarity loot
 drop (decided: **shared Spirit pool** with the Japanese game; **loot-drop-with-rarity**
