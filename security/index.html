@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Academy · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78; --rule:rgba(241,239,230,0.16);
+    --accent:#b8c0ff; --accent-2:#f3d59a; --green:#5fd39a;
+    --max:780px; --gutter:clamp(22px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body { font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; min-height: 100vh; }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 7px; } ::-webkit-scrollbar-thumb { background: rgba(184,192,255,0.25); }
+  body::after { content:''; position:fixed; inset:0; z-index:0; pointer-events:none; background: radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.10), transparent 65%); }
+
+  .top-bar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 22px var(--gutter); }
+  .brand { font-family: var(--serif); font-style: italic; font-size: 16px; }
+  .back { font-size: 12px; color: var(--muted); padding: 7px 13px; border: 1px solid var(--rule); border-radius: 999px; transition: all .2s; }
+  .back:hover { color: var(--text); border-color: var(--accent); background: rgba(184,192,255,0.08); }
+
+  .wrap { position: relative; z-index: 2; max-width: var(--max); margin: 0 auto; padding: clamp(36px,6vw,64px) var(--gutter) 100px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--accent-2); font-weight: 700; margin-bottom: 20px; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(46px,10vw,104px); line-height: 0.92; letter-spacing: -0.02em; margin-bottom: 24px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { font-family: var(--serif); font-size: clamp(19px,2.3vw,26px); line-height: 1.45; color: var(--text); max-width: 620px; margin-bottom: 12px; }
+  .note { font-size: 13px; color: var(--muted); max-width: 600px; margin-bottom: 30px; }
+
+  .ethics { display:flex; gap:12px; align-items:flex-start; border:1px solid rgba(95,211,154,0.35); background:rgba(95,211,154,0.06);
+    border-radius:14px; padding:16px 18px; margin-bottom:46px; font-size:13.5px; color:#cfeede; line-height:1.6; }
+  .ethics b { color: var(--green); }
+
+  .part { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--faint);
+    margin: 40px 0 14px; display:flex; align-items:center; gap:12px; }
+  .part::after { content:''; flex:1; height:1px; background: var(--rule); }
+  .part:first-of-type { margin-top: 8px; }
+
+  .lessons { display: flex; flex-direction: column; gap: 10px; }
+  .lesson { display: grid; grid-template-columns: 52px 1fr auto; gap: 16px; align-items: center; padding: 18px 20px; background: var(--bg-2); border: 1px solid var(--rule); border-radius: 14px; color: var(--text); transition: border-color .2s, transform .2s, background .2s; }
+  a.lesson:hover { border-color: rgba(184,192,255,0.45); transform: translateY(-2px); background: #15152e; }
+  .lesson.soon { opacity: 0.5; }
+  .num { font-family: var(--serif); font-style: italic; font-size: 34px; font-weight: 400; color: var(--accent); line-height: 1; }
+  .lesson .body .t { font-family: var(--serif); font-size: 22px; font-weight: 500; line-height: 1.1; margin-bottom: 3px; }
+  .lesson .body .d { font-size: 13px; color: var(--muted); }
+  .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .pill.ready { color: var(--accent); border: 1px solid rgba(184,192,255,0.4); background: rgba(184,192,255,0.08); }
+  .pill.soon { color: var(--muted); border: 1px solid var(--rule); }
+
+  .arc { margin-top: 54px; padding-top: 32px; border-top: 1px solid var(--rule); }
+  .arc h2 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 26px; margin-bottom: 14px; }
+  .arc p { font-size: 14.5px; color: var(--muted); max-width: 620px; }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="brand">Atlas · <span style="font-style:italic;">Security Academy</span></div>
+  <a class="back" href="../index.html">← Atlas</a>
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Defender-first · interactive · from zero</div>
+  <h1>Security, <em>from the ground up.</em></h1>
+  <p class="lede">How attacks actually work, and how defenders stop them — every major domain of cybersecurity, each as a lesson you can finish in a sitting.</p>
+  <p class="note">Built like the Quant Academy: every lesson defines its terms, gives you something to play with, and ends with the one idea that sticks. No memorizing acronyms — understanding.</p>
+
+  <div class="ethics">
+    <span style="font-size:20px;line-height:1">🛡️</span>
+    <div><b>The white-hat rule.</b> You learn how attacks work <i>so you can defend against them</i> — that is what every security professional does. Everything here is for <b>your own systems, intentionally-vulnerable practice labs, or authorized testing with written permission</b>. Using these ideas against systems you don't own is a crime, and it's the opposite of the craft. Defenders understand offense; they don't commit it.</div>
+  </div>
+
+  <div id="lessons"></div>
+
+  <div class="arc">
+    <h2>Where this path leads</h2>
+    <p>Finish all fourteen and you'll have the working mental model behind the CompTIA Security+ exam and the foundation under CISSP and OSCP — not as memorized trivia, but as ideas you can reason from. More importantly, you'll read a headline about a breach and actually understand what happened, and you'll write your own code more safely because you've seen how the unsafe version gets broken.</p>
+  </div>
+</div>
+
+<script>
+// Lessons are DATA. To flip one live: change status to 'ready' and ship the file.
+const PARTS = [
+  { part: 'Part I · Foundations', lessons: [
+    { n:'01', file:'01-how-the-internet-works.html', t:'How the internet really works', d:'Packets, IP, DNS, TCP, HTTP, ports — the plumbing every attack and defense rides on. With a live packet-journey trace.', status:'ready' },
+    { n:'02', file:'02-cia-triad.html', t:'The CIA triad & thinking like an attacker', d:'Confidentiality, Integrity, Availability — the three things security protects — plus threat modeling: how to find the weak door before they do.', status:'ready' },
+    { n:'03', file:'03-cryptography.html', t:'Cryptography you can feel', d:'Encryption, hashing, keys, and why they are different. Symmetric vs public-key, and the math that keeps secrets. With a live cipher.', status:'ready' },
+    { n:'04', file:'04-passwords-auth.html', t:'Passwords, hashing & authentication', d:'Why sites store hashes not passwords, salting, brute-force vs dictionary attacks, MFA, and how long YOUR password really lasts. With a crack-time estimator.', status:'ready' },
+  ]},
+  { part: 'Part II · Attacks & defenses', lessons: [
+    { n:'05', file:'05-web-attacks.html', t:'Web attacks: XSS, SQLi & friends', d:'The vulnerabilities behind most real breaches — injection, cross-site scripting, CSRF — shown safely, then the one-line fixes that stop them.', status:'soon' },
+    { n:'06', file:'06-network-security.html', t:'Network security & firewalls', d:'Firewalls, VPNs, TLS, segmentation, man-in-the-middle, and why public Wi-Fi is a trust decision. The defender’s map of the wire.', status:'soon' },
+    { n:'07', file:'07-malware.html', t:'Malware & how it gets caught', d:'Viruses, worms, ransomware, trojans — how they spread, and how signatures, heuristics, and behavior-detection catch them.', status:'soon' },
+    { n:'08', file:'08-social-engineering.html', t:'Social engineering & phishing', d:'The human is the easiest exploit. Phishing, pretexting, the psychology of the con — and how to spot the lure. Includes a spot-the-phish drill.', status:'soon' },
+  ]},
+  { part: 'Part III · Systems & scale', lessons: [
+    { n:'09', file:'09-secure-coding.html', t:'Secure coding & the OWASP Top 10', d:'The most common ways code gets broken, and defensive habits that close them. Input validation, least privilege, dependency risk.', status:'soon' },
+    { n:'10', file:'10-os-and-access.html', t:'Operating systems & access control', d:'Users, permissions, privilege escalation, the principle of least privilege, and how an attacker turns a foothold into full control.', status:'soon' },
+    { n:'11', file:'11-cloud-security.html', t:'Cloud & identity security', d:'Shared responsibility, misconfigured buckets, IAM, secrets management — why the cloud’s biggest breaches are usually a settings mistake.', status:'soon' },
+  ]},
+  { part: 'Part IV · The profession', lessons: [
+    { n:'12', file:'12-blue-team.html', t:'Defense in depth & the blue team', d:'Layers, logging, SIEM, detection vs prevention, and the assume-breach mindset. How real defenders actually spend their day.', status:'soon' },
+    { n:'13', file:'13-incident-forensics.html', t:'Incident response & forensics', d:'When (not if) something gets in: contain, eradicate, recover, learn. The chain of custody and how investigators reconstruct an attack.', status:'soon' },
+    { n:'14', file:'14-putting-it-together.html', t:'Putting it all together', d:'The capstone: a single breach story walked end-to-end through every lesson — how it started, how it spread, and every point it could have been stopped.', status:'soon' },
+  ]},
+];
+
+const root = document.getElementById('lessons');
+PARTS.forEach(group => {
+  const h = document.createElement('div');
+  h.className = 'part';
+  h.innerHTML = '<span>' + group.part + '</span>';
+  root.appendChild(h);
+  const list = document.createElement('div');
+  list.className = 'lessons';
+  group.lessons.forEach(L => {
+    const ready = L.status === 'ready';
+    const el = document.createElement(ready ? 'a' : 'div');
+    el.className = 'lesson' + (ready ? '' : ' soon');
+    if (ready) el.href = L.file;
+    el.innerHTML =
+      '<div class="num">' + L.n + '</div>' +
+      '<div class="body"><div class="t">' + L.t + '</div><div class="d">' + L.d + '</div></div>' +
+      '<span class="pill ' + (ready ? 'ready' : 'soon') + '">' + (ready ? 'Ready' : 'Soon') + '</span>';
+    list.appendChild(el);
+  });
+  root.appendChild(list);
+});
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1 · How the internet really works · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 1 of 14 · Foundations</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 1 · Foundations</div>
+  <h1>How the internet <em>really</em> works.</h1>
+  <p class="standfirst">You can't defend a thing you can't picture. Before any attack or defense makes sense, you need the map: what actually happens between typing a web address and the page appearing. It's a relay race of small messages, and every handoff is a place something can go wrong.</p>
+  <div class="meta-line">~7 min · interactive · no prior knowledge needed</div>
+
+  <p>Type <span class="hl">atlas</span> into your browser and a page appears in half a second. It feels like magic, but it's a precise sequence of steps across machines you'll never see. Security lives in those steps — so let's walk every one.</p>
+
+  <h2>The big idea: everything is <em>messages</em></h2>
+  <p>The internet has no "connection" in the way a phone call does. There's no single wire held open between you and a website. Instead, your request is chopped into small <strong>packets</strong>, each labeled with a destination, and each forwarded hop-by-hop across the network like postcards through a postal system. They can take different routes, arrive out of order, and get reassembled at the end. That postcard model is the whole foundation.</p>
+
+  <h2>The terms, defined</h2>
+  <dl class="terms">
+    <dt>IP address</dt>
+    <dd>The numeric "street address" of a machine, like <span class="mono">142.250.72.14</span>. Every device online has one. Packets are addressed to IPs, not names.</dd>
+    <dt>DNS (Domain Name System)</dt>
+    <dd>The internet's phone book. It turns a human name (<span class="mono">google.com</span>) into an IP address. Your computer asks a DNS server "what's the IP for this name?" before it can send anything.</dd>
+    <dt>packet</dt>
+    <dd>A small chunk of your data wrapped in addressing info (where it's from, where it's going). Big things — a page, a video — are split into many packets.</dd>
+    <dt>TCP</dt>
+    <dd>The protocol that makes packets reliable. It numbers them, confirms each arrived, re-sends lost ones, and reassembles them in order. It starts with a "handshake" (a three-message hello) to set up the exchange.</dd>
+    <dt>port</dt>
+    <dd>A numbered door on a machine. One server can run many services; the port says which one you want. Web traffic uses <span class="mono">80</span> (HTTP) and <span class="mono">443</span> (HTTPS). Open ports are doors — and every door is something a defender must account for.</dd>
+    <dt>HTTP / HTTPS</dt>
+    <dd>The language browsers and web servers speak. HTTP is plain text (anyone on the path can read it). HTTPS is the same language inside an encrypted tunnel (TLS) — the <span class="hl-2">S is for Secure</span>, and it's why the padlock matters.</dd>
+  </dl>
+
+  <h2>Watch a request make the journey</h2>
+  <p>Hit play. Follow a single request from your laptop to a website and back. Each step is a real stage — and each is annotated with the security question a defender asks there.</p>
+
+  <div class="sim">
+    <div class="sim-title">The packet's journey</div>
+    <div class="sim-hint">One web request, step by step. Notice where an attacker could listen, lie, or block.</div>
+    <canvas id="cv" height="240"></canvas>
+    <div id="stepText" style="font-size:14px;color:var(--text);min-height:62px;margin-top:14px;line-height:1.55;"></div>
+    <div class="chips" style="margin-top:14px">
+      <button class="chip on" id="playBtn">▶ Play the journey</button>
+      <button class="chip" id="stepBtn">Step ›</button>
+      <button class="chip" id="resetBtn">↻ Reset</button>
+    </div>
+  </div>
+
+  <p class="pull">Every hop is a handoff, and every handoff is a place to listen, lie, or block. Security is the study of defending the handoffs.</p>
+
+  <h2>Why this map is the whole course in miniature</h2>
+  <p>Look back at the journey and you can already see where later lessons live. DNS can be poisoned (you get sent to the attacker's IP instead of the real one). HTTP can be read or altered by anyone on the path — which is why <span class="hl">cryptography</span> (Lesson 3) wraps it in HTTPS. Open ports are entry points a <span class="hl">firewall</span> (Lesson 6) decides to allow or deny. The server at the end runs code that might have <span class="hl">web vulnerabilities</span> (Lesson 5). You haven't learned those attacks yet — but you now have the map they happen on.</p>
+
+  <div class="callout">
+    <div class="tag">Defender's lens</div>
+    <p>A defender's instinct, applied to this lesson: <span class="mono">every place data changes hands is a place to verify trust.</span> Is this really the DNS answer I expected? Is this really the server's certificate? Is this port supposed to be open? Security isn't one wall — it's a question asked at every handoff.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>The internet moves your data as addressed packets, hop by hop. DNS turns names into IP addresses; TCP makes the delivery reliable; ports pick the service; HTTP(S) is the language. The plain version (HTTP) is readable by anyone on the path — the encrypted version (HTTPS) is not. Hold this map in your head; everything from here hangs on it.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">You're on coffee-shop Wi-Fi and visit a site over plain <span style="font-family:var(--mono);font-style:normal">HTTP</span> (no padlock). Who can read what you send?</div>
+    <button class="opt" data-correct="true">Anyone else on that Wi-Fi (and the network's operator) — HTTP is plain text on the path, so the postcards are readable by every hop in between.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Only the website you're visiting; traffic is private by default.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">No one — having a password on the Wi-Fi encrypts your browsing.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="index.html">← All lessons</a><a class="next" href="02-cia-triad.html">Lesson 2: The CIA triad →</a></div>
+</div>
+<script>
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+function dpr(){return Math.min(window.devicePixelRatio||1,2);}
+function resize(){const r=dpr();cv.width=cv.clientWidth*r;cv.height=cv.clientHeight*r;ctx.setTransform(r,0,0,r,0,0);draw();}
+// nodes along the journey
+const NODES=[
+  {x:0.08,label:'You',sub:'browser',emoji:'💻'},
+  {x:0.30,label:'DNS',sub:'phone book',emoji:'📖'},
+  {x:0.52,label:'Routers',sub:'the path',emoji:'🛰️'},
+  {x:0.74,label:'Firewall',sub:'the gate',emoji:'🧱'},
+  {x:0.92,label:'Server',sub:'the site',emoji:'🗄️'},
+];
+const STEPS=[
+  {seg:[0,1],t:'You type a name. Your computer asks <b>DNS</b>: "what IP is this name?" — a name means nothing to the network; it needs the number.', sec:'⚠ A poisoned DNS reply could send you to an attacker\'s server instead.'},
+  {seg:[1,0],t:'DNS answers with the <b>IP address</b>. Now your computer knows where to send packets.', sec:'A defender asks: is this the answer I expected? (DNSSEC signs replies to prove it.)'},
+  {seg:[0,2],t:'Your request is split into <b>packets</b> and a <b>TCP handshake</b> opens the exchange, hopping through <b>routers</b> across the world.', sec:'⚠ Anyone on the path can see plain HTTP packets — the postcard problem.'},
+  {seg:[2,3],t:'Packets reach the destination network and hit a <b>firewall</b>, which checks: is this <b>port</b> allowed in?', sec:'The firewall is the defender\'s first gate — it denies everything not explicitly allowed.'},
+  {seg:[3,4],t:'Allowed through, the request reaches the <b>server</b>, which runs code to build your page.', sec:'⚠ If that code has a vulnerability (Lesson 5), this is where it gets exploited.'},
+  {seg:[4,0],t:'The <b>response</b> — your page, in packets — travels all the way back and your browser reassembles it. Half a second, dozens of handoffs.', sec:'Over HTTPS this whole trip is encrypted (Lesson 3). Over HTTP, it was readable the entire way.'},
+];
+let step=-1, anim=null, t=0;
+function nodeXY(i){const w=cv.clientWidth;return {x:NODES[i].x*w, y:90};}
+function draw(progress){
+  const w=cv.clientWidth,h=cv.clientHeight;ctx.clearRect(0,0,w,h);
+  // connecting line
+  ctx.strokeStyle='rgba(241,239,230,0.12)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(nodeXY(0).x,90);ctx.lineTo(nodeXY(NODES.length-1).x,90);ctx.stroke();
+  // nodes
+  NODES.forEach((n,i)=>{const p=nodeXY(i);ctx.font='26px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.emoji,p.x,p.y);
+    ctx.font='600 12px Inter Tight, sans-serif';ctx.fillStyle='#f1efe6';ctx.fillText(n.label,p.x,p.y+30);
+    ctx.font='10px JetBrains Mono, monospace';ctx.fillStyle='#8a8aa8';ctx.fillText(n.sub,p.x,p.y+44);});
+  // moving packet
+  if(step>=0 && progress!=null){const s=STEPS[step];const a=nodeXY(s.seg[0]),b=nodeXY(s.seg[1]);
+    const px=a.x+(b.x-a.x)*progress, py=90-Math.sin(progress*Math.PI)*26;
+    ctx.fillStyle='#b8c0ff';ctx.beginPath();ctx.arc(px,py,7,0,7);ctx.fill();
+    ctx.strokeStyle='rgba(184,192,255,0.35)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,12,0,7);ctx.stroke();}
+}
+function showText(){const s=STEPS[step];document.getElementById('stepText').innerHTML=
+  '<b style="color:var(--accent)">Step '+(step+1)+'/'+STEPS.length+'.</b> '+s.t+'<br><span style="color:var(--accent-2);font-size:13px">'+s.sec+'</span>';}
+function runStep(){if(step>=STEPS.length-1){return;}step++;showText();t=0;cancelAnimationFrame(anim);
+  (function frame(){t+=0.025;if(t<1){draw(t);anim=requestAnimationFrame(frame);}else draw(1);})();}
+function playAll(){step=-1;(function next(){if(step>=STEPS.length-1)return;runStep();setTimeout(next,1600);})();}
+document.getElementById('playBtn').addEventListener('click',playAll);
+document.getElementById('stepBtn').addEventListener('click',runStep);
+document.getElementById('resetBtn').addEventListener('click',()=>{step=-1;cancelAnimationFrame(anim);document.getElementById('stepText').innerHTML='';draw(null);});
+window.addEventListener('resize',resize);resize();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. HTTP is plain text, readable by every hop on the path — including everyone sharing that Wi-Fi. This is exactly why HTTPS exists.':'✗ Plain HTTP travels readable across every hop. The Wi-Fi password only stops outsiders joining the network — it does not encrypt where your packets go after.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

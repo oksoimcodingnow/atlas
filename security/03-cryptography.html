@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3 · Cryptography you can feel · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 3 of 14 · Foundations</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 3 · Foundations</div>
+  <h1>Cryptography you can <em>feel.</em></h1>
+  <p class="standfirst">Crypto sounds like impenetrable math. The core ideas aren't. Three of them — encryption, hashing, and keys — carry almost all of practical security, and once you can tell them apart, half of what's confusing becomes obvious.</p>
+  <div class="meta-line">~8 min · interactive · builds on Lessons 1–2</div>
+
+  <p>Lesson 1 ended with a problem: plain HTTP is readable by everyone on the path. Cryptography is the fix — but "encryption" gets used as a fuzzy magic word. Let's make it sharp. There are two completely different tools people lump together, and confusing them is the #1 beginner mistake.</p>
+
+  <h2>Encryption vs hashing — the crucial split</h2>
+  <dl class="terms">
+    <dt>encryption — reversible, for secrecy</dt>
+    <dd>Scramble data so only someone with the <strong>key</strong> can unscramble it. It's a <em class="it">two-way</em> door: encrypt with the key, decrypt with the key. Used to keep things <span class="hl">secret</span> in transit and at rest. The message survives — it's just hidden.</dd>
+    <dt>hashing — one-way, for integrity</dt>
+    <dd>Run data through a function that produces a fixed-size fingerprint, and <em class="it">cannot be reversed</em>. There's no "un-hash." The same input always gives the same fingerprint; any tiny change gives a wildly different one. Used to <span class="hl">verify</span> nothing was altered, and to store passwords (Lesson 4).</dd>
+  </dl>
+
+  <div class="callout warn">
+    <div class="tag">The mistake to never make</div>
+    <p>"The passwords were encrypted" is what breached companies say when they mean <em>hashed</em> — or worse, when they really did encrypt (reversible!) and the attacker got the key too. <span class="mono">Passwords should be hashed, not encrypted.</span> If you can decrypt it back to the original, so can the attacker who steals your key.</p>
+  </div>
+
+  <h2>Symmetric vs public-key — the two kinds of encryption</h2>
+  <dl class="terms">
+    <dt>symmetric encryption</dt>
+    <dd>One shared key locks and unlocks. Fast, simple — but both sides need the same secret key, and getting it to each other safely is the hard part. (Algorithm you'll hear: <span class="mono">AES</span>.)</dd>
+    <dt>public-key (asymmetric) encryption</dt>
+    <dd>A pair of keys: a <strong>public</strong> one you hand out freely, and a <strong>private</strong> one you guard. Anything locked with the public key can only be opened with the private one. This solves the "how do we share a key" problem — you can receive secrets from strangers without ever exchanging a secret first. (Algorithms: <span class="mono">RSA</span>, <span class="mono">ECC</span>.) It's what makes HTTPS, signatures, and the padlock possible.</dd>
+    <dt>digital signature</dt>
+    <dd>Public-key, run in reverse: sign with your <em class="it">private</em> key, and anyone can verify with your <em class="it">public</em> key. It proves <span class="hl">who</span> sent something and that it wasn't altered — integrity + authenticity in one move.</dd>
+  </dl>
+
+  <h2>Feel it: a cipher and a hash, live</h2>
+  <p>Type anything. The top box shows a simple <strong>reversible cipher</strong> (change the key, the output changes; the right key brings the message back). The bottom shows a <strong>hash</strong> — note you can't get the message back, and changing one letter scrambles the whole fingerprint.</p>
+
+  <div class="sim">
+    <div class="sim-title">Encrypt (reversible) — has a key</div>
+    <input class="field" id="msg" placeholder="type a secret message…" value="attack at dawn">
+    <div style="display:flex;gap:10px;align-items:center;margin:12px 0 6px;">
+      <span style="font-size:12px;color:var(--muted);font-family:var(--mono)">key</span>
+      <input type="range" id="key" min="1" max="25" value="7" style="flex:1">
+      <span style="font-family:var(--mono);font-size:13px;color:var(--accent);min-width:24px" id="keyV">7</span>
+    </div>
+    <div style="font-family:var(--mono);font-size:14px;color:var(--accent-2);background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:12px;word-break:break-all" id="cipherOut"></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">↑ With the right key, this decrypts perfectly back to your message. With the wrong key, it's gibberish. That's reversible encryption.</div>
+
+    <div class="sim-title" style="margin-top:24px">Hash (one-way) — no key, no undo</div>
+    <div style="font-family:var(--mono);font-size:14px;color:var(--green);background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:12px;word-break:break-all" id="hashOut"></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">↑ Change one letter above and watch this scramble entirely (the "avalanche effect"). There is no way to turn this back into your message — that's what one-way means. <span style="color:var(--faint)">(A teaching hash; real ones like SHA-256 are far longer and cryptographically hardened.)</span></div>
+  </div>
+
+  <p class="pull">Encryption hides a message and can give it back. Hashing fingerprints a message and never gives it back. Different tools, different jobs — mix them up and you build the next breach.</p>
+
+  <div class="callout">
+    <div class="tag">Where you've already met this</div>
+    <p>The HTTPS padlock from Lesson 1 is all three at once: public-key crypto to safely agree on a shared key, symmetric encryption (fast) for the actual data, and signatures to prove the server is really who it claims. When you download a file and the site lists a "SHA-256 checksum," that's a hash — you re-hash your download and compare, to prove it wasn't tampered with in transit (an integrity check from Lesson 2).</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p><span class="hl">Encryption</span> is reversible and needs a key — for secrecy. <span class="hl">Hashing</span> is one-way with no key — for integrity. Encryption comes in <span class="hl-2">symmetric</span> (one shared key, fast) and <span class="hl-2">public-key</span> (a public/private pair that lets strangers send you secrets and lets you sign things). These primitives, combined, are the entire toolbox behind HTTPS, signatures, and safe password storage.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">You're building a login system. How should you store users' passwords?</div>
+    <button class="opt" data-correct="true">Hashed (one-way) — so even if your database is stolen, the attacker can't reverse the fingerprints back into passwords.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Encrypted — so you can decrypt and check them at login.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">In plain text, but in a private database only you can access.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="02-cia-triad.html">← Lesson 2</a><a class="next" href="04-passwords-auth.html">Lesson 4: Passwords & auth →</a></div>
+</div>
+<script>
+const msg=document.getElementById('msg'),key=document.getElementById('key');
+function caesar(s,k){return s.replace(/[a-z]/gi,c=>{const base=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-base+k)%26+base);});}
+// a tiny teaching hash: strong avalanche, fixed length, clearly one-way (not cryptographic)
+function teachHash(s){let h=[0x9e,0x37,0x79,0xb9,0x7f,0x4a,0x7c,0x15];for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);for(let j=0;j<h.length;j++){h[j]=(h[j]^((c+i*31+j*131)&0xff));h[j]=((h[j]<<3)|(h[j]>>5))&0xff;h[j]=(h[j]*167+c+1)&0xff;}}for(let r=0;r<3;r++)for(let j=0;j<h.length;j++)h[j]=(h[j]^h[(j+3)%8]*7)&0xff;return h.map(b=>b.toString(16).padStart(2,'0')).join('');}
+function render(){document.getElementById('keyV').textContent=key.value;document.getElementById('cipherOut').textContent=caesar(msg.value||'',+key.value)||'…';document.getElementById('hashOut').textContent=teachHash(msg.value||'');}
+msg.addEventListener('input',render);key.addEventListener('input',render);render();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. Hash them. At login you hash what the user typed and compare fingerprints — you never need the original back, and neither should an attacker be able to get it.':'✗ If it\'s reversible (encrypted or plain), then whoever steals your database can recover every password. Hash instead — one-way by design. (Lesson 4 adds salting on top.)';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

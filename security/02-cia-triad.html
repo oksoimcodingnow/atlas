@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2 · The CIA triad & thinking like an attacker · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 2 of 14 · Foundations</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 2 · Foundations</div>
+  <h1>What security <em>actually</em> protects.</h1>
+  <p class="standfirst">Ask three people what "secure" means and you'll get three answers. The field has a precise one. Everything you'll ever protect falls into exactly three buckets — and every attack is an assault on one of them.</p>
+  <div class="meta-line">~7 min · interactive · builds on Lesson 1</div>
+
+  <p>"Is this system secure?" is the wrong question, because "secure" isn't one thing. The right question is: <strong>secure against what?</strong> To answer that, security pros use a 3-part definition so old and so useful it has a nickname: the <span class="hl">CIA triad</span>. (No relation to the agency.)</p>
+
+  <h2>The three things — defined</h2>
+  <dl class="terms">
+    <dt>Confidentiality</dt>
+    <dd>Only the right people can <em class="it">read</em> the data. Broken when secrets leak — a database dumped, a password sniffed, medical records exposed. The defense: encryption and access control.</dd>
+    <dt>Integrity</dt>
+    <dd>The data is <em class="it">correct and unaltered</em> — nobody changed it without authorization. Broken when an attacker edits a bank balance, swaps a download for malware, or forges a message. The defense: hashing and digital signatures.</dd>
+    <dt>Availability</dt>
+    <dd>The system is <em class="it">there when you need it</em>. Broken when a site is knocked offline — a DDoS flood, ransomware locking your files, a server crash. The defense: redundancy, backups, rate limiting.</dd>
+  </dl>
+
+  <p>Every security incident you'll ever read about attacks one or more of these. A data breach is a <span class="hl">Confidentiality</span> failure. A defaced website is <span class="hl">Integrity</span>. A site taken down by a flood is <span class="hl">Availability</span>. Naming which one is broken is the first move of every defender.</p>
+
+  <h2>Test it: which leg did the attack break?</h2>
+  <p>Real headlines below. Tap the leg of the triad each one attacked. (Some break more than one — pick the <em class="it">primary</em> one.)</p>
+
+  <div class="sim">
+    <div class="sim-title">Name the broken leg</div>
+    <div class="sim-hint" id="scenarioHint">Read the incident, then tap C, I, or A.</div>
+    <div id="scenario" style="font-size:16px;line-height:1.55;background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:18px;min-height:84px;"></div>
+    <div class="chips" style="margin-top:14px">
+      <button class="chip" data-pick="C">🔒 Confidentiality</button>
+      <button class="chip" data-pick="I">✍️ Integrity</button>
+      <button class="chip" data-pick="A">⚡ Availability</button>
+    </div>
+    <div id="verdict" style="font-size:14px;margin-top:14px;min-height:44px;line-height:1.5;"></div>
+    <div class="chips"><button class="chip" id="nextScenario">Next incident ›</button> <span style="font-family:var(--mono);font-size:12px;color:var(--muted);align-self:center" id="scoreLine">score 0/0</span></div>
+  </div>
+
+  <h2>Thinking like an attacker: <em>threat modeling</em></h2>
+  <p>Defenders don't wait to be attacked — they sit down and ask, ahead of time, "if I wanted to break this, how would I?" That deliberate exercise is <strong>threat modeling</strong>, and it's the single most valuable habit in security. Four questions, in order:</p>
+
+  <dl class="terms">
+    <dt>1. What are we protecting? (assets)</dt>
+    <dd>The data and functions that matter — user passwords, payment info, the ability to stay online. You can't defend everything equally; name what's precious.</dd>
+    <dt>2. Who might attack it, and why? (threat actors)</dt>
+    <dd>A bored teenager, a criminal after money, a competitor, an insider, a nation-state. Their skill and motivation shape what defenses you need.</dd>
+    <dt>3. How could they get in? (attack surface)</dt>
+    <dd>Every door: the login page, an API, an employee's laptop, a third-party library, a phishable human. Lesson 1's "every handoff" — now you list them on purpose.</dd>
+    <dt>4. What will we do about each? (mitigations)</dt>
+    <dd>For each realistic path: block it, detect it, or accept the risk knowingly. You can't fix everything — you decide what's worth defending.</dd>
+  </dl>
+
+  <p class="pull">Amateurs ask "is it secure?" Defenders ask "what are we protecting, from whom, through which door, and what do we do about it?"</p>
+
+  <div class="callout">
+    <div class="tag">For your own projects</div>
+    <p>You build web apps (RoShop, Atlas). Threat-model one in four sentences: <span class="mono">Asset</span> = users' accounts and any payment flow. <span class="mono">Actors</span> = scammers, bored griefers. <span class="mono">Surface</span> = the login form, the admin page, the Firebase rules. <span class="mono">Mitigation</span> = strong auth, locked-down database rules, no secrets in client code. You just did real security work.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>Security protects three things: <span class="hl">Confidentiality</span> (only the right people read it), <span class="hl">Integrity</span> (nobody alters it), <span class="hl">Availability</span> (it's there when needed). Every attack breaks at least one. And before you defend, you threat-model: what, from whom, through where, and what to do. Hold the triad and those four questions — they frame every lesson that follows.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">Ransomware encrypts a hospital's files and demands payment. Patients' records aren't stolen or shown to anyone — they're just locked. Which leg is primarily broken?</div>
+    <button class="opt" data-correct="true">Availability — the data still exists and is still private, but the hospital can't access it when they need it. That's the availability leg.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Confidentiality — files were encrypted, so it's a secrecy problem.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Integrity — the files were changed by the encryption.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="01-how-the-internet-works.html">← Lesson 1</a><a class="next" href="03-cryptography.html">Lesson 3: Cryptography →</a></div>
+</div>
+<script>
+const SCEN=[
+  {t:'A company\'s customer database is dumped and 50 million email + password pairs appear for sale on a forum.', a:'C', why:'The data was read by people who shouldn\'t — a textbook confidentiality breach.'},
+  {t:'Attackers flood a game\'s servers with junk traffic until real players can\'t connect for six hours.', a:'A', why:'Nothing was stolen or altered — the service was made unavailable. That\'s a DDoS, an availability attack.'},
+  {t:'A bank\'s site is breached and an attacker quietly changes account balances in their own favor.', a:'I', why:'The data was altered without authorization — an integrity attack, the most dangerous kind because you may not notice.'},
+  {t:'A hacker replaces a popular app\'s download file with a version containing malware. Same name, same site.', a:'I', why:'The file was tampered with — integrity. This is why downloads publish hashes you can verify (Lesson 3).'},
+  {t:'An employee emails a spreadsheet of all staff salaries to the entire company by mistake.', a:'C', why:'Confidential data reached people who shouldn\'t read it — confidentiality, no hacker required.'},
+  {t:'Ransomware locks a firm\'s files; backups exist, so nothing is lost, but they\'re offline for a day restoring.', a:'A', why:'Files intact and private, just inaccessible for a time — availability.'},
+];
+let idx=0,score=0,total=0,answered=false;
+function show(){answered=false;const s=SCEN[idx];document.getElementById('scenario').textContent=s.t;document.getElementById('verdict').innerHTML='';document.querySelectorAll('[data-pick]').forEach(c=>c.classList.remove('on'));}
+document.querySelectorAll('[data-pick]').forEach(btn=>{btn.addEventListener('click',()=>{if(answered)return;answered=true;total++;const s=SCEN[idx];const right=btn.dataset.pick===s.a;if(right)score++;btn.classList.add('on');
+  document.getElementById('verdict').innerHTML=(right?'<b style="color:var(--green)">✓ Correct.</b> ':'<b style="color:var(--red)">✗ It\'s '+({C:'Confidentiality',I:'Integrity',A:'Availability'})[s.a]+'.</b> ')+s.why;
+  document.getElementById('scoreLine').textContent='score '+score+'/'+total;});});
+document.getElementById('nextScenario').addEventListener('click',()=>{idx=(idx+1)%SCEN.length;show();});
+show();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. The files are intact and still private — only access is denied. Availability is the leg that breaks when something is there but unreachable.':'✗ Look again: the records weren\'t read by anyone (so not confidentiality) and weren\'t meaningfully altered (not integrity) — they\'re just locked away. That\'s availability.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>
