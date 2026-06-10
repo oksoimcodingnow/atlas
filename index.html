@@ -7,301 +7,174 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icons/atlas-favicon.png">
 <link rel="apple-touch-icon" href="icons/atlas-192.png">
-<meta name="theme-color" content="#21214d">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg-base: #0a0a14;
-    --panel: rgba(22, 22, 42, 0.72);
-    --border: rgba(129, 140, 248, 0.18);
-    --border-hi: rgba(129, 140, 248, 0.45);
-    --text: #e8e8f0;
-    --muted: #8a8aa8;
-    --accent: #818cf8;
-    --accent2: #22d3ee;
-    --green: #34d399;
-    --amber: #fbbf24;
-    --slate: #6b7280;
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16;
+    --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(184,192,255,0.45);
+    --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(18px,4.5vw,44px);
+    --serif:'Cormorant Garamond','Iowan Old Style',Georgia,serif;
+    --sans:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'JetBrains Mono',Consolas,monospace;
   }
-  html, body { height: 100%; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); }
   body {
-    background:
-      radial-gradient(ellipse 90% 70% at 30% -10%, #21214d 0%, #0a0a14 62%),
-      var(--bg-base);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family: var(--sans); font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; min-height: 100vh; overflow-x: hidden;
   }
-  /* 3D background canvas + entrance animation + tilt are injected by lib/atlas-fx.js */
-  .wrap {
-    position: relative; z-index: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 56px 28px 80px;
-  }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: var(--bg); }
+  ::-webkit-scrollbar { width: 7px; } ::-webkit-scrollbar-thumb { background: rgba(184,192,255,0.25); }
+  /* warm glow above the constellation canvas (z-index 0, injected by atlas-fx) */
+  body::after { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background: radial-gradient(720px 400px at 68% -10%, rgba(184,192,255,0.10), transparent 65%); }
+
+  .wrap { position: relative; z-index: 2; max-width: 1060px; margin: 0 auto;
+    padding: 0 var(--gutter) 72px; }
+
+  /* ── header: tiny brand + clock ── */
   header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 44px;
-    flex-wrap: wrap;
-    gap: 16px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding: 20px 0 16px; border-bottom: 1px solid var(--rule); margin-bottom: clamp(34px,6vw,58px);
   }
-  .brand .title {
-    font-size: 52px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    background: linear-gradient(95deg, #818cf8 0%, #22d3ee 60%, #a78bfa 100%);
-    -webkit-background-clip: text; background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .brand { font-family: var(--serif); font-style: italic; font-size: 19px; letter-spacing: 0.01em; }
+  .brand b { font-weight: 600; color: var(--accent); }
+  .meta { text-align: right; line-height: 1.45; }
+  .meta #clock { font-family: var(--mono); font-size: 21px; font-weight: 500;
+    font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
+  .meta #date { font-size: 11px; color: var(--faint); }
+
+  /* ── hero ── */
+  .hero { max-width: 760px; animation: atlasEntry 0.65s cubic-bezier(0.2,0.7,0.2,1) both; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--gold); font-weight: 700; display: inline-flex; align-items: center; gap: 12px;
+    margin-bottom: 18px; }
+  .eyebrow::before { content:''; width: 28px; height: 1px; background: var(--gold); }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(42px,8.5vw,88px);
+    line-height: 0.96; letter-spacing: -0.02em; text-wrap: balance; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { font-family: var(--serif); font-size: clamp(18px,2.3vw,24px); line-height: 1.45;
+    color: var(--muted); margin-top: 16px; max-width: 540px; }
+  .lede b { color: var(--text); font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .hero { animation: none; } }
+
+  /* ── featured rows (the flagships) ── */
+  .featured { display: flex; flex-direction: column; gap: 13px; margin-top: clamp(36px,6vw,54px); }
+  .tile.feat {
+    display: grid; grid-template-columns: 52px 1fr; gap: 6px 18px; align-items: start;
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 16px;
+    padding: 22px 24px 20px; transition: border-color .2s, background .2s;
   }
-  .brand .subtitle {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 8px;
-    letter-spacing: 0.04em;
-  }
-  .meta {
-    font-size: 12px;
-    color: var(--muted);
-    text-align: right;
-    line-height: 1.6;
-  }
-  .meta #clock {
-    font-size: 24px;
-    color: var(--text);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    font-variant-numeric: tabular-nums;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 18px;
-  }
-  .tile {
-    position: relative;
-    background: var(--panel);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 22px 22px 18px;
-    overflow: hidden;
-    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-  }
-  .tile::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--tile-color, var(--accent)), transparent);
-    opacity: 0.85;
-  }
-  .tile:hover {
-    transform: translateY(-3px);
-    border-color: var(--border-hi);
-    box-shadow: 0 14px 38px rgba(0,0,0,0.45), 0 0 0 1px rgba(129,140,248,0.08);
-  }
-  .tile.planned { opacity: 0.72; }
-  .tile-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .tile-name {
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-  }
-  .tile-name .icon {
-    color: var(--tile-color, var(--accent));
-    margin-right: 7px;
-    font-weight: 400;
-  }
-  .pill {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--muted);
-  }
-  .pill.live { color: var(--green); border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.08); box-shadow: 0 0 14px rgba(52,211,153,0.18); }
-  .pill.planned { color: var(--amber); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.06); }
-  .pill.local { color: var(--accent2); border-color: rgba(34,211,238,0.35); background: rgba(34,211,238,0.06); }
-  .tile-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.55;
-    margin-bottom: 16px;
-    min-height: 36px;
-  }
-  .tile-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
-    border-radius: 7px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    text-decoration: none;
-    transition: background 0.14s, border-color 0.14s, transform 0.14s;
-    cursor: pointer;
-  }
-  .btn:hover {
-    background: rgba(129,140,248,0.18);
-    border-color: var(--border-hi);
-    transform: translateY(-1px);
-  }
-  .btn.primary {
-    background: linear-gradient(135deg, rgba(129,140,248,0.22), rgba(34,211,238,0.18));
-    border-color: rgba(129,140,248,0.5);
-    color: #fff;
-  }
-  .btn.primary:hover {
-    background: linear-gradient(135deg, rgba(129,140,248,0.35), rgba(34,211,238,0.28));
-  }
-  .btn[aria-disabled="true"] {
-    opacity: 0.4; cursor: not-allowed; pointer-events: none;
-  }
-  .tile.add {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 168px;
-    border-style: dashed;
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    cursor: pointer;
-    background: transparent;
-  }
-  .tile.add:hover { color: var(--accent); border-color: var(--accent); }
-  .section-header {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 32px 0 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .section-header::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(129,140,248,0.18), transparent);
-  }
-  .section-header:first-child { margin-top: 0; }
-  footer {
-    margin-top: 56px;
-    text-align: center;
-    color: #4a4a66;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-  }
+  .tile.feat:hover { border-color: var(--rule-hi); background: #0e0e1f; }
+  .feat-glyph { font-family: var(--serif); font-size: 34px; line-height: 1;
+    color: var(--tile-color, var(--accent)); padding-top: 5px; text-align: center; }
+  .feat-name { font-family: var(--serif); font-weight: 500;
+    font-size: clamp(23px,3.2vw,30px); line-height: 1.08; }
+  .feat-desc { font-size: 13.5px; color: var(--muted); line-height: 1.6;
+    max-width: 64ch; margin-top: 5px; }
+  .feat-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+  .lnk { font-size: 12px; font-weight: 600; color: var(--muted);
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 999px;
+    transition: color .15s, border-color .15s, background .15s; }
+  .lnk:hover { color: var(--text); border-color: var(--rule-hi); background: rgba(184,192,255,0.08); }
+  .lnk.primary { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+  .lnk.primary:hover { background: #cdd3ff; border-color: #cdd3ff; }
+
+  /* ── the index (everything else, one quiet row each) ── */
+  .section-header { display: flex; align-items: baseline; gap: 14px;
+    margin: clamp(36px,6vw,52px) 0 14px; }
+  .section-header span { font-family: var(--serif); font-style: italic; font-weight: 500;
+    font-size: 24px; color: var(--text); }
+  .section-header::after { content:''; flex: 1; height: 1px; background: var(--rule);
+    transform: translateY(-6px); }
+  .section-header .count { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px,1fr)); gap: 10px; }
+  .tile.row { border: 1px solid var(--rule); border-radius: 12px; background: transparent;
+    transition: border-color .18s, background .18s; }
+  .tile.row:hover { border-color: var(--rule-hi); background: var(--bg-2); }
+  .row-main { display: flex; align-items: center; gap: 13px; padding: 13px 15px; min-height: 56px; }
+  .row-glyph { font-family: var(--serif); font-size: 19px; width: 24px; flex: none;
+    text-align: center; color: var(--tile-color, var(--accent)); }
+  .row-body { flex: 1; min-width: 0; }
+  .row-name { display: flex; align-items: center; gap: 7px; font-size: 14.5px; font-weight: 600; }
+  .row-desc { font-size: 12px; color: var(--muted); line-height: 1.45; margin-top: 1px;
+    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+  .row-go { color: var(--faint); font-size: 14px; flex: none; transition: color .15s, transform .15s; }
+  .tile.row:hover .row-go { color: var(--accent); transform: translateX(2px); }
+  .row-extra { display: flex; flex-wrap: wrap; gap: 4px 14px;
+    padding: 0 15px 11px 52px; margin-top: -4px; }
+  .row-extra a { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .row-extra a:hover { color: var(--accent); }
+  .pill { font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+    padding: 2px 7px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); flex: none; }
+  .pill.planned { color: var(--gold); border-color: rgba(243,213,154,0.4); }
+  .pill.local { color: var(--green); border-color: rgba(95,211,154,0.4); }
+
+  .tile.add { display: flex; align-items: center; justify-content: center; min-height: 56px;
+    border: 1px dashed var(--rule); border-radius: 12px; color: var(--faint);
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; cursor: pointer;
+    transition: color .15s, border-color .15s; }
+  .tile.add:hover { color: var(--accent); border-color: var(--rule-hi); }
+
+  footer { margin-top: clamp(48px,8vw,72px); padding-top: 22px; border-top: 1px solid var(--rule);
+    text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted);
+    line-height: 2; letter-spacing: 0.04em; }
+  footer .path { cursor: pointer; }
+  footer .path:hover { color: var(--accent); }
+
   @media (max-width: 600px) {
-    .wrap { padding: 36px 18px 60px; }
-    .brand .title { font-size: 38px; }
-    header { align-items: flex-start; }
-    .meta { text-align: left; }
+    header { padding-top: 16px; }
+    .meta #clock { font-size: 18px; }
+    .tile.feat { grid-template-columns: 36px 1fr; padding: 18px 16px 16px; }
+    .feat-glyph { font-size: 24px; }
+    .row-extra { padding-left: 16px; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="brand">
-      <div class="title">ATLAS</div>
-      <div class="subtitle">your projects &middot; your stuff</div>
-    </div>
+    <div class="brand">Atlas · <b>home</b></div>
     <div class="meta">
       <div id="clock">--:--</div>
       <div id="date">&nbsp;</div>
     </div>
   </header>
 
+  <div class="hero">
+    <div class="eyebrow">Personal hub · study, build, play</div>
+    <h1>Everything I'm building, <em>in one place.</em></h1>
+    <p class="lede">Study tools, market maps, games, and the field manuals that keep them honest. Pick a door.</p>
+  </div>
+
+  <div class="featured" id="featured"></div>
   <div id="sections"></div>
 
   <footer>
-    v1 &middot; built locally<br>
-    <span id="atlasPath" title="Click to copy" style="cursor:pointer;color:#6b6b8a;">📁 C:\Users\HOME\atlas</span>
-    <span id="pathCopied" style="color:#5fd39a;opacity:0;transition:opacity .2s;">&nbsp;copied!</span>
+    v2 · hand-built, no framework<br>
+    <span class="path" id="atlasPath" title="Click to copy">📁 C:\Users\HOME\atlas</span>
+    <span id="pathCopied" style="color:var(--green);opacity:0;transition:opacity .2s;">&nbsp;copied!</span>
   </footer>
 </div>
 
 <script>
+// Tiles are DATA, not markup (Atlas convention): to add/edit/feature a project,
+// edit this array. `featured: true` promotes an item to the flagship rows up top.
 const ITEMS = [
-  {
-    section: 'Projects',
-    name: 'RoShop',
-    icon: '❖',
-    color: '#818cf8',
-    status: 'live',
-    desc: 'Roblox item shop — MM2 knives, Adopt Me pets, Robux packages. Firebase backend.',
-    actions: [
-      { label: 'Open Shop', href: 'https://roshop-642dd.web.app', primary: true },
-      { label: 'Admin', href: 'https://roshop-642dd.web.app/admin.html' },
-      { label: 'GitHub', href: 'https://github.com/oksoimcodingnow/roshop' },
-    ],
-  },
-  {
-    section: 'Projects',
-    name: 'Schedule',
-    icon: '◆',
-    color: '#fbbf24',
-    status: 'live',
-    desc: 'Daily / weekly task planner with due dates, priorities, and overdue tracking. Saved locally in your browser.',
-    actions: [
-      { label: 'Open Schedule', href: 'schedule.html', primary: true },
-    ],
-  },
-  {
-    section: 'Projects',
-    name: 'Markets',
-    icon: '◵',
-    color: '#4ec98c',
-    status: 'live',
-    desc: 'Live crypto watchlist — real prices, 24h change, 7-day sparklines, global market cap. Auto-refreshes. Free CoinGecko data, no keys. Your watchlist saves locally.',
-    actions: [
-      { label: 'Open Markets', href: 'markets.html', primary: true },
-    ],
-  },
-  {
-    section: 'Projects',
-    name: 'Japanese 日本語',
-    icon: '語',
-    color: '#ff8db3',
-    status: 'live',
-    desc: 'Learn Japanese, tap-to-hear. Hiragana chart, essential phrases, numbers, and a flashcard practice mode — every word spoken aloud by your browser. Beginner-friendly.',
-    actions: [
-      { label: 'Start learning', href: 'japanese.html', primary: true },
-    ],
-  },
   {
     section: 'Projects',
     name: 'Fin-Eng Studio',
     icon: '∫',
     color: '#f3d59a',
     status: 'live',
+    featured: true,
     desc: 'My Financial Engineering courses, made playable. Drag the efficient frontier, price a bond, simulate a random walk — interactive study tools for Portfolio Analysis, Valuation, Stochastic Processes, and more. Built on the same finance references, so the math matches the exams.',
     actions: [
       { label: 'Open Studio', href: 'fineng/index.html', primary: true },
@@ -310,13 +183,26 @@ const ITEMS = [
   },
   {
     section: 'Projects',
-    name: 'Macro Map',
-    icon: '◉',
-    color: '#b8c0ff',
+    name: 'Japanese 日本語',
+    icon: '語',
+    color: '#ff8db3',
     status: 'live',
-    desc: 'A world map of key economic & commodity hubs. Toggle layers — live weather (Open-Meteo) or economy (World Bank GDP/capita, inflation) — and click any hub to inspect. An exploration tool, not a trading signal.',
+    featured: true,
+    desc: 'Learn Japanese, tap-to-hear. Hiragana chart, essential phrases, numbers, and a flashcard practice mode — every word spoken aloud by your browser. Collect all 46 kana in the Spirit album.',
     actions: [
-      { label: 'Open Macro Map', href: 'macro-map.html', primary: true },
+      { label: 'Start learning', href: 'japanese.html', primary: true },
+    ],
+  },
+  {
+    section: 'Projects',
+    name: 'Schedule',
+    icon: '◆',
+    color: '#f3d59a',
+    status: 'live',
+    featured: true,
+    desc: 'Daily / weekly task planner with due dates, priorities, and overdue tracking. Saved locally in your browser.',
+    actions: [
+      { label: 'Open Schedule', href: 'schedule.html', primary: true },
     ],
   },
   {
@@ -325,6 +211,7 @@ const ITEMS = [
     icon: '⬡',
     color: '#6fcf8e',
     status: 'live',
+    featured: true,
     desc: 'The whole thesis in one flow — sand → chip → AI → power → raw earth, and how to value any of it. Start with the Big Picture, then dive into the semiconductor supply chain or the second-order AI Ripple.',
     actions: [
       { label: 'Big Picture', href: 'overview.html', primary: true },
@@ -336,11 +223,46 @@ const ITEMS = [
   },
   {
     section: 'Projects',
+    name: 'RoShop',
+    icon: '❖',
+    color: '#b8c0ff',
+    status: 'live',
+    desc: 'Roblox item shop — MM2 knives, Adopt Me pets, Robux packages. Firebase backend.',
+    actions: [
+      { label: 'Open Shop', href: 'https://roshop-642dd.web.app', primary: true },
+      { label: 'Admin', href: 'https://roshop-642dd.web.app/admin.html' },
+      { label: 'GitHub', href: 'https://github.com/oksoimcodingnow/roshop' },
+    ],
+  },
+  {
+    section: 'Projects',
+    name: 'Markets',
+    icon: '◵',
+    color: '#5fd39a',
+    status: 'live',
+    desc: 'Live crypto watchlist — real prices, 24h change, 7-day sparklines, global market cap. Auto-refreshes. Free CoinGecko data, no keys.',
+    actions: [
+      { label: 'Open Markets', href: 'markets.html', primary: true },
+    ],
+  },
+  {
+    section: 'Projects',
+    name: 'Macro Map',
+    icon: '◉',
+    color: '#b8c0ff',
+    status: 'live',
+    desc: 'A world map of key economic & commodity hubs. Toggle live weather or economy layers, click any hub to inspect.',
+    actions: [
+      { label: 'Open Macro Map', href: 'macro-map.html', primary: true },
+    ],
+  },
+  {
+    section: 'Projects',
     name: 'Knowledge Graph',
     icon: '◎',
-    color: '#22d3ee',
+    color: '#b8c0ff',
     status: 'live',
-    desc: 'Interactive map of RoShop’s codebase — 153 nodes, 186 edges, 29 communities. Search, filter by community, fit and re-layout. Works on phone now.',
+    desc: 'Interactive map of RoShop’s codebase — 153 nodes, 186 edges, 29 communities. Search, filter, re-layout.',
     actions: [
       { label: 'Open', href: 'graphify/graph.html', primary: true },
       { label: 'Report', href: 'graphify/GRAPH_REPORT.md' },
@@ -350,36 +272,12 @@ const ITEMS = [
     section: 'Projects',
     name: 'Quant',
     icon: '∑',
-    color: '#06b6d4',
+    color: '#b8c0ff',
     status: 'live',
-    desc: 'Crypto-first quant workspace — SMA crossover toy alpha running on BTC/USDT via ccxt + vectorbt + Binance. Private repo.',
+    desc: 'Crypto-first quant workspace — SMA crossover toy alpha on BTC/USDT via ccxt + vectorbt. Private repo.',
     actions: [
       { label: 'GitHub', href: 'https://github.com/oksoimcodingnow/quant', primary: true },
       { label: 'Local folder', href: 'file:///C:/Users/HOME/quant/' },
-    ],
-  },
-  {
-    section: 'AI Tools',
-    name: 'Claude',
-    icon: '✦',
-    color: '#d97757',
-    status: 'live',
-    desc: 'Coding + reasoning assistant. Use for RoShop dev, fin-eng questions, anything heavy.',
-    actions: [
-      { label: 'Open Claude', href: 'https://claude.ai', primary: true },
-      { label: 'Claude Code', href: 'https://claude.ai/code' },
-    ],
-  },
-  {
-    section: 'AI Tools',
-    name: 'NotebookLM × Claude',
-    icon: '⊛',
-    color: '#a78bfa',
-    status: 'live',
-    desc: 'Upload textbooks, papers, notes as sources in NotebookLM and chat with grounded citations in the browser. Direct Claude MCP query is unstable on this account — using manual copy/paste workflow for now.',
-    actions: [
-      { label: 'Open NotebookLM', href: 'https://notebooklm.google.com', primary: true },
-      { label: 'Open Claude', href: 'https://claude.ai/code' },
     ],
   },
   {
@@ -388,7 +286,7 @@ const ITEMS = [
     icon: '▦',
     color: '#f3d59a',
     status: 'live',
-    desc: 'Your knowledge, categorized — Commands (every git/terminal command, click-to-copy), Quant, Workflow, Design. The cheatsheet for everything you keep forgetting.',
+    desc: 'Your knowledge, categorized — Commands (click-to-copy), Quant, Workflow, Design. The cheatsheet for everything you keep forgetting.',
     actions: [
       { label: 'Open Library', href: 'library/', primary: true },
       { label: 'Commands', href: 'library/commands.html' },
@@ -400,7 +298,7 @@ const ITEMS = [
     icon: '✦',
     color: '#b8c0ff',
     status: 'live',
-    desc: 'Learn quant from zero — 12 visual, interactive lessons: edge, risk, how backtests lie, sizing, ML honestly, volatility, false positives, neural nets, costs, diversification, regimes, and the full pipeline. Each with something you can play with.',
+    desc: 'Learn quant from zero — 12 visual, interactive lessons: edge, risk, how backtests lie, sizing, volatility, regimes, the full pipeline.',
     actions: [
       { label: 'Start learning', href: 'learn/', primary: true },
     ],
@@ -411,7 +309,7 @@ const ITEMS = [
     icon: '✧',
     color: '#b8c0ff',
     status: 'live',
-    desc: 'Hundreds of birds, no leader, three simple rules each, and a flock emerges, splits, and swirls. Move your cursor through them. A live demo of emergence, the same way a market is a crowd with no boss.',
+    desc: 'Hundreds of birds, no leader, three simple rules each — and a flock emerges. A live demo of emergence.',
     actions: [
       { label: 'Watch it flock', href: 'flock.html', primary: true },
     ],
@@ -422,7 +320,7 @@ const ITEMS = [
     icon: '◆',
     color: '#f3d59a',
     status: 'live',
-    desc: '100 traders, all flipping coins, zero skill. One ends up looking like a genius. Bet on the star, run another year, and watch the magic vanish. The most expensive illusion in markets, made visible.',
+    desc: '100 traders, all flipping coins, zero skill. One ends up looking like a genius. The most expensive illusion in markets.',
     actions: [
       { label: 'Spot the fake genius', href: 'luck.html', primary: true },
     ],
@@ -431,20 +329,44 @@ const ITEMS = [
     section: 'Projects',
     name: 'Beat the Market',
     icon: '▣',
-    color: '#6fe3a8',
+    color: '#5fd39a',
     status: 'live',
-    desc: 'A 15-second trading game. Tap to jump in and out, try to finish ahead of just holding. The catch: every trade costs a fee, so overtrading quietly bleeds you. A game that teaches Lesson 9.',
+    desc: 'A 15-second trading game. Tap in and out, try to beat holding. Every trade costs a fee — overtrading bleeds you.',
     actions: [
       { label: 'Play', href: 'trader.html', primary: true },
     ],
   },
   {
     section: 'AI Tools',
+    name: 'Claude',
+    icon: '✦',
+    color: '#d97757',
+    status: 'live',
+    desc: 'Coding + reasoning assistant. Use for dev work, fin-eng questions, anything heavy.',
+    actions: [
+      { label: 'Open Claude', href: 'https://claude.ai', primary: true },
+      { label: 'Claude Code', href: 'https://claude.ai/code' },
+    ],
+  },
+  {
+    section: 'AI Tools',
+    name: 'NotebookLM × Claude',
+    icon: '⊛',
+    color: '#b8c0ff',
+    status: 'live',
+    desc: 'Upload textbooks and notes as sources, chat with grounded citations. Manual copy/paste workflow for now.',
+    actions: [
+      { label: 'Open NotebookLM', href: 'https://notebooklm.google.com', primary: true },
+      { label: 'Open Claude', href: 'https://claude.ai/code' },
+    ],
+  },
+  {
+    section: 'AI Tools',
     name: 'Skills Library',
     icon: '✧',
-    color: '#a78bfa',
+    color: '#b8c0ff',
     status: 'live',
-    desc: '49 skills indexed — finance/quant (VaR, GARCH, DCF, Sharpe), code review, project setup, automation, graphify. Searchable, click-to-copy.',
+    desc: '49 skills indexed — finance/quant (VaR, GARCH, DCF, Sharpe), code review, automation, graphify. Searchable, click-to-copy.',
     actions: [
       { label: 'Browse skills', href: 'skills.html', primary: true },
     ],
@@ -455,7 +377,7 @@ const ITEMS = [
     icon: '➜',
     color: '#b8c0ff',
     status: 'live',
-    desc: 'Quickstart — the handshake protocol as the keystrokes you actually type. Six numbered steps, copy-paste blocks, designed in the editorial system. Read this first.',
+    desc: 'Quickstart — the handshake protocol as the keystrokes you actually type. Six numbered steps, copy-paste blocks.',
     actions: [
       { label: 'Run the handshake', href: 'demos/start-here.html', primary: true },
     ],
@@ -466,7 +388,7 @@ const ITEMS = [
     icon: '❦',
     color: '#b8c0ff',
     status: 'live',
-    desc: 'Field Manual Vol. I — the philosophy of the Claude × Codex review protocol. Scrollytelling editorial. Read after Start Here for the why behind the how.',
+    desc: 'Field Manual Vol. I — the philosophy of the Claude × Codex review protocol. Scrollytelling editorial.',
     actions: [
       { label: 'Read the manual', href: 'demos/handshake.html', primary: true },
     ],
@@ -477,7 +399,7 @@ const ITEMS = [
     icon: '❧',
     color: '#f3d59a',
     status: 'live',
-    desc: 'Field Manual Vol. II — the 6-step study loop (capture, source, ask, code, log, cycle) for turning curiosity into competence. Editorial like the Handshake.',
+    desc: 'Field Manual Vol. II — the 6-step study loop for turning curiosity into competence.',
     actions: [
       { label: 'Read the flow', href: 'demos/study-flow.html', primary: true },
     ],
@@ -488,7 +410,7 @@ const ITEMS = [
     icon: '◉',
     color: '#f3d59a',
     status: 'live',
-    desc: 'Scroll-driven frame sequence — 240 pre-rendered JPGs swap as you scroll. The Apple-product-page technique. Currently a procedural placeholder; drop your Veo frames into demos/frames/ to swap in.',
+    desc: 'Scroll-driven frame sequence — 240 pre-rendered JPGs swap as you scroll. The Apple-product-page technique.',
     actions: [
       { label: 'See it', href: 'demos/showcase.html', primary: true },
       { label: 'Frames folder', href: 'demos/frames/README.md' },
@@ -498,9 +420,9 @@ const ITEMS = [
     section: 'Demos',
     name: 'Workflow Maps',
     icon: '⊹',
-    color: '#22d3ee',
+    color: '#b8c0ff',
     status: 'live',
-    desc: 'Your workflows as flowcharts both you and the agents can read — handshake, agent stack, study flow, quant pipeline. Mermaid diagrams, rendered.',
+    desc: 'Your workflows as flowcharts both you and the agents can read — handshake, agent stack, study flow, quant pipeline.',
     actions: [
       { label: 'View diagrams', href: 'demos/workflow.html', primary: true },
       { label: 'Source (MD)', href: 'https://github.com/oksoimcodingnow/atlas/blob/main/WORKFLOW.md' },
@@ -510,7 +432,7 @@ const ITEMS = [
     section: 'Demos',
     name: 'Gallery',
     icon: '◫',
-    color: '#a78bfa',
+    color: '#b8c0ff',
     status: 'live',
     desc: 'Index of all Atlas demos with descriptions, screenshots, and source links.',
     actions: [
@@ -521,9 +443,9 @@ const ITEMS = [
     section: 'Utilities',
     name: 'PDF Tools',
     icon: '▣',
-    color: '#ef4444',
+    color: '#ff8db3',
     status: 'live',
-    desc: 'Convert PDF ↔ Word / Excel / PPT, merge, split, compress, OCR. Free, no signup. Files deleted server-side after processing.',
+    desc: 'Convert PDF ↔ Word / Excel / PPT, merge, split, compress, OCR. Free, no signup.',
     actions: [
       { label: 'Open PDF24', href: 'https://tools.pdf24.org/en/', primary: true },
       { label: 'PDF → Word', href: 'https://tools.pdf24.org/en/pdf-to-word' },
@@ -534,9 +456,9 @@ const ITEMS = [
     section: 'Utilities',
     name: 'CloudConvert',
     icon: '◫',
-    color: '#22c55e',
+    color: '#5fd39a',
     status: 'live',
-    desc: 'Any format → any format (200+). Use when PDF24 doesn’t cover what you need — images, audio, video, archives.',
+    desc: 'Any format → any format (200+). Use when PDF24 doesn’t cover it — images, audio, video, archives.',
     actions: [
       { label: 'Open', href: 'https://cloudconvert.com/', primary: true },
     ],
@@ -546,56 +468,105 @@ const ITEMS = [
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function slug(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function linkAttrs(href) {
+  return href && href.startsWith('http') ? ' target="_blank" rel="noopener"' : '';
+}
+// Status pill only when it says something ("live" on everything is noise).
+function pillHtml(status) {
+  return status === 'live' ? '' : '<span class="pill ' + esc(status) + '">' + esc(status) + '</span>';
+}
 
-function makeTile(p) {
+// Flagship row: serif name, full description, every action as a pill link.
+function makeFeature(p, delay) {
   const tile = document.createElement('div');
-  tile.className = 'tile' + (p.status === 'planned' ? ' planned' : '');
-  tile.dataset.tour = p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  tile.className = 'tile feat';
+  tile.dataset.tour = slug(p.name);
   tile.style.setProperty('--tile-color', p.color);
-  const actionsHtml = p.actions.map(a => {
-    const cls = 'btn' + (a.primary ? ' primary' : '');
-    if (a.disabled) return `<span class="${cls}" aria-disabled="true">${esc(a.label)}</span>`;
-    const target = a.href && a.href.startsWith('http') ? ' target="_blank" rel="noopener"' : '';
-    return `<a class="${cls}" href="${esc(a.href)}"${target}>${esc(a.label)}</a>`;
-  }).join('');
-  tile.innerHTML = `
-    <div class="tile-head">
-      <div class="tile-name"><span class="icon">${esc(p.icon)}</span>${esc(p.name)}</div>
-      <span class="pill ${esc(p.status)}">${esc(p.status)}</span>
-    </div>
-    <div class="tile-desc">${esc(p.desc)}</div>
-    <div class="tile-actions">${actionsHtml}</div>
-  `;
+  tile.style.animationDelay = delay.toFixed(2) + 's';
+  const actions = p.actions.map(a =>
+    '<a class="lnk' + (a.primary ? ' primary' : '') + '" href="' + esc(a.href) + '"' + linkAttrs(a.href) + '>' + esc(a.label) + '</a>'
+  ).join('');
+  tile.innerHTML =
+    '<div class="feat-glyph">' + esc(p.icon) + '</div>' +
+    '<div>' +
+      '<h3 class="feat-name">' + esc(p.name) + ' ' + pillHtml(p.status) + '</h3>' +
+      '<p class="feat-desc">' + esc(p.desc) + '</p>' +
+      '<div class="feat-actions">' + actions + '</div>' +
+    '</div>';
   return tile;
 }
 
-const sectionsEl = document.getElementById('sections');
-const grouped = {};
-const order = [];
-ITEMS.forEach(i => {
-  if (!grouped[i.section]) { grouped[i.section] = []; order.push(i.section); }
-  grouped[i.section].push(i);
+// Index row: one quiet line per project. The row opens the primary action;
+// extra actions get a small mono link line underneath.
+function makeRow(p, delay) {
+  const tile = document.createElement('div');
+  tile.className = 'tile row';
+  tile.dataset.tour = slug(p.name);
+  tile.style.setProperty('--tile-color', p.color);
+  tile.style.animationDelay = delay.toFixed(2) + 's';
+  const primary = p.actions.find(a => a.primary) || p.actions[0];
+  const extras = p.actions.filter(a => a !== primary);
+  let html =
+    '<a class="row-main" href="' + esc(primary.href) + '"' + linkAttrs(primary.href) + '>' +
+      '<span class="row-glyph">' + esc(p.icon) + '</span>' +
+      '<span class="row-body">' +
+        '<span class="row-name">' + esc(p.name) + ' ' + pillHtml(p.status) + '</span>' +
+        '<span class="row-desc">' + esc(p.desc) + '</span>' +
+      '</span>' +
+      '<span class="row-go">→</span>' +
+    '</a>';
+  if (extras.length) {
+    html += '<div class="row-extra">' + extras.map(a =>
+      '<a href="' + esc(a.href) + '"' + linkAttrs(a.href) + '>' + esc(a.label) + '</a>'
+    ).join('') + '</div>';
+  }
+  tile.innerHTML = html;
+  return tile;
+}
+
+// ── render: featured first, then the index grouped by section ──
+let delay = 0.10;
+const featuredEl = document.getElementById('featured');
+ITEMS.filter(p => p.featured).forEach(p => {
+  featuredEl.appendChild(makeFeature(p, delay));
+  delay += 0.08;
 });
-// Render sections; entrance stagger + tilt are applied by lib/atlas-fx.js
+
+const sectionsEl = document.getElementById('sections');
+const grouped = {}; const order = [];
+ITEMS.filter(p => !p.featured).forEach(p => {
+  if (!grouped[p.section]) { grouped[p.section] = []; order.push(p.section); }
+  grouped[p.section].push(p);
+});
 order.forEach(name => {
   const header = document.createElement('div');
   header.className = 'section-header';
-  header.innerHTML = `<span>${esc(name)}</span>`;
+  header.style.animationDelay = Math.min(delay, 0.7).toFixed(2) + 's';
+  header.innerHTML = '<span>' + esc(name) + '</span><span class="count">' + grouped[name].length + '</span>';
   sectionsEl.appendChild(header);
+  delay += 0.05;
 
   const grid = document.createElement('div');
   grid.className = 'grid';
-  grouped[name].forEach(p => grid.appendChild(makeTile(p)));
+  grouped[name].forEach(p => {
+    grid.appendChild(makeRow(p, Math.min(delay, 0.85)));
+    delay += 0.03;
+  });
   if (name === 'Projects') {
     const addTile = document.createElement('div');
     addTile.className = 'tile add';
-    addTile.textContent = '+  add project';
+    addTile.style.animationDelay = Math.min(delay, 0.85).toFixed(2) + 's';
+    addTile.textContent = '+ add project';
     addTile.title = 'Edit index.html and add to the ITEMS array';
     grid.appendChild(addTile);
   }
   sectionsEl.appendChild(grid);
 });
 
+// ── clock ──
 function tick() {
   const now = new Date();
   const hh = String(now.getHours()).padStart(2, '0');

@@ -1,0 +1,7 @@
+{
+  "framework": "static-multipage",
+  "files": ["*.html", "fineng/*.html", "demos/*.html", "learn/*.html", "library/*.html"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

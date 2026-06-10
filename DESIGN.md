@@ -104,11 +104,21 @@ This appears on every editorial section. It anchors the eye and signals "this is
 - Film-grain SVG overlay (low opacity, mix-blend-mode: overlay)
 - Google Fonts loaded with `preconnect` for instant render
 
-### Hub pages (e.g. `index.html`)
-- Tile grid with category sections
-- Tiles tilt on hover, colored top accent strip per tile
-- Background: shared `lib/atlas-fx.js` particle constellation
-- Use icons (Unicode geometric chars) sparingly — only `❖ ◆ ◎ ⊞ ✦ ✧ ⊛ ▣ ◫ ❦`
+### Hub pages (e.g. `index.html`, `fineng/index.html`)
+- Editorial, not dashboard: serif hero (one gold eyebrow + italic-accent H1 + serif lede),
+  then **featured rows** for flagships (big serif name, full description, pill-link actions),
+  then a compact **index** of everything else grouped by section (one quiet row each:
+  glyph · name · one-line desc · →; extra actions as small mono links).
+- Section headers are serif italic with a hairline rule and a mono count — NOT tiny
+  uppercase tracked labels.
+- Status pills only when they carry information (planned/local). Never a "live" pill
+  on everything.
+- No gradient text, no glass blur, no colored top accent strips (retired 2026-06-10).
+- Per-item accent color (`--tile-color`) tints the glyph only, never fills.
+- Background: shared `lib/atlas-fx.js` particle constellation. Keep `.tile` /
+  `.section-header` class names — atlas-fx hooks entrance stagger + tilt onto them,
+  and honors inline `animation-delay` when a page sets its own rhythm.
+- Use icons (Unicode geometric chars) sparingly — only `❖ ◆ ◎ ⊞ ✦ ✧ ⊛ ▣ ◫ ❦ ∫ ∑ ⬡ 語`
 
 ### Utility pages (e.g. `schedule.html`)
 - Function-first. Stat row at top, form below, content below.
@@ -160,4 +170,4 @@ This appears on every editorial section. It anchors the eye and signals "this is
 
 ---
 
-*Last revised 2026-05-30 — when the handshake editorial was introduced and the book became a secondary demo.*
+*Last revised 2026-06-10 — home page joined the editorial system (featured rows + index); see also PRODUCT.md for the strategic register.*
