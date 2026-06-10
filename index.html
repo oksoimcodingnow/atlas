@@ -34,6 +34,8 @@
   /* warm glow above the constellation canvas (z-index 0, injected by atlas-fx) */
   body::after { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
     background: radial-gradient(720px 400px at 68% -10%, rgba(184,192,255,0.10), transparent 65%); }
+  /* quiet the starfield behind reading text — full brightness fought the copy */
+  body #bg-canvas { opacity: 0.4; }
 
   .wrap { position: relative; z-index: 2; max-width: 1060px; margin: 0 auto;
     padding: 0 var(--gutter) 72px; }
@@ -96,7 +98,7 @@
   .section-header .count { font-family: var(--mono); font-size: 11px; color: var(--faint); }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px,1fr)); gap: 10px; }
-  .tile.row { border: 1px solid var(--rule); border-radius: 12px; background: transparent;
+  .tile.row { border: 1px solid var(--rule); border-radius: 12px; background: var(--panel);
     transition: border-color .18s, background .18s; }
   .tile.row:hover { border-color: var(--rule-hi); background: var(--bg-2); }
   .row-main { display: flex; align-items: center; gap: 13px; padding: 13px 15px; min-height: 56px; }
