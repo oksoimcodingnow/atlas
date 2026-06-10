@@ -5,6 +5,12 @@
 
 ## ✅ Done 2026-06-11 (early AM): home redesign + design system docs + quant backtester
 
+- **Fin-Eng Exam Drill shipped (6aa22df, live, SW v81):** `fineng/drill.html` —
+  randomized exam questions across all courses; correct = +5 Spirit (+3 streak
+  bonus) into the SHARED pool with the Japanese game (`atlas_jp_start`); wrong =
+  worked solution. Distractors are real student mistakes. Math in tested module
+  `lib/drillmath.js` — **npm test now 63 assertions** (26 loot + 17 BS + 20 drill).
+
 - **Home page redesigned into the editorial system (b9efc87, live, SW v79→v80).**
   index.html now matches fineng/demos: serif hero ("Everything I'm building, in one
   place."), 4 featured rows (Fin-Eng, Japanese, Schedule, AI Investing Map), everything
