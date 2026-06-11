@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6 · Network security &amp; firewalls · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 6 of 14 · Attacks &amp; defenses</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 6 · Attacks &amp; defenses</div>
+  <h1>Defending the <em>wire.</em></h1>
+  <p class="standfirst">Lesson 1 showed your data hopping across networks as readable postcards. This lesson is the defender's answer: the tools that decide who gets in, who can listen, and how to send a secret across a wire full of strangers.</p>
+  <div class="meta-line">~8 min · interactive · builds on Lessons 1 &amp; 3</div>
+
+  <p>Every connection crosses machines you don't control — your router, your ISP, the coffee shop's access point, dozens of hops. Network security is the discipline of staying safe anyway. Three jobs: <span class="hl">control who can reach you</span> (firewalls), <span class="hl">hide what you send</span> (encryption/VPN), and <span class="hl">verify who you're talking to</span> (TLS).</p>
+
+  <h2>The defender's toolkit — defined</h2>
+  <dl class="terms">
+    <dt>firewall</dt>
+    <dd>A gatekeeper that decides which traffic is allowed in or out, by rules (port, address, protocol). The core principle: <strong>default-deny</strong> — block everything, then open only the exact doors you need. An unused open port is an unlocked door nobody's watching.</dd>
+    <dt>TLS (the S in HTTPS)</dt>
+    <dd>The encryption tunnel that wraps your web traffic. It does two things at once: <em class="it">encrypts</em> the data (confidentiality) and <em class="it">verifies the server's identity</em> with a certificate (authenticity), using the public-key crypto from Lesson 3. The padlock means both held.</dd>
+    <dt>VPN (virtual private network)</dt>
+    <dd>An encrypted tunnel from your device to a trusted server, so everything you send is hidden from the local network (the coffee shop, the airport). Useful on untrusted Wi-Fi. Note: it moves your trust to the VPN provider — it doesn't make you anonymous or invincible.</dd>
+    <dt>man-in-the-middle (MITM)</dt>
+    <dd>An attacker who sits <em class="it">between</em> you and the server, reading or altering traffic. On open HTTP they read everything. TLS is what defeats it — the certificate check means an impostor can't pretend to be your bank without a certificate they can't forge.</dd>
+    <dt>network segmentation</dt>
+    <dd>Splitting a network into zones so a breach in one can't reach the rest. Your IoT gadgets on one segment, your laptop on another — if the smart bulb gets popped, it can't see your files. The blast-radius limiter.</dd>
+  </dl>
+
+  <h2>Who can read your traffic? Pick a scenario</h2>
+  <p>The same browsing, three networks. Tap each to see who can see <em class="it">what</em> — and how encryption changes the answer.</p>
+
+  <div class="sim">
+    <div class="sim-title">Eavesdropper's-eye view</div>
+    <div class="chips" style="margin-bottom:8px">
+      <button class="chip on" data-net="http-open">Open Wi-Fi · HTTP</button>
+      <button class="chip" data-net="https-open">Open Wi-Fi · HTTPS</button>
+      <button class="chip" data-net="https-vpn">Open Wi-Fi · HTTPS + VPN</button>
+    </div>
+    <div id="netView" style="background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:16px;min-height:150px"></div>
+  </div>
+
+  <p class="pull">You can't trust the network. So you stop relying on it: encrypt the data, verify the other end, and assume someone is always listening.</p>
+
+  <div class="callout">
+    <div class="tag">The practical takeaways</div>
+    <p><span class="mono">1.</span> The padlock (HTTPS) is non-negotiable — it's what makes hostile Wi-Fi survivable. <span class="mono">2.</span> Even with HTTPS, the network can see <em>which sites</em> you visit (the domain), just not the contents — a VPN hides that too. <span class="mono">3.</span> "The Wi-Fi has a password" protects the network from outsiders joining; it does <em>not</em> encrypt your traffic from others already on it. Different things.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>You never control the wire, so you defend regardless. <span class="hl">Firewalls</span> default-deny and open only needed ports. <span class="hl">TLS/HTTPS</span> encrypts and authenticates — the answer to man-in-the-middle. <span class="hl">VPNs</span> tunnel you off untrusted Wi-Fi (moving trust to the provider). <span class="hl">Segmentation</span> limits the blast radius. The mindset: <span class="hl-2">assume the network is hostile, and make it not matter.</span></p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">You're on airport Wi-Fi visiting your bank over HTTPS (padlock showing). The person next to you is sniffing the Wi-Fi. What can they see?</div>
+    <button class="opt" data-correct="true">That you connected to your bank's domain — but not your login, balance, or anything inside the encrypted session.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Everything — your username, password, and balance, because you're on the same Wi-Fi.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Nothing at all — HTTPS makes you completely invisible on the network.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="05-web-attacks.html">← Lesson 5</a><a class="next" href="08-social-engineering.html">Lesson 8: Social engineering →</a></div>
+</div>
+<script>
+const SCENES={
+  'http-open':{
+    title:'Open Wi-Fi · plain HTTP',
+    rows:[
+      ['Which site you visit','👁 visible','red'],
+      ['Your username &amp; password','👁 visible','red'],
+      ['Everything you type &amp; see','👁 visible','red'],
+    ],
+    note:'No encryption at all. Anyone on the Wi-Fi (and the network owner) reads your postcards in full. This is why plain HTTP on public Wi-Fi is genuinely dangerous.',
+  },
+  'https-open':{
+    title:'Open Wi-Fi · HTTPS (padlock)',
+    rows:[
+      ['Which site you visit','👁 visible (domain only)','amber'],
+      ['Your username &amp; password','🔒 encrypted','green'],
+      ['Everything you type &amp; see','🔒 encrypted','green'],
+    ],
+    note:'TLS encrypts the contents and verifies the server. An eavesdropper sees that you talked to the bank, but nothing inside. This is the everyday win — and why the padlock matters.',
+  },
+  'https-vpn':{
+    title:'Open Wi-Fi · HTTPS + VPN',
+    rows:[
+      ['Which site you visit','🔒 hidden (tunnelled)','green'],
+      ['Your username &amp; password','🔒 encrypted','green'],
+      ['Everything you type &amp; see','🔒 encrypted','green'],
+    ],
+    note:'The VPN tunnel hides even which sites you visit from the local network — that visibility just moves to your VPN provider, so pick one you trust. Belt and suspenders for hostile Wi-Fi.',
+  },
+};
+const COL={red:'var(--red)',amber:'var(--accent-2)',green:'var(--green)'};
+function showNet(key){
+  const s=SCENES[key];
+  document.getElementById('netView').innerHTML=
+    '<div style="font-weight:700;margin-bottom:12px">'+s.title+'</div>'+
+    s.rows.map(r=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:14px"><span style="color:var(--muted)">'+r[0]+'</span><span style="color:'+COL[r[2]]+';font-weight:600;white-space:nowrap">'+r[1]+'</span></div>').join('')+
+    '<div style="font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.55">'+s.note+'</div>';
+}
+document.querySelectorAll('[data-net]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-net]').forEach(x=>x.classList.toggle('on',x===b));
+  showNet(b.dataset.net);
+}));
+showNet('http-open');
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. HTTPS encrypts the contents and proves the server\'s identity. The sniffer learns the domain you reached, but the login and balance are sealed inside TLS. A VPN would hide the domain too.':'✗ HTTPS changed the game. The contents are encrypted and the server is verified — the sniffer only sees the destination domain, not what you sent. It\'s not total invisibility (the domain leaks), but your secrets are safe.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

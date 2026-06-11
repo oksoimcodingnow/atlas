@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 8 · Social engineering &amp; phishing · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 8 of 14 · Attacks &amp; defenses</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 8 · Attacks &amp; defenses</div>
+  <h1>Hacking the <em>human.</em></h1>
+  <p class="standfirst">The strongest password and the best firewall don't matter if someone just asks you nicely for the keys. The most reliable way into any system isn't a clever exploit — it's a convincing message. This is the attack you personally face most.</p>
+  <div class="meta-line">~8 min · interactive · the one that targets you directly</div>
+
+  <p>Every other lesson defends a machine. This one defends <em class="it">you</em>. Attackers learned long ago that it's far easier to trick a person into opening the door than to break the lock. That's <span class="hl">social engineering</span>: manipulating people into giving up access, money, or secrets. And <strong>you are the target</strong> — not a server.</p>
+
+  <h2>The con artist's playbook — defined</h2>
+  <dl class="terms">
+    <dt>phishing</dt>
+    <dd>A fake message (email, text, DM) impersonating someone you trust — your bank, a delivery service, a boss, Steam — to trick you into clicking a malicious link, entering a password on a fake page, or paying.</dd>
+    <dt>spear phishing</dt>
+    <dd>Phishing aimed at <em class="it">you specifically</em>, using real details (your name, your employer, a recent purchase) to be far more convincing. The mass-email's sniper cousin.</dd>
+    <dt>pretexting</dt>
+    <dd>Inventing a believable scenario — "I'm from IT, we detected a problem with your account" — to make the request feel legitimate. The story is the weapon.</dd>
+    <dt>the psychological levers</dt>
+    <dd>Almost every scam pulls one of four: <strong>urgency</strong> ("act in 24 hours or lose access"), <strong>fear</strong> ("suspicious login detected!"), <strong>authority</strong> ("this is your CEO"), or <strong>greed/reward</strong> ("you won," "free Robux"). When a message rushes or scares you, that's the tell — slow down <em>because</em> it wants you fast.</dd>
+  </dl>
+
+  <h2>Spot the phish</h2>
+  <p>Five messages. For each, decide: <strong>legit</strong> or <strong>phishing</strong>? Then I'll show you the tells. Train your eye — this is the single most useful security skill for daily life.</p>
+
+  <div class="sim">
+    <div class="sim-title" id="phishCount">Message 1 of 5</div>
+    <div id="phishCard" style="background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:18px;font-size:14px;line-height:1.55;min-height:120px"></div>
+    <div class="chips" style="margin-top:14px">
+      <button class="chip" data-ans="legit">✅ Looks legit</button>
+      <button class="chip" data-ans="phish">🎣 It's phishing</button>
+    </div>
+    <div id="phishVerdict" style="font-size:13.5px;margin-top:14px;line-height:1.6;min-height:40px"></div>
+    <div class="chips"><button class="chip" id="phishNext" style="display:none">Next message ›</button> <span style="font-family:var(--mono);font-size:12px;color:var(--muted);align-self:center" id="phishScore">score 0/0</span></div>
+  </div>
+
+  <p class="pull">When a message makes you feel urgency, fear, or greed, that feeling <em>is</em> the attack. The cure is a pause: real institutions can wait three minutes while you check.</p>
+
+  <h2>The defender's habits</h2>
+  <dl class="terms">
+    <dt>Slow down on pressure</dt>
+    <dd>Urgency is manufactured. No real bank locks you out for thinking for five minutes. The pause defeats most scams by itself.</dd>
+    <dt>Check the sender &amp; the link, don't trust the display</dt>
+    <dd>The name shown can be faked; hover/long-press the link to see the <em>real</em> destination. <span class="mono">steamcommunlty.com</span> is not <span class="mono">steamcommunity.com</span>. When in doubt, navigate to the site yourself — never via their link.</dd>
+    <dt>Verify through a second channel</dt>
+    <dd>"Your boss" emails asking for gift cards? Call or message them directly. The con relies on you not checking.</dd>
+    <dt>MFA is your safety net</dt>
+    <dd>Even if you're fooled and give a password, multi-factor auth (Lesson 4) often stops the takeover — the attacker still lacks your second factor. Belt and suspenders.</dd>
+  </dl>
+
+  <h2>Recap</h2>
+  <p>The easiest hack is asking. <span class="hl">Social engineering</span> targets you, not your machine, pulling <span class="hl-2">urgency, fear, authority, or greed</span>. Defend with a <strong>pause</strong>, by checking the real sender and link, by verifying through another channel, and by keeping <span class="hl">MFA</span> on as the net. The feeling of being rushed is the alarm — listen to it.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">A text says: "USPS: your package is held. Pay a $1.99 redelivery fee within 12 hours or it returns to sender: [link]". The strongest single tell?</div>
+    <button class="opt" data-correct="true">The manufactured urgency (12 hours) plus an unexpected payment via a link — slow down and go to USPS yourself instead of tapping it.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">The fee is only $1.99, so it's probably real — scammers want big amounts.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">It mentions USPS, a real company, so it must be legitimate.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="06-network-security.html">← Lesson 6</a><a class="next" href="index.html">More lessons coming →</a></div>
+</div>
+<script>
+const MSGS=[
+  { from:'Steam Support &lt;noreply@steampowered.com&gt;', subj:'New login from Russia',
+    body:'We blocked a sign-in to your account from a new device. If this wasn\'t you, secure your account here: <span style="color:var(--accent)">steamcommunlty.com/secure</span>',
+    phish:true, why:'Look at the link: <b>steamcommun<span style="color:var(--red)">l</span>ty.com</b> — an L where the I should be. Classic lookalike domain. Plus fear ("login from Russia") + urgency. Real Steam security lives only at steampowered.com / steamcommunity.com.' },
+  { from:'GitHub &lt;noreply@github.com&gt;', subj:'[oksoimcodingnow/atlas] CI passed',
+    body:'Your push to main passed all checks. View the run in your repository\'s Actions tab.',
+    phish:false, why:'Routine, no pressure, no link asking for credentials, and it tells you to navigate yourself ("Actions tab") rather than clicking a login link. This is what a normal, safe notification looks like.' },
+  { from:'Your CEO &lt;ceo.gmail.urgent@gmail.com&gt;', subj:'Quick favor - need now',
+    body:'I\'m in a meeting and can\'t talk. Need you to buy 5 x $100 gift cards for a client and send me the codes ASAP. Will reimburse. Don\'t tell anyone yet.',
+    phish:true, why:'Textbook CEO-fraud: authority + urgency + secrecy + gift cards (untraceable). The "CEO" emailing from a random gmail is the giveaway. Verify through a second channel — call them. No real boss does this.' },
+  { from:'Netflix &lt;info@account-netflix-billing.com&gt;', subj:'Payment failed — update now',
+    body:'Your payment was declined. Update your billing details within 24 hours to avoid suspension: <span style="color:var(--accent)">Update payment</span>',
+    phish:true, why:'The sender domain is <b>account-netflix-billing.com</b>, not netflix.com — real companies send from their own domain. Urgency ("24 hours") + a link to "update payment" = harvest your card. Go to netflix.com directly instead.' },
+  { from:'bank-th &lt;alerts@yourbank.co.th&gt;', subj:'You have a new statement',
+    body:'Your monthly statement is ready. Log in to your account to view it. We will never ask for your password or OTP by email or phone.',
+    phish:false, why:'Calm, no link demanding credentials, and it actively reminds you it will never ask for your password/OTP — a hallmark of a legit notice. It nudges you to log in yourself, not through a link. Safe.' },
+];
+let i=0,score=0,total=0,answered=false;
+function show(){
+  answered=false;
+  const m=MSGS[i];
+  document.getElementById('phishCount').textContent='Message '+(i+1)+' of '+MSGS.length;
+  document.getElementById('phishCard').innerHTML=
+    '<div style="font-family:var(--mono);font-size:12px;color:var(--faint)">From: '+m.from+'</div>'+
+    '<div style="font-weight:700;margin:6px 0 10px">'+m.subj+'</div>'+
+    '<div style="color:var(--muted)">'+m.body+'</div>';
+  document.getElementById('phishVerdict').innerHTML='';
+}
+document.querySelectorAll('[data-ans]').forEach(b=>b.addEventListener('click',()=>{
+  if(answered)return; answered=true; total++;
+  const m=MSGS[i]; const said=b.dataset.ans==='phish'; const right=(said===m.phish);
+  if(right)score++;
+  document.getElementById('phishVerdict').innerHTML=
+    (right?'<b style="color:var(--green)">✓ Correct — '+(m.phish?'phishing.':'legit.')+'</b> ':'<b style="color:var(--red)">✗ It\'s '+(m.phish?'phishing.':'legit.')+'</b> ')+m.why;
+  document.getElementById('phishScore').textContent='score '+score+'/'+total;
+  document.getElementById('phishNext').style.display = (i<MSGS.length-1)?'inline-flex':'none';
+}));
+document.getElementById('phishNext').addEventListener('click',()=>{ if(i<MSGS.length-1){i++;show();} });
+show();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. The manufactured deadline + an unexpected payment through a link is the whole scam. The small amount is deliberate — it feels harmless so you don\'t scrutinize it. Go to the real site yourself.':'✗ Look again: the small fee is the trick (low enough that you don\'t question it), and "real company name" is exactly what every phish impersonates. The tell is urgency + pay-via-link. Never tap it; navigate to USPS yourself.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

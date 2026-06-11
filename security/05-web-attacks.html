@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5 · Web attacks: XSS, SQLi & friends · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 5 of 14 · Attacks &amp; defenses</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 5 · Attacks &amp; defenses</div>
+  <h1>The bugs that <em>break</em> the web.</h1>
+  <p class="standfirst">Most real breaches aren't Hollywood hacking. They're a website that trusted input it never should have. Three classic mistakes cause an enormous share of them, and the fixes are almost embarrassingly small once you see the pattern.</p>
+  <div class="meta-line">~9 min · interactive · builds on Lessons 1–4 · most useful lesson if you build web apps</div>
+
+  <p>You build web apps (RoShop, Atlas). That makes this the lesson with your name on it. Every attack here comes from one root sin: <span class="hl">treating user input as trusted</span>. A user can type anything into a form, a URL, a search box — and if your code treats that text as a command instead of as <em class="it">data</em>, it can be turned against you.</p>
+
+  <h2>The three classics — defined</h2>
+  <dl class="terms">
+    <dt>SQL injection (SQLi)</dt>
+    <dd>Your code builds a database query by gluing user input into a command string. An attacker types input that <em class="it">closes your query and adds their own</em> — dumping the whole user table, or logging in as admin without a password. The breach behind countless "50 million accounts leaked" headlines.</dd>
+    <dt>Cross-site scripting (XSS)</dt>
+    <dd>Your page displays user input without cleaning it. An attacker submits input that <em class="it">is</em> JavaScript (e.g. in a comment or username); when another user views the page, that script runs <strong>in their browser, as them</strong> — stealing their session, their data, their account.</dd>
+    <dt>Cross-site request forgery (CSRF)</dt>
+    <dd>A malicious page tricks your <em class="it">already-logged-in</em> browser into firing a real request to a site you trust ("transfer money," "change email") without you meaning to. It abuses the fact that your browser auto-sends your cookies.</dd>
+  </dl>
+
+  <h2>See SQL injection, safely</h2>
+  <p>Below is a <strong>simulated</strong> login that builds its query the unsafe way (this runs entirely in your browser — nothing real is touched). Try logging in as <code>admin</code> with any password. Then try the classic injection in the <em class="it">username</em> box: <code>admin' --</code></p>
+
+  <div class="sim">
+    <div class="sim-title">Vulnerable login (simulation)</div>
+    <div class="sim-hint">The server builds: <span style="font-family:var(--mono);color:var(--accent-2)">SELECT * FROM users WHERE name='<u>INPUT</u>' AND pass='...'</span></div>
+    <input class="field" id="sqlUser" placeholder="username" value="admin" style="margin-bottom:8px">
+    <input class="field" id="sqlPass" placeholder="password" value="wrong-password">
+    <div class="chips" style="margin-top:10px">
+      <button class="chip" id="sqlGo">Try login</button>
+      <button class="chip" data-inj="admin' --">Inject: admin' --</button>
+      <button class="chip" data-inj="' OR '1'='1">Inject: ' OR '1'='1</button>
+    </div>
+    <div id="sqlQuery" style="font-family:var(--mono);font-size:12.5px;color:var(--faint);margin-top:14px;word-break:break-all;background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:10px"></div>
+    <div id="sqlResult" style="font-size:14px;margin-top:10px;font-weight:600;min-height:24px"></div>
+  </div>
+
+  <p>See what happened? The <code>--</code> starts a SQL comment, so everything after it — including the password check — is <strong>ignored</strong>. You logged in as admin without knowing the password. The <code>' OR '1'='1</code> trick makes the WHERE clause always true. The database did exactly what it was told; the bug is that <span class="hl">your code let the user write part of the command</span>.</p>
+
+  <div class="callout warn">
+    <div class="tag">The fix is one idea: never glue input into commands</div>
+    <p>Use <span class="mono">parameterized queries</span> (a.k.a. prepared statements). You write <span class="mono">WHERE name = ?</span> and hand the input <em>separately</em>, as data. Now <code>admin' --</code> is treated as a literal (weird) username that simply doesn't exist — the database never parses it as code. Every modern database library supports this. <strong>The rule: data is data, never code.</strong></p>
+  </div>
+
+  <h2>See XSS, safely</h2>
+  <p>Now a comment box that displays your input. Type a normal comment — fine. Then type some "input" that's actually HTML/script and watch the difference between the <strong>unsafe</strong> render (left) and the <strong>safe, escaped</strong> render (right). Try: <code>&lt;b&gt;hello&lt;/b&gt;</code> then <code>&lt;img src=x onerror="alert(1)"&gt;</code></p>
+
+  <div class="sim">
+    <div class="sim-title">Comment box: unsafe vs escaped</div>
+    <input class="field" id="xssIn" placeholder="type a comment…" value="&lt;b&gt;totally normal comment&lt;/b&gt;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
+      <div>
+        <div style="font-size:11px;color:var(--red);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Unsafe (innerHTML)</div>
+        <div id="xssBad" style="border:1px solid rgba(240,133,125,0.4);border-radius:8px;padding:12px;min-height:48px;font-size:14px;background:var(--bg)"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--green);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Safe (escaped)</div>
+        <div id="xssGood" style="border:1px solid rgba(111,227,168,0.4);border-radius:8px;padding:12px;min-height:48px;font-size:14px;background:var(--bg);font-family:var(--mono);font-size:12.5px;word-break:break-all"></div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:10px">Left: your input is parsed as <em>HTML</em> — the bold tag renders, and a real attack's script would <em>run</em>. Right: the same input is <em>escaped</em> — shown as literal text, harmless. (We neutralized the demo so nothing actually executes here, but the left box is the shape of the bug.)</div>
+  </div>
+
+  <p class="pull">Every web attack here is the same sentence: the code mistook the user's <em>data</em> for the code's <em>commands</em>. Keep those two apart and most of them vanish.</p>
+
+  <h2>The defender's checklist (yours, for RoShop/Atlas)</h2>
+  <dl class="terms">
+    <dt>Validate &amp; escape all input/output</dt>
+    <dd>Never trust what comes from a user. Escape on the way out (XSS), parameterize on the way to the database (SQLi). Frameworks do most of this for you <em>if you don't fight them</em> — e.g. React escapes by default; the danger is <span class="mono">dangerouslySetInnerHTML</span>.</dd>
+    <dt>Least privilege</dt>
+    <dd>Your database user, your API keys, your Firebase rules — give each the <em>minimum</em> it needs. If the shop's web code can only read products, an injection can't drain accounts.</dd>
+    <dt>Lock down your Firebase rules</dt>
+    <dd>This is your real-world one. A wide-open database rule is the cloud-era equivalent of SQLi — anyone can read/write everything. Default-deny, then allow exactly what each user needs (Lesson 11 goes deeper).</dd>
+    <dt>Use the framework's protections</dt>
+    <dd>CSRF tokens, same-site cookies, Content-Security-Policy headers — modern frameworks ship these. Turn them on; don't roll your own.</dd>
+  </dl>
+
+  <h2>Recap</h2>
+  <p>The biggest web breaches come from one root cause: <span class="hl">trusting user input as if it were code</span>. <span class="hl-2">SQLi</span> injects database commands (fix: parameterized queries). <span class="hl-2">XSS</span> injects browser scripts (fix: escape output). <span class="hl-2">CSRF</span> rides your logged-in session (fix: tokens + same-site cookies). The unifying rule a defender repeats forever: <strong>data is data, never code.</strong></p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">You're building a search box. A user searches for <span style="font-family:var(--mono);font-style:normal">'; DROP TABLE products; --</span>. With parameterized queries, what happens?</div>
+    <button class="opt" data-correct="true">Nothing bad — it searches for that literal (weird) text, finds no products, and the database never treats it as a command.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">The products table gets deleted — that's what the input says to do.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">The app crashes because the input has special characters.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="04-passwords-auth.html">← Lesson 4</a><a class="next" href="06-network-security.html">Lesson 6: Network security →</a></div>
+</div>
+<script>
+// ── SQLi simulation (all client-side; no real DB) ──
+const sqlUser=document.getElementById('sqlUser'), sqlPass=document.getElementById('sqlPass');
+function runSql(){
+  const u=sqlUser.value, p=sqlPass.value;
+  const q=`SELECT * FROM users WHERE name='${u}' AND pass='${p}'`;
+  document.getElementById('sqlQuery').textContent=q;
+  // naive "parser": the -- comment or always-true OR defeats the password check
+  const injected = /'\s*--/.test(u) || /'\s*or\s*'1'\s*=\s*'1/i.test(u) || /'\s*or\s*1\s*=\s*1/i.test(u);
+  const legit = (u==='admin' && p==='hunter2');
+  const r=document.getElementById('sqlResult');
+  if(injected){ r.innerHTML='<span style="color:var(--red)">⚠ LOGGED IN AS ADMIN — injection worked. The password check was bypassed.</span>'; }
+  else if(legit){ r.innerHTML='<span style="color:var(--green)">✓ Logged in (correct credentials).</span>'; }
+  else { r.innerHTML='<span style="color:var(--muted)">✗ Login failed — wrong username or password.</span>'; }
+}
+document.getElementById('sqlGo').addEventListener('click',runSql);
+document.querySelectorAll('[data-inj]').forEach(b=>b.addEventListener('click',()=>{ sqlUser.value=b.dataset.inj; runSql(); }));
+runSql();
+
+// ── XSS demo (the "unsafe" side is neutered so nothing executes, but shows the shape) ──
+const xssIn=document.getElementById('xssIn');
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function renderXss(){
+  const raw=xssIn.value;
+  // SAFE demo of the UNSAFE pattern: render tags as real HTML, but strip
+  // anything executable so the teaching page itself can't be exploited.
+  const shownAsHtml = raw.replace(/on\w+\s*=/gi,'data-blocked=').replace(/<script/gi,'&lt;script');
+  document.getElementById('xssBad').innerHTML = shownAsHtml || '<span style="color:var(--faint)">…</span>';
+  document.getElementById('xssGood').textContent = esc(raw) || '…';
+}
+xssIn.addEventListener('input',renderXss); renderXss();
+
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. Parameterized queries hand the input to the database as DATA, never as part of the command — so it\'s just a harmless (empty) search. The table is safe.':'✗ That would only happen with the UNSAFE glued-string approach. Parameterized queries treat the whole thing as a literal search term — no command runs.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>
