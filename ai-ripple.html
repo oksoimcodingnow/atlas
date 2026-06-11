@@ -10,80 +10,87 @@
 <meta name="theme-color" content="#0a0a14">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
-    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --accent-2:#f3d59a;
-    --hot:#ff7a8a; --warm:#f3d59a; --cool:#6fcf8e;
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(184,192,255,0.45); --accent:#b8c0ff; --gold:#f3d59a;
+    --hot:#ff8db3; --warm:#f3d59a; --cool:#5fd39a;
     --gutter:clamp(16px,4vw,40px);
-    --sans:'Inter Tight',-apple-system,sans-serif; --mono:ui-monospace,Consolas,monospace;
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
   }
   html,body{background:var(--bg);color:var(--text);}
   body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
-  ::selection{background:var(--accent);color:var(--bg);} a{color:inherit;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(720px 400px at 72% -10%, rgba(184,192,255,0.10), transparent 65%);}
 
-  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
-  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
-  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--accent);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
   .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
 
-  .wrap{max-width:920px;margin:0 auto;padding:clamp(24px,4vw,44px) var(--gutter) 80px;}
-  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:10px;}
-  h1{font-size:clamp(30px,6vw,52px);font-weight:700;letter-spacing:-0.02em;line-height:1.0;}
-  .lede{color:var(--muted);max-width:660px;margin-top:12px;font-size:15px;}
-  .lede b{color:var(--text);}
+  .wrap{position:relative;z-index:2;max-width:940px;margin:0 auto;padding:clamp(24px,4vw,48px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;display:inline-flex;align-items:center;gap:12px;}
+  .eyebrow::before{content:'';width:26px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,82px);line-height:0.94;letter-spacing:-0.02em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.3vw,24px);line-height:1.4;color:var(--muted);max-width:680px;margin-top:14px;}
+  .lede b{color:var(--text);font-weight:600;} .lede i{color:var(--accent);font-style:italic;}
 
-  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:22px 0 8px;font-size:12px;color:var(--muted);}
-  .legend .it{display:flex;align-items:center;gap:6px;}
-  .dot{width:11px;height:11px;border-radius:50%;}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:24px 0 6px;font-size:12px;color:var(--muted);}
+  .legend .it{display:flex;align-items:center;gap:7px;}
+  .dot{width:10px;height:10px;border-radius:50%;}
   .dot.hot{background:var(--hot);} .dot.warm{background:var(--warm);} .dot.cool{background:var(--cool);}
+  .tape-note{font-size:11px;color:var(--faint);margin-top:4px;}
 
-  /* cascade */
-  .layer{margin-top:22px;}
-  .layer .lh{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;}
-  .layer .lh .num{font-family:var(--mono);font-size:12px;color:var(--faint);}
-  .layer .lh .lt{font-size:17px;font-weight:700;}
-  .layer .lh .ld{font-size:12.5px;color:var(--muted);}
-  .arrowdown{text-align:center;color:var(--faint);font-size:18px;margin:2px 0;}
+  /* the cascade */
+  .layer{margin-top:26px;}
+  .layer .lh{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;}
+  .layer .lh .num{font-family:var(--serif);font-style:italic;font-size:30px;color:var(--accent);line-height:1;}
+  .layer .lh .lt{font-family:var(--serif);font-size:24px;font-weight:500;}
+  .layer .lh .ld{font-size:12.5px;color:var(--faint);}
+  .arrowdown{text-align:center;color:var(--faint);font-size:16px;margin:6px 0;opacity:0.6;}
 
-  .nodes{display:grid;grid-template-columns:1fr;gap:9px;}
-  @media(min-width:680px){ .nodes{grid-template-columns:1fr 1fr;} }
-  .node{border:1px solid var(--rule);border-left-width:3px;border-radius:12px;background:var(--panel);padding:13px 15px;cursor:pointer;transition:all .15s;}
-  .node:hover{background:#15152e;}
-  .node.hot{border-left-color:var(--hot);} .node.warm{border-left-color:var(--warm);} .node.cool{border-left-color:var(--cool);}
-  .node .top{display:flex;justify-content:space-between;align-items:center;gap:8px;}
-  .node .nm{font-weight:700;font-size:14.5px;}
-  .node .badges{display:flex;gap:5px;flex-shrink:0;}
-  .bdg{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;}
-  .bdg.ord{background:rgba(184,192,255,0.14);color:var(--accent);}
-  .bdg.hot{background:rgba(255,122,138,0.16);color:var(--hot);}
-  .bdg.warm{background:rgba(243,213,154,0.16);color:var(--warm);}
-  .bdg.cool{background:rgba(111,207,142,0.16);color:var(--cool);}
-  .node .logic{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.45;}
-  .node .detail{display:none;margin-top:11px;padding-top:11px;border-top:1px solid var(--rule);}
+  .nodes{display:grid;grid-template-columns:1fr;gap:10px;}
+  @media(min-width:700px){ .nodes{grid-template-columns:1fr 1fr;} }
+  .node{border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:15px 17px;cursor:pointer;transition:border-color .15s, background .15s;position:relative;overflow:hidden;}
+  .node:hover{border-color:var(--rule-hi);background:#0e0e1f;}
+  /* a small corner accent dot instead of a side-stripe (banned) */
+  .node::before{content:'';position:absolute;top:14px;right:15px;width:8px;height:8px;border-radius:50%;}
+  .node.hot::before{background:var(--hot);box-shadow:0 0 10px rgba(255,141,179,0.5);}
+  .node.warm::before{background:var(--warm);box-shadow:0 0 10px rgba(243,213,154,0.4);}
+  .node.cool::before{background:var(--cool);box-shadow:0 0 10px rgba(95,211,154,0.4);}
+  .node .nm{font-family:var(--serif);font-weight:500;font-size:19px;line-height:1.1;padding-right:18px;}
+  .node .meta{display:flex;gap:6px;margin-top:7px;}
+  .bdg{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:999px;white-space:nowrap;border:1px solid var(--rule);}
+  .bdg.ord{color:var(--accent);} .bdg.hot{color:var(--hot);} .bdg.warm{color:var(--warm);} .bdg.cool{color:var(--cool);}
+  .node .logic{font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.5;}
+  .node .detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);}
   .node.open .detail{display:block;}
-  .node .tk{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(184,192,255,0.08);padding:1px 6px;border-radius:5px;margin:0 4px 4px 0;display:inline-block;}
-  .node .risk{font-size:12.5px;color:#e3c4ca;margin-top:8px;line-height:1.5;}
-  .node .risk b{color:var(--hot);}
-  .node .toggle{font-size:11px;color:var(--faint);margin-top:8px;}
+  .firms{display:flex;flex-wrap:wrap;gap:5px;}
+  .tk{font-family:var(--mono);font-size:11.5px;color:var(--accent);background:rgba(184,192,255,0.08);padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:6px;}
+  .tk .px{color:var(--text);font-size:11px;} .tk .up{color:var(--cool);} .tk .dn{color:var(--hot);}
+  .tk.intl{color:var(--gold);background:rgba(243,213,154,0.08);}
+  .node .risk{font-size:12.5px;color:#e3c4ca;margin-top:10px;line-height:1.5;} .node .risk b{color:var(--hot);}
+  .node .toggle{font-size:11px;color:var(--faint);margin-top:9px;}
 
-  .master{margin-top:26px;border:1px solid rgba(255,122,138,0.35);border-radius:14px;padding:16px 18px;background:linear-gradient(180deg,rgba(255,122,138,0.06),transparent);}
-  .master .t{font-weight:700;color:var(--hot);font-size:15px;}
-  .master p{font-size:13.5px;color:#e7d2d6;margin-top:6px;line-height:1.55;}
+  .master{margin-top:30px;border:1px solid rgba(255,141,179,0.32);border-radius:16px;padding:18px 20px;background:linear-gradient(180deg,rgba(255,141,179,0.05),transparent);}
+  .master .t{font-family:var(--serif);font-weight:500;color:var(--hot);font-size:20px;}
+  .master p{font-size:13.5px;color:#e7d2d6;margin-top:8px;line-height:1.6;}
+  .master b{color:var(--hot);}
 
-  h2{font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:40px 0 12px;}
-  .method{border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:6px 4px;}
-  .method .m{display:flex;gap:13px;padding:13px 16px;border-bottom:1px solid var(--rule);}
-  .method .m:last-child{border-bottom:0;}
-  .method .mn{font-family:var(--mono);color:var(--accent);font-weight:700;font-size:14px;flex-shrink:0;}
-  .method .mt{font-size:13.5px;color:#ded6ea;line-height:1.5;} .method .mt b{color:var(--accent);}
+  h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:26px;color:var(--text);margin:44px 0 14px;}
+  .method{display:flex;flex-direction:column;gap:1px;border:1px solid var(--rule);border-radius:14px;overflow:hidden;}
+  .method .m{display:flex;gap:14px;padding:14px 18px;background:var(--bg-2);}
+  .method .mn{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:22px;flex-shrink:0;line-height:1;}
+  .method .mt{font-size:13.5px;color:#ded6ea;line-height:1.55;} .method .mt b{color:var(--accent);}
 
-  .disc{margin-top:16px;font-size:12px;color:var(--faint);line-height:1.55;border-left:2px solid var(--rule);padding-left:14px;}
-  .disc b{color:var(--accent-2);}
-  .foot{margin-top:32px;padding-top:20px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
-  .foot a{font-size:13px;color:var(--muted);text-decoration:none;padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .disc{margin-top:18px;font-size:12.5px;color:var(--faint);line-height:1.6;border:1px solid var(--rule);border-radius:12px;padding:14px 16px;background:var(--bg-2);}
+  .disc b{color:var(--gold);} .disc a{color:var(--accent);}
+  .foot{margin-top:34px;padding-top:22px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
   .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
 </style>
 </head>
@@ -92,134 +99,177 @@
 
 <div class="wrap">
   <div class="eyebrow">Second-order thinking</div>
-  <h1>The AI Ripple</h1>
-  <p class="lede">Everyone buys NVIDIA. The sharper question: <b>what does NVIDIA need &mdash; and what does <i>that</i> need?</b> Trace the consequences outward and you find the un-obvious beneficiaries: power, grid gear, cooling, copper. Tap any node to expand the logic, the companies, and the risk.</p>
+  <h1>The AI <em>ripple.</em></h1>
+  <p class="lede">Everyone buys NVIDIA. The sharper question: <b>what does NVIDIA need — and what does <i>that</i> need?</b> Trace the consequences outward and the un-obvious beneficiaries appear: power, grid gear, cooling, copper, the software on top, the robots at the edge. Tap any node for the logic, the firms, and the risk.</p>
 
   <div class="legend">
     <span class="it"><span class="dot hot"></span> crowded / priced-in</span>
     <span class="it"><span class="dot warm"></span> partly priced-in</span>
-    <span class="it"><span class="dot cool"></span> less obvious &mdash; where research pays</span>
+    <span class="it"><span class="dot cool"></span> less obvious — where research pays</span>
     <span class="it" style="color:var(--faint)">1° / 2° / 3° = order of effect</span>
   </div>
+  <div class="tape-note" id="tapeNote">Tickers show <b style="color:var(--cool)">live prices</b> where reachable; gold tickers are non-US/illustrative. Prices are context, not picks.</div>
 
   <div id="cascade"></div>
 
   <div class="master">
     <div class="t">⚠ The master risk — what breaks the whole chain</div>
-    <p>Every node here rests on one assumption: <b>AI capex keeps growing.</b> The hyperscalers (Microsoft, Google, Amazon, Meta) are spending hundreds of billions on the bet that AI pays off. If that ROI disappoints, they cut spending fast &mdash; and the further out on the ripple you are (cooling, copper, uranium), the harder you fall, because your demand was <i>derived</i> from theirs. Less-crowded ≠ safer. It often means more <i>indirect</i>, and more fragile if the driver stalls.</p>
+    <p>Every node rests on one assumption: <b>AI capex keeps growing.</b> The hyperscalers (Microsoft, Google, Amazon, Meta) are spending hundreds of billions betting AI pays off. If that ROI disappoints, they cut fast — and the further out on the ripple you are (cooling, copper, uranium), the harder you fall, because your demand was <i>derived</i> from theirs. Less-crowded ≠ safer. It often means more <i>indirect</i>, and more fragile if the driver stalls.</p>
   </div>
 
   <h2>How to think in ripples</h2>
   <div class="method">
-    <div class="m"><span class="mn">1</span><span class="mt"><b>Trace the consequence.</b> For anything booming, ask "and then what does THAT need?" Repeat. GPUs need power; power needs turbines, copper, uranium; dense chips need cooling.</span></div>
+    <div class="m"><span class="mn">1</span><span class="mt"><b>Trace the consequence.</b> For anything booming, ask "and then what does THAT need?" Repeat. GPUs need power; power needs turbines, copper, uranium; dense chips need cooling; the models need software and the inference needs to run somewhere.</span></div>
     <div class="m"><span class="mn">2</span><span class="mt"><b>Count the order.</b> 1st-order (NVIDIA) is obvious and crowded. Edge hides in the 2nd/3rd-order links most people haven't connected yet.</span></div>
-    <div class="m"><span class="mn">3</span><span class="mt"><b>Check what's priced in.</b> The green nodes aren't "better" &mdash; they're <i>less discovered</i>, so your research can actually find a gap between price and value.</span></div>
+    <div class="m"><span class="mn">3</span><span class="mt"><b>Check what's priced in.</b> The green nodes aren't "better" — they're <i>less discovered</i>, so your research can find a gap between price and value.</span></div>
     <div class="m"><span class="mn">4</span><span class="mt"><b>Find the bottleneck.</b> The scarce link in any chain (EUV, HBM, power, transformers, copper) has pricing power. Scarcity = moat.</span></div>
     <div class="m"><span class="mn">5</span><span class="mt"><b>Name the risk that breaks it.</b> Every thesis dies somewhere. Here it's AI capex stalling. Know your kill-switch before you buy.</span></div>
   </div>
 
   <p class="disc">
-    <b>This is a thesis map, not a recommendation.</b> It exists to generate ideas to <i>research</i> &mdash; trace, then verify. Tickers are illustrative examples of exposure, not picks; many beneficiaries are non-US (SK Hynix, Siemens Energy, ABB) or private. Before acting on anything, run the <a href="library/valuation.html">valuation</a> and demand a margin of safety. And remember: nobody reliably predicts short-term direction &mdash; the edge is buying durable exposure below its worth, then waiting.
+    <b>This is a thesis map, not a recommendation.</b> It exists to generate ideas to <i>research</i> — trace, then verify. Tickers are illustrative examples of exposure, not picks; many beneficiaries are non-US (SK Hynix, Siemens Energy, ABB) or private. Before acting, run the <a href="library/valuation.html">valuation</a> and demand a margin of safety. And remember: nobody reliably predicts short-term direction — the edge is buying durable exposure below its worth, then waiting.
   </p>
 
   <div class="foot">
-    <a href="overview.html">&larr; The big picture (sand &rarr; stocks)</a>
+    <a href="overview.html">&larr; The big picture</a>
     <a href="spotlight.html">Stock Spotlight &rarr;</a>
-    <a href="semiconductors.html">Semiconductor supply chain</a>
+    <a href="semiconductors.html">Semiconductor chain</a>
+    <a href="economy.html">Connected economy &rarr;</a>
     <a href="library/valuation.html">Value a stock &rarr;</a>
   </div>
 </div>
 
-<script>
-(function(){
-  // crowd: hot (priced-in) | warm | cool (less obvious). order: 1|2|3
-  var LAYERS=[
-    { num:'0', t:'The Driver', d:'where it all starts', nodes:[
-      {nm:'AI compute demand', order:1, crowd:'hot', tk:['MSFT','GOOGL','AMZN','META'],
-       logic:'Each model generation wants ~10× the compute. That hunger cascades down every layer below.',
-       risk:'This IS the master risk: if AI ROI disappoints, the hyperscalers cut capex and the whole ripple deflates.'}
-    ]},
-    { num:'1', t:'Compute', d:'the obvious, first-order layer', nodes:[
-      {nm:'AI accelerators (GPUs)', order:1, crowd:'hot', tk:['NVDA','AMD','AVGO'],
-       logic:'The chips that do the math. The obvious trade — and the most crowded.',
-       risk:'Priced for perfection; hyperscalers designing their own custom silicon chip away at the leader.'},
-      {nm:'HBM memory', order:1, crowd:'warm', tk:['MU','SK Hynix*','Samsung*'],
-       logic:'AI chips are starved for memory bandwidth; high-bandwidth memory is a genuine bottleneck and direct winner.',
-       risk:'Memory is brutally cyclical — supply catches up and prices crash.'},
-      {nm:'Networking / interconnect', order:2, crowd:'warm', tk:['AVGO','ANET','MRVL'],
-       logic:'Thousands of GPUs must talk fast; the interconnect is its own bottleneck.',
-       risk:'Standards shift; hyperscalers in-source the switching.'},
-      {nm:'Chip supply chain', order:2, crowd:'warm', tk:['TSM','ASML','AMAT'],
-       logic:'Someone has to fabricate all this — the choke points (see the Semiconductor map).',
-       risk:'Geopolitics (Taiwan concentration) and deep cyclicality.'}
-    ]},
-    { num:'2', t:'Data Centers', d:'where the compute physically lives', nodes:[
-      {nm:'Hyperscaler capex (the buyers)', order:1, crowd:'hot', tk:['MSFT','GOOGL','AMZN','META'],
-       logic:'They write the checks. Their capex IS the AI build-out.',
-       risk:'They can turn the spigot off quickly if returns lag — and they signal it loudly.'},
-      {nm:'Data-center real estate', order:2, crowd:'warm', tk:['EQIX','DLR'],
-       logic:'The buildings the compute lives in; long-lease infrastructure REITs.',
-       risk:'Power and land have become the real constraint; rate-sensitive.'}
-    ]},
-    { num:'3', t:'Energy', d:'the big second-order surprise', nodes:[
-      {nm:'Power demand surge', order:2, crowd:'warm', tk:[],
-       logic:'A single AI rack can draw 100kW+; a big cluster needs a power plant. After a decade flat, data-center electricity demand is exploding.',
-       risk:'The grid itself may not keep up — interconnection queues are years long.'},
-      {nm:'Gas turbines / power gen', order:2, crowd:'warm', tk:['GEV'],
-       logic:'Gas is the fastest dispatchable power to add; turbine makers have multi-year backlogs.',
-       risk:'Emissions politics; renewables + storage compete.'},
-      {nm:'Nuclear & SMRs', order:3, crowd:'hot', tk:['CEG','VST','OKLO','SMR'],
-       logic:'24/7 carbon-free baseload is ideal for data centers — reactor restarts + small modular reactors.',
-       risk:'Regulation and timelines are slow; SMRs unproven at scale — and these got crowded fast.'},
-      {nm:'Grid & electrical equipment', order:2, crowd:'warm', tk:['ETN','VRT','PWR'],
-       logic:'Transformers, switchgear, power distribution — the unglamorous gear every data center needs, in short supply.',
-       risk:'Already re-rated hard; a build-out slowdown hits order books.'},
-      {nm:'Uranium', order:3, crowd:'warm', tk:['CCJ'],
-       logic:'A nuclear revival pulls uranium demand against concentrated, slow-to-grow supply.',
-       risk:'Volatile commodity; sentiment-driven; substitution and secondary supply.'}
-    ]},
-    { num:'4', t:'Cooling & Water', d:'third-order — heat has to go somewhere', nodes:[
-      {nm:'Liquid cooling / thermal', order:3, crowd:'warm', tk:['VRT','NVT','MOD'],
-       logic:'Dense GPU racks can’t be air-cooled anymore; liquid cooling goes from niche to mandatory.',
-       risk:'Cooling tech standards still in flux; design wins can flip.'},
-      {nm:'Water infrastructure', order:3, crowd:'cool', tk:[],
-       logic:'Cooling and chip fabs are water-intensive — a quieter, less-discussed constraint.',
-       risk:'Hard to play cleanly as a stock; very indirect exposure.'}
-    ]},
-    { num:'5', t:'Raw Inputs', d:'furthest out — least crowded, most indirect', nodes:[
-      {nm:'Copper', order:3, crowd:'cool', tk:['FCX'],
-       logic:'Electrification + data centers + grid = structural copper demand vs constrained supply. "The metal of AI."',
-       risk:'China-demand sensitive, cyclical, and new mines take a decade — the thesis is slow.'},
-      {nm:'Natural gas (commodity)', order:3, crowd:'cool', tk:[],
-       logic:'More gas-fired power → more gas demand downstream.',
-       risk:'Glut-prone commodity; weather and storage swamp the AI signal.'}
-    ]}
-  ];
+<script type="module">
+import { getQuotes, sparkPath } from './lib/tickers.js';
 
-  var crowdLbl={hot:'crowded', warm:'partly in', cool:'less obvious'};
-  var cas=document.getElementById('cascade');
+// crowd: hot (priced-in) | warm | cool (less obvious). order: 1|2|3
+// tk = US tickers (live-quoted). intl = non-US/illustrative (shown gold, no quote).
+const LAYERS = [
+  { num:'0', t:'The Driver', d:'where it all starts', nodes:[
+    {nm:'AI compute demand', order:1, crowd:'hot', tk:['MSFT','GOOGL','AMZN','META'], intl:[],
+     logic:'Each model generation wants ~10× the compute. That hunger cascades down every layer below.',
+     risk:'This IS the master risk: if AI ROI disappoints, the hyperscalers cut capex and the whole ripple deflates.'}
+  ]},
+  { num:'1', t:'Compute', d:'the obvious, first-order layer', nodes:[
+    {nm:'AI accelerators (GPUs)', order:1, crowd:'hot', tk:['NVDA','AMD','AVGO'], intl:[],
+     logic:'The chips that do the math. The obvious trade — and the most crowded.',
+     risk:'Priced for perfection; hyperscalers designing custom silicon chip away at the leader.'},
+    {nm:'HBM memory', order:1, crowd:'warm', tk:['MU'], intl:['SK Hynix','Samsung'],
+     logic:'AI chips are starved for memory bandwidth; high-bandwidth memory is a genuine bottleneck and direct winner.',
+     risk:'Memory is brutally cyclical — supply catches up and prices crash.'},
+    {nm:'Networking / interconnect', order:2, crowd:'warm', tk:['AVGO','ANET','MRVL'], intl:[],
+     logic:'Thousands of GPUs must talk fast; the interconnect is its own bottleneck.',
+     risk:'Standards shift; hyperscalers in-source the switching.'},
+    {nm:'Chip supply chain', order:2, crowd:'warm', tk:['TSM','ASML','AMAT','LRCX'], intl:[],
+     logic:'Someone has to fabricate all this — the choke points (see the Semiconductor map).',
+     risk:'Geopolitics (Taiwan concentration) and deep cyclicality.'}
+  ]},
+  { num:'2', t:'Software & Models', d:'the layer that monetizes the compute', nodes:[
+    {nm:'Foundation models & AI platforms', order:1, crowd:'hot', tk:['MSFT','GOOGL','META'], intl:['OpenAI (private)','Anthropic (private)'],
+     logic:'The models themselves and the clouds that serve them. Where AI revenue actually shows up first.',
+     risk:'Brutal competition + commoditization; today\'s leader can be undercut by an open model.'},
+    {nm:'Data & inference infrastructure', order:2, crowd:'warm', tk:['SNOW','PLTR','MDB','DDOG'], intl:[],
+     logic:'Models are useless without clean data pipelines, vector stores, and the plumbing to run inference at scale.',
+     risk:'Valuations rich; some are features, not companies — incumbents absorb them.'},
+    {nm:'AI-native applications', order:2, crowd:'warm', tk:['NOW','CRM','ADBE'], intl:[],
+     logic:'Software that bakes AI into a workflow people pay for. The "picks-and-shovels" of the application layer.',
+     risk:'AI may compress software margins as much as it helps — the disruption cuts both ways.'}
+  ]},
+  { num:'3', t:'Data Centers', d:'where the compute physically lives', nodes:[
+    {nm:'Hyperscaler capex (the buyers)', order:1, crowd:'hot', tk:['MSFT','GOOGL','AMZN','META'], intl:[],
+     logic:'They write the checks. Their capex IS the AI build-out.',
+     risk:'They can turn the spigot off quickly if returns lag — and they signal it loudly.'},
+    {nm:'Data-center real estate', order:2, crowd:'warm', tk:['EQIX','DLR'], intl:[],
+     logic:'The buildings the compute lives in; long-lease infrastructure REITs.',
+     risk:'Power and land are now the real constraint; rate-sensitive.'},
+    {nm:'Neoclouds (GPU-as-a-service)', order:2, crowd:'warm', tk:['CRWV','NBIS'], intl:[],
+     logic:'Pure-play GPU clouds renting out compute the hyperscalers can\'t build fast enough.',
+     risk:'Capital-intensive, debt-heavy, and exposed if GPU rental rates fall.'}
+  ]},
+  { num:'4', t:'Energy', d:'the big second-order surprise', nodes:[
+    {nm:'Power demand surge', order:2, crowd:'warm', tk:[], intl:[],
+     logic:'A single AI rack can draw 100kW+; a big cluster needs a power plant. After a decade flat, data-center electricity demand is exploding.',
+     risk:'The grid itself may not keep up — interconnection queues are years long.'},
+    {nm:'Gas turbines / power gen', order:2, crowd:'warm', tk:['GEV'], intl:['Siemens Energy'],
+     logic:'Gas is the fastest dispatchable power to add; turbine makers have multi-year backlogs.',
+     risk:'Emissions politics; renewables + storage compete.'},
+    {nm:'Nuclear & SMRs', order:3, crowd:'hot', tk:['CEG','VST','OKLO','SMR'], intl:[],
+     logic:'24/7 carbon-free baseload is ideal for data centers — reactor restarts + small modular reactors.',
+     risk:'Regulation and timelines are slow; SMRs unproven at scale — and these got crowded fast.'},
+    {nm:'Grid & electrical equipment', order:2, crowd:'warm', tk:['ETN','VRT','PWR','GEV'], intl:['ABB','Schneider'],
+     logic:'Transformers, switchgear, power distribution — the unglamorous gear every data center needs, in short supply.',
+     risk:'Already re-rated hard; a build-out slowdown hits order books.'},
+    {nm:'Uranium', order:3, crowd:'warm', tk:['CCJ'], intl:['Kazatomprom'],
+     logic:'A nuclear revival pulls uranium demand against concentrated, slow-to-grow supply.',
+     risk:'Volatile commodity; sentiment-driven; substitution and secondary supply.'}
+  ]},
+  { num:'5', t:'Cooling & Water', d:'third-order — heat has to go somewhere', nodes:[
+    {nm:'Liquid cooling / thermal', order:3, crowd:'warm', tk:['VRT','NVT','MOD'], intl:[],
+     logic:'Dense GPU racks can\'t be air-cooled anymore; liquid cooling goes from niche to mandatory.',
+     risk:'Cooling tech standards still in flux; design wins can flip.'},
+    {nm:'Water infrastructure', order:3, crowd:'cool', tk:['XYL'], intl:[],
+     logic:'Cooling and chip fabs are water-intensive — a quieter, less-discussed constraint.',
+     risk:'Hard to play cleanly; very indirect exposure.'}
+  ]},
+  { num:'6', t:'Edge, Robotics & Security', d:'where AI leaves the data center', nodes:[
+    {nm:'Robotics & automation', order:3, crowd:'cool', tk:['ISRG','TER'], intl:['ABB','Fanuc','Keyence'],
+     logic:'AI brains need bodies. Physical AI — humanoids, factory automation, surgical robots — is the next demand wave.',
+     risk:'Long, hype-prone timelines; humanoids are mostly demos today.'},
+    {nm:'Cybersecurity for AI', order:3, crowd:'cool', tk:['CRWD','PANW','ZS'], intl:[],
+     logic:'More AI systems + more attack surface = structurally rising security spend. AI defends and attacks.',
+     risk:'Crowded category; AI may also automate away some security tooling.'}
+  ]},
+  { num:'7', t:'Raw Inputs', d:'furthest out — least crowded, most indirect', nodes:[
+    {nm:'Copper', order:3, crowd:'cool', tk:['FCX'], intl:[],
+     logic:'Electrification + data centers + grid = structural copper demand vs constrained supply. "The metal of AI."',
+     risk:'China-demand sensitive, cyclical; new mines take a decade — the thesis is slow.'},
+    {nm:'Natural gas (commodity)', order:3, crowd:'cool', tk:[], intl:[],
+     logic:'More gas-fired power → more gas demand downstream.',
+     risk:'Glut-prone commodity; weather and storage swamp the AI signal.'}
+  ]}
+];
 
-  LAYERS.forEach(function(L,li){
-    if(li>0){ var a=document.createElement('div'); a.className='arrowdown'; a.textContent='↓'; cas.appendChild(a); }
-    var layer=document.createElement('div'); layer.className='layer';
-    layer.innerHTML='<div class="lh"><span class="num">'+L.num+'</span><span class="lt">'+L.t+'</span><span class="ld">'+L.d+'</span></div>';
-    var nodes=document.createElement('div'); nodes.className='nodes';
-    L.nodes.forEach(function(n){
-      var el=document.createElement('div'); el.className='node '+n.crowd;
-      var tks=n.tk.length? n.tk.map(function(t){return '<span class="tk">'+t+'</span>';}).join('') : '<span style="color:var(--faint);font-size:12px">no clean single-stock play</span>';
-      el.innerHTML='<div class="top"><span class="nm">'+n.nm+'</span><span class="badges">'
-        +'<span class="bdg ord">'+n.order+'°</span>'
-        +'<span class="bdg '+n.crowd+'">'+crowdLbl[n.crowd]+'</span></span></div>'
-        +'<div class="logic">'+n.logic+'</div>'
-        +'<div class="detail"><div>'+tks+'</div>'
-        +'<div class="risk"><b>Risk:</b> '+n.risk+'</div></div>'
-        +'<div class="toggle">tap to '+'↕'+'</div>';
-      el.addEventListener('click',function(){ el.classList.toggle('open'); });
-      nodes.appendChild(el);
-    });
-    layer.appendChild(nodes); cas.appendChild(layer);
+const crowdLbl={hot:'crowded', warm:'partly in', cool:'less obvious'};
+const cas=document.getElementById('cascade');
+const allTickers=new Set();
+
+LAYERS.forEach((L,li)=>{
+  if(li>0){ const a=document.createElement('div'); a.className='arrowdown'; a.textContent='↓'; cas.appendChild(a); }
+  const layer=document.createElement('div'); layer.className='layer';
+  layer.innerHTML='<div class="lh"><span class="num">'+L.num+'</span><span class="lt">'+L.t+'</span><span class="ld">'+L.d+'</span></div>';
+  const nodes=document.createElement('div'); nodes.className='nodes';
+  L.nodes.forEach(n=>{
+    const el=document.createElement('div'); el.className='node '+n.crowd;
+    n.tk.forEach(t=>allTickers.add(t));
+    const usFirms = n.tk.map(t=>'<span class="tk" data-tk="'+t+'">'+t+'</span>').join('');
+    const intlFirms = (n.intl||[]).map(t=>'<span class="tk intl">'+t+'</span>').join('');
+    const firms = (usFirms+intlFirms) || '<span style="color:var(--faint);font-size:12px">no clean single-stock play</span>';
+    el.innerHTML='<div class="nm">'+n.nm+'</div>'
+      +'<div class="meta"><span class="bdg ord">'+n.order+'°</span><span class="bdg '+n.crowd+'">'+crowdLbl[n.crowd]+'</span></div>'
+      +'<div class="logic">'+n.logic+'</div>'
+      +'<div class="detail"><div class="firms">'+firms+'</div>'
+      +'<div class="risk"><b>Risk:</b> '+n.risk+'</div></div>'
+      +'<div class="toggle">tap to expand ↕</div>';
+    el.addEventListener('click',()=>el.classList.toggle('open'));
+    nodes.appendChild(el);
   });
-})();
+  layer.appendChild(nodes); cas.appendChild(layer);
+});
+
+// upgrade US tickers with live prices (graceful: leaves the symbol if a feed sleeps)
+getQuotes([...allTickers]).then(quotes=>{
+  let anyLive=false;
+  document.querySelectorAll('.tk[data-tk]').forEach(el=>{
+    const q=quotes[el.dataset.tk];
+    if(!q) return;
+    anyLive=true;
+    const up=q.changePct>=0;
+    const price=q.price>=1000?Math.round(q.price).toLocaleString():q.price.toFixed(2);
+    el.innerHTML=el.dataset.tk+' <span class="px '+(up?'up':'dn')+'">$'+price+' '+(up?'▲':'▼')+'</span>';
+  });
+  if(!anyLive){ document.getElementById('tapeNote').innerHTML='Live prices are asleep right now — showing tickers only. They return when the market feed is reachable.'; }
+});
 </script>
+<script src="lib/atlas-fx.js"></script>
 </body>
 </html>
