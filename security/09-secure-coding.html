@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 9 · Secure coding &amp; the OWASP Top 10 · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 9 of 14 · Systems &amp; scale</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 9 · Systems &amp; scale</div>
+  <h1>Writing code that <em>holds.</em></h1>
+  <p class="standfirst">You build web apps, so this lesson is practical, not theoretical. The industry boiled the most common, most damaging code flaws down to one famous list — the OWASP Top 10 — and almost all of them trace back to a handful of habits you can actually adopt.</p>
+  <div class="meta-line">~9 min · interactive · the coder's lesson · builds on Lesson 5</div>
+
+  <p>The <span class="hl">OWASP Top 10</span> is the security world's "these are the bugs that keep getting people breached" list, maintained by a non-profit (the Open Worldwide Application Security Project). You don't need to memorize all ten — you need the <em class="it">patterns</em> behind them, because the same few habits prevent most of the list.</p>
+
+  <h2>The recurring villains — defined</h2>
+  <dl class="terms">
+    <dt>injection</dt>
+    <dd>Untrusted input treated as code (SQLi, XSS from Lesson 5). Fix: parameterize and escape — data is data, never code.</dd>
+    <dt>broken access control</dt>
+    <dd>The #1 issue on the modern list. The app checks <em class="it">who you are</em> but not <em class="it">what you're allowed to do</em> — so user A can open user B's data by changing an ID in the URL. Fix: check authorization on every request, server-side.</dd>
+    <dt>security misconfiguration</dt>
+    <dd>Default passwords, debug mode on in production, an open cloud bucket, verbose error messages leaking internals. Fix: secure defaults, lock down config, hide internal errors from users.</dd>
+    <dt>vulnerable dependencies</dt>
+    <dd>You imported a library with a known hole. Most modern code is mostly other people's code. Fix: track your dependencies, update them, watch for advisories.</dd>
+    <dt>cryptographic failures</dt>
+    <dd>Storing passwords in plain text, weak/old algorithms, secrets hard-coded in the source. Fix: salt+slow-hash passwords (Lesson 4), use TLS, keep secrets out of code.</dd>
+    <dt>identification &amp; auth failures</dt>
+    <dd>Weak passwords allowed, no rate-limiting on login, broken session handling. Fix: MFA, rate limits, framework-managed sessions.</dd>
+  </dl>
+
+  <h2>Spot the vulnerability</h2>
+  <p>Three short code snippets. For each, find the flaw — then see the fix. (Pseudo-code; the bug is the same in any language.)</p>
+
+  <div class="sim">
+    <div class="sim-title" id="vulnCount">Snippet 1 of 3</div>
+    <pre id="vulnCode" style="font-family:var(--mono);font-size:13px;line-height:1.6;background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:14px;overflow-x:auto;color:#dfe;white-space:pre-wrap"></pre>
+    <div class="chips" id="vulnOpts" style="margin-top:12px"></div>
+    <div id="vulnVerdict" style="font-size:13.5px;margin-top:14px;min-height:40px;line-height:1.6"></div>
+    <div class="chips"><button class="chip" id="vulnNext" style="display:none">Next snippet ›</button> <span style="font-family:var(--mono);font-size:12px;color:var(--muted);align-self:center" id="vulnScore">score 0/0</span></div>
+  </div>
+
+  <p class="pull">Almost every entry on the list reduces to four habits: validate input, check authorization every time, keep secrets out of code, and update your dependencies.</p>
+
+  <h2>The habits that prevent most of the list</h2>
+  <dl class="terms">
+    <dt>Never trust input</dt>
+    <dd>Validate and escape everything from a user, a URL, an API, a file. Lesson 5's whole point. Frameworks help — don't bypass them.</dd>
+    <dt>Check authorization on every request</dt>
+    <dd>"Is this logged-in user allowed to do <em>this specific thing</em> to <em>this specific resource</em>?" — server-side, every time. Never trust the client to enforce permissions; it can be bypassed.</dd>
+    <dt>Least privilege, everywhere</dt>
+    <dd>Your DB user, API keys, cloud roles, Firebase rules — minimum access each needs. A breach then can't reach what it was never allowed to touch.</dd>
+    <dt>Keep secrets out of the code</dt>
+    <dd>API keys and passwords go in environment variables / secret managers, never in the source (and never in a public repo or client-side JS — anyone can read it).</dd>
+    <dt>Patch your dependencies</dt>
+    <dd>Run an audit (e.g. <span class="mono">npm audit</span>), keep libraries current, watch for advisories. You ship their bugs too.</dd>
+  </dl>
+
+  <div class="callout">
+    <div class="tag">For RoShop &amp; Atlas, specifically</div>
+    <p><span class="mono">1.</span> Your Firebase security rules ARE your access control — default-deny, then allow exactly what each user needs (this is "broken access control" made concrete). <span class="mono">2.</span> No API keys or secrets in any committed file or client-side script — Atlas is public source. <span class="mono">3.</span> You already do dependency hygiene in the quant repo (pinned <span class="mono">requirements.txt</span>) — same discipline for any web project.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>The <span class="hl">OWASP Top 10</span> names the bugs that breach people most, but they collapse into a few habits: <span class="hl-2">validate input</span>, <span class="hl-2">check authorization every request</span>, <span class="hl-2">least privilege</span>, <span class="hl-2">secrets out of code</span>, <span class="hl-2">patch dependencies</span>. Secure coding isn't a separate skill bolted on at the end — it's a handful of defaults you build in from the first line.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">Your app lets a logged-in user view their profile at <span style="font-family:var(--mono);font-style:normal">/profile?id=123</span>. A user changes it to <span style="font-family:var(--mono);font-style:normal">?id=124</span> and sees someone else's data. What failed?</div>
+    <button class="opt" data-correct="true">Broken access control — you checked they were logged in, but not that they were allowed to view THAT id. Authorization must be checked per-request, server-side.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Injection — they injected a different number into the URL.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Nothing — if they're logged in, they're allowed to see any profile.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="07-malware.html">← Lesson 7</a><a class="next" href="11-cloud-security.html">Lesson 11: Cloud security →</a></div>
+</div>
+<script>
+const SNIPS=[
+  { code:'query = "SELECT * FROM users\\n         WHERE email = \'" + userInput + "\'"\ndb.run(query)',
+    opts:['SQL injection','Slow performance','Nothing wrong'],
+    answer:0, why:'Classic SQL injection — user input is glued into the query string. Input like <code>\' OR \'1\'=\'1</code> rewrites the command. Fix: parameterized query — <code>WHERE email = ?</code> with the value passed separately as data.' },
+  { code:'const API_KEY = "sk_live_8f3kd9...";\nfetch("https://api.site/charge", {\n  headers: { Authorization: API_KEY }\n})',
+    opts:['Hard-coded secret in client code','Missing semicolon','Nothing wrong'],
+    answer:0, why:'A live API key in client-side JavaScript — anyone who views source steals it and runs up your bill. Secrets belong in a server-side env var / secret manager, never in code that ships to the browser. (Lesson 1 + Lesson 3.)' },
+  { code:'app.get("/admin/delete-user", (req) => {\n  if (req.user) {        // logged in?\n    deleteUser(req.query.id)\n  }\n})',
+    opts:['Broken access control','Syntax error','Nothing wrong'],
+    answer:0, why:'It checks the user is logged IN, but never that they\'re an ADMIN allowed to delete users. Any logged-in user can call it. Fix: check authorization — <code>if (req.user.isAdmin)</code> — server-side, every request.' },
+];
+let vi=0,vscore=0,vtotal=0,vanswered=false;
+function showVuln(){
+  vanswered=false;
+  const s=SNIPS[vi];
+  document.getElementById('vulnCount').textContent='Snippet '+(vi+1)+' of '+SNIPS.length;
+  document.getElementById('vulnCode').textContent=s.code;
+  document.getElementById('vulnVerdict').innerHTML='';
+  document.getElementById('vulnOpts').innerHTML=s.opts.map((o,i)=>'<button class="chip" data-o="'+i+'">'+o+'</button>').join('');
+  document.querySelectorAll('#vulnOpts [data-o]').forEach(b=>b.addEventListener('click',()=>answerVuln(+b.dataset.o)));
+  document.getElementById('vulnNext').style.display='none';
+}
+function answerVuln(i){
+  if(vanswered)return; vanswered=true; vtotal++;
+  const s=SNIPS[vi], right=(i===s.answer);
+  if(right)vscore++;
+  document.getElementById('vulnVerdict').innerHTML=(right?'<b style="color:var(--green)">✓ Correct.</b> ':'<b style="color:var(--red)">✗ It\'s '+s.opts[s.answer]+'.</b> ')+s.why;
+  document.getElementById('vulnScore').textContent='score '+vscore+'/'+vtotal;
+  if(vi<SNIPS.length-1) document.getElementById('vulnNext').style.display='inline-flex';
+}
+document.getElementById('vulnNext').addEventListener('click',()=>{ if(vi<SNIPS.length-1){vi++;showVuln();} });
+showVuln();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. Authentication (who you are) is not authorization (what you may do). You verified login but never checked this user owns id 124. Always authorize per-request, server-side — never trust the client.':'✗ This isn\'t injection — the value is a normal id. The bug is that the app never checks whether this user is ALLOWED to view that record. That\'s broken access control, the #1 item on the modern OWASP list.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

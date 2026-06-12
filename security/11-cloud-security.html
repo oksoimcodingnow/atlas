@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 11 · Cloud &amp; identity security · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 11 of 14 · Systems &amp; scale</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 11 · Systems &amp; scale</div>
+  <h1>The cloud's biggest breach is a <em>setting.</em></h1>
+  <p class="standfirst">You run on the cloud — Firebase backs RoShop. Here's the uncomfortable truth of cloud security: the spectacular breaches usually aren't clever hacks. They're a checkbox someone left in the wrong state. Which is good news, because checkboxes you can control.</p>
+  <div class="meta-line">~8 min · interactive · your RoShop lesson · builds on Lessons 2 &amp; 9</div>
+
+  <p>Moving to the cloud doesn't remove security work — it <em class="it">moves</em> it. The provider secures the building; <strong>you</strong> secure your apartment in it. Getting that split wrong is how "an open S3 bucket" ends up in the news every other week.</p>
+
+  <h2>The cloud security model — defined</h2>
+  <dl class="terms">
+    <dt>shared responsibility</dt>
+    <dd>The cloud provider (AWS, Google, Firebase) secures the <em class="it">infrastructure</em> — the hardware, the network, the platform. <strong>You</strong> secure your <em class="it">configuration and data</em> — who can access what, your rules, your secrets. Most breaches are on the customer's side of that line.</dd>
+    <dt>IAM (identity &amp; access management)</dt>
+    <dd>The system that decides which identities (users, services) can do which actions on which resources. It's <span class="hl">access control</span> (Lesson 9) at cloud scale. Getting IAM right — least privilege — is the core of cloud security.</dd>
+    <dt>misconfiguration</dt>
+    <dd>The #1 cause of cloud breaches: a storage bucket set to public, a database with no auth, debug mode on, an overly-broad permission. Not a hack — a setting.</dd>
+    <dt>secrets management</dt>
+    <dd>API keys, database passwords, service credentials — stored in a dedicated secret manager or environment variables, never in code or a public repo. (You've seen this in Lessons 3 &amp; 9; in the cloud it's everywhere.)</dd>
+    <dt>security rules (Firebase)</dt>
+    <dd>Your app's access control, written as rules: who can read/write which data. A wide-open rule is the cloud-era equivalent of SQL injection — anyone can read or wreck everything.</dd>
+  </dl>
+
+  <h2>Set your Firebase rules — and see the blast radius</h2>
+  <p>This is RoShop's actual concern. Pick a database rule and watch what each one allows — for you, and for an attacker.</p>
+
+  <div class="sim">
+    <div class="sim-title">Database access rules</div>
+    <div class="chips" style="margin-bottom:10px">
+      <button class="chip" data-rule="open">🔓 allow read, write: if true</button>
+      <button class="chip" data-rule="authed">🔑 if request.auth != null</button>
+      <button class="chip on" data-rule="owner">🛡 if owns the data</button>
+    </div>
+    <pre id="ruleCode" style="font-family:var(--mono);font-size:12.5px;background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:11px;white-space:pre-wrap;color:#dfe"></pre>
+    <div id="ruleEffect" style="margin-top:12px"></div>
+  </div>
+
+  <p class="pull">The cloud handed you a loaded gun pointed at your own data, with the safety as a single config line. Default-deny, then allow exactly what each user needs.</p>
+
+  <div class="callout warn">
+    <div class="tag">The classic cloud breaches — all settings</div>
+    <p><span class="mono">Open storage bucket</span> → millions of records public to anyone with the URL. <span class="mono">No-auth database</span> → wide open to the internet. <span class="mono">Over-broad IAM role</span> → one compromised key can touch everything. <span class="mono">Secret in a public repo</span> → bots scan GitHub for committed keys within minutes. None of these are "hacks" — they're misconfigurations a checklist prevents.</p>
+  </div>
+
+  <h2>The defender's cloud checklist</h2>
+  <dl class="terms">
+    <dt>Default-deny, then least privilege</dt>
+    <dd>Start with everything locked. Grant each user/service the minimum it needs, nothing more. Your Firebase rules and IAM roles both live by this.</dd>
+    <dt>Never commit secrets</dt>
+    <dd>Keys in env vars / secret managers; <span class="mono">.env</span> in <span class="mono">.gitignore</span>. Bots scrape public repos for keys constantly — a committed key is compromised in minutes.</dd>
+    <dt>Lock down storage &amp; databases</dt>
+    <dd>No public buckets unless truly intended; auth required on every database; verify the defaults (cloud defaults are not always safe).</dd>
+    <dt>Enable logging &amp; alerts</dt>
+    <dd>Know who accessed what. You can't respond to a breach you can't see (Lesson 12's territory).</dd>
+  </dl>
+
+  <h2>Recap</h2>
+  <p>Cloud security is <span class="hl">shared responsibility</span>: the provider secures the platform, you secure your config and data — and most breaches are on your side. The villains are <span class="hl-2">misconfiguration</span> (public buckets, no-auth databases, broad roles) and <span class="hl-2">committed secrets</span>. The defense is the same idea as everywhere: <strong>default-deny, least privilege, secrets out of code.</strong> Your Firebase rules are this lesson made concrete — get them right and you've done the hard part.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">A startup's entire user database leaks. The cause: their cloud storage bucket was set to "public." Whose responsibility was that, under the shared model?</div>
+    <button class="opt" data-correct="true">The startup's — the provider secures the infrastructure, but the customer configures access. A public bucket is a customer-side misconfiguration.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">The cloud provider's — they host the data, so they secure it.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Nobody's — public buckets are fine, that's how the cloud works.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="09-secure-coding.html">← Lesson 9</a><a class="next" href="12-blue-team.html">Lesson 12: Blue team →</a></div>
+</div>
+<script>
+const RULES={
+  open:{ code:'match /databases/{db}/documents {\n  match /{document=**} {\n    allow read, write: if true;\n  }\n}',
+    you:'✓ Your app works.',
+    them:'⚠ So does everyone else\'s. <b>Anyone on the internet can read AND overwrite ALL your data</b> — no login required. This is the cloud equivalent of leaving the vault door open. Never ship this.',
+    level:'red' },
+  authed:{ code:'match /{document=**} {\n  allow read, write:\n    if request.auth != null;\n}',
+    you:'✓ Your app works for signed-in users.',
+    them:'⚠ Better, but <b>any logged-in user can read and write EVERYONE\'s data</b> — including other people\'s. It checks authentication, not authorization (Lesson 9). One free account = access to all records.',
+    level:'amber' },
+  owner:{ code:'match /users/{userId}/{doc=**} {\n  allow read, write:\n    if request.auth.uid == userId;\n}',
+    you:'✓ Each user reads/writes only their OWN data.',
+    them:'🛡 An attacker with an account can only touch their own records — not anyone else\'s. <b>Default-deny + least privilege, done right.</b> This is the rule to ship.',
+    level:'green' },
+};
+const COL={red:'var(--red)',amber:'var(--accent-2)',green:'var(--green)'};
+function showRule(key){
+  const r=RULES[key];
+  document.getElementById('ruleCode').textContent=r.code;
+  document.getElementById('ruleEffect').innerHTML=
+    '<div style="font-size:13px;color:var(--green);margin-bottom:6px">'+r.you+'</div>'
+    +'<div style="font-size:13px;color:'+COL[r.level]+';line-height:1.55">'+r.them+'</div>';
+}
+document.querySelectorAll('[data-rule]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-rule]').forEach(x=>x.classList.toggle('on',x===b));
+  showRule(b.dataset.rule);
+}));
+showRule('owner');
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. Shared responsibility: the provider keeps the platform secure, but YOU configure who can access your data. A public bucket is a setting the customer chose (or failed to change) — squarely customer-side. This is why the checklist matters.':'✗ Under shared responsibility, the provider secures the infrastructure — but access configuration is the customer\'s job. A public bucket is a customer-side misconfiguration, the #1 cause of cloud breaches. The provider did its part; the setting was theirs.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

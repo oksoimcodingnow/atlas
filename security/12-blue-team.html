@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 12 · Defense in depth &amp; the blue team · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 12 of 14 · The profession</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 12 · The profession</div>
+  <h1>Assume they're already <em>in.</em></h1>
+  <p class="standfirst">There is no single wall that keeps attackers out — any one defense can fail. So real defenders stop trying to be perfect and start building in <i>layers</i>, planning for the breach instead of pretending it won't happen. This is how the job is actually done.</p>
+  <div class="meta-line">~8 min · interactive · how defenders really work · ties together everything so far</div>
+
+  <p>Every previous lesson gave you one defense: HTTPS, hashing, firewalls, input validation, MFA, locked-down cloud rules. The <span class="hl">blue team</span> — the defenders — knows a hard truth: <strong>each of those can fail.</strong> So they don't bet everything on one. They stack defenses so an attacker who beats one still faces another. That's <span class="hl">defense in depth</span>.</p>
+
+  <h2>The defender's principles — defined</h2>
+  <dl class="terms">
+    <dt>defense in depth</dt>
+    <dd>Multiple independent layers, so no single failure is fatal. Firewall <em>and</em> patched software <em>and</em> least privilege <em>and</em> MFA <em>and</em> backups. The attacker must beat them all; you only need the stack to hold.</dd>
+    <dt>assume breach</dt>
+    <dd>The modern mindset: stop asking "how do we keep them out?" and start asking "<em class="it">when</em> they get in, how do we limit the damage and catch them fast?" Prevention plus detection, not prevention alone.</dd>
+    <dt>detection vs prevention</dt>
+    <dd>Prevention tries to stop attacks (firewall, patching). Detection notices when something got through (logs, alerts). You need both — perfect prevention is impossible, so you must be able to <em class="it">see</em> the breach.</dd>
+    <dt>logging &amp; SIEM</dt>
+    <dd>Logs record what happened; a <strong>SIEM</strong> (Security Information &amp; Event Management) collects logs from everywhere and raises alerts on suspicious patterns. You cannot respond to what you can't see — logging is the eyes of the blue team.</dd>
+    <dt>least privilege &amp; segmentation</dt>
+    <dd>The blast-radius limiters (Lessons 6, 9, 11). If a breached account or segment can only reach a little, the breach stays small. Assume-breach made structural.</dd>
+  </dl>
+
+  <h2>Build your defense — watch the attacker chip through</h2>
+  <p>An attacker is trying to reach your crown-jewel data. Toggle your defensive layers on, then launch the attack and watch how far they get. One layer rarely holds; the <em class="it">stack</em> does.</p>
+
+  <div class="sim">
+    <div class="sim-title">Your defensive layers</div>
+    <div class="chips" style="margin-bottom:12px" id="layerChips">
+      <button class="chip on" data-layer="fw">🧱 Firewall</button>
+      <button class="chip" data-layer="patch">🔄 Patched software</button>
+      <button class="chip" data-layer="mfa">🔑 MFA</button>
+      <button class="chip" data-layer="priv">🛡 Least privilege</button>
+      <button class="chip" data-layer="detect">👁 Logging / detection</button>
+    </div>
+    <button class="chip" id="attackBtn" style="border-color:var(--red);color:var(--red)">⚔ Launch the attack</button>
+    <div id="attackLog" style="font-family:var(--mono);font-size:12.5px;margin-top:14px;min-height:120px;line-height:1.7;background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:14px"></div>
+  </div>
+
+  <p class="pull">You don't have to be perfect — you have to be layered. The attacker needs every door open; you only need one to hold, and eyes to see the rest.</p>
+
+  <div class="callout">
+    <div class="tag">What a blue team actually does all day</div>
+    <p>Not dramatic. They <span class="mono">harden</span> systems (close doors before they're tried), <span class="mono">monitor</span> logs and alerts for anything odd, <span class="mono">patch</span> relentlessly, <span class="mono">run drills</span> (tabletop incident exercises), and <span class="mono">tune</span> detection so real threats stand out from noise. The work is patient, unglamorous, and exactly why most attacks fail quietly before you ever hear about them.</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>No single wall holds, so defenders build <span class="hl">defense in depth</span> — independent layers where one failure isn't fatal — and adopt an <span class="hl-2">assume-breach</span> mindset: prevention <em>plus</em> detection. <span class="hl">Logging/SIEM</span> are the eyes; <span class="hl">least privilege and segmentation</span> shrink the blast radius. The blue team's job isn't to be perfect — it's to be layered, watchful, and ready, so a breach stays small and gets caught fast.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">Your company has a great firewall and nothing else — "why need more, the firewall blocks attackers." What's the flaw in that thinking?</div>
+    <button class="opt" data-correct="true">A single layer is a single point of failure — if anything gets past the firewall (a phished employee, a vulnerable app), there's nothing behind it. Defense in depth assumes any one layer can fail.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">Nothing — a good firewall is genuinely all you need.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">The flaw is the brand of firewall; with the right one, a single layer is fine.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="11-cloud-security.html">← Lesson 11</a><a class="next" href="index.html">More lessons coming →</a></div>
+</div>
+<script>
+const layers={fw:true,patch:false,mfa:false,priv:false,detect:false};
+// each attack step is beaten by a specific layer; if that layer's off, the attacker advances
+const STEPS=[
+  { need:'fw',     ok:'🧱 Firewall blocks the port scan — attacker can\'t find an open door.',
+    fail:'✗ No firewall: attacker scans your ports and finds a way in.' },
+  { need:'patch',  ok:'🔄 Software is patched — the known exploit they try fails.',
+    fail:'✗ Unpatched software: a known exploit lets them run code on a server.' },
+  { need:'mfa',    ok:'🔑 They phished a password — but MFA blocks the login without the second factor.',
+    fail:'✗ No MFA: the phished password logs them straight in.' },
+  { need:'priv',   ok:'🛡 Least privilege: the account they took can\'t reach the crown-jewel data.',
+    fail:'✗ Over-privileged account: they pivot straight to the sensitive database.' },
+];
+function launch(){
+  const log=document.getElementById('attackLog');
+  let html='<span style="color:var(--red)">⚔ Attack launched. Trying to reach the crown-jewel data...</span><br><br>';
+  let stopped=false;
+  for(const s of STEPS){
+    if(layers[s.need]){ html+='<span style="color:var(--green)">'+s.ok+'</span><br>'; stopped=true; break; }
+    else { html+='<span style="color:#ff8db3">'+s.fail+'</span><br>'; }
+  }
+  html+='<br>';
+  if(stopped){
+    html+='<span style="color:var(--green)"><b>🛡 Attack stopped.</b> A layer held — that\'s defense in depth working.</span>';
+    if(layers.detect) html+='<br><span style="color:var(--accent)">👁 And your logging flagged the attempt — you know it happened and can respond.</span>';
+  } else {
+    html+='<span style="color:var(--red)"><b>💀 BREACHED — they reached the crown-jewel data.</b> Every layer was off or absent; nothing behind the first door.</span>';
+    html+= layers.detect
+      ? '<br><span style="color:var(--accent)">👁 At least your logging caught it — you can detect and respond fast (assume-breach in action).</span>'
+      : '<br><span style="color:#ff8db3">…and with no logging, you may not even know it happened. Blind breach — the worst case.</span>';
+  }
+  log.innerHTML=html;
+}
+document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',()=>{
+  layers[b.dataset.layer]=!layers[b.dataset.layer];
+  b.classList.toggle('on',layers[b.dataset.layer]);
+}));
+document.getElementById('attackBtn').addEventListener('click',launch);
+launch();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. One layer is one point of failure. Firewalls don\'t stop a phished employee, a vulnerable app, or an insider. Defense in depth stacks independent layers so beating one isn\'t game over — and adds detection so you see what got through.':'✗ Even an excellent firewall is one layer — and attackers routinely get past the perimeter (phishing, app bugs, insiders). With nothing behind it, one failure is total. The fix isn\'t a better single wall; it\'s layers plus detection.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>
