@@ -76,6 +76,17 @@
   .h-actions button:hover{color:var(--text);border-color:var(--accent);}
   .h-actions button.del:hover{color:var(--red);border-color:var(--red);}
 
+  /* quick-pick watchlist */
+  .qp{margin-top:14px;}
+  .qp .qp-head{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:9px;}
+  .qp .qp-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .qp .cat{font-size:11px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:4px 11px;cursor:pointer;font-family:var(--sans);transition:.15s;}
+  .qp .cat:hover{color:var(--text);border-color:var(--accent);} .qp .cat.on{color:var(--bg);background:var(--accent);border-color:var(--accent);}
+  .qp .chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .qp .pick{font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(184,192,255,0.08);border:1px solid var(--rule);border-radius:8px;padding:6px 10px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px;}
+  .qp .pick:hover{border-color:var(--accent);background:rgba(184,192,255,0.16);}
+  .qp .pick .px{color:var(--text);font-size:11px;} .qp .pick .px.up{color:var(--green);} .qp .pick .px.dn{color:var(--red);}
+
   /* add form */
   .add{border:1px dashed var(--rule);border-radius:14px;background:transparent;padding:18px;margin-top:14px;}
   .add h3{font-family:var(--serif);font-style:italic;font-weight:500;font-size:20px;margin-bottom:4px;}
@@ -117,6 +128,12 @@
 
   <h2>Holdings</h2>
   <div id="holdings"></div>
+
+  <div class="qp">
+    <div class="qp-head">Quick add — tap a name from the AI map to start (you still write your own thesis)</div>
+    <div class="qp-cats" id="qpCats"></div>
+    <div class="chips" id="qpChips"></div>
+  </div>
 
   <div class="add">
     <h3>Add a holding</h3>
@@ -277,11 +294,74 @@ function render(){
 }
 function sm(k,v,sub,cls){ return '<div class="sm"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div>'; }
 
+// ── quick-pick watchlist (curated from the AI Investing pages) ──
+// Each: ticker + a one-line thesis HINT (you edit it; the hint just saves typing).
+const WATCH = {
+  'AI compute': [
+    ['NVDA','AI GPU leader — the compute everyone needs (CUDA lock-in)'],
+    ['AMD','#2 in CPU/GPU, gaining AI share'],
+    ['AVGO','Networking + custom AI silicon, diversified'],
+    ['TSM','Leading-edge foundry — ~90% of advanced nodes'],
+    ['ASML','EUV lithography monopoly — the ultimate choke point'],
+    ['MU','HBM memory — the AI bandwidth bottleneck'],
+  ],
+  'Software & cloud': [
+    ['MSFT','Foundation models + Azure — where AI revenue shows up'],
+    ['GOOGL','Models + cloud + search moat'],
+    ['META','Open models + the ad engine that funds them'],
+    ['AMZN','AWS — the cloud the build-out runs on'],
+    ['PLTR','Data/inference infrastructure'],
+    ['NOW','AI baked into a workflow people pay for'],
+  ],
+  'Energy & grid': [
+    ['CEG','Nuclear baseload for data centers'],
+    ['VST','Power gen riding the demand surge'],
+    ['GEV','Gas turbines + grid gear, multi-year backlog'],
+    ['ETN','Electrical equipment — transformers, switchgear'],
+    ['VRT','Power + cooling for the rack'],
+    ['CCJ','Uranium — the nuclear revival'],
+  ],
+  'Less-obvious': [
+    ['ENTG','Purity/materials — a toll on every wafer made'],
+    ['FCX','Copper — the metal of electrification'],
+    ['ONTO','Inspection for advanced packaging (HBM, chiplets)'],
+    ['FIX','The literal builder of data centers'],
+    ['POWL','Switchgear for power-hungry facilities'],
+    ['CRWD','Cybersecurity — rising attack surface'],
+  ],
+};
+let qpCat = Object.keys(WATCH)[0];
+function renderQuickPick(){
+  $('qpCats').innerHTML = Object.keys(WATCH).map(c =>
+    '<button class="cat'+(c===qpCat?' on':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('');
+  $('qpChips').innerHTML = WATCH[qpCat].map(([tk,hint]) =>
+    '<button class="pick" data-tk="'+tk+'" data-hint="'+esc(hint)+'" title="'+esc(hint)+'">'+tk+'</button>').join('');
+  paintQuickPrices();
+}
+$('qpCats').addEventListener('click', e => { const b=e.target.closest('[data-cat]'); if(b){ qpCat=b.dataset.cat; renderQuickPick(); } });
+$('qpChips').addEventListener('click', e => {
+  const b = e.target.closest('[data-tk]'); if(!b) return;
+  $('f-tk').value = b.dataset.tk;
+  if(!$('f-thesis').value.trim()) $('f-thesis').value = b.dataset.hint;  // a STARTER you edit
+  $('f-sh').focus();
+  $('addErr').textContent = 'Filled '+b.dataset.tk+' — edit the thesis to YOUR reason, add shares + cost + risk.';
+  $('addErr').style.color = 'var(--gold)';
+});
+// live-price the visible quick-pick chips (cached in `quotes`)
+function paintQuickPrices(){
+  document.querySelectorAll('.pick[data-tk]').forEach(el=>{
+    const q = quotes[el.dataset.tk]; if(!q) return;
+    const up = q.changePct >= 0;
+    el.innerHTML = el.dataset.tk + ' <span class="px '+(up?'up':'dn')+'">$'+(q.price>=1000?Math.round(q.price).toLocaleString():q.price.toFixed(2))+'</span>';
+  });
+}
+
 // initial paint (cost-basis fallback), then upgrade with live quotes
 render();
-if(holdings.length){
-  getQuotes([...new Set(holdings.map(h=>h.tk))]).then(q => { quotes = q; render(); });
-}
+renderQuickPick();
+// fetch quotes for held tickers AND the visible quick-pick set
+const wantQuotes = new Set([...holdings.map(h=>h.tk), ...Object.values(WATCH).flat().map(x=>x[0])]);
+getQuotes([...wantQuotes]).then(q => { quotes = q; render(); paintQuickPrices(); });
 </script>
 <script src="lib/atlas-fx.js"></script>
 </body>
