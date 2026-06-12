@@ -114,6 +114,9 @@
     padding: 0 15px 11px 52px; margin-top: -4px; }
   .row-extra a { font-family: var(--mono); font-size: 11px; color: var(--muted); }
   .row-extra a:hover { color: var(--accent); }
+  .row-copy { font-family: var(--mono); font-size: 11px; color: var(--green); background: transparent;
+    border: 1px solid rgba(95,211,154,0.35); border-radius: 6px; padding: 2px 8px; cursor: pointer; transition: .15s; }
+  .row-copy:hover { background: rgba(95,211,154,0.1); border-color: var(--green); }
   .pill { font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
     padding: 2px 7px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); flex: none; }
   .pill.planned { color: var(--gold); border-color: rgba(243,213,154,0.4); }
@@ -272,14 +275,15 @@ const ITEMS = [
   },
   {
     section: 'Projects',
-    name: 'Quant',
+    name: 'Quant Backtester',
     icon: '∑',
-    color: '#b8c0ff',
+    color: '#5fd39a',
     status: 'live',
-    desc: 'Crypto-first quant workspace — SMA crossover toy alpha on BTC/USDT via ccxt + vectorbt. Private repo.',
+    desc: 'My real backtesting engine — run.py (any strategy vs B&H), risk.py (stops, sizing, leverage), lab.py (auto-judge ideas out-of-sample), vol_sizing (ML). Fees-on, leakage-safe. Runs in the terminal, in C:\\Users\\HOME\\quant.',
     actions: [
-      { label: 'GitHub', href: 'https://github.com/oksoimcodingnow/quant', primary: true },
+      { label: 'GitHub repo', href: 'https://github.com/oksoimcodingnow/quant', primary: true },
       { label: 'Local folder', href: 'file:///C:/Users/HOME/quant/' },
+      { label: '⧉ copy run command', copy: 'cd C:\\Users\\HOME\\quant; .venv\\Scripts\\python backtests\\run.py --strategy all --symbol PAXG/USDT' },
     ],
   },
   {
@@ -498,7 +502,9 @@ function makeRow(p, delay) {
     '</a>';
   if (extras.length) {
     html += '<div class="row-extra">' + extras.map(a =>
-      '<a href="' + esc(a.href) + '"' + linkAttrs(a.href) + '>' + esc(a.label) + '</a>'
+      a.copy
+        ? '<button class="row-copy" data-copy="' + esc(a.copy) + '" title="Copy command to clipboard">' + esc(a.label) + '</button>'
+        : '<a href="' + esc(a.href) + '"' + linkAttrs(a.href) + '>' + esc(a.label) + '</a>'
     ).join('') + '</div>';
   }
   tile.innerHTML = html;
@@ -576,6 +582,25 @@ setInterval(tick, 30000);
     }
   });
 })();
+
+// Copy-command buttons (e.g. the Quant Backtester run command). Delegated so it
+// works for any tile that declares a { label, copy } action.
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.row-copy');
+  if (!btn) return;
+  e.preventDefault();
+  var cmd = btn.getAttribute('data-copy');
+  var label = btn.textContent;
+  var flash = function(){ btn.textContent = '✓ copied'; setTimeout(function(){ btn.textContent = label; }, 1400); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(cmd).then(flash).catch(flash);
+  } else {
+    var t = document.createElement('textarea'); t.value = cmd;
+    document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); } catch(err){}
+    document.body.removeChild(t); flash();
+  }
+});
 
 // Guided tour (the "? Tour" button, bottom-right)
 window.atlasTourId = 'home';
