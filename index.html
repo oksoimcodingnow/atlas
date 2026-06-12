@@ -286,15 +286,15 @@ const ITEMS = [
   },
   {
     section: 'Projects',
-    name: 'Quant Backtester',
+    name: 'Quant Backtester (terminal)',
     icon: '∑',
     color: '#5fd39a',
-    status: 'live',
-    desc: 'My real backtesting engine — run.py (any strategy vs B&H), risk.py (stops, sizing, leverage), lab.py (auto-judge ideas out-of-sample), vol_sizing (ML). Fees-on, leakage-safe. Runs in the terminal, in C:\\Users\\HOME\\quant.',
+    status: 'local',
+    desc: 'NOT a web app — it\'s Python that runs in a TERMINAL, not the browser. To use it: tap "⧉ copy run command" below, open PowerShell, and paste. The links here just open the code (GitHub) or its folder. Engine: run.py, risk.py, lab.py, vol_sizing — fees-on, leakage-safe.',
     actions: [
-      { label: 'GitHub repo', href: 'https://github.com/oksoimcodingnow/quant', primary: true },
-      { label: 'Local folder', href: 'file:///C:/Users/HOME/quant/' },
       { label: '⧉ copy run command', copy: 'cd C:\\Users\\HOME\\quant; .venv\\Scripts\\python backtests\\run.py --strategy all --symbol PAXG/USDT' },
+      { label: 'View code (GitHub)', href: 'https://github.com/oksoimcodingnow/quant', primary: true },
+      { label: 'Open folder', href: 'file:///C:/Users/HOME/quant/' },
     ],
   },
   {
