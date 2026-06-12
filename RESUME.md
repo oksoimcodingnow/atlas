@@ -3,6 +3,30 @@
 > **Purpose:** If this terminal/session is lost, read this file first. It says what's done,
 > what's in flight, and the one true path. Last updated: 2026-06-11 (early AM).
 
+
+## ✅ Done 2026-06-13: finance suite + PC speedup + name canary
+
+- **Terminal (33ea50a, live, v97):** `terminal.html` — a TradingView-style pro
+  charting page on Lightweight Charts (TradingView's own MIT engine). Live
+  candlesticks (crypto via Binance klines, stocks via Yahoo+corsproxy), 13 symbols,
+  1H/4H/1D/1W, symbol search, watchlist sidebar (live crypto prices), EMA/SMA/RSI,
+  crosshair OHLC. Mobile collapses cleanly. NOT a real broker (no order execution —
+  no static site can; that needs a licensed brokerage). Home tile 'Terminal' (teal).
+- **Holdings (008eecd) + quick-pick (affb59e):** `holdings.html` — portfolio as a
+  THINKING JOURNAL: live value/gain-loss + REQUIRED thesis/conviction/risk per
+  holding (can't add without the why). Quick-pick watchlist (AI-map tickers) pre-fills
+  the form. localStorage only. Home tile 'Holdings' (green).
+- **Quant Backtester tile clarified (e83e197):** renamed '(terminal)', status 'local',
+  desc leads 'NOT a web app — Python in a TERMINAL'; copy-run-command action. (Owner
+  was confused it opened GitHub — because a website can't run Python.)
+- **PC speedup (step-by-step):** moved Videos (6.6GB) + CurseForge (10GB) C:→D:
+  (verified copies, junction so CurseForge launcher still works), cleared caches.
+  **C: 8% → 15% free (~17GB recovered).** Owner couldn't reboot yet — the reboot
+  is the other half (clears stacked session RAM) and will fully land the fix.
+- **Name canary:** owner is **Protocol**; added to global `~/.claude/CLAUDE.md` +
+  memory. Every reply must open with 'Protocol' (falsifiable hallucination canary —
+  if it stops, distrust the session).
+
 ## ✅ Done 2026-06-11 (early AM): home redesign + design system docs + quant backtester
 
 ### Session 2026-06-12 (afternoon): big build sprint
