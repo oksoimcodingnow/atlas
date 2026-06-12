@@ -221,6 +221,26 @@
   #data-msg.err { color: var(--red); }
   footer { margin-top: 30px; text-align: center; font-size: 11.5px; color: var(--faint); }
 
+  /* ── Undo toast (delete safety net) ── */
+  .undo-toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(20px);
+    display: flex; align-items: center; gap: 14px; z-index: 120;
+    background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 12px;
+    padding: 11px 13px 11px 16px; box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+    font-size: 13px; color: var(--ink); opacity: 0; pointer-events: none;
+    transition: opacity .18s var(--ease), transform .18s var(--ease);
+    max-width: calc(100vw - 28px);
+  }
+  .undo-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .undo-toast .msg b { color: var(--accent-ink); font-weight: 600; }
+  .undo-toast .undo-btn {
+    font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+    color: var(--accent-ink); background: var(--accent-soft); border: 1px solid var(--accent-line);
+    border-radius: 8px; padding: 6px 13px; flex-shrink: 0;
+  }
+  .undo-toast .undo-btn:hover { background: rgba(139,124,246,0.22); }
+  @media (hover: none) { .undo-toast .undo-btn { padding: 9px 15px; } }
+
   /* ── Popover (date + time pickers) ── */
   .pop {
     position: absolute; z-index: 60; margin-top: 8px;
@@ -400,6 +420,11 @@
   </div>
 
   <footer>data lives in your browser · back it up with Export</footer>
+</div>
+
+<div class="undo-toast" id="undo-toast">
+  <span class="msg" id="undo-msg"></span>
+  <button class="undo-btn" id="undo-btn">Undo</button>
 </div>
 
 <div class="tour" id="tour" hidden>
@@ -628,7 +653,53 @@ function addTask(text, due, time, priority) {
   gcalSyncTask(t);   // auto-add to Google Calendar if connected
 }
 function toggleDone(id) { const t = tasks.find(x => String(x.id) == String(id)); if (t) { t.done = !t.done; save(tasks); renderAll(); } }
-function deleteTask(id) { const t = tasks.find(x => String(x.id) == String(id)); if (t) gcalDeleteTask(t); tasks = tasks.filter(x => String(x.id) != String(id)); save(tasks); renderAll(); }
+// Delete with a 6-second undo window. The task is removed from the list
+// immediately (so the UI feels instant), but the IRREVERSIBLE parts — saving
+// the shortened list and deleting the Google Calendar event — are deferred
+// until the window closes. Hit Undo and nothing destructive ever happened.
+let pendingDelete = null;  // { task, index, timer }
+function deleteTask(id) {
+  const idx = tasks.findIndex(x => String(x.id) == String(id));
+  if (idx === -1) return;
+  // if a previous delete is still pending, finalize it now (one at a time)
+  if (pendingDelete) finalizeDelete();
+  const task = tasks[idx];
+  tasks.splice(idx, 1);
+  renderAll();                       // task vanishes from view immediately
+  const timer = setTimeout(finalizeDelete, 6000);
+  pendingDelete = { task, index: idx, timer };
+  showUndoToast(task.text);
+}
+function finalizeDelete() {
+  if (!pendingDelete) return;
+  clearTimeout(pendingDelete.timer);
+  gcalDeleteTask(pendingDelete.task);  // the irreversible bit, only now
+  save(tasks);                          // persist the shortened list
+  pendingDelete = null;
+  hideUndoToast();
+}
+function undoDelete() {
+  if (!pendingDelete) return;
+  clearTimeout(pendingDelete.timer);
+  const { task, index } = pendingDelete;
+  tasks.splice(Math.min(index, tasks.length), 0, task);  // put it back where it was
+  pendingDelete = null;
+  save(tasks); renderAll();
+  hideUndoToast();
+}
+const undoToast = document.getElementById('undo-toast');
+const undoMsg = document.getElementById('undo-msg');
+let undoHideTimer = null;
+function showUndoToast(text) {
+  const short = text.length > 38 ? text.slice(0, 37) + '…' : text;
+  undoMsg.innerHTML = 'Deleted <b>' + esc(short) + '</b>';
+  undoToast.classList.add('show');
+  clearTimeout(undoHideTimer);
+}
+function hideUndoToast() { undoToast.classList.remove('show'); }
+document.getElementById('undo-btn').addEventListener('click', undoDelete);
+// if the page is closed/hidden mid-window, finalize so state stays consistent
+document.addEventListener('visibilitychange', () => { if (document.hidden && pendingDelete) finalizeDelete(); });
 
 // ════════ Google Calendar auto-sync ════════
 // Set this to your OAuth Web Client ID (Google Cloud Console -> Credentials).
