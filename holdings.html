@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holdings · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(184,192,255,0.45); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --red:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(720px 400px at 72% -10%, rgba(184,192,255,0.10), transparent 65%);}
+
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--accent);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:920px;margin:0 auto;padding:clamp(22px,4vw,40px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;display:inline-flex;align-items:center;gap:12px;}
+  .eyebrow::before{content:'';width:26px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,7vw,72px);line-height:0.94;letter-spacing:-0.02em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(17px,2.2vw,22px);color:var(--muted);max-width:640px;margin-top:12px;line-height:1.4;}
+  .lede b{color:var(--text);}
+
+  /* summary bar */
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:26px;}
+  .sm{border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:14px 16px;}
+  .sm .k{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);}
+  .sm .v{font-family:var(--mono);font-size:24px;font-weight:500;margin-top:4px;}
+  .sm .v.up{color:var(--green);} .sm .v.dn{color:var(--red);}
+  .sm .sub{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+
+  /* allocation bar */
+  .alloc{margin-top:14px;}
+  .alloc .bar{height:14px;border-radius:999px;overflow:hidden;display:flex;border:1px solid var(--rule);}
+  .alloc .bar i{height:100%;transition:width .3s;}
+  .alloc .legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:11.5px;color:var(--muted);}
+  .alloc .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .alloc .legend .dot{width:9px;height:9px;border-radius:2px;}
+
+  /* holdings */
+  h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:24px;margin:36px 0 14px;}
+  .holding{border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:16px 18px;margin-bottom:11px;transition:border-color .15s;}
+  .holding:hover{border-color:var(--rule-hi);}
+  .h-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .h-id .tk{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--accent);}
+  .h-id .sh{font-size:12px;color:var(--faint);margin-top:2px;font-family:var(--mono);}
+  .h-val{text-align:right;}
+  .h-val .now{font-family:var(--mono);font-size:18px;font-weight:500;}
+  .h-val .gl{font-family:var(--mono);font-size:12.5px;font-weight:600;margin-top:2px;}
+  .gl.up{color:var(--green);} .gl.dn{color:var(--red);} .gl.flat{color:var(--faint);}
+  .h-think{margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);display:grid;gap:8px;}
+  .think-row{display:flex;gap:10px;align-items:baseline;font-size:13px;}
+  .think-row .lbl{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700;min-width:74px;flex-shrink:0;}
+  .think-row .txt{color:#ded6ea;line-height:1.5;}
+  .think-row.risk .txt{color:#e7d2d6;}
+  .conv{display:inline-flex;gap:3px;align-items:center;}
+  .conv i{width:9px;height:9px;border-radius:50%;background:var(--rule);} .conv i.on{background:var(--gold);}
+  .h-actions{display:flex;gap:8px;margin-top:12px;}
+  .h-actions button{font-size:11.5px;font-family:var(--sans);color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:5px 12px;cursor:pointer;transition:.15s;}
+  .h-actions button:hover{color:var(--text);border-color:var(--accent);}
+  .h-actions button.del:hover{color:var(--red);border-color:var(--red);}
+
+  /* add form */
+  .add{border:1px dashed var(--rule);border-radius:14px;background:transparent;padding:18px;margin-top:14px;}
+  .add h3{font-family:var(--serif);font-style:italic;font-weight:500;font-size:20px;margin-bottom:4px;}
+  .add .note{font-size:12px;color:var(--faint);margin-bottom:14px;}
+  .add .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(min-width:620px){ .add .grid{grid-template-columns:repeat(4,1fr);} }
+  .field{font-family:var(--sans);font-size:14px;color:var(--text);background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:11px 12px;outline:none;width:100%;transition:border-color .15s;}
+  .field:focus{border-color:var(--accent);} .field::placeholder{color:var(--faint);}
+  .field.mono{font-family:var(--mono);}
+  .add .full{grid-column:1/-1;}
+  .convpick{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin:4px 0;}
+  .convpick .dots{display:inline-flex;gap:5px;}
+  .convpick .dots i{width:16px;height:16px;border-radius:50%;border:1px solid var(--rule);cursor:pointer;transition:.12s;}
+  .convpick .dots i.on{background:var(--gold);border-color:var(--gold);}
+  .addbtn{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--bg);background:var(--accent);border:0;border-radius:999px;padding:12px 24px;cursor:pointer;margin-top:6px;}
+  .addbtn:hover{background:#cdd3ff;}
+
+  .empty{text-align:center;padding:40px 20px;color:var(--faint);}
+  .empty .g{font-size:30px;opacity:.5;margin-bottom:10px;}
+
+  .note-box{margin-top:26px;border:1px solid var(--rule);border-radius:12px;background:var(--bg-2);padding:14px 16px;font-size:12.5px;color:var(--muted);line-height:1.6;}
+  .note-box b{color:var(--gold);}
+  .pricefoot{font-size:11px;color:var(--faint);text-align:center;margin-top:10px;}
+  .foot{margin-top:30px;padding-top:20px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Holdings</span></div><a class="back" href="index.html">&larr; Home</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Your portfolio · a thinking journal</div>
+  <h1>What you own, and <em>why.</em></h1>
+  <p class="lede">A tracker that won't let you forget the <b>thinking</b>. Live prices and gain/loss, yes — but every holding also records your <b>thesis</b>, your <b>conviction</b>, and the <b>risk that breaks it</b>. Because a price is not a reason, and a portfolio you can't explain is one you'll panic-sell.</p>
+
+  <div class="summary" id="summary"></div>
+  <div class="alloc" id="alloc"></div>
+
+  <h2>Holdings</h2>
+  <div id="holdings"></div>
+
+  <div class="add">
+    <h3>Add a holding</h3>
+    <div class="note">You can't add one without a thesis and a risk. That's the point — own nothing you can't explain.</div>
+    <div class="grid">
+      <input class="field mono" id="f-tk" placeholder="Ticker (NVDA)" autocomplete="off">
+      <input class="field mono" id="f-sh" placeholder="Shares" type="number" step="any" autocomplete="off">
+      <input class="field mono" id="f-cost" placeholder="Cost / share ($)" type="number" step="any" autocomplete="off">
+      <input class="field" id="f-name" placeholder="Name (optional)" autocomplete="off">
+    </div>
+    <div class="convpick" style="margin-top:10px">Conviction:
+      <span class="dots" id="convDots"><i data-c="1"></i><i data-c="2"></i><i data-c="3"></i><i data-c="4"></i><i data-c="5"></i></span>
+      <span id="convLabel" style="font-size:11.5px;color:var(--faint)">how sure are you?</span>
+    </div>
+    <input class="field full" id="f-thesis" placeholder="Thesis — why do you own this? (one line)" autocomplete="off" style="margin-top:8px">
+    <input class="field full" id="f-risk" placeholder="What breaks it? — the risk that would make you wrong" autocomplete="off" style="margin-top:8px">
+    <button class="addbtn" id="addBtn" style="margin-top:12px">+ Add holding</button>
+    <div id="addErr" style="font-size:12px;color:var(--red);margin-top:8px;min-height:16px"></div>
+  </div>
+
+  <div class="note-box">
+    <b>How to read this honestly.</b> Gain/loss is vanity until you sell — what matters is whether your <i>thesis</i> still holds at today's price. Re-read your "what breaks it" line on every holding monthly: has that risk started happening? Conviction should track evidence, not price. And concentration (one holding &gt; ~25% of the pie) is a risk in itself. This is a journal to keep you honest, <b>not financial advice</b> — prices are delayed/illustrative, verify before you act.
+  </div>
+  <div class="pricefoot" id="pricefoot">Live prices where reachable · stored only in your browser · nothing leaves your device.</div>
+
+  <div class="foot">
+    <a href="overview.html">AI Investing map &rarr;</a>
+    <a href="fineng/valuation.html">Value a stock &rarr;</a>
+    <a href="ai-ripple.html">The thesis ripple &rarr;</a>
+  </div>
+</div>
+
+<script type="module">
+import { getQuotes } from './lib/tickers.js';
+
+const KEY = 'atlas_holdings';
+const $ = id => document.getElementById(id);
+const money = n => '$' + (Math.abs(n) >= 1000 ? Math.round(n).toLocaleString() : n.toFixed(2));
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// accent palette for allocation segments
+const PAL = ['#b8c0ff','#f3d59a','#5fd39a','#ff8db3','#9a9ab8','#6fcfe0','#d9b8ff','#ffb37a'];
+
+let holdings = load();
+let quotes = {};
+let convSel = 3;
+
+function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } }
+function save(){ localStorage.setItem(KEY, JSON.stringify(holdings)); }
+
+// ── conviction picker in the add form ──
+$('convDots').addEventListener('click', e => {
+  const i = e.target.closest('[data-c]'); if(!i) return;
+  convSel = +i.dataset.c; paintConvPicker();
+});
+function paintConvPicker(){
+  [...$('convDots').children].forEach((d,idx)=> d.classList.toggle('on', idx < convSel));
+  $('convLabel').textContent = ['','a hunch','speculative','reasonable','strong','high conviction'][convSel];
+}
+paintConvPicker();
+
+// ── add ──
+$('addBtn').addEventListener('click', () => {
+  const tk = $('f-tk').value.trim().toUpperCase();
+  const sh = parseFloat($('f-sh').value);
+  const cost = parseFloat($('f-cost').value);
+  const thesis = $('f-thesis').value.trim();
+  const risk = $('f-risk').value.trim();
+  const err = [];
+  if(!/^[A-Z.]{1,8}$/.test(tk)) err.push('valid ticker');
+  if(!(sh > 0)) err.push('shares > 0');
+  if(!(cost >= 0)) err.push('cost per share');
+  if(!thesis) err.push('a thesis (why you own it)');
+  if(!risk) err.push('the risk (what breaks it)');
+  if(err.length){ $('addErr').textContent = 'Need: ' + err.join(', ') + '.'; return; }
+  $('addErr').textContent = '';
+  holdings.push({ id: Date.now(), tk, name: $('f-name').value.trim(), sh, cost, thesis, risk, conv: convSel });
+  save();
+  ['f-tk','f-sh','f-cost','f-name','f-thesis','f-risk'].forEach(id=>$(id).value='');
+  convSel = 3; paintConvPicker();
+  render();
+});
+
+function deleteHolding(id){
+  const h = holdings.find(x=>x.id===id);
+  if(h && !confirm('Remove '+h.tk+'? (Your thesis note goes too.)')) return;
+  holdings = holdings.filter(x=>x.id!==id);
+  save(); render();
+}
+function editConv(id, delta){
+  const h = holdings.find(x=>x.id===id); if(!h) return;
+  h.conv = Math.max(1, Math.min(5, (h.conv||3) + delta)); save(); render();
+}
+window.__hDel = deleteHolding; window.__hConv = editConv;
+
+// ── render ──
+function render(){
+  const box = $('holdings');
+  if(!holdings.length){
+    box.innerHTML = '<div class="empty"><div class="g">◷</div>No holdings yet. Add one below — thesis and risk required.</div>';
+    $('summary').innerHTML=''; $('alloc').innerHTML='';
+    return;
+  }
+  // compute per-holding values from quotes (fall back to cost if no live price)
+  let totVal=0, totCost=0, anyLive=false;
+  const rows = holdings.map((h,idx) => {
+    const q = quotes[h.tk];
+    const px = q ? q.price : h.cost;          // fallback: cost basis (shows flat)
+    if(q) anyLive = true;
+    const val = px * h.sh, basis = h.cost * h.sh;
+    totVal += val; totCost += basis;
+    return { h, idx, px, val, basis, gl: val - basis, glPct: basis ? (val-basis)/basis*100 : 0, live: !!q, chgPct: q ? q.changePct : 0 };
+  });
+
+  // summary
+  const totGl = totVal - totCost, totGlPct = totCost ? totGl/totCost*100 : 0;
+  const up = totGl >= 0;
+  $('summary').innerHTML =
+    sm('Total value', money(totVal), '', up?'up':'dn') +
+    sm('Total gain/loss', (up?'+':'') + money(totGl).replace('$',totGl<0?'-$':'$').replace('--','-'), (up?'+':'')+totGlPct.toFixed(1)+'%', up?'up':'dn') +
+    sm('Cost basis', money(totCost), holdings.length+' holding'+(holdings.length>1?'s':''), '') +
+    sm('Today', (function(){ // weighted day move where live
+        let dv=0, base=0; rows.forEach(r=>{ if(r.live){ dv += r.val*(r.chgPct/100); base += r.val; }});
+        const p = base ? dv/base*100 : 0; return (p>=0?'+':'')+p.toFixed(2)+'%'; })(), 'weighted, live only', '');
+
+  // allocation
+  const segs = rows.slice().sort((a,b)=>b.val-a.val);
+  $('alloc').innerHTML =
+    '<div class="bar">' + segs.map((r,i)=>{ const pct = totVal? r.val/totVal*100:0; return '<i style="width:'+pct+'%;background:'+PAL[i%PAL.length]+'"></i>'; }).join('') + '</div>' +
+    '<div class="legend">' + segs.map((r,i)=>{ const pct = totVal? r.val/totVal*100:0; const heavy = pct>25; return '<span><span class="dot" style="background:'+PAL[i%PAL.length]+'"></span>'+esc(r.h.tk)+' '+pct.toFixed(0)+'%'+(heavy?' <span style="color:var(--red)">⚠ concentrated</span>':'')+'</span>'; }).join('') + '</div>';
+
+  // holdings
+  box.innerHTML = rows.map(r => {
+    const h = r.h;
+    const glCls = Math.abs(r.gl) < 0.005 ? 'flat' : (r.gl>=0?'up':'dn');
+    const convDots = [1,2,3,4,5].map(n=>'<i class="'+(n<=(h.conv||3)?'on':'')+'"></i>').join('');
+    return '<div class="holding">'
+      + '<div class="h-top">'
+      +   '<div class="h-id"><span class="tk">'+esc(h.tk)+'</span>'+(h.name?' <span style="color:var(--muted);font-size:13px">'+esc(h.name)+'</span>':'')
+      +     '<div class="sh">'+(+h.sh)+' sh @ '+money(h.cost)+(r.live?'':' · <span style="color:var(--faint)">no live price</span>')+'</div></div>'
+      +   '<div class="h-val"><div class="now">'+money(r.val)+'</div>'
+      +     '<div class="gl '+glCls+'">'+(r.gl>=0?'+':'−')+money(Math.abs(r.gl))+' ('+(r.glPct>=0?'+':'')+r.glPct.toFixed(1)+'%)</div></div>'
+      + '</div>'
+      + '<div class="h-think">'
+      +   '<div class="think-row"><span class="lbl">Thesis</span><span class="txt">'+esc(h.thesis)+'</span></div>'
+      +   '<div class="think-row"><span class="lbl">Conviction</span><span class="txt"><span class="conv">'+convDots+'</span></span></div>'
+      +   '<div class="think-row risk"><span class="lbl">Breaks if</span><span class="txt">'+esc(h.risk)+'</span></div>'
+      + '</div>'
+      + '<div class="h-actions">'
+      +   '<button onclick="__hConv('+h.id+',1)">conviction ↑</button>'
+      +   '<button onclick="__hConv('+h.id+',-1)">conviction ↓</button>'
+      +   '<button class="del" onclick="__hDel('+h.id+')">remove</button>'
+      + '</div></div>';
+  }).join('');
+
+  $('pricefoot').textContent = anyLive
+    ? 'Live prices · stored only in your browser · nothing leaves your device.'
+    : 'Live feed asleep — showing cost basis. Prices return when the market data is reachable. Stored locally only.';
+}
+function sm(k,v,sub,cls){ return '<div class="sm"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div>'; }
+
+// initial paint (cost-basis fallback), then upgrade with live quotes
+render();
+if(holdings.length){
+  getQuotes([...new Set(holdings.map(h=>h.tk))]).then(q => { quotes = q; render(); });
+}
+</script>
+<script src="lib/atlas-fx.js"></script>
+</body>
+</html>
