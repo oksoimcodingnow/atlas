@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 14 · Putting it all together · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 14 of 14 · The capstone</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 14 · The capstone</div>
+  <h1>One breach, <em>every lesson.</em></h1>
+  <p class="standfirst">Here is a single, realistic breach — start to finish. Every step maps to something you learned. Walk it through, and watch how many separate, ordinary defenses could each, alone, have stopped the whole thing. That's the real lesson of security: it's a chain, and the defender only needs one link to hold.</p>
+  <div class="meta-line">~9 min · interactive · the finale · pulls together all 13 lessons</div>
+
+  <p>No new concepts here — just the proof that the ones you have, combined, are powerful. We'll follow "Northwind Co." through a breach that really could happen, and at each stage you'll name the defense that would have broken the chain.</p>
+
+  <h2>The breach, step by step</h2>
+  <p>At each step, pick the defense that would have stopped it cold. Every one is something you learned. Notice: <em class="it">any single one</em> of these, in place, ends the story early.</p>
+
+  <div class="sim">
+    <div class="sim-title" id="capStage">Step 1</div>
+    <div id="capStory" style="font-size:14.5px;line-height:1.6;background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:16px;min-height:80px"></div>
+    <div class="chips" id="capChips" style="margin-top:14px"></div>
+    <div id="capVerdict" style="font-size:13.5px;margin-top:14px;min-height:40px;line-height:1.6"></div>
+    <div class="chips"><button class="chip" id="capNext" style="display:none">Next step ›</button> <span style="font-family:var(--mono);font-size:12px;color:var(--muted);align-self:center" id="capProgress">step 1 of 6</span></div>
+  </div>
+
+  <div class="master" style="border-color:rgba(95,211,154,0.4);background:linear-gradient(180deg,rgba(95,211,154,0.06),transparent)" id="capFinale" hidden>
+    <div class="t" style="color:var(--green)">✓ You finished the Security Academy.</div>
+    <p style="color:#cfeede">Six steps, and at <b>every single one</b> a defense you learned could have ended the breach: MFA at the login, escaping at the comment box, least privilege on the server, locked-down cloud rules, encryption on the data, and logging to catch it. The attacker needed every link to hold. <b>You only needed one.</b> That asymmetry — many chances to defend, the attacker needs them all to fail — is the quiet reason most attacks lose. Now you can read a breach headline and see exactly where the chain broke.</p>
+  </div>
+
+  <h2>What you actually have now</h2>
+  <div class="method">
+    <div class="m"><span class="mn">1</span><span class="mt"><b>The map.</b> Packets, DNS, ports, HTTPS — you can picture what happens on the wire (L1), and you name the three things security protects: confidentiality, integrity, availability (L2).</span></div>
+    <div class="m"><span class="mn">2</span><span class="mt"><b>The primitives.</b> Encryption vs hashing, public-key, salted slow-hashed passwords, MFA (L3–L4) — the toolbox under every padlock and login.</span></div>
+    <div class="m"><span class="mn">3</span><span class="mt"><b>The attacks &amp; their fixes.</b> Injection/XSS/CSRF, the wire, malware detection, phishing (L5–L8) — and the one rule under most of it: data is data, never code; never trust input; slow down on pressure.</span></div>
+    <div class="m"><span class="mn">4</span><span class="mt"><b>Systems at scale.</b> Secure coding &amp; OWASP, OS access control &amp; least privilege, cloud misconfiguration &amp; Firebase rules (L9–L11) — directly applicable to your own RoShop and Atlas.</span></div>
+    <div class="m"><span class="mn">5</span><span class="mt"><b>The profession.</b> Defense in depth, assume-breach, the incident-response playbook, forensics (L12–L13) — how real defenders actually work.</span></div>
+  </div>
+
+  <p>This is the working mental model behind <span class="hl">CompTIA Security+</span> and the foundation under <span class="hl">CISSP</span> and <span class="hl">OSCP</span> — not memorized trivia, but ideas you can reason from. More than that: you'll write safer code because you've seen the unsafe version broken, and you'll read the news about a breach and actually understand what happened, and where it could have been stopped.</p>
+
+  <p class="pull">Security isn't a wall. It's a chain of chances to defend — and the defender only needs one link to hold.</p>
+
+  <div class="callout">
+    <div class="tag">Where to go from here</div>
+    <p><span class="mono">Practice legally:</span> TryHackMe and HackTheBox offer intentionally-vulnerable labs to practice on (the white-hat way — your own targets, with permission). <span class="mono">Harden what you own:</span> turn on MFA everywhere, audit your Firebase rules, never commit a secret. <span class="mono">Keep the mindset:</span> at every "place data changes hands," ask "is this trusted, and what's the minimum access needed?" That single habit is most of the craft.</p>
+  </div>
+
+  <div class="nextnav"><a href="13-incident-forensics.html">← Lesson 13</a><a class="next" href="index.html">Back to all lessons →</a></div>
+</div>
+<script>
+const STEPS=[
+  { story:'<b>Step 1 — The lure.</b> An attacker emails a Northwind employee a convincing "IT: reset your password" message with a link to a fake login page. The employee clicks and enters their password. <i>(Sound familiar? Lesson 8.)</i>',
+    opts:[['MFA on the account',true],['A faster computer',false],['A longer password',false]],
+    why:'<b>MFA (L4/L8).</b> Even with the stolen password, the attacker lacks the second factor — the login fails. The single highest-value control against phishing. Chain broken at step 1.' },
+  { story:'<b>Step 2 — The foothold.</b> No MFA. The attacker logs into the company web app and finds a comment box that displays input without escaping it. They plant a script that steals other users\' sessions. <i>(Lesson 5.)</i>',
+    opts:[['Escaping output / input validation',true],['A bigger database',false],['Deleting the comment box later',false]],
+    why:'<b>Escaping output (L5).</b> If the app escaped user input, the planted "script" would render as harmless text — no XSS. Data is data, never code. Chain broken at step 2.' },
+  { story:'<b>Step 3 — The climb.</b> The attacker compromises the web server process and tries to escalate to admin to reach everything. <i>(Lesson 10.)</i>',
+    opts:[['Least privilege on the web process',true],['More RAM',false],['A second firewall in front',false]],
+    why:'<b>Least privilege (L10).</b> If the web process runs as a limited account that can\'t reach the rest of the system, the compromise stays contained — the climb hits a wall. Chain broken at step 3.' },
+  { story:'<b>Step 4 — The jackpot.</b> They reach the company\'s cloud storage and find the customer database... in a bucket set to "public / anyone can read." <i>(Lesson 11.)</i>',
+    opts:[['Locked-down cloud rules (default-deny)',true],['A bigger bucket',false],['Hoping nobody finds the URL',false]],
+    why:'<b>Cloud rules / least privilege (L11).</b> A default-deny bucket means the attacker can\'t read it even standing right in front of it. The #1 cloud breach cause, prevented by one setting. Chain broken at step 4.' },
+  { story:'<b>Step 5 — The exfiltration.</b> They download the database. Inside, the passwords are stored... in plain text. <i>(Lessons 3–4.)</i>',
+    opts:[['Salted, slow-hashed passwords',true],['A bigger download blocker',false],['Renaming the password column',false]],
+    why:'<b>Hashing + salt (L3/L4).</b> Even with the database stolen, salted slow-hashes can\'t be reversed into usable passwords — the breach leaks fingerprints, not credentials. Damage contained at step 5.' },
+  { story:'<b>Step 6 — The aftermath.</b> Weeks pass. Did anyone even notice? Whether Northwind catches this fast or finds out from the news depends on one thing. <i>(Lesson 12–13.)</i>',
+    opts:[['Logging + detection (and an IR plan)',true],['Luck',false],['Assuming it didn\'t happen',false]],
+    why:'<b>Logging/detection + IR (L12/L13).</b> With logging, the unusual access is flagged and the incident-response playbook kicks in — contained in hours, not discovered in headlines months later. The eyes that turn a catastrophe into an incident.' },
+];
+let ci=0,answered=false;
+function showCap(){
+  answered=false;
+  const s=STEPS[ci];
+  document.getElementById('capStage').textContent='Step '+(ci+1)+' of '+STEPS.length;
+  document.getElementById('capProgress').textContent='step '+(ci+1)+' of '+STEPS.length;
+  document.getElementById('capStory').innerHTML=s.story;
+  document.getElementById('capVerdict').innerHTML='';
+  document.getElementById('capNext').style.display='none';
+  document.getElementById('capChips').innerHTML=s.opts.map((o,i)=>'<button class="chip" data-i="'+i+'">'+o[0]+'</button>').join('');
+  document.querySelectorAll('#capChips [data-i]').forEach(b=>b.addEventListener('click',()=>pickCap(+b.dataset.i)));
+}
+function pickCap(i){
+  if(answered)return; answered=true;
+  const s=STEPS[ci], right=s.opts[i][1];
+  document.getElementById('capVerdict').innerHTML=(right?'<b style="color:var(--green)">✓ Yes.</b> ':'<b style="color:var(--accent-2)">Almost — the chain-breaker here is:</b> ')+s.why;
+  if(ci<STEPS.length-1) document.getElementById('capNext').style.display='inline-flex';
+  else { document.getElementById('capNext').style.display='none'; document.getElementById('capFinale').hidden=false; document.getElementById('capFinale').scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+document.getElementById('capNext').addEventListener('click',()=>{ if(ci<STEPS.length-1){ci++;showCap();} });
+showCap();
+</script>
+</body>
+</html>

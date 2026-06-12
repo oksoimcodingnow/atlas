@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 13 · Incident response &amp; forensics · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 13 of 14 · The profession</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 13 · The profession</div>
+  <h1>When (not if) it <em>happens.</em></h1>
+  <p class="standfirst">Every defender eventually faces a real breach. What separates a contained incident from a catastrophe isn't luck — it's having a plan and following it in order. Panic improvises; professionals run the playbook.</p>
+  <div class="meta-line">~8 min · interactive · builds on Lesson 12 · the assume-breach payoff</div>
+
+  <p>Lesson 12 said: assume breach. This is what you do <em class="it">when</em> it comes true. <span class="hl">Incident response (IR)</span> is the disciplined process of handling a breach, and <span class="hl">digital forensics</span> is reconstructing what happened. Both reward calm order over heroics — and there's a famous six-step sequence, in a specific order, for a reason.</p>
+
+  <h2>The IR playbook — defined</h2>
+  <dl class="terms">
+    <dt>1. Preparation</dt>
+    <dd>Before anything happens: have a plan, backups, logging, and contacts ready. The work you do <em class="it">now</em> decides how the bad day goes. The only step that happens before the breach.</dd>
+    <dt>2. Identification</dt>
+    <dd>Detect and confirm: is this real? What's affected? Your logging/SIEM (Lesson 12) is what makes this possible — you can't respond to what you can't see.</dd>
+    <dt>3. Containment</dt>
+    <dd>Stop the bleeding: isolate affected systems so it can't spread, <em class="it">without</em> destroying evidence. Pull the network cable, not the power (powering off can wipe memory evidence — forensics needs it).</dd>
+    <dt>4. Eradication</dt>
+    <dd>Remove the threat: delete the malware, close the hole they came through, revoke stolen credentials. Don't just clean up — fix the <em class="it">way in</em>, or they'll be back tonight.</dd>
+    <dt>5. Recovery</dt>
+    <dd>Restore systems to normal — from clean backups — and watch closely to be sure the threat is truly gone before declaring victory.</dd>
+    <dt>6. Lessons learned</dt>
+    <dd>The step everyone skips and shouldn't. A blameless post-mortem: how did it happen, what would have stopped it, what do we change? This feeds back into Preparation. The incident only pays off if you learn from it.</dd>
+  </dl>
+
+  <h2>The order matters: run the response</h2>
+  <p>A breach just hit. You'll be offered the next action at each step — pick the right one, in the right order. Getting the sequence wrong is how real responses go bad.</p>
+
+  <div class="sim">
+    <div class="sim-title" id="irStage">A breach is detected. What now?</div>
+    <div id="irChips" class="chips"></div>
+    <div id="irLog" style="font-size:13px;margin-top:14px;min-height:60px;line-height:1.6;background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:14px;color:var(--muted)"></div>
+    <div class="chips"><span style="font-family:var(--mono);font-size:12px;color:var(--muted)" id="irProgress">step 1 of 5</span></div>
+  </div>
+
+  <h2>The forensics side — defined</h2>
+  <dl class="terms">
+    <dt>chain of custody</dt>
+    <dd>A documented record of who handled each piece of evidence, when, and how — so it holds up if it's ever needed legally. Break the chain and the evidence is worthless in court.</dd>
+    <dt>order of volatility</dt>
+    <dd>Collect the most <em class="it">fragile</em> evidence first: live memory (RAM) vanishes on shutdown, network connections close, disk is more durable. This is exactly why "pull the network, not the power" — powering off destroys the volatile evidence.</dd>
+    <dt>indicators of compromise (IOCs)</dt>
+    <dd>The fingerprints a breach leaves: a malicious file hash, a strange IP, an odd registry key. Investigators use them to scope the damage and to detect the same attacker elsewhere.</dd>
+  </dl>
+
+  <p class="pull">A breach is a fire. You don't debate firefighting philosophy in the smoke — you run the drill you practiced when the air was clear.</p>
+
+  <div class="callout">
+    <div class="tag">The one habit that matters most</div>
+    <p>Almost everything that goes wrong in a real incident traces back to <span class="mono">Preparation</span> — no plan, no backups, no logs to investigate with, no idea who to call. You can't improvise forensics or restore from a backup you never made. The boring work done on a calm day is what saves you on the worst one. (And "<span class="mono">lessons learned</span>" is how each breach makes the next one less likely.)</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>Breaches are <em class="it">when</em>, not <em class="it">if</em>. <span class="hl">Incident response</span> runs a six-step playbook in order — <span class="hl-2">prepare, identify, contain, eradicate, recover, learn</span> — and the order matters (contain before you eradicate; preserve evidence before you wipe). <span class="hl">Forensics</span> reconstructs the attack via chain of custody, order of volatility, and IOCs. The whole thing rests on Preparation: the calm-day work that turns a catastrophe into a contained incident.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">You discover an active intrusion on a server. Your first instinct is to immediately power it off to "stop them." Why might that be a mistake?</div>
+    <button class="opt" data-correct="true">Powering off wipes volatile evidence in memory (running malware, attacker tools, network connections) that forensics needs. Isolate the network instead — contain without destroying evidence.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">It's never a mistake — powering off is always the fastest, safest first move.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">The only risk is downtime; the evidence is all safely on disk anyway.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="12-blue-team.html">← Lesson 12</a><a class="next" href="14-putting-it-together.html">Lesson 14: Putting it together →</a></div>
+</div>
+<script>
+// run-the-response: pick the correct next phase in order
+const PHASES=[
+  { stage:'A breach is detected. What now?',
+    opts:[['Identify — confirm it\'s real & scope what\'s affected',true],['Recover from backups right away',false],['Email everyone to panic',false]],
+    good:'✓ Identification first — confirm the breach is real and find out what\'s affected. You can\'t respond well to something you haven\'t scoped.' },
+  { stage:'Confirmed: a server is compromised and the attacker is active. Next?',
+    opts:[['Contain — isolate the server (network), preserve evidence',true],['Eradicate the malware immediately',false],['Power it off to be safe',false]],
+    good:'✓ Containment — isolate it so it can\'t spread, but DON\'T power off (that wipes memory evidence). Network-isolate; contain without destroying.' },
+  { stage:'Contained. The attacker can\'t spread. Next?',
+    opts:[['Eradicate — remove malware AND close the way they got in',true],['Declare it over and go home',false],['Restore from backup now',false]],
+    good:'✓ Eradication — remove the threat and, crucially, fix the hole they used. Clean up without closing the door and they\'ll be back tonight.' },
+  { stage:'Threat removed, hole closed. Next?',
+    opts:[['Recover — restore from clean backups, watch closely',true],['Skip straight to the post-mortem',false],['Re-open everything immediately, no monitoring',false]],
+    good:'✓ Recovery — restore from CLEAN backups and monitor to be sure the threat is truly gone before declaring normal.' },
+  { stage:'Systems restored and stable. The final step?',
+    opts:[['Lessons learned — blameless post-mortem, fix root cause',true],['Nothing, the incident is over',false],['Quietly hope it doesn\'t happen again',false]],
+    good:'✓ Lessons learned — the step everyone skips. A blameless review feeds back into Preparation and makes the next incident less likely. THIS is how you actually get better.' },
+];
+let pi=0;
+function showPhase(){
+  const p=PHASES[pi];
+  document.getElementById('irStage').textContent=(pi+1)+'. '+p.stage;
+  document.getElementById('irProgress').textContent='step '+(pi+1)+' of '+PHASES.length;
+  document.getElementById('irLog').innerHTML='';
+  document.getElementById('irChips').innerHTML=p.opts.map((o,i)=>'<button class="chip" data-i="'+i+'">'+o[0]+'</button>').join('');
+  document.querySelectorAll('#irChips [data-i]').forEach(b=>b.addEventListener('click',()=>pick(+b.dataset.i)));
+}
+function pick(i){
+  const p=PHASES[pi], right=p.opts[i][1];
+  if(right){
+    document.getElementById('irLog').innerHTML='<span style="color:var(--green)">'+p.good+'</span>';
+    pi++;
+    if(pi<PHASES.length){ setTimeout(showPhase,1400); }
+    else { setTimeout(()=>{ document.getElementById('irChips').innerHTML=''; document.getElementById('irStage').textContent='✓ Incident handled — in order.'; document.getElementById('irProgress').textContent='complete'; document.getElementById('irLog').innerHTML='<span style="color:var(--green)"><b>That\'s the playbook.</b> Prepare → Identify → Contain → Eradicate → Recover → Lessons learned. Run it in order and a breach stays an incident, not a catastrophe.</span>'; },1400); }
+  } else {
+    document.getElementById('irLog').innerHTML='<span style="color:var(--red)">✗ Out of order. That skips a step the response depends on — try the option that comes next in the playbook.</span>';
+  }
+}
+showPhase();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. Live memory holds the most valuable, most fragile evidence — running processes, attacker tools, open connections — and it\'s gone the instant you power off. Isolate the network to contain, preserve the evidence, then investigate. Order of volatility in action.':'✗ Powering off feels decisive but destroys the volatile evidence (RAM) forensics needs, and tips the attacker off. The right move is network isolation — contain the spread while preserving what investigators need.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>

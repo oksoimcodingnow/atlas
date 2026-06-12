@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 10 · Operating systems &amp; access control · Security Academy</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lesson.css">
+</head>
+<body>
+<div class="top-bar"><div class="crumb">Security Academy<small>Lesson 10 of 14 · Systems &amp; scale</small></div><a class="back" href="index.html">← Lessons</a></div>
+<div class="wrap">
+  <div class="eyebrow">Lesson 10 · Systems &amp; scale</div>
+  <h1>Who's allowed to do <em>what.</em></h1>
+  <p class="standfirst">Every operating system is, underneath, a referee deciding which users may touch which files and run which commands. Attackers rarely get full control on the first move — they get a toehold, then climb. Understanding that climb is understanding how breaches actually deepen.</p>
+  <div class="meta-line">~8 min · interactive · builds on Lessons 2 &amp; 9</div>
+
+  <p>When an attacker "gets in," they usually land as some <em class="it">limited</em> user — a low-privilege account, a web-server process. The real damage comes from <span class="hl">privilege escalation</span>: climbing from that toehold to full control. The defender's job is to make that climb as hard as possible.</p>
+
+  <h2>The access-control vocabulary — defined</h2>
+  <dl class="terms">
+    <dt>users, groups &amp; permissions</dt>
+    <dd>The OS tags every file and action with who may read, write, or execute it. You belong to groups; permissions are granted to users and groups. This is access control at the machine level.</dd>
+    <dt>privileged vs unprivileged</dt>
+    <dd>A normal user can only touch their own stuff. A <strong>privileged</strong> account (root on Linux, Administrator on Windows) can touch <em class="it">everything</em> — install software, read any file, change the system. The crown.</dd>
+    <dt>principle of least privilege</dt>
+    <dd>The recurring hero of this course: give every user and process the <em class="it">minimum</em> rights it needs. Don't run as admin for daily work; don't let the web server read the password file. Less privilege = smaller blast radius.</dd>
+    <dt>privilege escalation</dt>
+    <dd>An attacker turning limited access into full control. <strong>Vertical</strong> = low user → admin. <strong>Horizontal</strong> = one user → another user's data. Usually via an unpatched bug, a weak permission, or a stolen credential.</dd>
+    <dt>sandboxing &amp; isolation</dt>
+    <dd>Running code in a confined box (a container, a VM, a browser tab) so even if it's malicious, it can't reach the rest of the system. The structural form of least privilege.</dd>
+  </dl>
+
+  <h2>Watch an attacker climb</h2>
+  <p>An attacker landed as a low-privilege web user. Toggle your hardening on, then let them try to escalate to root and reach the sensitive data. See how each defense cuts off a rung of the ladder.</p>
+
+  <div class="sim">
+    <div class="sim-title">Your system hardening</div>
+    <div class="chips" style="margin-bottom:12px" id="hardChips">
+      <button class="chip" data-h="patch">🔄 Patch the kernel/services</button>
+      <button class="chip" data-h="least">🛡 Least privilege (no extra rights)</button>
+      <button class="chip" data-h="sandbox">📦 Sandbox the web process</button>
+    </div>
+    <button class="chip" id="climbBtn" style="border-color:var(--red);color:var(--red)">⚔ Attempt privilege escalation</button>
+    <div id="climbLog" style="font-family:var(--mono);font-size:12.5px;margin-top:14px;min-height:110px;line-height:1.7;background:var(--bg);border:1px solid var(--rule);border-radius:10px;padding:14px"></div>
+  </div>
+
+  <p class="pull">Attackers don't usually break the front door wide open. They slip a foot in, then climb. Take away the rungs and the toehold stays a toehold.</p>
+
+  <div class="callout">
+    <div class="tag">The practical hardening</div>
+    <p><span class="mono">Don't work as admin.</span> Use a normal account daily; elevate only when needed. <span class="mono">Patch the OS.</span> Most escalation exploits target known, already-fixed kernel/service bugs. <span class="mono">Least privilege for services.</span> The web server, the database — each runs as its own limited account that can't touch the rest. <span class="mono">Sandbox untrusted code.</span> Containers/VMs so a compromise stays contained (this is exactly why you'd run Blender MCP or any "run my code" tool in a VM).</p>
+  </div>
+
+  <h2>Recap</h2>
+  <p>An OS is an access-control referee: <span class="hl">users, groups, and permissions</span> decide who may do what. Attackers land low and attempt <span class="hl">privilege escalation</span> to reach the crown. The defenses are this course's refrain made concrete: <span class="hl-2">least privilege</span> (small blast radius), <span class="hl-2">patching</span> (close the escalation bugs), and <span class="hl-2">sandboxing</span> (contain the compromise). Make the climb hard, and a toehold never becomes a takeover.</p>
+
+  <div class="check">
+    <div class="eyebrow" style="color:var(--accent)">Check yourself</div>
+    <div class="q">An attacker compromises your web server, which runs as a limited "www" user that can only read the website files. Why does least privilege matter here?</div>
+    <button class="opt" data-correct="true">Because the breach is contained — "www" can't read the password file, the database secrets, or touch the rest of the system. The blast radius stays small.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">It doesn't — once they're in at all, they have everything anyway.<span class="verdict"></span></button>
+    <button class="opt" data-correct="false">It only matters for the admin account, not service accounts.<span class="verdict"></span></button>
+  </div>
+
+  <div class="nextnav"><a href="09-secure-coding.html">← Lesson 9</a><a class="next" href="11-cloud-security.html">Lesson 11: Cloud security →</a></div>
+</div>
+<script>
+const hard={patch:false,least:false,sandbox:false};
+const RUNGS=[
+  { need:'sandbox', ok:'📦 Sandbox holds — the web process is boxed in and can\'t even reach the host system to start climbing.',
+    fail:'✗ No sandbox: the compromised web process can interact with the host OS.' },
+  { need:'patch',   ok:'🔄 Patched: the known kernel exploit they try to escalate with fails.',
+    fail:'✗ Unpatched: a known kernel bug lets them escalate toward root.' },
+  { need:'least',   ok:'🛡 Least privilege: even climbing, the account can\'t reach the sensitive data — it was never granted access.',
+    fail:'✗ Over-privileged: the account can read the password file and sensitive data.' },
+];
+function climb(){
+  const log=document.getElementById('climbLog');
+  let html='<span style="color:var(--red)">⚔ Attacker landed as low-privilege "www" user. Climbing...</span><br><br>';
+  let stopped=false;
+  for(const r of RUNGS){
+    if(hard[r.need]){ html+='<span style="color:var(--green)">'+r.ok+'</span><br>'; stopped=true; break; }
+    else { html+='<span style="color:#ff8db3">'+r.fail+'</span><br>'; }
+  }
+  html+='<br>'+(stopped
+    ? '<span style="color:var(--green)"><b>🛡 Escalation stopped.</b> A rung was missing from the ladder — the toehold stayed a toehold.</span>'
+    : '<span style="color:var(--red)"><b>💀 ROOT.</b> They climbed all the way and reached the sensitive data. Every rung was available.</span>');
+  log.innerHTML=html;
+}
+document.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{
+  hard[b.dataset.h]=!hard[b.dataset.h]; b.classList.toggle('on',hard[b.dataset.h]);
+}));
+document.getElementById('climbBtn').addEventListener('click',climb);
+climb();
+document.querySelectorAll('.opt').forEach(o=>{o.addEventListener('click',()=>{const c=o.dataset.correct==='true';o.classList.add(c?'right':'wrong');const v=o.querySelector('.verdict');v.textContent=c?'✓ Right. The compromise is real but contained — the limited account simply wasn\'t granted access to the secrets, so the attacker hits a wall. Least privilege turns a full breach into a small one.':'✗ A compromise of a LIMITED account isn\'t game over — that\'s the whole point of least privilege. "www" can\'t read what it was never allowed to, so the secrets stay safe and the attacker must find another (harder) way to escalate.';document.querySelectorAll('.opt').forEach(x=>{if(x!==o)x.style.opacity='0.55';});});});
+</script>
+</body>
+</html>
