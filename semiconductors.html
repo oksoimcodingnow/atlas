@@ -126,7 +126,8 @@
   <p class="disc">Market caps are approximate reference figures, not live, not advice. Moat is a judgement. Non-US names (TSMC, Tokyo Electron, Shin-Etsu) trade on Taiwan / Japan exchanges or as ADRs. Verify before acting.</p>
 </div>
 
-<script>
+<script type="module">
+import { getQuotes } from './lib/tickers.js';
 (function(){
   var STAGES=[
     {id:'materials', ic:'⛏️', nm:'Materials', gi:'⛏️', gn:'wafers & purity'},
@@ -200,8 +201,16 @@
     });
   }
   function showDetail(c){
-    detail.innerHTML='<span><b>'+c.t+'</b> '+c.n+' <span class="mtag '+c.m+'">'+MLBL[c.m]+'</span> &middot; '+capLabel(c.cap)+'<br>'+c.r+'</span>';
+    var isUS=/^[A-Z]+$/.test(c.t);
+    detail.innerHTML='<span><b>'+c.t+'</b> '+c.n+' <span class="mtag '+c.m+'">'+MLBL[c.m]+'</span> &middot; '+capLabel(c.cap)+' <span id="livepx" style="font-family:var(--mono);font-size:12px;color:var(--faint)">'+(isUS?'…':'(non-US)')+'</span><br>'+c.r+'</span>';
     detail.style.display='block';
+    // fetch a live price for US tickers; leaves a quiet dash if the feed sleeps
+    if(isUS){ getQuotes([c.t]).then(function(q){
+      var v=q[c.t], el=document.getElementById('livepx'); if(!el) return;
+      if(!v){ el.textContent='—'; return; }
+      var up=v.changePct>=0;
+      el.innerHTML='<span style="color:'+(up?'var(--accent)':'#ff8db3')+'">$'+(v.price>=1000?Math.round(v.price).toLocaleString():v.price.toFixed(2))+' '+(up?'▲':'▼')+(up?'+':'')+v.changePct.toFixed(1)+'%</span>';
+    }); }
   }
   render();
 })();
