@@ -281,7 +281,9 @@
     return order;
   }
 
-  function tickerHtml(names){ return names.map(function(t){ return '<a class="tk" href="https://stockanalysis.com/stocks/'+t.toLowerCase()+'/financials/" target="_blank" rel="noopener" title="'+t+' financial statements (income, balance sheet, cash flow)">'+t+'</a>'; }).join(''); }
+  function tickerHtml(names){ return names.map(function(t){ return '<a class="tk" data-tk="'+t+'" href="https://stockanalysis.com/stocks/'+t.toLowerCase()+'/financials/" target="_blank" rel="noopener" title="'+t+' financial statements (income, balance sheet, cash flow)">'+t+'</a>'; }).join(''); }
+  // Notify the (optional) live-price module that new ticker chips were rendered.
+  function announceTickers(){ try{ window.dispatchEvent(new CustomEvent('atlas:tickers')); }catch(e){} }
   function linkChips(id){ return neighbors(id).map(function(lid){ var n=nodeBy(lid); return '<button data-go="'+lid+'">'+n.ic+' '+n.nm.split(' ')[0]+'</button>'; }).join(''); }
   function wireChips(p){ p.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ select(b.dataset.go); svg.scrollIntoView({behavior:'smooth',block:'start'}); }); }); }
 
@@ -351,6 +353,42 @@ window.atlasTourSteps = [
   { sel: '#crumb', title: 'Find your way', body: 'The breadcrumb shows where you are. Tap <b>Economy</b> to zoom back out to the top.' }
 ];
 </script>
+<script type="module">
+// Optional live-price layer. Watches for ticker chips appearing (they're
+// rendered on demand when you click a sector) and paints a live price onto
+// each US ticker. The page works fully without this — if the feed sleeps or
+// the module fails to load, the chips just stay as plain ticker links.
+import { getQuotes } from './lib/tickers.js';
+const cache = {};            // symbol -> quote (so re-opening a panel is instant)
+let pending = false;
+
+async function paint(){
+  const chips = [...document.querySelectorAll('.tk[data-tk]:not([data-priced])')];
+  const want = [...new Set(chips.map(c => c.dataset.tk).filter(t => /^[A-Z]+$/.test(t) && !(t in cache)))];
+  if(want.length){
+    const q = await getQuotes(want);
+    Object.assign(cache, q);
+  }
+  chips.forEach(c => {
+    const t = c.dataset.tk;
+    if(!/^[A-Z]+$/.test(t)){ c.setAttribute('data-priced',''); return; }
+    const v = cache[t];
+    c.setAttribute('data-priced','');
+    if(!v) return;
+    const up = v.changePct >= 0;
+    const px = v.price >= 1000 ? Math.round(v.price).toLocaleString() : v.price.toFixed(2);
+    const span = document.createElement('span');
+    span.style.cssText = 'margin-left:5px;font-size:10px;color:'+(up?'#5fd39a':'#ff8db3');
+    span.textContent = '$'+px+' '+(up?'▲':'▼');
+    c.appendChild(span);
+  });
+}
+function schedule(){ if(pending) return; pending = true; requestAnimationFrame(()=>{ pending=false; paint(); }); }
+new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true });
+window.addEventListener('atlas:tickers', schedule);
+schedule();
+</script>
+<script src="lib/atlas-fx.js"></script>
 <script src="lib/tour.js"></script>
 </body>
 </html>
