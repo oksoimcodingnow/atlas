@@ -5,6 +5,26 @@
 
 ## ✅ Done 2026-06-11 (early AM): home redesign + design system docs + quant backtester
 
+### Session 2026-06-12 (afternoon): big build sprint
+- **Security Academy COMPLETE (14/14 lessons, live, SW v91).** All at `security/`,
+  defender-first + white-hat, each with an interactive: internet/CIA/crypto/passwords
+  (1-4), web-attacks/network/malware/phishing (5-8), secure-coding/OS-access/cloud (9-11),
+  blue-team/forensics/capstone (12-14). Shared `security/lesson.css`. Capstone walks one
+  breach through every lesson. Hub data-driven (status flips ready/soon).
+- **Economy cluster 100% unified + live (SW v89).** overview/ai-ripple/spotlight/
+  semiconductors/economy ALL share the editorial system + show live firm prices via
+  `lib/tickers.js`. AI Ripple v2 got a full redesign + 8 categories (added Software/Models,
+  Robotics/Security, Neoclouds). economy.html uses a MutationObserver price-painter.
+- **EMA crossover trading idea tested** (owner's first own strategy): fails on BTC intraday
+  (whipsaw), trend filter halves the damage, SURVIVES on gold daily (Sharpe 1.08 OOS).
+  `alphas/ema_cross.py` + `ema_cross_filtered.py` in quant; written up in
+  `research/ema-crossover.md`. Lesson: a strategy is right for some markets, wrong for others.
+- **Home decluttered** 27->23 tiles (removed Flock/Luck/Beat-the-Market/PDF Tools).
+- **lib/tickers.js** added earlier this session: shared live-quote layer (Yahoo via
+  corsproxy.io + CoinGecko), 10-min cache, graceful fallback. The fragile dep is the proxy.
+
+## ✅ Done 2026-06-11 (early AM): home redesign + design system docs + quant backtester
+
 - **Live price tape on overview.html (cbaeda0, live, SW v84):** `lib/tickers.js`
   shared quote layer — stocks via Yahoo chart API through corsproxy.io, crypto/
   commodity tokens via CoinGecko (CORS-open), 10-min localStorage cache,
