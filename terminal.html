@@ -79,9 +79,34 @@
   .err{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(239,83,80,0.12);border:1px solid rgba(239,83,80,0.4);color:#ffb4b0;font-size:12.5px;padding:8px 14px;border-radius:8px;z-index:10;display:none;max-width:80%;text-align:center;}
   .err.on{display:block;}
 
+  /* backtest panel */
+  .bt-panel{position:fixed;top:48px;right:0;bottom:0;width:330px;max-width:92vw;background:var(--panel);border-left:1px solid var(--rule-hi);z-index:40;transform:translateX(100%);transition:transform .22s cubic-bezier(0.2,0.8,0.2,1);display:flex;flex-direction:column;box-shadow:-16px 0 40px rgba(0,0,0,.5);}
+  .bt-panel.on{transform:translateX(0);}
+  .bt-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--rule);font-weight:700;font-size:14px;}
+  .bt-x{background:transparent;border:0;color:var(--muted);font-size:15px;} .bt-x:hover{color:var(--text);}
+  .bt-body{padding:16px;overflow-y:auto;flex:1;}
+  .bt-warn{font-size:11.5px;line-height:1.55;color:#e7d2c4;background:rgba(243,213,154,0.07);border:1px solid rgba(243,213,154,0.3);border-radius:10px;padding:10px 12px;margin-bottom:16px;}
+  .bt-warn b{color:var(--gold);}
+  .bt-lbl{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:12px 0 6px;}
+  .bt-sel,.bt-inp{width:100%;font-family:var(--mono);font-size:13px;color:var(--text);background:var(--panel-2);border:1px solid var(--rule);border-radius:8px;padding:9px 11px;outline:none;}
+  .bt-sel:focus,.bt-inp:focus{border-color:var(--accent);}
+  .bt-params{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+  .bt-params .p{display:flex;flex-direction:column;gap:4px;}
+  .bt-params .p span{font-size:10px;color:var(--faint);font-family:var(--mono);}
+  .bt-run{width:100%;margin-top:16px;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--bg);background:var(--accent);border:0;border-radius:999px;padding:11px;}
+  .bt-run:hover{background:#cdd3ff;}
+  .bt-results{margin-top:16px;display:none;} .bt-results.on{display:block;}
+  .bt-stat{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--rule);font-size:13px;}
+  .bt-stat .k{color:var(--muted);} .bt-stat .v{font-family:var(--mono);font-weight:600;} .bt-stat .v.up{color:var(--up);} .bt-stat .v.dn{color:var(--down);}
+  .bt-verdict{font-size:12px;line-height:1.55;color:var(--muted);margin-top:12px;padding:10px 12px;background:var(--panel-2);border-radius:10px;}
+  .bt-verdict b{color:var(--accent);}
+  #btEq{height:120px;margin-top:14px;border:1px solid var(--rule);border-radius:8px;display:none;}
+  #btEq.on{display:block;}
+
   @media(max-width:720px){
     .side{display:none;} .sym-input{width:104px;} .inds{display:none;} .tools{display:none;}
     .topbar{gap:7px;padding:0 8px;} .brand{display:none;}
+    #btBtn{margin-left:auto;}
   }
 </style>
 </head>
@@ -98,8 +123,32 @@
     <button class="tool" id="tHline" title="Draw horizontal price line">─</button>
     <button class="tool" id="tClear" title="Clear drawings">⌫</button>
   </div>
+  <button class="tool" id="btBtn" title="Backtest a strategy on these candles" style="margin-left:6px;border-left:1px solid var(--rule);padding-left:9px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent)">⚡ Backtest</button>
   <div class="inds" id="inds"></div>
   <a class="home" href="index.html">✕</a>
+</div>
+
+<!-- backtest panel (slides in from the right) -->
+<div class="bt-panel" id="btPanel">
+  <div class="bt-h">
+    <span>⚡ Quick backtest</span>
+    <button class="bt-x" id="btClose">✕</button>
+  </div>
+  <div class="bt-body">
+    <div class="bt-warn">A <b>quick visual test</b> on the ~400 bars loaded — in-sample, one window. Great for <i>seeing</i> a strategy on the chart. <b>Not a verdict</b> — verify a real edge in the Python lab (fees, out-of-sample, walk-forward) before trusting it.</div>
+    <label class="bt-lbl">Strategy</label>
+    <select class="bt-sel" id="btStrat">
+      <option value="emacross">EMA crossover (fast/slow)</option>
+      <option value="smacross">SMA crossover (fast/slow)</option>
+      <option value="rsi">RSI mean-reversion</option>
+    </select>
+    <div class="bt-params" id="btParams"></div>
+    <label class="bt-lbl">Fee per trade (%)</label>
+    <input class="bt-inp" id="btFee" type="number" value="0.1" step="0.05" min="0">
+    <button class="bt-run" id="btRun">Run backtest ▸</button>
+    <div class="bt-results" id="btResults"></div>
+    <div class="bt-eq" id="btEq"></div>
+  </div>
 </div>
 
 <div class="main">
@@ -295,6 +344,7 @@
       candles = await fetchCandles(cur, curTf);
       if(!candles.length) throw new Error('empty');
       candleSeries.setData(candles);
+      if(typeof clearBacktest==='function') clearBacktest();  // stale markers off on symbol/tf change
       applyIndicators();
       redrawDrawings();
       chart.timeScale().fitContent();
@@ -378,9 +428,98 @@
   window.addEventListener('resize', queueResize);
   new ResizeObserver(queueResize).observe(chartEl);
 
+  // ── BACKTEST ────────────────────────────────────────────────────────
+  // A quick, in-sample, single-window visual backtest on the loaded candles.
+  // Honest by design: long/flat only, 1-bar execution lag (trade next open),
+  // fee per round-trip side. Draws entry/exit markers + an equity curve.
+  // It is NOT the rigorous Python lab (no out-of-sample, no walk-forward).
+  const STRATS = {
+    emacross: { name:'EMA crossover', params:[['fast','Fast EMA',9],['slow','Slow EMA',25]],
+      signal:(d,p)=>{ const f=emaArr(d,p.fast), s=emaArr(d,p.slow); return d.map((_,i)=> (f[i]!=null&&s[i]!=null&&f[i]>s[i])?1:0); } },
+    smacross: { name:'SMA crossover', params:[['fast','Fast SMA',10],['slow','Slow SMA',30]],
+      signal:(d,p)=>{ const f=smaArr(d,p.fast), s=smaArr(d,p.slow); return d.map((_,i)=> (f[i]!=null&&s[i]!=null&&f[i]>s[i])?1:0); } },
+    rsi: { name:'RSI mean-reversion', params:[['n','RSI period',14],['buy','Buy below',30],['sell','Sell above',55]],
+      signal:(d,p)=>{ const r=rsiArr(d,p.n); let st=0; return d.map((_,i)=>{ const v=r[i]; if(v!=null){ if(v<p.buy)st=1; else if(v>p.sell)st=0; } return st; }); } },
+  };
+  // array helpers aligned to candle index (null during warmup)
+  function emaArr(d,p){ const k=2/(p+1); let prev; return d.map((x,i)=>{ const v=i===0?x.close:x.close*k+prev*(1-k); prev=v; return i>=p-1?v:null; }); }
+  function smaArr(d,p){ return d.map((_,i)=>{ if(i<p-1)return null; let s=0; for(let j=0;j<p;j++)s+=d[i-j].close; return s/p; }); }
+  function rsiArr(d,p){ const out=new Array(d.length).fill(null); let g=0,l=0; for(let i=1;i<d.length;i++){ const ch=d[i].close-d[i-1].close,up=Math.max(ch,0),dn=Math.max(-ch,0);
+    if(i<=p){ g+=up;l+=dn; if(i===p){ g/=p;l/=p; out[i]=100-100/(1+(l===0?100:g/l)); } } else { g=(g*(p-1)+up)/p; l=(l*(p-1)+dn)/p; out[i]=100-100/(1+(l===0?100:g/l)); } } return out; }
+
+  let btEqChart=null, btEqSeries=null, btMarkersOn=false;
+  function runBacktest(){
+    if(!candles.length) return;
+    const stratKey=$('btStrat').value, strat=STRATS[stratKey];
+    const p={}; strat.params.forEach(([k])=>{ p[k]=parseFloat(document.querySelector('[data-bp="'+k+'"]').value); });
+    const fee=Math.max(0,parseFloat($('btFee').value)||0)/100;
+    const sig=strat.signal(candles,p);
+
+    // simulate: act on next bar's OPEN after a signal flip (1-bar lag, no look-ahead)
+    let inPos=false, entryPx=0, equity=1, trades=[], wins=0, markers=[], eqCurve=[];
+    for(let i=1;i<candles.length;i++){
+      const want=sig[i-1];                  // signal known at close of i-1
+      const px=candles[i].open || candles[i].close;
+      if(want===1 && !inPos){ inPos=true; entryPx=px; equity*=(1-fee); markers.push({time:candles[i].time,position:'belowBar',color:'#26a69a',shape:'arrowUp',text:'B'}); }
+      else if(want===0 && inPos){ const r=px/entryPx; equity*=r*(1-fee); inPos=false; trades.push(r-1); if(r>1)wins++; markers.push({time:candles[i].time,position:'aboveBar',color:'#ef5350',shape:'arrowDown',text:'S'}); }
+      // mark-to-market equity for the curve
+      const mtm = inPos ? equity*(px/entryPx) : equity;
+      eqCurve.push({ time:candles[i].time, value:mtm });
+    }
+    if(inPos){ const last=candles[candles.length-1].close; equity*=(last/entryPx)*(1-fee); trades.push(last/entryPx-1); if(last>entryPx)wins++; }
+
+    const stratRet=(equity-1)*100;
+    const bh=(candles[candles.length-1].close/candles[0].close-1)*100;
+    const winRate= trades.length ? wins/trades.length*100 : 0;
+    let peak=1,mdd=0; eqCurve.forEach(e=>{ if(e.value>peak)peak=e.value; const dd=(peak-e.value)/peak; if(dd>mdd)mdd=dd; });
+
+    // draw markers on the candles
+    candleSeries.setMarkers(markers); btMarkersOn=true;
+
+    // results
+    const beat = stratRet>bh;
+    $('btResults').className='bt-results on';
+    $('btResults').innerHTML =
+      btStat('Strategy return', (stratRet>=0?'+':'')+stratRet.toFixed(1)+'%', stratRet>=0?'up':'dn') +
+      btStat('Buy & hold', (bh>=0?'+':'')+bh.toFixed(1)+'%', bh>=0?'up':'dn') +
+      btStat('vs B&H', (stratRet-bh>=0?'+':'')+(stratRet-bh).toFixed(1)+' pts', stratRet-bh>=0?'up':'dn') +
+      btStat('Win rate', winRate.toFixed(0)+'%','') +
+      btStat('Trades', String(trades.length), trades.length<10?'dn':'') +
+      btStat('Max drawdown', '-'+(mdd*100).toFixed(1)+'%','dn') +
+      '<div class="bt-verdict">'+
+        (trades.length<10 ? '<b>⚠ Only '+trades.length+' trades</b> — far too few to mean anything. Pure noise on this window. ' : '')+
+        (beat ? 'Beat buy & hold here, in-sample. ' : 'Trailed buy & hold here. ')+
+        'Remember: this is <b>one window, in-sample, no out-of-sample test</b>. Tweaking params til this looks great IS overfitting. Confirm in <b>lab.py</b> before believing it.'+
+      '</div>';
+
+    // equity curve sub-chart
+    const eqEl=$('btEq'); eqEl.classList.add('on');
+    if(!btEqChart){
+      btEqChart=LWC.createChart(eqEl,{ layout:baseLayout, grid:{vertLines:{color:'rgba(255,255,255,0.03)'},horzLines:{color:'rgba(255,255,255,0.03)'}}, rightPriceScale:{borderColor:'rgba(255,255,255,0.08)'}, timeScale:{visible:false}, handleScroll:false, handleScale:false });
+      btEqSeries=btEqChart.addAreaSeries({ lineColor:'#b8c0ff', topColor:'rgba(184,192,255,0.25)', bottomColor:'rgba(184,192,255,0.0)', lineWidth:2, priceLineVisible:false });
+    }
+    btEqSeries.setData(eqCurve.map(e=>({ time:e.time, value:e.value })));
+    btEqChart.applyOptions({ width:eqEl.clientWidth, height:eqEl.clientHeight });
+    btEqChart.timeScale().fitContent();
+  }
+  function btStat(k,v,cls){ return '<div class="bt-stat"><span class="k">'+k+'</span><span class="v '+(cls||'')+'">'+v+'</span></div>'; }
+  function renderBtParams(){
+    const strat=STRATS[$('btStrat').value];
+    $('btParams').innerHTML = strat.params.map(([k,lbl,def])=>'<div class="p"><span>'+lbl+'</span><input class="bt-inp" data-bp="'+k+'" type="number" value="'+def+'" step="1" min="1"></div>').join('');
+  }
+  function clearBacktest(){ if(btMarkersOn){ candleSeries.setMarkers([]); btMarkersOn=false; } $('btResults').className='bt-results'; $('btEq').classList.remove('on'); }
+
+  $('btBtn').addEventListener('click',()=>{ $('btPanel').classList.toggle('on'); if($('btPanel').classList.contains('on')) renderBtParams(); });
+  $('btClose').addEventListener('click',()=>{ $('btPanel').classList.remove('on'); clearBacktest(); });
+  $('btStrat').addEventListener('change',()=>{ renderBtParams(); clearBacktest(); });
+  $('btRun').addEventListener('click',runBacktest);
+
   // boot
   renderTfs(); renderInds(); renderWatchlist();
-  load();
+  load().then(()=>{
+    // #bt deep-link / test hook: open the backtest panel and run it
+    if(location.hash==='#bt'){ $('btPanel').classList.add('on'); renderBtParams(); setTimeout(runBacktest, 300); }
+  });
   pollWatchlist(); setInterval(pollWatchlist, 30000);
 })();
 </script>
