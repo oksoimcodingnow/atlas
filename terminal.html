@@ -375,16 +375,27 @@
     }
   }
 
+  let __prevLast, __prevTime;
   async function load(){
     $('loading').classList.remove('hidden'); $('err').classList.remove('on');
     $('hSym').textContent = cur.label; $('statSym').textContent = cur.label;
+    // snapshot the LEAVING window's last price (to fairly close an open position)
+    if(candles.length){ __prevLast=candles[candles.length-1].close; __prevTime=candles[candles.length-1].time; }
     persist();
     try {
       candles = await fetchCandles(cur, curTf);
       if(!candles.length) throw new Error('empty');
       candleSeries.setData(candles);
       if(typeof clearBacktest==='function') clearBacktest();  // stale auto markers off
-      // reset manual trading for the new symbol/timeframe (markers were for old candles)
+      // SAFETY: if a manual position is open when the symbol/TF changes, auto-close
+      // and LOG it at the last price of the window we're leaving (never silently drop
+      // a trade). prevSym/prevLast were captured before the new candles loaded.
+      if(typeof openPos!=='undefined' && openPos && typeof __prevLast==='number'){
+        const r=__prevLast/openPos.entryPx, pnl=(r-1)*100;
+        journal.unshift({ id:Date.now(), sym:openPos.sym, entryPx:openPos.entryPx, exitPx:__prevLast, entryTime:openPos.entryTime, exitTime:__prevTime||openPos.entryTime, pnl, bars:0, auto:true });
+        persistJournal(); if(typeof renderJournal==='function' && $('jPanel').classList.contains('on')) renderJournal();
+        if(typeof flash==='function') setTimeout(()=>flash('Auto-closed '+openPos.sym+' ('+(pnl>=0?'+':'')+pnl.toFixed(1)+'%) — logged. Open positions don\'t carry across symbols.'),50);
+      }
       if(typeof manualMarkers!=='undefined'){ manualMarkers=[]; openPos=null; tradeArm=null;
         if($('mBuy')){ $('mBuy').classList.remove('on'); $('mSell').classList.remove('on'); }
         if(typeof updatePosTag==='function') updatePosTag();
@@ -646,8 +657,29 @@
   $('jClear').addEventListener('click',()=>{ if(confirm('Clear all '+journal.length+' journal trades?')){ journal=[]; persistJournal(); renderJournal(); } });
   $('jList').addEventListener('click',e=>{ const b=e.target.closest('[data-jdel]'); if(!b)return; journal=journal.filter(t=>t.id!=b.dataset.jdel); persistJournal(); renderJournal(); });
 
+  // ── keyboard shortcuts (real terminals are keyboard-first) ──
+  document.addEventListener('keydown', e => {
+    const typing = document.activeElement && (document.activeElement.tagName==='INPUT' || document.activeElement.tagName==='SELECT');
+    // '/' focuses search from anywhere
+    if(e.key==='/' && !typing){ e.preventDefault(); si.focus(); return; }
+    if(typing){
+      if(e.key==='Escape'){ si.blur(); sd.classList.remove('on'); }
+      return;  // don't hijack keys while typing a symbol
+    }
+    const k=e.key.toLowerCase();
+    if(k>='1' && k<='4'){ const t=TIMEFRAMES[+k-1]; if(t){ curTf=t; renderTfs(); load(); } }
+    else if(k==='b'){ setArm('buy'); }
+    else if(k==='s'){ setArm('sell'); }
+    else if(k==='l'){ $('btPanel').classList.remove('on'); $('jPanel').classList.toggle('on'); if($('jPanel').classList.contains('on')) renderJournal(); }
+    else if(k==='v'){ indState.vol=!indState.vol; renderInds(); applyIndicators(); persist(); }
+    else if(k==='escape'){ setArm(null); if(drawMode) setDrawMode(null); $('btPanel').classList.remove('on'); $('jPanel').classList.remove('on'); }
+    else if(k==='?'){ flash('Keys: / search · 1-4 timeframe · B buy · S sell · V volume · L log · Esc cancel'); }
+  });
+
   // boot
   renderTfs(); renderInds(); renderWatchlist();
+  // one-time hint that shortcuts exist
+  setTimeout(()=>{ if(typeof flash==='function') flash('⌨ Keys: / search · 1-4 timeframe · B/S trade · L log · ? help'); }, 1400);
   load().then(()=>{
     // #bt deep-link / test hook: open the backtest panel and run it
     if(location.hash==='#bt'){ $('btPanel').classList.add('on'); renderBtParams(); setTimeout(runBacktest, 300); }
