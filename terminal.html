@@ -79,6 +79,26 @@
   .err{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(239,83,80,0.12);border:1px solid rgba(239,83,80,0.4);color:#ffb4b0;font-size:12.5px;padding:8px 14px;border-radius:8px;z-index:10;display:none;max-width:80%;text-align:center;}
   .err.on{display:block;}
 
+  /* manual trade buttons */
+  .tool.buy{color:var(--up);border-color:rgba(38,166,154,0.4);font-weight:600;}
+  .tool.buy.on{background:var(--up);color:#04140f;border-color:var(--up);}
+  .tool.sell{color:var(--down);border-color:rgba(239,83,80,0.4);font-weight:600;}
+  .tool.sell.on{background:var(--down);color:#1a0606;border-color:var(--down);}
+  .pos-tag{position:absolute;top:60px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:12px;font-weight:600;color:var(--up);background:rgba(38,166,154,0.12);border:1px solid rgba(38,166,154,0.4);padding:6px 14px;border-radius:999px;z-index:8;display:none;}
+  .pos-tag.on{display:block;}
+  /* journal */
+  .j-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+  .j-summary .c{border:1px solid var(--rule);border-radius:10px;background:var(--panel-2);padding:10px 12px;}
+  .j-summary .c .k{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);}
+  .j-summary .c .v{font-family:var(--mono);font-size:18px;font-weight:600;margin-top:3px;} .j-summary .c .v.up{color:var(--up);} .j-summary .c .v.dn{color:var(--down);}
+  .j-list{display:flex;flex-direction:column;gap:7px;}
+  .j-row{border:1px solid var(--rule);border-radius:10px;background:var(--panel-2);padding:10px 12px;font-size:12px;}
+  .j-row .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;}
+  .j-row .sym{font-family:var(--mono);font-weight:600;} .j-row .pnl{font-family:var(--mono);font-weight:700;} .j-row .pnl.up{color:var(--up);} .j-row .pnl.dn{color:var(--down);}
+  .j-row .det{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px;}
+  .j-row .del{float:right;color:var(--faint);background:transparent;border:0;font-size:11px;} .j-row .del:hover{color:var(--down);}
+  .j-empty{text-align:center;color:var(--faint);font-size:12.5px;padding:24px 0;}
+
   /* backtest panel */
   .bt-panel{position:fixed;top:48px;right:0;bottom:0;width:330px;max-width:92vw;background:var(--panel);border-left:1px solid var(--rule-hi);z-index:40;transform:translateX(100%);transition:transform .22s cubic-bezier(0.2,0.8,0.2,1);display:flex;flex-direction:column;box-shadow:-16px 0 40px rgba(0,0,0,.5);}
   .bt-panel.on{transform:translateX(0);}
@@ -123,7 +143,12 @@
     <button class="tool" id="tHline" title="Draw horizontal price line">─</button>
     <button class="tool" id="tClear" title="Clear drawings">⌫</button>
   </div>
-  <button class="tool" id="btBtn" title="Backtest a strategy on these candles" style="margin-left:6px;border-left:1px solid var(--rule);padding-left:9px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent)">⚡ Backtest</button>
+  <div class="tools" id="manualTools" style="margin-left:6px;">
+    <button class="tool buy" id="mBuy" title="Arm Buy — then click a candle to enter">▲ Buy</button>
+    <button class="tool sell" id="mSell" title="Arm Sell — then click a candle to exit">▼ Sell</button>
+    <button class="tool" id="mLog" title="Trade journal">☰ Log</button>
+  </div>
+  <button class="tool" id="btBtn" title="Backtest a strategy on these candles" style="margin-left:6px;border-left:1px solid var(--rule);padding-left:9px;border-radius:6px;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent)">⚡ Auto</button>
   <div class="inds" id="inds"></div>
   <a class="home" href="index.html">✕</a>
 </div>
@@ -151,6 +176,17 @@
   </div>
 </div>
 
+<!-- manual trade journal panel -->
+<div class="bt-panel" id="jPanel">
+  <div class="bt-h"><span>☰ Trade journal</span><button class="bt-x" id="jClose">✕</button></div>
+  <div class="bt-body">
+    <div class="bt-warn">Your <b>hand-made</b> trades — click ▲Buy then a candle to enter, ▼Sell then a later candle to exit. This trains <i>your</i> eye. Saved in your browser. <b>Hindsight bias warning:</b> picking entries on a chart you can already see is far easier than live. Try the same calls without looking ahead.</div>
+    <div class="j-summary" id="jSummary"></div>
+    <div class="j-list" id="jList"></div>
+    <button class="bt-run" id="jClear" style="background:transparent;border:1px solid var(--rule);color:var(--muted);margin-top:14px">Clear journal</button>
+  </div>
+</div>
+
 <div class="main">
   <aside class="side">
     <div class="side-h">Watchlist</div>
@@ -171,6 +207,7 @@
     <div id="volChart"></div>
     <div id="rsiChart"></div>
     <div class="draw-hint" id="drawHint">Click two points to draw · click the chart to place</div>
+    <div class="pos-tag" id="posTag"></div>
     <div class="loading" id="loading">loading market data…</div>
     <div class="err" id="err"></div>
   </div>
@@ -301,12 +338,14 @@
     $('drawHint').textContent = drawMode==='trend' ? 'Click two points to draw a trend line' : drawMode==='hline' ? 'Click a price level to place a horizontal line' : '';
   }
   chartEl.addEventListener('click', ev => {
-    if(!drawMode) return;
     const box = chartEl.getBoundingClientRect();
     const x = ev.clientX - box.left, y = ev.clientY - box.top;
     const time = chart.timeScale().coordinateToTime(x);
     const price = candleSeries.coordinateToPrice(y);
-    if(time==null || price==null) return;
+    if(time==null) return;
+    // manual-trade mode takes the click first (snaps to the nearest candle)
+    if(tradeArm){ handleTradeClick(time); return; }
+    if(!drawMode || price==null) return;
     if(drawMode==='hline'){
       drawings.push({ type:'hline', price }); redrawDrawings(); persist(); setDrawMode(null);
     } else if(drawMode==='trend'){
@@ -344,7 +383,12 @@
       candles = await fetchCandles(cur, curTf);
       if(!candles.length) throw new Error('empty');
       candleSeries.setData(candles);
-      if(typeof clearBacktest==='function') clearBacktest();  // stale markers off on symbol/tf change
+      if(typeof clearBacktest==='function') clearBacktest();  // stale auto markers off
+      // reset manual trading for the new symbol/timeframe (markers were for old candles)
+      if(typeof manualMarkers!=='undefined'){ manualMarkers=[]; openPos=null; tradeArm=null;
+        if($('mBuy')){ $('mBuy').classList.remove('on'); $('mSell').classList.remove('on'); }
+        if(typeof updatePosTag==='function') updatePosTag();
+      }
       applyIndicators();
       redrawDrawings();
       chart.timeScale().fitContent();
@@ -474,7 +518,7 @@
     let peak=1,mdd=0; eqCurve.forEach(e=>{ if(e.value>peak)peak=e.value; const dd=(peak-e.value)/peak; if(dd>mdd)mdd=dd; });
 
     // draw markers on the candles
-    candleSeries.setMarkers(markers); btMarkersOn=true;
+    combineMarkers(markers); btMarkersOn=true; window.__autoMarkers=markers;
 
     // results
     const beat = stratRet>bh;
@@ -507,18 +551,114 @@
     const strat=STRATS[$('btStrat').value];
     $('btParams').innerHTML = strat.params.map(([k,lbl,def])=>'<div class="p"><span>'+lbl+'</span><input class="bt-inp" data-bp="'+k+'" type="number" value="'+def+'" step="1" min="1"></div>').join('');
   }
-  function clearBacktest(){ if(btMarkersOn){ candleSeries.setMarkers([]); btMarkersOn=false; } $('btResults').className='bt-results'; $('btEq').classList.remove('on'); }
+  function clearBacktest(){ if(btMarkersOn){ window.__autoMarkers=[]; btMarkersOn=false; if(typeof combineMarkers==='function') combineMarkers(); } $('btResults').className='bt-results'; $('btEq').classList.remove('on'); }
 
   $('btBtn').addEventListener('click',()=>{ $('btPanel').classList.toggle('on'); if($('btPanel').classList.contains('on')) renderBtParams(); });
   $('btClose').addEventListener('click',()=>{ $('btPanel').classList.remove('on'); clearBacktest(); });
   $('btStrat').addEventListener('change',()=>{ renderBtParams(); clearBacktest(); });
   $('btRun').addEventListener('click',runBacktest);
 
+  // ── MANUAL TRADING (hand-made backtest) ─────────────────────────────
+  // Arm Buy/Sell, click a candle → trade at THAT candle's close. Each closed
+  // round-trip is logged with %, hold time, running P&L. Markers live in a
+  // separate layer from the auto-backtester so both can show. Saved to LS.
+  let journal = []; try { journal = JSON.parse(localStorage.getItem('atlas_journal')) || []; } catch {}
+  let tradeArm = null;       // 'buy' | 'sell' | null
+  let openPos = null;        // { sym, entryTime, entryPx }  (one open position at a time)
+  let manualMarkers = [];
+
+  function nearestCandle(time){
+    // snap the click to the closest candle by time
+    let best=null, bd=Infinity;
+    for(const c of candles){ const d=Math.abs(c.time-time); if(d<bd){ bd=d; best=c; } }
+    return best;
+  }
+  function fmtDate(t){ const d=new Date(t*1000); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+  function combineMarkers(extra){
+    // manual markers + whatever the auto-backtester last set (kept on window)
+    const auto = extra || window.__autoMarkers || [];
+    const all=[...manualMarkers, ...auto].sort((a,b)=>a.time-b.time);
+    candleSeries.setMarkers(all);
+  }
+  function setArm(mode){
+    tradeArm = (tradeArm===mode)? null : mode;
+    $('mBuy').classList.toggle('on', tradeArm==='buy');
+    $('mSell').classList.toggle('on', tradeArm==='sell');
+    const dh=$('drawHint');
+    if(tradeArm){ dh.classList.add('on'); dh.textContent = tradeArm==='buy' ? 'Click a candle to BUY at its price' : 'Click a candle to SELL/close at its price'; }
+    else dh.classList.remove('on');
+    // arming a trade cancels draw mode
+    if(tradeArm && drawMode) setDrawMode(null);
+  }
+  function handleTradeClick(time){
+    const c = nearestCandle(time); if(!c) return;
+    const px = c.close;
+    if(tradeArm==='buy'){
+      if(openPos){ flash('Already in a position — Sell to close first.'); }
+      else {
+        openPos = { sym:cur.label, entryTime:c.time, entryPx:px };
+        manualMarkers.push({ time:c.time, position:'belowBar', color:'#26a69a', shape:'arrowUp', text:'BUY $'+fmt(px) });
+        combineMarkers(); updatePosTag(); persistJournal();
+      }
+    } else if(tradeArm==='sell'){
+      if(!openPos){ flash('No open position to sell. Arm Buy first.'); }
+      else {
+        const r = px/openPos.entryPx, pnl=(r-1)*100;
+        const holdBars = candles.filter(k=>k.time>=openPos.entryTime && k.time<=c.time).length;
+        journal.unshift({ id:Date.now(), sym:openPos.sym, entryPx:openPos.entryPx, exitPx:px, entryTime:openPos.entryTime, exitTime:c.time, pnl, bars:holdBars });
+        manualMarkers.push({ time:c.time, position:'aboveBar', color:'#ef5350', shape:'arrowDown', text:'SELL '+(pnl>=0?'+':'')+pnl.toFixed(1)+'%' });
+        openPos=null; combineMarkers(); updatePosTag(); renderJournal(); persistJournal();
+      }
+    }
+    setArm(null);
+  }
+  function updatePosTag(){
+    const t=$('posTag');
+    if(openPos){ const last=candles.length?candles[candles.length-1].close:openPos.entryPx; const live=(last/openPos.entryPx-1)*100;
+      t.classList.add('on'); t.innerHTML='● IN '+openPos.sym+' from $'+fmt(openPos.entryPx)+' · unreal '+(live>=0?'+':'')+live.toFixed(1)+'%';
+      t.style.color = live>=0?'var(--up)':'var(--down)';
+    } else t.classList.remove('on');
+  }
+  function flash(msg){ const dh=$('drawHint'); dh.classList.add('on'); dh.textContent=msg; setTimeout(()=>{ if(!tradeArm) dh.classList.remove('on'); },1800); }
+  function persistJournal(){ try { localStorage.setItem('atlas_journal', JSON.stringify(journal)); } catch {} }
+
+  function renderJournal(){
+    const wins=journal.filter(t=>t.pnl>0).length;
+    const total=journal.reduce((a,t)=>a+t.pnl,0);
+    const avg=journal.length?total/journal.length:0;
+    $('jSummary').innerHTML =
+      jCard('Trades', String(journal.length), '') +
+      jCard('Win rate', journal.length?Math.round(wins/journal.length*100)+'%':'—', '') +
+      jCard('Total P&L', (total>=0?'+':'')+total.toFixed(1)+'%', total>=0?'up':'dn') +
+      jCard('Avg / trade', (avg>=0?'+':'')+avg.toFixed(1)+'%', avg>=0?'up':'dn');
+    $('jList').innerHTML = journal.length ? journal.map(t=>
+      '<div class="j-row"><button class="del" data-jdel="'+t.id+'">remove</button>'
+      +'<div class="top"><span class="sym">'+t.sym+'</span><span class="pnl '+(t.pnl>=0?'up':'dn')+'">'+(t.pnl>=0?'+':'')+t.pnl.toFixed(2)+'%</span></div>'
+      +'<div class="det">$'+fmt(t.entryPx)+' → $'+fmt(t.exitPx)+' · '+fmtDate(t.entryTime)+'→'+fmtDate(t.exitTime)+' · '+t.bars+' bars</div></div>'
+    ).join('') : '<div class="j-empty">No trades yet. Arm ▲Buy, click a candle, then ▼Sell a later one.</div>';
+  }
+  function jCard(k,v,cls){ return '<div class="c"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div></div>'; }
+
+  $('mBuy').addEventListener('click',()=>setArm('buy'));
+  $('mSell').addEventListener('click',()=>setArm('sell'));
+  $('mLog').addEventListener('click',()=>{ $('btPanel').classList.remove('on'); $('jPanel').classList.toggle('on'); renderJournal(); });
+  $('jClose').addEventListener('click',()=>$('jPanel').classList.remove('on'));
+  $('jClear').addEventListener('click',()=>{ if(confirm('Clear all '+journal.length+' journal trades?')){ journal=[]; persistJournal(); renderJournal(); } });
+  $('jList').addEventListener('click',e=>{ const b=e.target.closest('[data-jdel]'); if(!b)return; journal=journal.filter(t=>t.id!=b.dataset.jdel); persistJournal(); renderJournal(); });
+
   // boot
   renderTfs(); renderInds(); renderWatchlist();
   load().then(()=>{
     // #bt deep-link / test hook: open the backtest panel and run it
     if(location.hash==='#bt'){ $('btPanel').classList.add('on'); renderBtParams(); setTimeout(runBacktest, 300); }
+    // #manual test hook: place two demo trades + open the journal
+    if(location.hash==='#manual' && candles.length>60){
+      const a=candles[20], b=candles[55], c=candles[80]||candles[candles.length-1];
+      setArm('buy'); handleTradeClick(a.time);
+      setArm('sell'); handleTradeClick(b.time);
+      setArm('buy'); handleTradeClick(c.time);   // leaves one open position
+      $('jPanel').classList.add('on'); renderJournal();
+    }
   });
   pollWatchlist(); setInterval(pollWatchlist, 30000);
 })();
