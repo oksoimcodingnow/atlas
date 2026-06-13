@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icons/atlas-favicon.png">
 <link rel="apple-touch-icon" href="icons/atlas-192.png">
-<meta name="theme-color" content="#0a0a14">
+<meta name="theme-color" content="#0a0a12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -24,34 +24,43 @@
   ::selection{background:var(--accent);color:var(--bg);}
   button{font-family:inherit;cursor:pointer;}
 
-  /* top bar */
-  .topbar{display:flex;align-items:center;gap:14px;padding:0 14px;height:48px;border-bottom:1px solid var(--rule);background:var(--panel);flex-shrink:0;}
+  .topbar{display:flex;align-items:center;gap:12px;padding:0 14px;height:48px;border-bottom:1px solid var(--rule);background:var(--panel);flex-shrink:0;}
   .brand{font-weight:700;font-size:14px;letter-spacing:.02em;} .brand span{color:var(--accent);}
-  .home{font-size:12px;color:var(--muted);text-decoration:none;padding:6px 11px;border:1px solid var(--rule);border-radius:7px;}
+  .home{font-size:13px;color:var(--muted);text-decoration:none;padding:5px 10px;border:1px solid var(--rule);border-radius:7px;}
   .home:hover{color:var(--text);border-color:var(--accent);}
   .sym-box{position:relative;}
   .sym-input{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);background:var(--panel-2);border:1px solid var(--rule);border-radius:8px;padding:8px 12px;width:160px;outline:none;}
   .sym-input:focus{border-color:var(--accent);}
-  .sym-drop{position:absolute;top:40px;left:0;width:240px;max-height:300px;overflow-y:auto;background:var(--panel);border:1px solid var(--rule-hi);border-radius:10px;z-index:50;box-shadow:0 16px 40px rgba(0,0,0,.6);display:none;}
+  .sym-drop{position:absolute;top:40px;left:0;width:260px;max-height:320px;overflow-y:auto;background:var(--panel);border:1px solid var(--rule-hi);border-radius:10px;z-index:50;box-shadow:0 16px 40px rgba(0,0,0,.6);display:none;}
   .sym-drop.on{display:block;}
   .sym-opt{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;font-size:12.5px;cursor:pointer;border-bottom:1px solid var(--rule);}
   .sym-opt:hover{background:var(--panel-2);} .sym-opt .t{font-family:var(--mono);font-weight:600;color:var(--accent);} .sym-opt .n{color:var(--muted);font-size:11px;text-align:right;}
+  .sym-opt.hint{color:var(--faint);font-size:11px;cursor:default;}
   .tfs{display:flex;gap:3px;}
   .tf{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted);background:transparent;border:1px solid transparent;border-radius:6px;padding:6px 10px;}
   .tf:hover{color:var(--text);background:var(--panel-2);} .tf.on{color:var(--bg);background:var(--accent);}
+  .tools{display:flex;gap:3px;margin-left:6px;border-left:1px solid var(--rule);padding-left:9px;}
+  .tool{font-size:13px;color:var(--muted);background:var(--panel-2);border:1px solid var(--rule);border-radius:6px;padding:6px 9px;line-height:1;}
+  .tool.on{color:var(--gold);border-color:rgba(243,213,154,0.4);background:rgba(243,213,154,0.08);}
+  .tool:hover{color:var(--text);}
   .inds{display:flex;gap:4px;margin-left:auto;}
   .ind{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);background:var(--panel-2);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;}
   .ind.on{color:var(--gold);border-color:rgba(243,213,154,0.4);background:rgba(243,213,154,0.08);}
 
-  /* main split */
   .main{flex:1;display:flex;min-height:0;}
-  .side{width:230px;border-right:1px solid var(--rule);background:var(--panel);overflow-y:auto;flex-shrink:0;}
+  .side{width:230px;border-right:1px solid var(--rule);background:var(--panel);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;}
   .side-h{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700;padding:12px 14px 8px;}
+  #watchlist{flex:1;}
   .wl-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--rule);transition:background .12s;}
-  .wl-row:hover{background:var(--panel-2);} .wl-row.on{background:rgba(184,192,255,0.08);border-left:2px solid var(--accent);}
+  .wl-row:hover{background:var(--panel-2);} .wl-row.on{background:rgba(184,192,255,0.08);box-shadow:inset 2px 0 0 var(--accent);}
   .wl-row .tk{font-family:var(--mono);font-size:13px;font-weight:600;}
   .wl-row .px{font-family:var(--mono);font-size:12px;text-align:right;}
   .wl-row .chg{font-family:var(--mono);font-size:11px;} .wl-row .chg.up{color:var(--up);} .wl-row .chg.dn{color:var(--down);}
+  /* stats panel */
+  .stats{border-top:1px solid var(--rule);padding:10px 14px 14px;}
+  .stats .sh{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:8px;}
+  .stat{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:3px 0;}
+  .stat .k{color:var(--muted);} .stat .v{font-family:var(--mono);color:var(--text);} .stat .v.up{color:var(--up);} .stat .v.dn{color:var(--down);}
 
   .chart-wrap{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;}
   .chart-head{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--rule);flex-wrap:wrap;}
@@ -61,18 +70,18 @@
   .ohlc{display:flex;gap:14px;font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-left:auto;}
   .ohlc b{color:var(--text);font-weight:500;}
   #chart{flex:1;min-height:0;}
-  #rsiChart{height:0;transition:height .2s;border-top:1px solid var(--rule);}
-  #rsiChart.on{height:110px;}
-
+  #volChart{height:0;transition:height .2s;} #volChart.on{height:80px;border-top:1px solid var(--rule);}
+  #rsiChart{height:0;transition:height .2s;} #rsiChart.on{height:100px;border-top:1px solid var(--rule);}
+  .draw-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(243,213,154,0.12);border:1px solid rgba(243,213,154,0.4);color:var(--gold);font-size:12px;padding:6px 14px;border-radius:999px;z-index:8;display:none;}
+  .draw-hint.on{display:block;}
   .loading{position:absolute;inset:48px 0 0 0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:var(--mono);font-size:13px;pointer-events:none;z-index:5;}
   .loading.hidden{display:none;}
-  .err{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(239,83,80,0.12);border:1px solid rgba(239,83,80,0.4);color:#ffb4b0;font-size:12.5px;padding:8px 14px;border-radius:8px;z-index:10;display:none;}
+  .err{position:absolute;top:60px;left:50%;transform:translateX(-50%);background:rgba(239,83,80,0.12);border:1px solid rgba(239,83,80,0.4);color:#ffb4b0;font-size:12.5px;padding:8px 14px;border-radius:8px;z-index:10;display:none;max-width:80%;text-align:center;}
   .err.on{display:block;}
 
   @media(max-width:720px){
-    .side{display:none;}
-    .sym-input{width:110px;} .inds{display:none;}
-    .topbar{gap:8px;padding:0 8px;} .brand{display:none;}
+    .side{display:none;} .sym-input{width:104px;} .inds{display:none;} .tools{display:none;}
+    .topbar{gap:7px;padding:0 8px;} .brand{display:none;}
   }
 </style>
 </head>
@@ -80,10 +89,15 @@
 <div class="topbar">
   <div class="brand">Atlas · <span>Terminal</span></div>
   <div class="sym-box">
-    <input class="sym-input" id="symInput" placeholder="Search…" autocomplete="off" spellcheck="false">
+    <input class="sym-input" id="symInput" placeholder="Search any ticker…" autocomplete="off" spellcheck="false">
     <div class="sym-drop" id="symDrop"></div>
   </div>
   <div class="tfs" id="tfs"></div>
+  <div class="tools" id="tools">
+    <button class="tool" id="tTrend" title="Draw trend line">╱</button>
+    <button class="tool" id="tHline" title="Draw horizontal price line">─</button>
+    <button class="tool" id="tClear" title="Clear drawings">⌫</button>
+  </div>
   <div class="inds" id="inds"></div>
   <a class="home" href="index.html">✕</a>
 </div>
@@ -92,6 +106,10 @@
   <aside class="side">
     <div class="side-h">Watchlist</div>
     <div id="watchlist"></div>
+    <div class="stats">
+      <div class="sh">Stats · <span id="statSym">—</span></div>
+      <div id="statsBody"></div>
+    </div>
   </aside>
   <div class="chart-wrap">
     <div class="chart-head">
@@ -101,7 +119,9 @@
       <div class="ohlc" id="hOhlc"></div>
     </div>
     <div id="chart"></div>
+    <div id="volChart"></div>
     <div id="rsiChart"></div>
+    <div class="draw-hint" id="drawHint">Click two points to draw · click the chart to place</div>
     <div class="loading" id="loading">loading market data…</div>
     <div class="err" id="err"></div>
   </div>
@@ -112,25 +132,31 @@
   'use strict';
   const LWC = window.LightweightCharts;
   const $ = id => document.getElementById(id);
+  const LS = 'atlas_terminal_v2';
 
-  // ── universe: crypto (Binance klines) + stocks (Yahoo via proxy) ──
   const SYMBOLS = [
-    // crypto — source: binance
     { id:'BTCUSDT', label:'BTC/USDT', name:'Bitcoin', src:'binance' },
     { id:'ETHUSDT', label:'ETH/USDT', name:'Ethereum', src:'binance' },
     { id:'SOLUSDT', label:'SOL/USDT', name:'Solana', src:'binance' },
     { id:'PAXGUSDT', label:'PAXG/USDT', name:'Gold (PAX)', src:'binance' },
     { id:'BNBUSDT', label:'BNB/USDT', name:'BNB', src:'binance' },
-    // stocks — source: yahoo
+    { id:'XRPUSDT', label:'XRP/USDT', name:'XRP', src:'binance' },
+    { id:'DOGEUSDT', label:'DOGE/USDT', name:'Dogecoin', src:'binance' },
     { id:'NVDA', label:'NVDA', name:'Nvidia', src:'yahoo' },
     { id:'TSM', label:'TSM', name:'TSMC', src:'yahoo' },
     { id:'AMD', label:'AMD', name:'AMD', src:'yahoo' },
     { id:'ASML', label:'ASML', name:'ASML', src:'yahoo' },
     { id:'MSFT', label:'MSFT', name:'Microsoft', src:'yahoo' },
     { id:'AAPL', label:'AAPL', name:'Apple', src:'yahoo' },
+    { id:'GOOGL', label:'GOOGL', name:'Alphabet', src:'yahoo' },
+    { id:'AMZN', label:'AMZN', name:'Amazon', src:'yahoo' },
+    { id:'META', label:'META', name:'Meta', src:'yahoo' },
+    { id:'TSLA', label:'TSLA', name:'Tesla', src:'yahoo' },
     { id:'CEG', label:'CEG', name:'Constellation', src:'yahoo' },
     { id:'FCX', label:'FCX', name:'Freeport (copper)', src:'yahoo' },
+    { id:'CCJ', label:'CCJ', name:'Cameco (uranium)', src:'yahoo' },
   ];
+  const WATCH = SYMBOLS.filter(s=>['BTCUSDT','ETHUSDT','SOLUSDT','PAXGUSDT','BNBUSDT','NVDA','TSM','AMD','ASML','MSFT','CEG','FCX'].includes(s.id));
   const TIMEFRAMES = [
     { id:'1h', label:'1H', binance:'1h', yahoo:{range:'1mo',interval:'1h'} },
     { id:'4h', label:'4H', binance:'4h', yahoo:{range:'3mo',interval:'1h'} },
@@ -139,179 +165,218 @@
   ];
   const PROXY = 'https://corsproxy.io/?url=';
 
-  let cur = SYMBOLS[0], curTf = TIMEFRAMES[2], candles = [];
-  const indState = { ema:true, sma:false, rsi:false };
+  // ── restore saved layout ──
+  let saved = {}; try { saved = JSON.parse(localStorage.getItem(LS)) || {}; } catch {}
+  let cur = SYMBOLS.find(s=>s.id===saved.sym) || SYMBOLS[0];
+  let curTf = TIMEFRAMES.find(t=>t.id===saved.tf) || TIMEFRAMES[2];
+  const indState = Object.assign({ ema:true, sma:false, rsi:false, vol:true }, saved.inds||{});
+  let drawings = saved.drawings || [];       // [{type, points:[{time,price}], ...}]
+  function persist(){ try { localStorage.setItem(LS, JSON.stringify({ sym:cur.id, tf:curTf.id, inds:indState, drawings })); } catch {} }
 
-  // ── chart setup ──
-  const chartEl = $('chart');
-  const chart = LWC.createChart(chartEl, {
-    layout:{ background:{ color:'#0a0a12' }, textColor:'#8a8aa0', fontFamily:"'JetBrains Mono', monospace" },
-    grid:{ vertLines:{ color:'rgba(255,255,255,0.04)' }, horzLines:{ color:'rgba(255,255,255,0.04)' } },
-    crosshair:{ mode:LWC.CrosshairMode.Normal },
-    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' },
-    timeScale:{ borderColor:'rgba(255,255,255,0.08)', timeVisible:true, secondsVisible:false },
-  });
-  const candleSeries = chart.addCandlestickSeries({
-    upColor:'#26a69a', downColor:'#ef5350', borderUpColor:'#26a69a', borderDownColor:'#ef5350',
-    wickUpColor:'#26a69a', wickDownColor:'#ef5350',
-  });
+  // ── charts ──
+  const chartEl=$('chart'), volEl=$('volChart'), rsiEl=$('rsiChart');
+  const baseLayout = { background:{ color:'#0a0a12' }, textColor:'#8a8aa0', fontFamily:"'JetBrains Mono', monospace" };
+  const grid = { vertLines:{ color:'rgba(255,255,255,0.04)' }, horzLines:{ color:'rgba(255,255,255,0.04)' } };
+  const chart = LWC.createChart(chartEl, { layout:baseLayout, grid, crosshair:{ mode:LWC.CrosshairMode.Normal },
+    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' }, timeScale:{ borderColor:'rgba(255,255,255,0.08)', timeVisible:true, secondsVisible:false } });
+  const candleSeries = chart.addCandlestickSeries({ upColor:'#26a69a', downColor:'#ef5350', borderUpColor:'#26a69a', borderDownColor:'#ef5350', wickUpColor:'#26a69a', wickDownColor:'#ef5350' });
   const emaSeries = chart.addLineSeries({ color:'#b8c0ff', lineWidth:2, priceLineVisible:false, lastValueVisible:false });
   const smaSeries = chart.addLineSeries({ color:'#f3d59a', lineWidth:2, priceLineVisible:false, lastValueVisible:false });
 
-  // RSI sub-chart
-  const rsiEl = $('rsiChart');
-  const rsiChart = LWC.createChart(rsiEl, {
-    layout:{ background:{ color:'#0a0a12' }, textColor:'#5a5a70', fontFamily:"'JetBrains Mono', monospace" },
-    grid:{ vertLines:{ color:'rgba(255,255,255,0.03)' }, horzLines:{ color:'rgba(255,255,255,0.03)' } },
-    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' },
-    timeScale:{ visible:false },
-  });
-  const rsiSeries = rsiChart.addLineSeries({ color:'#d9b8ff', lineWidth:1.5, priceLineVisible:false });
-  // sync time scales
-  chart.timeScale().subscribeVisibleLogicalRangeChange(r => { if(r) rsiChart.timeScale().setVisibleLogicalRange(r); });
+  const volChart = LWC.createChart(volEl, { layout:baseLayout, grid:{ vertLines:{color:'rgba(255,255,255,0.03)'}, horzLines:{color:'rgba(255,255,255,0.03)'} },
+    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' }, timeScale:{ visible:false } });
+  const volSeries = volChart.addHistogramSeries({ priceFormat:{ type:'volume' }, priceLineVisible:false });
 
-  // crosshair OHLC readout
+  const rsiChart = LWC.createChart(rsiEl, { layout:baseLayout, grid:{ vertLines:{color:'rgba(255,255,255,0.03)'}, horzLines:{color:'rgba(255,255,255,0.03)'} },
+    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' }, timeScale:{ visible:false } });
+  const rsiSeries = rsiChart.addLineSeries({ color:'#d9b8ff', lineWidth:1.5, priceLineVisible:false });
+
+  // sync sub-charts to the main time scale
+  chart.timeScale().subscribeVisibleLogicalRangeChange(r => { if(!r) return;
+    if(indState.vol) volChart.timeScale().setVisibleLogicalRange(r);
+    if(indState.rsi) rsiChart.timeScale().setVisibleLogicalRange(r);
+  });
+
   chart.subscribeCrosshairMove(p => {
-    if(!p.time || !p.seriesData.get(candleSeries)){ $('hOhlc').innerHTML=''; return; }
-    const c = p.seriesData.get(candleSeries);
+    const c = p.seriesData && p.seriesData.get(candleSeries);
+    if(!p.time || !c){ $('hOhlc').innerHTML=''; return; }
     $('hOhlc').innerHTML = 'O <b>'+fmt(c.open)+'</b>  H <b>'+fmt(c.high)+'</b>  L <b>'+fmt(c.low)+'</b>  C <b>'+fmt(c.close)+'</b>';
   });
 
   function fmt(n){ return n>=1000 ? n.toLocaleString(undefined,{maximumFractionDigits:0}) : n.toFixed(n<10?3:2); }
+  function fmtVol(v){ return v>=1e9?(v/1e9).toFixed(1)+'B':v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(1)+'K':String(Math.round(v)); }
+
+  let candles = [];   // {time,open,high,low,close,volume}
 
   // ── indicators ──
-  function ema(data, period){
-    const k = 2/(period+1); let prev; const out=[];
-    data.forEach((d,i)=>{ const v = i===0 ? d.close : d.close*k + prev*(1-k); prev=v; if(i>=period-1) out.push({ time:d.time, value:v }); });
-    return out;
-  }
-  function sma(data, period){
-    const out=[]; for(let i=period-1;i<data.length;i++){ let s=0; for(let j=0;j<period;j++) s+=data[i-j].close; out.push({ time:data[i].time, value:s/period }); }
-    return out;
-  }
-  function rsi(data, period){
-    const out=[]; let g=0,l=0;
-    for(let i=1;i<data.length;i++){
-      const ch = data[i].close - data[i-1].close;
-      const up = Math.max(ch,0), dn = Math.max(-ch,0);
-      if(i<=period){ g+=up; l+=dn; if(i===period){ g/=period; l/=period; const rs=l===0?100:g/l; out.push({ time:data[i].time, value:100-100/(1+rs) }); } }
-      else { g=(g*(period-1)+up)/period; l=(l*(period-1)+dn)/period; const rs=l===0?100:g/l; out.push({ time:data[i].time, value:100-100/(1+rs) }); }
-    }
-    return out;
-  }
+  function ema(d,p){ const k=2/(p+1); let prev; const o=[]; d.forEach((x,i)=>{ const v=i===0?x.close:x.close*k+prev*(1-k); prev=v; if(i>=p-1)o.push({time:x.time,value:v}); }); return o; }
+  function sma(d,p){ const o=[]; for(let i=p-1;i<d.length;i++){ let s=0; for(let j=0;j<p;j++)s+=d[i-j].close; o.push({time:d[i].time,value:s/p}); } return o; }
+  function rsiCalc(d,p){ const o=[]; let g=0,l=0; for(let i=1;i<d.length;i++){ const ch=d[i].close-d[i-1].close, up=Math.max(ch,0),dn=Math.max(-ch,0);
+    if(i<=p){ g+=up;l+=dn; if(i===p){ g/=p;l/=p; const rs=l===0?100:g/l; o.push({time:d[i].time,value:100-100/(1+rs)}); } }
+    else { g=(g*(p-1)+up)/p; l=(l*(p-1)+dn)/p; const rs=l===0?100:g/l; o.push({time:d[i].time,value:100-100/(1+rs)}); } } return o; }
 
   function applyIndicators(){
-    emaSeries.setData(indState.ema && candles.length ? ema(candles, 9) : []);
-    smaSeries.setData(indState.sma && candles.length ? sma(candles, 30) : []);
+    emaSeries.setData(indState.ema && candles.length ? ema(candles,9) : []);
+    smaSeries.setData(indState.sma && candles.length ? sma(candles,30) : []);
+    volEl.classList.toggle('on', indState.vol);
+    volSeries.setData(indState.vol && candles.length ? candles.map(c=>({ time:c.time, value:c.volume||0, color: c.close>=c.open ? 'rgba(38,166,154,0.5)' : 'rgba(239,83,80,0.5)' })) : []);
     rsiEl.classList.toggle('on', indState.rsi);
-    rsiSeries.setData(indState.rsi && candles.length ? rsi(candles, 14) : []);
-    chart.applyOptions({}); chart.timeScale().fitContent();
-    if(indState.rsi){ rsiChart.timeScale().setVisibleLogicalRange(chart.timeScale().getVisibleLogicalRange()); }
+    rsiSeries.setData(indState.rsi && candles.length ? rsiCalc(candles,14) : []);
+    queueResize();
   }
 
-  // ── data fetch ──
+  // ── drawings (trend lines + horizontal price lines) ──
+  // We use lightweight line-series for trend lines, and createPriceLine for h-lines.
+  let drawSeries = [];   // line series objects for trend lines
+  let priceLines = [];   // price-line objects
+  function redrawDrawings(){
+    drawSeries.forEach(s=>chart.removeSeries(s)); drawSeries=[];
+    priceLines.forEach(pl=>candleSeries.removePriceLine(pl)); priceLines=[];
+    drawings.forEach(d=>{
+      if(d.type==='trend' && d.points.length===2){
+        const s = chart.addLineSeries({ color:'#f3d59a', lineWidth:2, priceLineVisible:false, lastValueVisible:false });
+        s.setData([{time:d.points[0].time,value:d.points[0].price},{time:d.points[1].time,value:d.points[1].price}].sort((a,b)=>a.time-b.time));
+        drawSeries.push(s);
+      } else if(d.type==='hline'){
+        priceLines.push(candleSeries.createPriceLine({ price:d.price, color:'#f3d59a', lineWidth:1, lineStyle:LWC.LineStyle.Dashed, axisLabelVisible:true, title:'' }));
+      }
+    });
+  }
+  let drawMode = null, pendingPoint = null;
+  function setDrawMode(m){
+    drawMode = (drawMode===m)? null : m;
+    $('tTrend').classList.toggle('on', drawMode==='trend');
+    $('tHline').classList.toggle('on', drawMode==='hline');
+    pendingPoint = null;
+    $('drawHint').classList.toggle('on', !!drawMode);
+    $('drawHint').textContent = drawMode==='trend' ? 'Click two points to draw a trend line' : drawMode==='hline' ? 'Click a price level to place a horizontal line' : '';
+  }
+  chartEl.addEventListener('click', ev => {
+    if(!drawMode) return;
+    const box = chartEl.getBoundingClientRect();
+    const x = ev.clientX - box.left, y = ev.clientY - box.top;
+    const time = chart.timeScale().coordinateToTime(x);
+    const price = candleSeries.coordinateToPrice(y);
+    if(time==null || price==null) return;
+    if(drawMode==='hline'){
+      drawings.push({ type:'hline', price }); redrawDrawings(); persist(); setDrawMode(null);
+    } else if(drawMode==='trend'){
+      if(!pendingPoint){ pendingPoint = { time, price }; $('drawHint').textContent='Now click the second point'; }
+      else { drawings.push({ type:'trend', points:[pendingPoint, { time, price }] }); pendingPoint=null; redrawDrawings(); persist(); setDrawMode(null); }
+    }
+  });
+  $('tTrend').addEventListener('click',()=>setDrawMode('trend'));
+  $('tHline').addEventListener('click',()=>setDrawMode('hline'));
+  $('tClear').addEventListener('click',()=>{ drawings=[]; redrawDrawings(); persist(); });
+
+  // ── data ──
   async function fetchCandles(sym, tf){
     if(sym.src==='binance'){
-      const url = 'https://api.binance.com/api/v3/klines?symbol='+sym.id+'&interval='+tf.binance+'&limit=400';
-      const r = await fetch(url); if(!r.ok) throw new Error('binance '+r.status);
-      const raw = await r.json();
-      return raw.map(k => ({ time:Math.floor(k[0]/1000), open:+k[1], high:+k[2], low:+k[3], close:+k[4] }));
+      const url='https://api.binance.com/api/v3/klines?symbol='+sym.id+'&interval='+tf.binance+'&limit=400';
+      const r=await fetch(url); if(!r.ok) throw new Error('binance '+r.status);
+      return (await r.json()).map(k=>({ time:Math.floor(k[0]/1000), open:+k[1], high:+k[2], low:+k[3], close:+k[4], volume:+k[5] }));
     } else {
-      const y = tf.yahoo;
-      const yurl = 'https://query1.finance.yahoo.com/v8/finance/chart/'+sym.id+'?range='+y.range+'&interval='+y.interval;
-      const r = await fetch(PROXY + encodeURIComponent(yurl)); if(!r.ok) throw new Error('yahoo '+r.status);
-      const j = await r.json();
-      const res = j.chart && j.chart.result && j.chart.result[0]; if(!res) throw new Error('no data');
-      const t = res.timestamp || []; const q = res.indicators.quote[0];
-      const out = [];
-      for(let i=0;i<t.length;i++){
-        if(q.open[i]==null||q.close[i]==null) continue;
-        out.push({ time:t[i], open:q.open[i], high:q.high[i], low:q.low[i], close:q.close[i] });
-      }
+      const y=tf.yahoo;
+      const yurl='https://query1.finance.yahoo.com/v8/finance/chart/'+sym.id+'?range='+y.range+'&interval='+y.interval;
+      const r=await fetch(PROXY+encodeURIComponent(yurl)); if(!r.ok) throw new Error('yahoo '+r.status);
+      const j=await r.json(); const res=j.chart&&j.chart.result&&j.chart.result[0]; if(!res) throw new Error('no data');
+      const t=res.timestamp||[], q=res.indicators.quote[0], out=[];
+      for(let i=0;i<t.length;i++){ if(q.open[i]==null||q.close[i]==null) continue;
+        out.push({ time:t[i], open:q.open[i], high:q.high[i], low:q.low[i], close:q.close[i], volume:q.volume?q.volume[i]||0:0 }); }
       return out;
     }
   }
 
   async function load(){
-    $('loading').classList.remove('hidden');
-    $('err').classList.remove('on');
-    $('hSym').textContent = cur.label;
+    $('loading').classList.remove('hidden'); $('err').classList.remove('on');
+    $('hSym').textContent = cur.label; $('statSym').textContent = cur.label;
+    persist();
     try {
       candles = await fetchCandles(cur, curTf);
       if(!candles.length) throw new Error('empty');
       candleSeries.setData(candles);
       applyIndicators();
+      redrawDrawings();
       chart.timeScale().fitContent();
-      // header stats
-      const last = candles[candles.length-1].close;
-      const prev = candles.length>1 ? candles[0].close : last;
-      const chg = (last/prev-1)*100;
-      $('hLast').textContent = '$'+fmt(last);
-      const ce = $('hChg'); ce.textContent = (chg>=0?'+':'')+chg.toFixed(2)+'% ('+curTf.label+')';
-      ce.className = 'dchg ' + (chg>=0?'up':'dn');
+      // header
+      const last=candles[candles.length-1].close, first=candles[0].close, chg=(last/first-1)*100;
+      $('hLast').textContent='$'+fmt(last);
+      const ce=$('hChg'); ce.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'% ('+curTf.label+')'; ce.className='dchg '+(chg>=0?'up':'dn');
+      // stats panel
+      const hi=Math.max(...candles.map(c=>c.high)), lo=Math.min(...candles.map(c=>c.low));
+      const totVol=candles.reduce((a,c)=>a+(c.volume||0),0);
+      $('statsBody').innerHTML =
+        statRow('Last', '$'+fmt(last), '') +
+        statRow('Change', (chg>=0?'+':'')+chg.toFixed(2)+'%', chg>=0?'up':'dn') +
+        statRow('Period high', '$'+fmt(hi), '') +
+        statRow('Period low', '$'+fmt(lo), '') +
+        statRow('Range', (((hi-lo)/lo)*100).toFixed(1)+'%', '') +
+        statRow('Volume', fmtVol(totVol), '') +
+        statRow('Bars', String(candles.length), '');
     } catch(e){
-      $('err').textContent = 'Could not load '+cur.label+' — '+(cur.src==='yahoo'?'stock feed (proxy) may be rate-limited':'data feed unreachable')+'. Try another symbol or timeframe.';
+      $('err').textContent='Could not load '+cur.label+' — '+(cur.src==='yahoo'?'the stock feed (proxy) may be rate-limited':'the data feed is unreachable')+'. Try another symbol or timeframe.';
       $('err').classList.add('on');
     }
     $('loading').classList.add('hidden');
   }
+  function statRow(k,v,cls){ return '<div class="stat"><span class="k">'+k+'</span><span class="v '+(cls||'')+'">'+v+'</span></div>'; }
 
-  // ── UI builders ──
-  function renderTfs(){
-    $('tfs').innerHTML = TIMEFRAMES.map(t=>'<button class="tf'+(t.id===curTf.id?' on':'')+'" data-tf="'+t.id+'">'+t.label+'</button>').join('');
-  }
-  function renderInds(){
-    $('inds').innerHTML = [['ema','EMA 9'],['sma','SMA 30'],['rsi','RSI']].map(([k,l])=>
-      '<button class="ind'+(indState[k]?' on':'')+'" data-ind="'+k+'">'+l+'</button>').join('');
-  }
-  function renderWatchlist(){
-    $('watchlist').innerHTML = SYMBOLS.map(s=>
-      '<div class="wl-row'+(s.id===cur.id?' on':'')+'" data-sym="'+s.id+'">'
-      +'<div><div class="tk">'+s.label+'</div></div>'
-      +'<div><div class="px" data-px="'+s.id+'">—</div><div class="chg" data-chg="'+s.id+'"></div></div></div>').join('');
-  }
+  // ── UI ──
+  function renderTfs(){ $('tfs').innerHTML = TIMEFRAMES.map(t=>'<button class="tf'+(t.id===curTf.id?' on':'')+'" data-tf="'+t.id+'">'+t.label+'</button>').join(''); }
+  function renderInds(){ $('inds').innerHTML = [['vol','VOL'],['ema','EMA 9'],['sma','SMA 30'],['rsi','RSI']].map(([k,l])=>'<button class="ind'+(indState[k]?' on':'')+'" data-ind="'+k+'">'+l+'</button>').join(''); }
+  function renderWatchlist(){ $('watchlist').innerHTML = WATCH.map(s=>'<div class="wl-row'+(s.id===cur.id?' on':'')+'" data-sym="'+s.id+'"><div><div class="tk">'+s.label+'</div></div><div><div class="px" data-px="'+s.id+'">—</div><div class="chg" data-chg="'+s.id+'"></div></div></div>').join(''); }
 
-  // events
-  $('tfs').addEventListener('click', e=>{ const b=e.target.closest('[data-tf]'); if(!b)return; curTf=TIMEFRAMES.find(t=>t.id===b.dataset.tf); renderTfs(); load(); });
-  $('inds').addEventListener('click', e=>{ const b=e.target.closest('[data-ind]'); if(!b)return; indState[b.dataset.ind]=!indState[b.dataset.ind]; renderInds(); applyIndicators(); });
-  $('watchlist').addEventListener('click', e=>{ const b=e.target.closest('[data-sym]'); if(!b)return; cur=SYMBOLS.find(s=>s.id===b.dataset.sym); renderWatchlist(); load(); });
+  $('tfs').addEventListener('click',e=>{ const b=e.target.closest('[data-tf]'); if(!b)return; curTf=TIMEFRAMES.find(t=>t.id===b.dataset.tf); renderTfs(); load(); });
+  $('inds').addEventListener('click',e=>{ const b=e.target.closest('[data-ind]'); if(!b)return; indState[b.dataset.ind]=!indState[b.dataset.ind]; renderInds(); applyIndicators(); persist(); });
+  $('watchlist').addEventListener('click',e=>{ const b=e.target.closest('[data-sym]'); if(!b)return; cur=SYMBOLS.find(s=>s.id===b.dataset.sym); renderWatchlist(); load(); });
 
-  // symbol search
+  // search — matches the universe; also lets you type ANY stock ticker (tries Yahoo)
   const si=$('symInput'), sd=$('symDrop');
   function showDrop(q){
-    q=(q||'').toUpperCase();
-    const matches = SYMBOLS.filter(s=> s.label.toUpperCase().includes(q) || s.name.toUpperCase().includes(q));
-    sd.innerHTML = matches.map(s=>'<div class="sym-opt" data-sym="'+s.id+'"><span class="t">'+s.label+'</span><span class="n">'+s.name+'</span></div>').join('') || '<div class="sym-opt"><span class="n">no match in watchlist</span></div>';
+    const Q=(q||'').trim().toUpperCase();
+    let m = SYMBOLS.filter(s=> s.label.toUpperCase().includes(Q) || s.name.toUpperCase().includes(Q));
+    let html = m.map(s=>'<div class="sym-opt" data-sym="'+s.id+'"><span class="t">'+s.label+'</span><span class="n">'+s.name+'</span></div>').join('');
+    // offer a free-typed ticker as a stock if it looks like one and isn't already listed
+    if(Q && /^[A-Z.]{1,6}$/.test(Q) && !SYMBOLS.some(s=>s.id===Q || s.label.toUpperCase()===Q)){
+      html += '<div class="sym-opt" data-free="'+Q+'"><span class="t">'+Q+'</span><span class="n">try as stock →</span></div>';
+    }
+    sd.innerHTML = html || '<div class="sym-opt hint">no match</div>';
     sd.classList.add('on');
   }
   si.addEventListener('focus',()=>showDrop(si.value));
   si.addEventListener('input',()=>showDrop(si.value));
-  sd.addEventListener('click', e=>{ const b=e.target.closest('[data-sym]'); if(!b)return; cur=SYMBOLS.find(s=>s.id===b.dataset.sym); si.value=''; sd.classList.remove('on'); renderWatchlist(); load(); });
-  document.addEventListener('click', e=>{ if(!$('symBox') && !e.target.closest('.sym-box')) sd.classList.remove('on'); });
+  sd.addEventListener('click',e=>{
+    const known=e.target.closest('[data-sym]'); const free=e.target.closest('[data-free]');
+    if(known){ cur=SYMBOLS.find(s=>s.id===known.dataset.sym); }
+    else if(free){ cur={ id:free.dataset.free, label:free.dataset.free, name:'(searched)', src:'yahoo' }; }
+    else return;
+    si.value=''; sd.classList.remove('on'); renderWatchlist(); load();
+  });
+  document.addEventListener('click',e=>{ if(!e.target.closest('.sym-box')) sd.classList.remove('on'); });
 
-  // live watchlist prices (Binance for crypto direct; stocks via the shared tape would need the module — keep it simple: ticker last from each candle fetch is enough, but do a light crypto poll)
+  // live watchlist (crypto via one Binance call; stocks update when opened)
   async function pollWatchlist(){
-    // crypto: one batched Binance call
     try{
-      const cryptos = SYMBOLS.filter(s=>s.src==='binance');
-      const r = await fetch('https://api.binance.com/api/v3/ticker/24hr');
-      if(r.ok){ const all = await r.json(); const map={}; all.forEach(t=>map[t.symbol]=t);
-        cryptos.forEach(s=>{ const t=map[s.id]; if(!t)return;
-          const px=$('') ; const pxEl=document.querySelector('[data-px="'+s.id+'"]'); const chgEl=document.querySelector('[data-chg="'+s.id+'"]');
-          if(pxEl) pxEl.textContent = '$'+fmt(+t.lastPrice);
-          if(chgEl){ const c=+t.priceChangePercent; chgEl.textContent=(c>=0?'+':'')+c.toFixed(2)+'%'; chgEl.className='chg '+(c>=0?'up':'dn'); }
-        });
-      }
+      const r=await fetch('https://api.binance.com/api/v3/ticker/24hr'); if(!r.ok)return;
+      const map={}; (await r.json()).forEach(t=>map[t.symbol]=t);
+      WATCH.filter(s=>s.src==='binance').forEach(s=>{ const t=map[s.id]; if(!t)return;
+        const pxEl=document.querySelector('[data-px="'+s.id+'"]'), chgEl=document.querySelector('[data-chg="'+s.id+'"]');
+        if(pxEl) pxEl.textContent='$'+fmt(+t.lastPrice);
+        if(chgEl){ const c=+t.priceChangePercent; chgEl.textContent=(c>=0?'+':'')+c.toFixed(2)+'%'; chgEl.className='chg '+(c>=0?'up':'dn'); }
+      });
     }catch(e){}
   }
 
-  // resize
+  // resize (debounced)
+  let rT;
+  function queueResize(){ clearTimeout(rT); rT=setTimeout(resize, 30); }
   function resize(){
     chart.applyOptions({ width:chartEl.clientWidth, height:chartEl.clientHeight });
+    if(volEl.clientHeight) volChart.applyOptions({ width:volEl.clientWidth, height:volEl.clientHeight });
     if(rsiEl.clientHeight) rsiChart.applyOptions({ width:rsiEl.clientWidth, height:rsiEl.clientHeight });
   }
-  window.addEventListener('resize', resize);
-  const ro = new ResizeObserver(resize); ro.observe(chartEl); ro.observe(rsiEl);
+  window.addEventListener('resize', queueResize);
+  new ResizeObserver(queueResize).observe(chartEl);
 
   // boot
   renderTfs(); renderInds(); renderWatchlist();
