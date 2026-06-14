@@ -110,6 +110,17 @@
   .bt-lbl{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:12px 0 6px;}
   .bt-sel,.bt-inp{width:100%;font-family:var(--mono);font-size:13px;color:var(--text);background:var(--panel-2);border:1px solid var(--rule);border-radius:8px;padding:9px 11px;outline:none;}
   .bt-sel:focus,.bt-inp:focus{border-color:var(--accent);}
+  .bt-dir{display:flex;gap:6px;}
+  .bt-dir .dir{flex:1;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--muted);background:var(--panel-2);border:1px solid var(--rule);border-radius:8px;padding:8px 4px;}
+  .bt-dir .dir:hover{color:var(--text);}
+  .bt-dir .dir.on[data-dir="long"]{color:#04140f;background:var(--up);border-color:var(--up);}
+  .bt-dir .dir.on[data-dir="short"]{color:#1a0606;background:var(--down);border-color:var(--down);}
+  .bt-dir .dir.on[data-dir="both"]{color:var(--bg);background:var(--accent);border-color:var(--accent);}
+  .bt-log{margin-top:14px;display:none;} .bt-log.on{display:block;}
+  .bt-log .lh{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:8px;}
+  .bt-trade{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;padding:6px 0;border-bottom:1px solid var(--rule);}
+  .bt-trade .side{font-weight:700;width:38px;flex:none;} .bt-trade .side.l{color:var(--up);} .bt-trade .side.s{color:var(--down);}
+  .bt-trade .px{color:var(--muted);flex:1;} .bt-trade .r{font-weight:700;text-align:right;} .bt-trade .r.up{color:var(--up);} .bt-trade .r.dn{color:var(--down);}
   .bt-params{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
   .bt-params .p{display:flex;flex-direction:column;gap:4px;}
   .bt-params .p span{font-size:10px;color:var(--faint);font-family:var(--mono);}
@@ -168,11 +179,18 @@
       <option value="rsi">RSI mean-reversion</option>
     </select>
     <div class="bt-params" id="btParams"></div>
+    <label class="bt-lbl">Direction</label>
+    <div class="bt-dir" id="btDir">
+      <button class="dir on" data-dir="long">▲ Long only</button>
+      <button class="dir" data-dir="short">▼ Short only</button>
+      <button class="dir" data-dir="both">⇅ Both</button>
+    </div>
     <label class="bt-lbl">Fee per trade (%)</label>
     <input class="bt-inp" id="btFee" type="number" value="0.1" step="0.05" min="0">
     <button class="bt-run" id="btRun">Run backtest ▸</button>
     <div class="bt-results" id="btResults"></div>
     <div class="bt-eq" id="btEq"></div>
+    <div class="bt-log" id="btLog"></div>
   </div>
 </div>
 
@@ -403,8 +421,8 @@
       // and LOG it at the last price of the window we're leaving (never silently drop
       // a trade). prevSym/prevLast were captured before the new candles loaded.
       if(typeof openPos!=='undefined' && openPos && typeof __prevLast==='number'){
-        const r=__prevLast/openPos.entryPx, pnl=(r-1)*100;
-        journal.unshift({ id:Date.now(), sym:openPos.sym, entryPx:openPos.entryPx, exitPx:__prevLast, entryTime:openPos.entryTime, exitTime:__prevTime||openPos.entryTime, pnl, bars:0, auto:true });
+        const dir=openPos.dir||1; const r=__prevLast/openPos.entryPx; const pnl=(dir===1?r-1:1-r)*100;
+        journal.unshift({ id:Date.now(), sym:openPos.sym, dir, entryPx:openPos.entryPx, exitPx:__prevLast, entryTime:openPos.entryTime, exitTime:__prevTime||openPos.entryTime, pnl, bars:0, auto:true });
         persistJournal(); if(typeof renderJournal==='function' && $('jPanel').classList.contains('on')) renderJournal();
         if(typeof flash==='function') setTimeout(()=>flash('Auto-closed '+openPos.sym+' ('+(pnl>=0?'+':'')+pnl.toFixed(1)+'%) — logged. Open positions don\'t carry across symbols.'),50);
       }
@@ -518,49 +536,90 @@
     if(i<=p){ g+=up;l+=dn; if(i===p){ g/=p;l/=p; out[i]=100-100/(1+(l===0?100:g/l)); } } else { g=(g*(p-1)+up)/p; l=(l*(p-1)+dn)/p; out[i]=100-100/(1+(l===0?100:g/l)); } } return out; }
 
   let btEqChart=null, btEqSeries=null, btMarkersOn=false;
+  let btDir = 'long';
   function runBacktest(){
     if(!candles.length) return;
     const stratKey=$('btStrat').value, strat=STRATS[stratKey];
     const p={}; strat.params.forEach(([k])=>{ p[k]=parseFloat(document.querySelector('[data-bp="'+k+'"]').value); });
     const fee=Math.max(0,parseFloat($('btFee').value)||0)/100;
-    const sig=strat.signal(candles,p);
+    const sig=strat.signal(candles,p);   // 1 = bullish, 0 = bearish/flat
 
-    // simulate: act on next bar's OPEN after a signal flip (1-bar lag, no look-ahead)
-    let inPos=false, entryPx=0, equity=1, trades=[], wins=0, markers=[], eqCurve=[];
+    // Translate the bullish/bearish signal into a target POSITION per the chosen
+    // direction: long-only (1/0), short-only (-1/0), or both (1/-1, always in market).
+    function targetPos(s){
+      if(btDir==='long')  return s===1 ? 1 : 0;
+      if(btDir==='short') return s===0 ? -1 : 0;
+      return s===1 ? 1 : -1;               // both: flip long<->short
+    }
+
+    // simulate: act on NEXT bar's open after a signal flip (1-bar lag, no look-ahead).
+    // pos = current position (-1/0/1). A long earns r-1; a short earns 1-r (inverse).
+    let pos=0, entryPx=0, equity=1, trades=[], wins=0, markers=[], eqCurve=[], log=[];
+    function closeTrade(px, time){
+      const isLong = pos===1;
+      const r = px/entryPx;
+      const ret = isLong ? (r-1) : (1-r);     // short profits when price falls
+      equity *= (1+ret) * (1-fee);
+      trades.push(ret); if(ret>0) wins++;
+      log.push({ side:isLong?'L':'S', entry:entryPx, exit:px, ret, time });
+      markers.push({ time, position:isLong?'aboveBar':'belowBar', color:isLong?'#ef5350':'#26a69a', shape:isLong?'arrowDown':'arrowUp', text:(isLong?'exit L ':'cover S ')+(ret>=0?'+':'')+(ret*100).toFixed(1)+'%' });
+    }
+    function openTrade(dir, px, time){
+      pos=dir; entryPx=px; equity*=(1-fee);
+      markers.push({ time, position:dir===1?'belowBar':'aboveBar', color:dir===1?'#26a69a':'#ef5350', shape:dir===1?'arrowUp':'arrowDown', text:dir===1?'LONG $'+fmt(px):'SHORT $'+fmt(px) });
+    }
     for(let i=1;i<candles.length;i++){
-      const want=sig[i-1];                  // signal known at close of i-1
+      const want=targetPos(sig[i-1]);
       const px=candles[i].open || candles[i].close;
-      if(want===1 && !inPos){ inPos=true; entryPx=px; equity*=(1-fee); markers.push({time:candles[i].time,position:'belowBar',color:'#26a69a',shape:'arrowUp',text:'B'}); }
-      else if(want===0 && inPos){ const r=px/entryPx; equity*=r*(1-fee); inPos=false; trades.push(r-1); if(r>1)wins++; markers.push({time:candles[i].time,position:'aboveBar',color:'#ef5350',shape:'arrowDown',text:'S'}); }
-      // mark-to-market equity for the curve
-      const mtm = inPos ? equity*(px/entryPx) : equity;
+      if(want!==pos){
+        if(pos!==0) closeTrade(px, candles[i].time);
+        if(want!==0) openTrade(want, px, candles[i].time);
+        else pos=0;
+      }
+      // mark-to-market equity
+      let mtm=equity;
+      if(pos!==0){ const r=px/entryPx; const ret=pos===1?(r-1):(1-r); mtm=equity*(1+ret); }
       eqCurve.push({ time:candles[i].time, value:mtm });
     }
-    if(inPos){ const last=candles[candles.length-1].close; equity*=(last/entryPx)*(1-fee); trades.push(last/entryPx-1); if(last>entryPx)wins++; }
+    if(pos!==0){ closeTrade(candles[candles.length-1].close, candles[candles.length-1].time); }
 
     const stratRet=(equity-1)*100;
     const bh=(candles[candles.length-1].close/candles[0].close-1)*100;
     const winRate= trades.length ? wins/trades.length*100 : 0;
+    const longs=log.filter(t=>t.side==='L').length, shorts=log.length-longs;
     let peak=1,mdd=0; eqCurve.forEach(e=>{ if(e.value>peak)peak=e.value; const dd=(peak-e.value)/peak; if(dd>mdd)mdd=dd; });
+    const avg = trades.length ? trades.reduce((a,b)=>a+b,0)/trades.length*100 : 0;
 
-    // draw markers on the candles
     combineMarkers(markers); btMarkersOn=true; window.__autoMarkers=markers;
 
-    // results
+    const dirLbl = btDir==='long'?'long-only':btDir==='short'?'short-only':'long+short';
     const beat = stratRet>bh;
     $('btResults').className='bt-results on';
     $('btResults').innerHTML =
-      btStat('Strategy return', (stratRet>=0?'+':'')+stratRet.toFixed(1)+'%', stratRet>=0?'up':'dn') +
+      btStat('Strategy ('+dirLbl+')', (stratRet>=0?'+':'')+stratRet.toFixed(1)+'%', stratRet>=0?'up':'dn') +
       btStat('Buy & hold', (bh>=0?'+':'')+bh.toFixed(1)+'%', bh>=0?'up':'dn') +
       btStat('vs B&H', (stratRet-bh>=0?'+':'')+(stratRet-bh).toFixed(1)+' pts', stratRet-bh>=0?'up':'dn') +
       btStat('Win rate', winRate.toFixed(0)+'%','') +
-      btStat('Trades', String(trades.length), trades.length<10?'dn':'') +
+      btStat('Avg / trade', (avg>=0?'+':'')+avg.toFixed(2)+'%', avg>=0?'up':'dn') +
+      btStat('Trades', trades.length+' ('+longs+'L / '+shorts+'S)', trades.length<10?'dn':'') +
       btStat('Max drawdown', '-'+(mdd*100).toFixed(1)+'%','dn') +
       '<div class="bt-verdict">'+
         (trades.length<10 ? '<b>⚠ Only '+trades.length+' trades</b> — far too few to mean anything. Pure noise on this window. ' : '')+
+        (btDir!=='long' ? '<b>Shorting note:</b> this models a clean inverse return and ignores borrow cost, funding, and the unlimited-loss risk of a real short. Reality is harsher. ' : '')+
         (beat ? 'Beat buy & hold here, in-sample. ' : 'Trailed buy & hold here. ')+
-        'Remember: this is <b>one window, in-sample, no out-of-sample test</b>. Tweaking params til this looks great IS overfitting. Confirm in <b>lab.py</b> before believing it.'+
+        'One window, in-sample, no out-of-sample test. Tweaking params til this looks great IS overfitting. Confirm in <b>lab.py</b> before believing it.'+
       '</div>';
+
+    // detailed trade log
+    const lg=$('btLog');
+    if(log.length){
+      lg.className='bt-log on';
+      lg.innerHTML = '<div class="lh">Trade log ('+log.length+')</div>' + log.map((t,i)=>
+        '<div class="bt-trade"><span class="side '+(t.side==='L'?'l':'s')+'">'+(t.side==='L'?'LONG':'SHORT')+'</span>'
+        +'<span class="px">$'+fmt(t.entry)+' → $'+fmt(t.exit)+'</span>'
+        +'<span class="r '+(t.ret>=0?'up':'dn')+'">'+(t.ret>=0?'+':'')+(t.ret*100).toFixed(1)+'%</span></div>'
+      ).join('');
+    } else lg.className='bt-log';
 
     // equity curve sub-chart
     const eqEl=$('btEq'); eqEl.classList.add('on');
@@ -577,11 +636,12 @@
     const strat=STRATS[$('btStrat').value];
     $('btParams').innerHTML = strat.params.map(([k,lbl,def])=>'<div class="p"><span>'+lbl+'</span><input class="bt-inp" data-bp="'+k+'" type="number" value="'+def+'" step="1" min="1"></div>').join('');
   }
-  function clearBacktest(){ if(btMarkersOn){ window.__autoMarkers=[]; btMarkersOn=false; if(typeof combineMarkers==='function') combineMarkers(); } $('btResults').className='bt-results'; $('btEq').classList.remove('on'); }
+  function clearBacktest(){ if(btMarkersOn){ window.__autoMarkers=[]; btMarkersOn=false; if(typeof combineMarkers==='function') combineMarkers(); } $('btResults').className='bt-results'; $('btEq').classList.remove('on'); if($('btLog')) $('btLog').className='bt-log'; }
 
   $('btBtn').addEventListener('click',()=>{ $('btPanel').classList.toggle('on'); if($('btPanel').classList.contains('on')) renderBtParams(); });
   $('btClose').addEventListener('click',()=>{ $('btPanel').classList.remove('on'); clearBacktest(); });
   $('btStrat').addEventListener('change',()=>{ renderBtParams(); clearBacktest(); });
+  $('btDir').addEventListener('click',e=>{ const b=e.target.closest('[data-dir]'); if(!b)return; btDir=b.dataset.dir; document.querySelectorAll('#btDir .dir').forEach(x=>x.classList.toggle('on',x===b)); });
   $('btRun').addEventListener('click',runBacktest);
 
   // ── MANUAL TRADING (hand-made backtest) ─────────────────────────────
@@ -616,32 +676,37 @@
     // arming a trade cancels draw mode
     if(tradeArm && drawMode) setDrawMode(null);
   }
+  function closeManual(c, px){
+    const dir = openPos.dir || 1;       // 1 long, -1 short
+    const r = px/openPos.entryPx;
+    const pnl = (dir===1 ? r-1 : 1-r)*100;   // short profits when price falls
+    const holdBars = candles.filter(k=>k.time>=openPos.entryTime && k.time<=c.time).length;
+    journal.unshift({ id:Date.now(), sym:openPos.sym, dir, entryPx:openPos.entryPx, exitPx:px, entryTime:openPos.entryTime, exitTime:c.time, pnl, bars:holdBars });
+    manualMarkers.push({ time:c.time, position:dir===1?'aboveBar':'belowBar', color:dir===1?'#ef5350':'#26a69a', shape:dir===1?'arrowDown':'arrowUp', text:(dir===1?'SELL ':'COVER ')+(pnl>=0?'+':'')+pnl.toFixed(1)+'%' });
+    openPos=null; combineMarkers(); updatePosTag(); renderJournal(); persistJournal();
+  }
   function handleTradeClick(time){
     const c = nearestCandle(time); if(!c) return;
     const px = c.close;
     if(tradeArm==='buy'){
-      if(openPos){ flash('Already in a position — Sell to close first.'); }
-      else {
-        openPos = { sym:cur.label, entryTime:c.time, entryPx:px };
-        manualMarkers.push({ time:c.time, position:'belowBar', color:'#26a69a', shape:'arrowUp', text:'BUY $'+fmt(px) });
-        combineMarkers(); updatePosTag(); persistJournal();
-      }
+      if(openPos){ if(openPos.dir===-1) closeManual(c, px); else flash('Already long — Sell to close.'); }
+      else { openPos={ sym:cur.label, entryTime:c.time, entryPx:px, dir:1 };
+        manualMarkers.push({ time:c.time, position:'belowBar', color:'#26a69a', shape:'arrowUp', text:'LONG $'+fmt(px) });
+        combineMarkers(); updatePosTag(); persistJournal(); }
     } else if(tradeArm==='sell'){
-      if(!openPos){ flash('No open position to sell. Arm Buy first.'); }
-      else {
-        const r = px/openPos.entryPx, pnl=(r-1)*100;
-        const holdBars = candles.filter(k=>k.time>=openPos.entryTime && k.time<=c.time).length;
-        journal.unshift({ id:Date.now(), sym:openPos.sym, entryPx:openPos.entryPx, exitPx:px, entryTime:openPos.entryTime, exitTime:c.time, pnl, bars:holdBars });
-        manualMarkers.push({ time:c.time, position:'aboveBar', color:'#ef5350', shape:'arrowDown', text:'SELL '+(pnl>=0?'+':'')+pnl.toFixed(1)+'%' });
-        openPos=null; combineMarkers(); updatePosTag(); renderJournal(); persistJournal();
-      }
+      if(openPos){ if(openPos.dir===1) closeManual(c, px); else flash('Already short — Buy to cover.'); }
+      else { openPos={ sym:cur.label, entryTime:c.time, entryPx:px, dir:-1 };   // Sell with no position = open SHORT
+        manualMarkers.push({ time:c.time, position:'aboveBar', color:'#ef5350', shape:'arrowDown', text:'SHORT $'+fmt(px) });
+        combineMarkers(); updatePosTag(); persistJournal();
+        flash('Opened a SHORT (betting it falls). Buy to cover. Real shorts carry borrow cost + unlimited risk — this models the clean inverse.'); }
     }
     setArm(null);
   }
   function updatePosTag(){
     const t=$('posTag');
-    if(openPos){ const last=candles.length?candles[candles.length-1].close:openPos.entryPx; const live=(last/openPos.entryPx-1)*100;
-      t.classList.add('on'); t.innerHTML='● IN '+openPos.sym+' from $'+fmt(openPos.entryPx)+' · unreal '+(live>=0?'+':'')+live.toFixed(1)+'%';
+    if(openPos){ const dir=openPos.dir||1; const last=candles.length?candles[candles.length-1].close:openPos.entryPx;
+      const r=last/openPos.entryPx; const live=(dir===1?r-1:1-r)*100;
+      t.classList.add('on'); t.innerHTML='● '+(dir===1?'LONG':'SHORT')+' '+openPos.sym+' from $'+fmt(openPos.entryPx)+' · unreal '+(live>=0?'+':'')+live.toFixed(1)+'%';
       t.style.color = live>=0?'var(--up)':'var(--down)';
     } else t.classList.remove('on');
   }
@@ -659,9 +724,9 @@
       jCard('Avg / trade', (avg>=0?'+':'')+avg.toFixed(1)+'%', avg>=0?'up':'dn');
     $('jList').innerHTML = journal.length ? journal.map(t=>
       '<div class="j-row"><button class="del" data-jdel="'+t.id+'">remove</button>'
-      +'<div class="top"><span class="sym">'+t.sym+'</span><span class="pnl '+(t.pnl>=0?'up':'dn')+'">'+(t.pnl>=0?'+':'')+t.pnl.toFixed(2)+'%</span></div>'
-      +'<div class="det">$'+fmt(t.entryPx)+' → $'+fmt(t.exitPx)+' · '+fmtDate(t.entryTime)+'→'+fmtDate(t.exitTime)+' · '+t.bars+' bars</div></div>'
-    ).join('') : '<div class="j-empty">No trades yet. Arm ▲Buy, click a candle, then ▼Sell a later one.</div>';
+      +'<div class="top"><span class="sym">'+((t.dir===-1)?'<span style="color:var(--down)">SHORT</span> ':'<span style="color:var(--up)">LONG</span> ')+t.sym+'</span><span class="pnl '+(t.pnl>=0?'up':'dn')+'">'+(t.pnl>=0?'+':'')+t.pnl.toFixed(2)+'%</span></div>'
+      +'<div class="det">$'+fmt(t.entryPx)+' → $'+fmt(t.exitPx)+' · '+fmtDate(t.entryTime)+'→'+fmtDate(t.exitTime)+' · '+t.bars+' bars'+(t.auto?' · auto':'')+'</div></div>'
+    ).join('') : '<div class="j-empty">No trades yet. Arm ▲Buy (long) or ▼Sell (short), click a candle, then close with the opposite.</div>';
   }
   function jCard(k,v,cls){ return '<div class="c"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+'</div></div>'; }
 

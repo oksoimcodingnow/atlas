@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correlation Map · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="graphify/vis-network.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(184,192,255,0.45); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);height:100%;}
+  body{font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;display:flex;flex-direction:column;min-height:100vh;}
+  a{color:inherit;text-decoration:none;}
+  .top-bar{display:flex;align-items:center;justify-content:space-between;padding:16px var(--gutter);border-bottom:1px solid var(--rule);flex-shrink:0;}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--accent);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .head{padding:clamp(18px,3vw,30px) var(--gutter) 8px;max-width:1000px;margin:0 auto;width:100%;}
+  .eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;display:inline-flex;align-items:center;gap:12px;}
+  .eyebrow::before{content:'';width:26px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,6vw,54px);line-height:0.96;letter-spacing:-0.02em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(16px,2vw,20px);color:var(--muted);max-width:680px;margin-top:10px;line-height:1.4;}
+  .lede b{color:var(--text);}
+
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 4px;}
+  .controls .seg{display:flex;gap:4px;border:1px solid var(--rule);border-radius:999px;padding:3px;}
+  .controls .seg button{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted);background:transparent;border:0;border-radius:999px;padding:6px 12px;cursor:pointer;}
+  .controls .seg button.on{color:var(--bg);background:var(--accent);}
+  .controls .thr{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-family:var(--mono);}
+  .controls input[type=range]{accent-color:var(--accent);}
+  .controls .status{font-family:var(--mono);font-size:12px;color:var(--faint);margin-left:auto;}
+
+  .legend{display:flex;gap:8px 18px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin:10px 0;font-family:var(--mono);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;} .legend i{width:18px;height:3px;border-radius:2px;}
+
+  #net{flex:1;min-height:340px;margin:0 var(--gutter);border:1px solid var(--rule);border-radius:14px;background:#07070d;}
+  .foot{max-width:1000px;margin:0 auto;width:100%;padding:14px var(--gutter) 30px;}
+  .warn{font-size:12.5px;color:#e7d2c4;background:rgba(243,213,154,0.06);border:1px solid rgba(243,213,154,0.3);border-radius:12px;padding:12px 14px;line-height:1.6;}
+  .warn b{color:var(--gold);}
+  .conc{margin-top:10px;font-size:12.5px;color:#e7d2d6;background:rgba(255,141,179,0.06);border:1px solid rgba(255,141,179,0.3);border-radius:12px;padding:12px 14px;line-height:1.6;display:none;}
+  .conc.on{display:block;} .conc b{color:var(--pink);}
+  .sel{margin-top:10px;font-family:var(--mono);font-size:12.5px;color:var(--muted);min-height:18px;}
+  .sel b{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Correlation Map</span></div><a class="back" href="index.html">&larr; Home</a></div>
+
+<div class="head">
+  <div class="eyebrow">A map for thinking, not a signal</div>
+  <h1>What moves <em>together.</em></h1>
+  <p class="lede">Real price correlation across your watchlist, drawn as a web. Thick line = these two moved together; faint or none = independent. Use it to spot <b>hidden concentration</b> — if everything you own is one tight cluster, you're not diversified.</p>
+
+  <div class="controls">
+    <div class="seg" id="windowSeg">
+      <button data-w="60">60d</button>
+      <button class="on" data-w="120">120d</button>
+      <button data-w="250">1y</button>
+    </div>
+    <div class="thr">min |corr| <input type="range" id="thr" min="0" max="90" value="40" step="5"><span id="thrV">0.40</span></div>
+    <div class="status" id="status">loading…</div>
+  </div>
+  <div class="legend">
+    <span><i style="background:#5fd39a"></i>positive (move together)</span>
+    <span><i style="background:#ff8db3"></i>negative (move opposite)</span>
+    <span style="color:var(--faint)">thicker = stronger · drag nodes · click one to highlight its links</span>
+  </div>
+  <div class="sel" id="sel"></div>
+</div>
+
+<div id="net"></div>
+
+<div class="foot">
+  <div class="warn"><b>How to read this honestly.</b> Correlation is what happened in the <b>past</b> — it does <b>not predict the future</b>, and most strong correlations are <b>coincidence</b> (the more pairs you look at, the more fake ones you'll find by chance). It is a tool to <i>question</i> your portfolio (am I really diversified?), <b>not</b> a trading signal. Markets also "correlate to 1 in a crash" — the diversification you see here can vanish exactly when you need it. Data is daily closes, delayed/illustrative. Not financial advice.</div>
+  <div class="conc" id="conc"></div>
+</div>
+
+<script>
+(function(){
+  // universe (matches the Terminal). crypto via Binance, stocks via Yahoo+proxy.
+  const ASSETS = [
+    { id:'BTCUSDT', label:'BTC', name:'Bitcoin', src:'binance', group:'crypto' },
+    { id:'ETHUSDT', label:'ETH', name:'Ethereum', src:'binance', group:'crypto' },
+    { id:'SOLUSDT', label:'SOL', name:'Solana', src:'binance', group:'crypto' },
+    { id:'PAXGUSDT', label:'GOLD', name:'Gold (PAXG)', src:'binance', group:'metal' },
+    { id:'NVDA', label:'NVDA', name:'Nvidia', src:'yahoo', group:'ai-chip' },
+    { id:'TSM', label:'TSM', name:'TSMC', src:'yahoo', group:'ai-chip' },
+    { id:'AMD', label:'AMD', name:'AMD', src:'yahoo', group:'ai-chip' },
+    { id:'ASML', label:'ASML', name:'ASML', src:'yahoo', group:'ai-chip' },
+    { id:'MSFT', label:'MSFT', name:'Microsoft', src:'yahoo', group:'software' },
+    { id:'GOOGL', label:'GOOGL', name:'Alphabet', src:'yahoo', group:'software' },
+    { id:'CEG', label:'CEG', name:'Constellation', src:'yahoo', group:'energy' },
+    { id:'VST', label:'VST', name:'Vistra', src:'yahoo', group:'energy' },
+    { id:'CCJ', label:'CCJ', name:'Cameco', src:'yahoo', group:'energy' },
+    { id:'FCX', label:'FCX', name:'Freeport', src:'yahoo', group:'metal' },
+  ];
+  const GROUP_COLOR = { 'crypto':'#f7931a', 'metal':'#f3d59a', 'ai-chip':'#b8c0ff', 'software':'#9a9ab8', 'energy':'#ff8d6b' };
+  const PROXY='https://corsproxy.io/?url=';
+  let WINDOW=120, THR=0.40, returns={}, corr={}, net=null;
+
+  async function fetchCloses(a, days){
+    try{
+      if(a.src==='binance'){
+        const r=await fetch('https://api.binance.com/api/v3/klines?symbol='+a.id+'&interval=1d&limit='+days);
+        if(!r.ok) throw 0; const k=await r.json();
+        return k.map(x=>({ t:Math.floor(x[0]/86400000), c:+x[4] }));
+      } else {
+        const rng = days<=70?'3mo':days<=130?'6mo':'1y';
+        const u=PROXY+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+a.id+'?range='+rng+'&interval=1d');
+        const r=await fetch(u); if(!r.ok) throw 0; const j=await r.json();
+        const res=j.chart.result[0], ts=res.timestamp||[], cl=res.indicators.quote[0].close||[];
+        const out=[]; for(let i=0;i<ts.length;i++){ if(cl[i]!=null) out.push({ t:Math.floor(ts[i]/86400), c:cl[i] }); }
+        return out;
+      }
+    }catch(e){ return null; }
+  }
+  // align by date, build daily log-returns keyed by day index
+  function toReturns(closes){
+    if(!closes||closes.length<10) return null;
+    const m={}; for(const p of closes) m[p.t]=p.c;
+    const days=Object.keys(m).map(Number).sort((a,b)=>a-b);
+    const r={}; for(let i=1;i<days.length;i++){ const a=m[days[i-1]],b=m[days[i]]; if(a>0&&b>0) r[days[i]]=Math.log(b/a); }
+    return r;
+  }
+  function pearson(ra, rb){
+    const days=Object.keys(ra).filter(d=>d in rb).map(Number);
+    if(days.length<20) return null;
+    const xs=days.map(d=>ra[d]), ys=days.map(d=>rb[d]), n=xs.length;
+    const mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+    let sxy=0,sx=0,sy=0; for(let i=0;i<n;i++){ const dx=xs[i]-mx,dy=ys[i]-my; sxy+=dx*dy; sx+=dx*dx; sy+=dy*dy; }
+    if(sx===0||sy===0) return null;
+    return sxy/Math.sqrt(sx*sy);
+  }
+
+  async function loadAll(){
+    $('status').textContent='fetching prices…';
+    const got = await Promise.all(ASSETS.map(a=>fetchCloses(a, WINDOW)));
+    returns={}; ASSETS.forEach((a,i)=>{ const r=toReturns(got[i]); if(r) returns[a.id]=r; });
+    const live=Object.keys(returns).length;
+    // correlation matrix
+    corr={};
+    for(let i=0;i<ASSETS.length;i++) for(let j=i+1;j<ASSETS.length;j++){
+      const A=ASSETS[i], B=ASSETS[j];
+      if(returns[A.id]&&returns[B.id]){ const c=pearson(returns[A.id],returns[B.id]); if(c!=null) corr[A.id+'|'+B.id]=c; }
+    }
+    $('status').textContent = live+' / '+ASSETS.length+' assets · '+WINDOW+'d';
+    if(live<ASSETS.length) $('status').textContent += ' (some feeds asleep)';
+    render();
+    computeConcentration();
+  }
+
+  function render(){
+    const nodes = ASSETS.filter(a=>returns[a.id]).map(a=>({
+      id:a.id, label:a.label, title:a.name, group:a.group,
+      color:{ background:GROUP_COLOR[a.group]||'#9a9ab8', border:'#0a0a14', highlight:{ background:'#fff', border:GROUP_COLOR[a.group] } },
+      font:{ color:'#0a0a14', face:'JetBrains Mono', size:14, vadjust:0 }, shape:'dot', size:18, borderWidth:2
+    }));
+    const edges=[];
+    Object.entries(corr).forEach(([k,c])=>{
+      if(Math.abs(c)<THR) return;
+      const [a,b]=k.split('|');
+      edges.push({ from:a, to:b, value:Math.abs(c), title:(c>=0?'+':'')+c.toFixed(2),
+        color:{ color: c>=0 ? 'rgba(95,211,154,'+(0.25+Math.abs(c)*0.6)+')' : 'rgba(255,141,179,'+(0.25+Math.abs(c)*0.6)+')', highlight: c>=0?'#5fd39a':'#ff8db3' },
+        width: 1+Math.abs(c)*5 });
+    });
+    const data={ nodes:new vis.DataSet(nodes), edges:new vis.DataSet(edges) };
+    const options={
+      physics:{ barnesHut:{ gravitationalConstant:-3500, springLength:130, springConstant:0.04, damping:0.5 }, stabilization:{ iterations:120 } },
+      interaction:{ hover:true, tooltipDelay:120 },
+      nodes:{ shadow:false }, edges:{ smooth:{ type:'continuous' }, selectionWidth:1.5 },
+      layout:{ improvedLayout:true }
+    };
+    if(net) net.destroy();
+    net=new vis.Network($('net'), data, options);
+    net.on('selectNode', p=>{
+      const id=p.nodes[0]; const a=ASSETS.find(x=>x.id===id);
+      const links=Object.entries(corr).filter(([k])=>k.split('|').includes(id))
+        .map(([k,c])=>{ const o=k.split('|').find(x=>x!==id); const ob=ASSETS.find(x=>x.id===o); return { lbl:ob?ob.label:o, c }; })
+        .filter(x=>Math.abs(x.c)>=THR).sort((m,n)=>Math.abs(n.c)-Math.abs(m.c));
+      $('sel').innerHTML = '<b>'+a.label+'</b> ('+a.name+') · most correlated: ' + (links.length? links.slice(0,5).map(l=>l.lbl+' '+(l.c>=0?'+':'')+l.c.toFixed(2)).join('  ·  ') : 'nothing above the threshold (independent here)');
+    });
+    net.on('deselectNode', ()=>{ $('sel').innerHTML=''; });
+  }
+
+  // honest concentration check: average pairwise correlation among the chip+software cluster
+  function computeConcentration(){
+    const techIds = ASSETS.filter(a=>a.group==='ai-chip'||a.group==='software').map(a=>a.id);
+    let sum=0,n=0;
+    for(let i=0;i<techIds.length;i++) for(let j=i+1;j<techIds.length;j++){
+      const c = corr[techIds[i]+'|'+techIds[j]] ?? corr[techIds[j]+'|'+techIds[i]];
+      if(c!=null){ sum+=c; n++; }
+    }
+    const box=$('conc'); if(!n){ box.classList.remove('on'); return; }
+    const avg=sum/n;
+    if(avg>0.5){
+      box.classList.add('on');
+      box.innerHTML='<b>⚠ Concentration check.</b> Your AI-chip + software names average <b>'+avg.toFixed(2)+'</b> correlation with each other — they largely move as <b>one bet</b>. Owning five of them is closer to owning one big position than to being diversified. That\'s fine if AI is your conviction, but know that you\'re not hedged within it.';
+    } else box.classList.remove('on');
+  }
+
+  function $(id){ return document.getElementById(id); }
+  $('windowSeg').addEventListener('click', e=>{ const b=e.target.closest('[data-w]'); if(!b)return;
+    WINDOW=+b.dataset.w; document.querySelectorAll('#windowSeg button').forEach(x=>x.classList.toggle('on',x===b)); loadAll(); });
+  $('thr').addEventListener('input', e=>{ THR=(+e.target.value)/100; $('thrV').textContent=THR.toFixed(2); render(); computeConcentration(); });
+
+  loadAll();
+})();
+</script>
+<script src="lib/atlas-fx.js"></script>
+</body>
+</html>
