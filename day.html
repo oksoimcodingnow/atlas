@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(184,192,255,0.45); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3; --busy:#ff8d6b;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(720px 400px at 72% -10%, rgba(184,192,255,0.10), transparent 65%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--accent);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:860px;margin:0 auto;padding:clamp(20px,4vw,36px) var(--gutter) 70px;}
+  .eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;display:inline-flex;align-items:center;gap:12px;}
+  .eyebrow::before{content:'';width:26px;height:1px;background:var(--gold);}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(34px,6vw,58px);line-height:0.96;letter-spacing:-0.02em;}
+  h1 em{font-style:italic;color:var(--accent);}
+
+  /* status row */
+  .status-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:20px;}
+  .status-row .sr-lbl{font-size:12px;color:var(--faint);font-family:var(--mono);margin-right:4px;}
+  .st{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--muted);background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:7px 14px;cursor:pointer;transition:.15s;}
+  .st:hover{color:var(--text);border-color:var(--rule-hi);} .st.on{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.1);}
+
+  /* NOW strip */
+  .now{margin-top:14px;border:1px solid var(--rule);border-radius:16px;background:var(--panel);padding:18px 20px;}
+  .now .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;}
+  .now .state{font-family:var(--serif);font-size:clamp(26px,5vw,40px);font-weight:500;margin-top:4px;line-height:1.05;}
+  .now .state .dot{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:10px;vertical-align:middle;}
+  .now .sub{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:8px;}
+  .now .next{font-family:var(--mono);font-size:13px;color:var(--accent);margin-top:4px;}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px;}
+  @media(min-width:720px){ .grid{grid-template-columns:1.3fr 1fr;align-items:start;} }
+  .card{border:1px solid var(--rule);border-radius:16px;background:var(--panel);padding:18px;}
+  .card h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:20px;margin-bottom:12px;}
+
+  /* schedule grid: 7 days x blocks */
+  .sched{display:grid;grid-template-columns:auto repeat(7,1fr);gap:3px;font-size:10px;}
+  .sched .hh{font-family:var(--mono);color:var(--faint);font-size:9px;text-align:right;padding-right:5px;line-height:18px;}
+  .sched .dh{font-family:var(--mono);color:var(--muted);font-size:10px;text-align:center;font-weight:600;padding-bottom:3px;}
+  .sched .cell{height:18px;border-radius:3px;background:var(--bg-2);cursor:pointer;transition:background .1s;border:1px solid transparent;}
+  .sched .cell:hover{border-color:var(--rule-hi);}
+  .sched .cell.study{background:var(--accent);} .sched .cell.class{background:var(--busy);} .sched .cell.comp{background:var(--gold);} .sched .cell.free{background:rgba(95,211,154,0.3);}
+  .sched .cell.now{box-shadow:0 0 0 2px var(--text);}
+  .paint{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;}
+  .paint button{font-family:var(--sans);font-size:11px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--rule);border-radius:999px;padding:5px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .paint button.on{color:var(--text);border-color:var(--text);}
+  .paint .sw{width:10px;height:10px;border-radius:2px;}
+  .sched-note{font-size:11px;color:var(--faint);margin-top:8px;}
+
+  /* focus timer */
+  .timer{text-align:center;}
+  .timer .clock{font-family:var(--mono);font-size:clamp(44px,9vw,64px);font-weight:600;letter-spacing:0.02em;font-variant-numeric:tabular-nums;line-height:1;}
+  .timer .mode{font-size:12px;color:var(--muted);margin-top:6px;font-family:var(--mono);}
+  .timer .btns{display:flex;gap:8px;justify-content:center;margin-top:14px;}
+  .timer button{font-family:var(--sans);font-size:13px;font-weight:700;border-radius:999px;padding:10px 20px;cursor:pointer;border:1px solid var(--rule);background:transparent;color:var(--text);}
+  .timer button.go{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  .timer button:hover{border-color:var(--accent);}
+  .timer .tally{font-size:11.5px;color:var(--faint);margin-top:12px;font-family:var(--mono);}
+
+  /* countdown */
+  .cd{border:1px solid rgba(243,213,154,0.4);border-radius:16px;background:linear-gradient(180deg,rgba(243,213,154,0.06),transparent);padding:18px 20px;margin-top:16px;}
+  .cd .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+  .cd .ev{font-family:var(--serif);font-size:22px;margin-top:4px;}
+  .cd .days{font-family:var(--mono);font-size:clamp(30px,6vw,44px);font-weight:600;color:var(--gold);line-height:1;margin-top:6px;}
+  .cd input{background:var(--bg);border:1px solid var(--rule);color:var(--text);border-radius:8px;padding:7px 10px;font-family:var(--sans);font-size:13px;outline:none;margin-top:10px;}
+  .cd input:focus{border-color:var(--gold);}
+  .cd .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center;}
+
+  .tip{margin-top:16px;border:1px solid var(--rule);border-radius:12px;background:var(--bg-2);padding:12px 14px;font-size:12.5px;color:var(--muted);line-height:1.6;}
+  .tip b{color:var(--accent);}
+  .save{font-size:11px;color:var(--faint);margin-top:14px;text-align:center;font-family:var(--mono);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Day</span></div><a class="back" href="index.html">&larr; Home</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Your week, at a glance</div>
+  <h1>What you're <em>doing</em> now.</h1>
+
+  <div class="status-row" id="statusRow">
+    <span class="sr-lbl">I'm</span>
+    <button class="st" data-s="available">🟢 Available</button>
+    <button class="st" data-s="studying">📚 Studying</button>
+    <button class="st" data-s="heads-down">🔴 Heads-down</button>
+    <button class="st" data-s="away">🌙 Away / off</button>
+  </div>
+
+  <div class="now" id="now"></div>
+
+  <div class="cd" id="cd">
+    <div class="lbl">Countdown</div>
+    <div class="ev" id="cdEv">Case competition</div>
+    <div class="days" id="cdDays">—</div>
+    <div class="row">
+      <input type="text" id="cdName" placeholder="Event name" style="flex:1;min-width:120px">
+      <input type="date" id="cdDate">
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>This week</h2>
+      <div class="paint" id="paint">
+        <button class="on" data-t="study"><span class="sw" style="background:var(--accent)"></span>Study</button>
+        <button data-t="class"><span class="sw" style="background:var(--busy)"></span>Class</button>
+        <button data-t="comp"><span class="sw" style="background:var(--gold)"></span>Comp prep</button>
+        <button data-t="free"><span class="sw" style="background:rgba(95,211,154,0.6)"></span>Free</button>
+        <button data-t="clear"><span class="sw" style="background:var(--bg-2);border:1px solid var(--rule)"></span>Clear</button>
+      </div>
+      <div class="sched" id="sched"></div>
+      <div class="sched-note">Tap a block to paint it with the selected type. The white outline = right now. Saved automatically.</div>
+    </div>
+
+    <div>
+      <div class="card timer">
+        <h2 style="text-align:left">Focus timer</h2>
+        <div class="clock" id="clock">25:00</div>
+        <div class="mode" id="tmode">Pomodoro · focus</div>
+        <div class="btns">
+          <button class="go" id="tStart">Start</button>
+          <button id="tReset">Reset</button>
+          <button id="tBreak">Break</button>
+        </div>
+        <div class="tally" id="tally">0 focus sessions today</div>
+      </div>
+      <div class="tip"><b>Case-comp tip:</b> structure beats brilliance. Recommend ONE option, name the trade-off, quantify one number, rehearse the Q&A. The team that drives a clear decision wins over the team with more ideas.</div>
+    </div>
+  </div>
+
+  <div class="save" id="saveNote">Everything saved in your browser only · nothing leaves your device.</div>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const START_H=7, END_H=24;               // 7am to midnight
+  const TYPES={ study:{c:'study',label:'Studying',col:'#b8c0ff'}, class:{c:'class',label:'In class',col:'#ff8d6b'}, comp:{c:'comp',label:'Comp prep',col:'#f3d59a'}, free:{c:'free',label:'Free',col:'#5fd39a'} };
+
+  // ── state ──
+  let sched={}; try{ sched=JSON.parse(localStorage.getItem('atlas_day_sched'))||{}; }catch{}
+  let cd={}; try{ cd=JSON.parse(localStorage.getItem('atlas_day_cd'))||{ name:'Case competition', date:'' }; }catch{ cd={name:'Case competition',date:''}; }
+  let paintType='study';
+
+  function saveSched(){ localStorage.setItem('atlas_day_sched', JSON.stringify(sched)); }
+  function saveCd(){ localStorage.setItem('atlas_day_cd', JSON.stringify(cd)); }
+
+  // monday-indexed current day + hour
+  function nowDH(){ const d=new Date(); const day=(d.getDay()+6)%7; return { day, hour:d.getHours(), min:d.getMinutes() }; }
+
+  // ── schedule grid ──
+  function renderSched(){
+    const el=$('sched'); const N=nowDH();
+    let html='<div class="dh"></div>'+DAYS.map((d,i)=>'<div class="dh"'+(i===N.day?' style="color:var(--accent)"':'')+'>'+d+'</div>').join('');
+    for(let h=START_H;h<END_H;h++){
+      html+='<div class="hh">'+String(h).padStart(2,'0')+'</div>';
+      for(let dy=0;dy<7;dy++){
+        const key=dy+'-'+h, t=sched[key];
+        const isNow = dy===N.day && h===N.hour;
+        html+='<div class="cell'+(t?' '+TYPES[t].c:'')+(isNow?' now':'')+'" data-k="'+key+'"></div>';
+      }
+    }
+    el.innerHTML=html;
+    el.style.gridTemplateColumns='28px repeat(7,1fr)';
+  }
+  $('sched').addEventListener('click',e=>{
+    const c=e.target.closest('[data-k]'); if(!c) return;
+    const key=c.dataset.k;
+    if(paintType==='clear') delete sched[key]; else sched[key]=paintType;
+    saveSched(); renderSched(); renderNow();
+  });
+  $('paint').addEventListener('click',e=>{
+    const b=e.target.closest('[data-t]'); if(!b) return;
+    paintType=b.dataset.t;
+    document.querySelectorAll('#paint button').forEach(x=>x.classList.toggle('on',x===b));
+  });
+
+  // ── NOW / NEXT ──
+  function renderNow(){
+    const N=nowDH(); const key=N.day+'-'+N.hour; const t=sched[key];
+    const state = t ? TYPES[t] : null;
+    // find next change today
+    let nextTxt='';
+    if(t){
+      let h=N.hour+1; while(h<END_H && sched[N.day+'-'+h]===t) h++;
+      nextTxt = h<END_H ? ('until '+String(h).padStart(2,'0')+':00 · then '+(sched[N.day+'-'+h]?TYPES[sched[N.day+'-'+h]].label:'free')) : 'rest of the day';
+    } else {
+      // find next scheduled block today
+      let h=N.hour+1; while(h<END_H && !sched[N.day+'-'+h]) h++;
+      nextTxt = h<END_H ? ('next: '+TYPES[sched[N.day+'-'+h]].label+' at '+String(h).padStart(2,'0')+':00') : 'nothing scheduled today';
+    }
+    const time=new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+    $('now').innerHTML =
+      '<div class="lbl">'+DAYS[N.day]+' · '+time+'</div>'+
+      '<div class="state">'+(state?'<span class="dot" style="background:'+state.col+'"></span>'+state.label : '<span class="dot" style="background:var(--faint)"></span>Open / unplanned')+'</div>'+
+      '<div class="next">'+nextTxt+'</div>';
+  }
+
+  // ── countdown ──
+  function renderCd(){
+    $('cdName').value=cd.name||''; $('cdDate').value=cd.date||''; $('cdEv').textContent=cd.name||'Your event';
+    if(cd.date){
+      const today=new Date(); today.setHours(0,0,0,0);
+      const ev=new Date(cd.date+'T00:00:00'); const days=Math.round((ev-today)/86400000);
+      $('cdDays').textContent = days>0 ? days+' day'+(days>1?'s':'') : days===0 ? 'TODAY' : Math.abs(days)+' days ago';
+      $('cdDays').style.color = days<0 ? 'var(--faint)' : days<=3 ? 'var(--pink)' : 'var(--gold)';
+    } else $('cdDays').textContent='set a date →';
+  }
+  $('cdName').addEventListener('input',e=>{ cd.name=e.target.value; saveCd(); $('cdEv').textContent=cd.name||'Your event'; });
+  $('cdDate').addEventListener('change',e=>{ cd.date=e.target.value; saveCd(); renderCd(); });
+
+  // ── focus timer (Pomodoro) ──
+  let tSecs=25*60, tRunning=false, tIv=null, tIsBreak=false;
+  let tally=0; try{ const s=JSON.parse(localStorage.getItem('atlas_day_pomo')||'{}'); if(s.date===new Date().toDateString()) tally=s.n||0; }catch{}
+  function fmtT(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+  function renderTimer(){ $('clock').textContent=fmtT(tSecs); $('tmode').textContent='Pomodoro · '+(tIsBreak?'break':'focus'); $('tally').textContent=tally+' focus session'+(tally===1?'':'s')+' today'; }
+  function tick(){ if(tSecs>0){ tSecs--; renderTimer(); } else { clearInterval(tIv); tRunning=false; $('tStart').textContent='Start';
+    if(!tIsBreak){ tally++; localStorage.setItem('atlas_day_pomo',JSON.stringify({date:new Date().toDateString(),n:tally})); try{ new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ').play(); }catch{} alert('Focus session done! Take a break.'); tIsBreak=true; tSecs=5*60; }
+    else { tIsBreak=false; tSecs=25*60; alert('Break over — back to it.'); }
+    renderTimer(); } }
+  $('tStart').addEventListener('click',()=>{ if(tRunning){ clearInterval(tIv); tRunning=false; $('tStart').textContent='Resume'; } else { tIv=setInterval(tick,1000); tRunning=true; $('tStart').textContent='Pause'; } });
+  $('tReset').addEventListener('click',()=>{ clearInterval(tIv); tRunning=false; tIsBreak=false; tSecs=25*60; $('tStart').textContent='Start'; renderTimer(); });
+  $('tBreak').addEventListener('click',()=>{ clearInterval(tIv); tRunning=false; tIsBreak=true; tSecs=5*60; $('tStart').textContent='Start'; renderTimer(); });
+
+  // ── manual on/off status (saved with a timestamp; any future session can read it) ──
+  let status={}; try{ status=JSON.parse(localStorage.getItem('atlas_status'))||{}; }catch{}
+  function renderStatus(){
+    document.querySelectorAll('#statusRow .st').forEach(b=>b.classList.toggle('on', b.dataset.s===status.state));
+  }
+  $('statusRow').addEventListener('click',e=>{
+    const b=e.target.closest('[data-s]'); if(!b) return;
+    status={ state:b.dataset.s, since:Date.now(), label:b.textContent.trim() };
+    localStorage.setItem('atlas_status', JSON.stringify(status));
+    renderStatus();
+  });
+
+  // boot + keep "now" fresh
+  renderStatus(); renderSched(); renderNow(); renderCd(); renderTimer();
+  setInterval(()=>{ renderNow(); renderSched(); }, 30000);
+})();
+</script>
+<script src="lib/atlas-fx.js"></script>
+</body>
+</html>
