@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Competition Playbook · Library · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --max:780px; --gutter:clamp(22px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(720px 380px at 72% -8%,rgba(184,192,255,0.10),transparent 65%);}
+  a{color:inherit;}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:22px var(--gutter);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--accent);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:clamp(28px,5vw,52px) var(--gutter) 100px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,80px);line-height:0.92;letter-spacing:-0.02em;margin-bottom:18px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.45;color:var(--text);max-width:620px;margin-bottom:14px;}
+  .note-top{font-size:13px;color:var(--muted);max-width:600px;}
+
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px;}
+  .jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .18s;}
+  .jump a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .sec{margin-top:48px;scroll-margin-top:20px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+  .sec-head .n{font-family:var(--mono);font-size:13px;color:var(--faint);}
+  .sec-head .h{font-family:var(--serif);font-style:italic;font-weight:500;font-size:28px;color:var(--text);}
+  h3{font-size:16px;font-weight:700;margin:24px 0 8px;color:var(--text);}
+  p{margin-bottom:14px;} p .hl{color:var(--accent);font-weight:500;} strong{font-weight:600;}
+  ul{margin:0 0 16px 0;padding-left:0;list-style:none;}
+  li{position:relative;padding-left:24px;margin-bottom:9px;line-height:1.55;}
+  li::before{content:'';position:absolute;left:6px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--accent);}
+  li b{color:var(--text);}
+
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(21px,3vw,28px);line-height:1.35;margin:30px 0;padding-left:20px;border-left:2px solid var(--accent-2);color:#ded6ea;}
+  .box{border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:18px 20px;margin:22px 0;}
+  .box .t{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--accent-2);margin-bottom:10px;}
+  .box.win{border-color:rgba(95,211,154,0.35);} .box.win .t{color:var(--green);}
+  .box.trap{border-color:rgba(255,141,179,0.35);} .box.trap .t{color:var(--pink);}
+  .box ul{margin-bottom:0;} .box li::before{background:var(--accent-2);}
+  .box.win li::before{background:var(--green);} .box.trap li::before{background:var(--pink);}
+
+  /* step timeline */
+  .steps{counter-reset:step;}
+  .step{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);}
+  .step:last-child{border-bottom:0;}
+  .step .num{counter-increment:step;font-family:var(--serif);font-style:italic;font-size:28px;color:var(--accent);line-height:1;}
+  .step .num::before{content:counter(step);}
+  .step .b .lbl{font-weight:700;font-size:15px;} .step .b .t{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.55;}
+  .step .b .time{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:4px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:top;}
+  th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700;}
+  td b{color:var(--accent);}
+  code{font-family:var(--mono);font-size:13px;color:var(--accent-2);background:rgba(243,213,154,0.08);padding:1px 5px;border-radius:4px;}
+
+  .ev{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule);}
+  .ev:last-child{border-bottom:0;} .ev .nm{font-weight:600;} .ev .nm small{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:2px;}
+  .ev .where{font-family:var(--mono);font-size:11.5px;color:var(--faint);text-align:right;white-space:nowrap;}
+
+  .foot{margin-top:48px;padding-top:24px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .src{margin-top:18px;font-size:11.5px;color:var(--faint);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · Library · <span>Case Competition</span></div><a class="back" href="index.html">← Library</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Library · playbook</div>
+  <h1>Win your first <em>case competition.</em></h1>
+  <p class="lede">A practical playbook for a brand-new team: what it is, how the day runs, who does what, and the small number of habits that actually decide who wins.</p>
+  <p class="note-top">Written for a first-timer. Skip nothing on the first read; later, you'll use it as a checklist. The core truth: <strong>a clear, well-rehearsed 7/10 idea beats a brilliant 9/10 idea presented as mush.</strong></p>
+
+  <div class="jump">
+    <a href="#what">What it is</a>
+    <a href="#how">How the day runs</a>
+    <a href="#who">Team roles</a>
+    <a href="#framework">The framework</a>
+    <a href="#deck">The deck</a>
+    <a href="#qa">Q&amp;A</a>
+    <a href="#traps">Traps</a>
+    <a href="#where">Where to enter (Thailand)</a>
+    <a href="#prep">Prep checklist</a>
+  </div>
+
+  <!-- WHAT -->
+  <div class="sec" id="what">
+    <div class="sec-head"><span class="n">01</span><span class="h">What it actually is</span></div>
+    <p>You and 3–4 teammates become <span class="hl">consultants for a day</span>. You're handed a real-ish business problem (a company facing a decision: should they expand? launch? cut a product? fix declining sales?), given a few hours, and you must deliver a <strong>recommendation</strong> to a panel of judges, then defend it under questioning.</p>
+    <p>It is <em>not</em> an exam with a right answer. Two teams can recommend opposite things and both score well — because <strong>judges grade your reasoning and delivery, not whether you guessed "the answer."</strong> Your job is to make a clear call and defend it convincingly.</p>
+    <div class="pull">It's a consulting job interview disguised as a contest. They're watching how you think and how you persuade.</div>
+  </div>
+
+  <!-- HOW -->
+  <div class="sec" id="how">
+    <div class="sec-head"><span class="n">02</span><span class="h">How the day actually runs</span></div>
+    <p>Formats vary, but almost every competition is a version of this. The two common shapes:</p>
+    <table>
+      <tr><th>Format</th><th>Prep time</th><th>Present</th><th>Q&amp;A</th></tr>
+      <tr><td><b>Long case</b></td><td>3–24 hours (sometimes overnight)</td><td>15–25 min deck</td><td>10–15 min</td></tr>
+      <tr><td><b>Short / "live" case</b></td><td>30–60 min</td><td>8–10 min pitch</td><td>5–10 min</td></tr>
+    </table>
+    <div class="steps">
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Case drop</div><div class="t">You receive the case packet (the company, the problem, financials, exhibits). The clock starts.</div><div class="time">T+0</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Read &amp; align (don't rush this)</div><div class="t">Everyone reads. Then agree on the ONE core question the judges want answered. Most teams skip this and drift — the disciplined team locks the question in the first 15%.</div><div class="time">first ~15% of prep</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Analyze &amp; decide</div><div class="t">Apply a framework, do the numbers, and — crucially — <b>pick a recommendation</b>. Don't wait for certainty; commit, then build the case for it.</div><div class="time">middle ~50%</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Build the deck</div><div class="t">Recommendation first. Then the 2–3 reasons, the numbers, the risks, the next steps. Keep it lean — fewer, clearer slides.</div><div class="time">next ~25%</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">REHEARSE (the part teams skip)</div><div class="t">Run the full presentation out loud, timed, at least once — twice if you can. Prep likely questions and assign who answers what. This is where wins are made.</div><div class="time">last ~10% — never zero</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Present &amp; defend</div><div class="t">Deliver to the judges, then handle Q&amp;A. Stay calm, stay consistent, don't abandon your recommendation under pressure.</div><div class="time">on stage</div></div></div>
+    </div>
+  </div>
+
+  <!-- WHO -->
+  <div class="sec" id="who">
+    <div class="sec-head"><span class="n">03</span><span class="h">Who does what (team roles)</span></div>
+    <p>A 4-person team works best when roles are explicit. You can flex, but name them up front so nothing falls through the cracks:</p>
+    <ul>
+      <li><b>The Lead / synthesizer</b> — keeps the team pointed at the core question, makes the final call when you're split, and owns the storyline. Stops rabbit-holes.</li>
+      <li><b>The Numbers person</b> — owns the financials: market sizing, the one key calculation, the ROI/breakeven. <span class="hl">You're a finance-engineering student — this is your natural seat, and it's a real edge.</span></li>
+      <li><b>The Slide builder</b> — turns the thinking into a clean, readable deck while others analyze. Starts early; an ugly rushed deck loses points.</li>
+      <li><b>The Presenter(s)</b> — usually 2 people split the talking. Confident, clear, rehearsed. Everyone should be ready to field a Q&amp;A question in their area.</li>
+    </ul>
+    <div class="box"><div class="t">For a new team specifically</div>
+      <ul>
+        <li><b>Play a practice case together before the real one.</b> The single biggest gap for new teams isn't intelligence — it's never having run the clock as a unit. Do one full timed dry-run on an old case. It will feel chaotic; that's the point of doing it <i>before</i> it counts.</li>
+        <li><b>Diversity helps.</b> Different majors/perspectives catch issues a homogeneous team misses. A finance person + a marketing person + an ops thinker reads a case more completely.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FRAMEWORK -->
+  <div class="sec" id="framework">
+    <div class="sec-head"><span class="n">04</span><span class="h">The framework (structure beats brilliance)</span></div>
+    <p>Judges follow a clear structure; they get lost in scattered genius. Use a known framework as your skeleton — it signals "we think like consultants." The reliable spine:</p>
+    <p class="pull">Problem → Options → Recommendation → Why (with a number) → Risks → Next steps.</p>
+    <p>Inside that spine, pull in the classic tools <em>where they earn their place</em> (don't dump all of them):</p>
+    <ul>
+      <li><b>SWOT</b> — strengths/weaknesses/opportunities/threats. Fast situational read.</li>
+      <li><b>Porter's Five Forces</b> — industry competitiveness (suppliers, buyers, new entrants, substitutes, rivalry). Use when the question is "should we enter / compete here?"</li>
+      <li><b>PESTEL</b> — macro factors (political, economic, social, tech, environmental, legal). Use for market-entry or big-picture context.</li>
+      <li><b>Profit/value-driver tree</b> — break revenue and cost into pieces to find what actually moves the needle. The numbers person's best friend.</li>
+    </ul>
+    <p><strong>Be hypothesis-driven:</strong> form a view early ("we think they should X"), then test it with analysis, rather than analyzing everything and hoping an answer appears. That's how real consultants — and winning teams — work.</p>
+  </div>
+
+  <!-- DECK -->
+  <div class="sec" id="deck">
+    <div class="sec-head"><span class="n">05</span><span class="h">The deck (recommendation first)</span></div>
+    <p>The single most common mistake is building up to the recommendation at the end like a mystery novel. <span class="hl">Judges want the answer on slide one.</span> A winning structure:</p>
+    <ul>
+      <li><b>Slide 1 — Executive summary.</b> Your recommendation + the 2–3 reasons + the expected impact (ideally a number). A judge who only sees this slide should already know your whole argument.</li>
+      <li><b>The problem, framed.</b> Show you understood the <i>real</i> question, broken into its key sub-issues.</li>
+      <li><b>The analysis.</b> 2–3 slides of evidence — your framework, your numbers, the value drivers. Every slide answers "so what?"</li>
+      <li><b>The recommendation, in detail.</b> What exactly to do, with a rough plan/timeline.</li>
+      <li><b>Risks &amp; mitigations.</b> Naming what could go wrong (and how you'd handle it) is a maturity signal that separates top teams.</li>
+      <li><b>Next steps.</b> The concrete first actions. Always end on "here's what the client does Monday."</li>
+    </ul>
+    <div class="box win"><div class="t">What makes a slide good</div>
+      <ul>
+        <li><b>One message per slide</b>, stated in the title as a full sentence ("Expanding to X adds ฿Y in 2 years"), not a topic label ("Expansion").</li>
+        <li><b>One chart or one number</b> that carries the point. Judges remember the team that quantified.</li>
+        <li><b>The "so what" test:</b> if a slide doesn't drive a decision, cut it.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- QA -->
+  <div class="sec" id="qa">
+    <div class="sec-head"><span class="n">06</span><span class="h">Q&amp;A — where it's won or lost</span></div>
+    <p>Most teams over-build the deck and under-rehearse the defense. But judges often decide here, because Q&amp;A reveals whether you actually understand your own analysis. How to handle it:</p>
+    <ul>
+      <li><b>Stay consistent.</b> Don't abandon your recommendation the moment a judge pushes. Defend it with reasoning. Conviction (backed by logic) scores; flip-flopping kills.</li>
+      <li><b>Pause, then answer the question asked.</b> A two-second think beats a rushed ramble. Answer directly first, then support.</li>
+      <li><b>"That's a great question, and here's how we thought about it…"</b> buys a beat and frames your answer.</li>
+      <li><b>If you don't know:</b> say what you'd need to find out and how you'd get it. Honesty + a method beats bluffing — judges can smell a bluff.</li>
+      <li><b>Pre-assign questions.</b> Before you present, brainstorm the 5 hardest questions and decide who answers each. The numbers person takes financial pushback, etc.</li>
+    </ul>
+  </div>
+
+  <!-- TRAPS -->
+  <div class="sec" id="traps">
+    <div class="sec-head"><span class="n">07</span><span class="h">The traps that sink new teams</span></div>
+    <div class="box trap"><div class="t">Avoid these</div>
+      <ul>
+        <li><b>No clear recommendation.</b> Listing options and trailing off is the #1 new-team failure. Commit to one.</li>
+        <li><b>Analysis with no decision.</b> A beautiful SWOT that doesn't lead anywhere is wasted. Every analysis must point to your call.</li>
+        <li><b>Zero numbers.</b> "It will grow the market" means nothing. "It adds an estimated ฿120M over 3 years" lands. Quantify <i>one</i> thing well.</li>
+        <li><b>Over-building, never rehearsing.</b> A polished, on-time, well-rehearsed presentation beats deeper analysis delivered rushed and shaky — every single time.</li>
+        <li><b>Ignoring risks.</b> Pretending your plan is flawless reads as naïve. Naming the risk (and a mitigation) reads as mature.</li>
+        <li><b>Going over time.</b> Judges cut you off; you lose your conclusion. Rehearse to land 30 seconds early.</li>
+        <li><b>One person dominates.</b> Judges want to see a <i>team</i>. Share the airtime.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- WHERE -->
+  <div class="sec" id="where">
+    <div class="sec-head"><span class="n">08</span><span class="h">Where to enter (Thailand)</span></div>
+    <p>You're at a Thai university — here are the real, recurring competitions worth knowing. Dates shift yearly, so confirm on each host's site; treat this as a starting map.</p>
+    <div class="ev"><div class="nm">HSBC/HKU Asia Pacific Business Case Competition<small>The big regional one; HSBC runs national rounds (incl. a Thailand round, historically with Thammasat) that feed the Asia-Pacific final.</small></div><div class="where">regional · HSBC + HKU</div></div>
+    <div class="ev"><div class="nm">Thammasat Undergraduate Business Challenge (TUBC)<small>International undergrad case comp hosted annually in Thailand by Thammasat's BBA program. Top-tier, draws global schools.</small></div><div class="where">Bangkok · Thammasat</div></div>
+    <div class="ev"><div class="nm">Chulalongkorn Int'l Business Case Competition<small>Hosted by Chula; attracts international teams.</small></div><div class="where">Bangkok · Chula</div></div>
+    <div class="ev"><div class="nm">MUIC National Business Case Competition<small>Mahidol University International College runs national-level case events — a good on-ramp.</small></div><div class="where">Nakhon Pathom · Mahidol</div></div>
+    <div class="ev"><div class="nm">Your own university's internal comp<small>Many faculties run an internal qualifier. THIS is where a new team should start — lower stakes, real reps, and often the path to represent your school externally.</small></div><div class="where">on campus · start here</div></div>
+    <p style="margin-top:16px;font-size:13.5px;color:var(--muted)"><strong>For a brand-new team:</strong> start with your <span class="hl">faculty's internal competition</span> or a smaller local one. Get reps before the big international stages. Also search <code>thecasecentre.org</code> and <code>Foster GBC</code> for global calendars, and watch your university's business-club announcements — most entries happen through them.</p>
+  </div>
+
+  <!-- PREP -->
+  <div class="sec" id="prep">
+    <div class="sec-head"><span class="n">09</span><span class="h">Your prep checklist</span></div>
+    <div class="box win"><div class="t">Before competition day</div>
+      <ul>
+        <li><b>Run ≥1 full timed practice case</b> as a team (old cases are everywhere online; even a Harvard/Ivey case PDF works). The reps matter more than any reading.</li>
+        <li><b>Learn 3 frameworks cold</b> — SWOT, Porter's Five Forces, a profit-driver tree. Don't memorize ten; know a few deeply.</li>
+        <li><b>Build a slide template in advance</b> — clean exec-summary layout, chart styles, your team's colors. Don't design under the clock.</li>
+        <li><b>Practice fast market-sizing</b> — "estimate the Thai market for X" on a napkin. This one skill wins Q&amp;As.</li>
+        <li><b>Assign roles</b> and agree on the prep-time split (read / analyze / build / rehearse). Write it down.</li>
+        <li><b>Pick a "decision deadline"</b> — a time by which you MUST have committed to a recommendation, so you don't analyze forever.</li>
+      </ul>
+    </div>
+    <p class="pull">The team that rehearses a clear, confident recommendation beats the team with more ideas and no time left to practice. Every time.</p>
+  </div>
+
+  <div class="foot">
+    <a href="index.html">← Library</a>
+    <a href="../day.html">Countdown timer (Day) →</a>
+    <a href="valuation.html">Value a company →</a>
+    <a href="../fineng/">Fin-Eng Studio →</a>
+  </div>
+  <p class="src">Sources &amp; further reading: HSBC/HKU APAC Business Case Competition (judging criteria), John Molson MBA International Case Competition rules, Management Consulted &amp; Hacking the Case Interview (how-to-win guides), The Case Centre (student competition calendar), Foster School Global Business Center, MUIC/Mahidol &amp; Thammasat case-comp pages. Dates and hosts change yearly — always confirm on the official site before entering.</p>
+</div>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>
