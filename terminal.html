@@ -135,9 +135,15 @@
   #btEq.on{display:block;}
 
   @media(max-width:720px){
-    .side{display:none;} .sym-input{width:104px;} .inds{display:none;} .tools{display:none;}
-    .topbar{gap:7px;padding:0 8px;} .brand{display:none;}
-    #btBtn{margin-left:auto;}
+    .side{display:none;} .sym-input{width:104px;} .inds{display:none;}
+    .brand{display:none;}
+    /* topbar scrolls horizontally so all 9 timeframes + tools stay reachable */
+    .topbar{gap:7px;padding:0 8px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+    .topbar::-webkit-scrollbar{display:none;}
+    .topbar > *{flex:none;}                 /* don't let items shrink; let the bar scroll */
+    .tfs{gap:2px;} .tf{padding:6px 8px;}
+    .tools{margin-left:0;}                  /* keep draw tools, just inline in the scroll */
+    .home{position:sticky;right:0;background:var(--panel);}
   }
 </style>
 </head>

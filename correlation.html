@@ -55,6 +55,15 @@
   .conc.on{display:block;} .conc b{color:var(--pink);}
   .sel{margin-top:10px;font-family:var(--mono);font-size:12.5px;color:var(--muted);min-height:18px;}
   .sel b{color:var(--accent);}
+  /* mobile: tighter controls, full-width graph, no horizontal overflow */
+  @media(max-width:640px){
+    .controls{gap:6px;} .controls .thr{font-size:11px;} .controls input[type=range]{width:90px;}
+    .controls .status{margin-left:0;width:100%;}
+    .legend{font-size:10.5px;gap:6px 12px;}
+    #net{margin:0 10px;min-height:360px;}
+    .head,.foot{padding-left:14px;padding-right:14px;}
+    .lede{font-size:15px;}
+  }
 </style>
 </head>
 <body>
