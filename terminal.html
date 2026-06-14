@@ -243,18 +243,27 @@
     { id:'CCJ', label:'CCJ', name:'Cameco (uranium)', src:'yahoo' },
   ];
   const WATCH = SYMBOLS.filter(s=>['BTCUSDT','ETHUSDT','SOLUSDT','PAXGUSDT','BNBUSDT','NVDA','TSM','AMD','ASML','MSFT','CEG','FCX'].includes(s.id));
+  // Each timeframe maps to a Binance kline interval AND a Yahoo interval+range.
+  // Yahoo caps intraday history by interval (5m~60d, 15m~60d, 30m~60d, 60m~730d),
+  // so ranges are chosen to be valid AND give enough bars. Stocks can't do <5m or
+  // exotic intervals, so 1m/2h/3m fall back to the nearest Yahoo interval (noted).
   const TIMEFRAMES = [
-    { id:'1h', label:'1H', binance:'1h', yahoo:{range:'1mo',interval:'1h'} },
-    { id:'4h', label:'4H', binance:'4h', yahoo:{range:'3mo',interval:'1h'} },
-    { id:'1d', label:'1D', binance:'1d', yahoo:{range:'1y',interval:'1d'} },
-    { id:'1w', label:'1W', binance:'1w', yahoo:{range:'5y',interval:'1wk'} },
+    { id:'5m',  label:'5m',  binance:'5m',  yahoo:{range:'5d',  interval:'5m'}  },
+    { id:'15m', label:'15m', binance:'15m', yahoo:{range:'1mo', interval:'15m'} },
+    { id:'30m', label:'30m', binance:'30m', yahoo:{range:'1mo', interval:'30m'} },
+    { id:'1h',  label:'1H',  binance:'1h',  yahoo:{range:'3mo', interval:'1h'}  },
+    { id:'2h',  label:'2H',  binance:'2h',  yahoo:{range:'6mo', interval:'1h'}, yahooNote:'1h bars' },
+    { id:'4h',  label:'4H',  binance:'4h',  yahoo:{range:'1y',  interval:'1d'}, yahooNote:'1d bars' },
+    { id:'1d',  label:'1D',  binance:'1d',  yahoo:{range:'2y',  interval:'1d'}  },
+    { id:'1w',  label:'1W',  binance:'1w',  yahoo:{range:'5y',  interval:'1wk'} },
+    { id:'1M',  label:'1M',  binance:'1M',  yahoo:{range:'10y', interval:'1mo'} },
   ];
   const PROXY = 'https://corsproxy.io/?url=';
 
   // ── restore saved layout ──
   let saved = {}; try { saved = JSON.parse(localStorage.getItem(LS)) || {}; } catch {}
   let cur = SYMBOLS.find(s=>s.id===saved.sym) || SYMBOLS[0];
-  let curTf = TIMEFRAMES.find(t=>t.id===saved.tf) || TIMEFRAMES[2];
+  let curTf = TIMEFRAMES.find(t=>t.id===saved.tf) || TIMEFRAMES.find(t=>t.id==='1d');
   const indState = Object.assign({ ema:true, sma:false, rsi:false, vol:true }, saved.inds||{});
   let drawings = saved.drawings || [];       // [{type, points:[{time,price}], ...}]
   function persist(){ try { localStorage.setItem(LS, JSON.stringify({ sym:cur.id, tf:curTf.id, inds:indState, drawings })); } catch {} }
@@ -263,18 +272,21 @@
   const chartEl=$('chart'), volEl=$('volChart'), rsiEl=$('rsiChart');
   const baseLayout = { background:{ color:'#0a0a12' }, textColor:'#8a8aa0', fontFamily:"'JetBrains Mono', monospace" };
   const grid = { vertLines:{ color:'rgba(255,255,255,0.04)' }, horzLines:{ color:'rgba(255,255,255,0.04)' } };
+  // fixed price-scale width so the main chart + volume + RSI panes all align
+  // vertically (candles sit exactly above their volume bars).
+  const PSCALE_W = 64;
   const chart = LWC.createChart(chartEl, { layout:baseLayout, grid, crosshair:{ mode:LWC.CrosshairMode.Normal },
-    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' }, timeScale:{ borderColor:'rgba(255,255,255,0.08)', timeVisible:true, secondsVisible:false } });
+    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)', minimumWidth:PSCALE_W }, timeScale:{ borderColor:'rgba(255,255,255,0.08)', timeVisible:true, secondsVisible:false } });
   const candleSeries = chart.addCandlestickSeries({ upColor:'#26a69a', downColor:'#ef5350', borderUpColor:'#26a69a', borderDownColor:'#ef5350', wickUpColor:'#26a69a', wickDownColor:'#ef5350' });
   const emaSeries = chart.addLineSeries({ color:'#b8c0ff', lineWidth:2, priceLineVisible:false, lastValueVisible:false });
   const smaSeries = chart.addLineSeries({ color:'#f3d59a', lineWidth:2, priceLineVisible:false, lastValueVisible:false });
 
   const volChart = LWC.createChart(volEl, { layout:baseLayout, grid:{ vertLines:{color:'rgba(255,255,255,0.03)'}, horzLines:{color:'rgba(255,255,255,0.03)'} },
-    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' }, timeScale:{ visible:false } });
+    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)', minimumWidth:PSCALE_W }, timeScale:{ visible:false } });
   const volSeries = volChart.addHistogramSeries({ priceFormat:{ type:'volume' }, priceLineVisible:false });
 
   const rsiChart = LWC.createChart(rsiEl, { layout:baseLayout, grid:{ vertLines:{color:'rgba(255,255,255,0.03)'}, horzLines:{color:'rgba(255,255,255,0.03)'} },
-    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)' }, timeScale:{ visible:false } });
+    rightPriceScale:{ borderColor:'rgba(255,255,255,0.08)', minimumWidth:PSCALE_W }, timeScale:{ visible:false } });
   const rsiSeries = rsiChart.addLineSeries({ color:'#d9b8ff', lineWidth:1.5, priceLineVisible:false });
 
   // sync sub-charts to the main time scale
@@ -403,6 +415,9 @@
       applyIndicators();
       redrawDrawings();
       chart.timeScale().fitContent();
+      // sync the sub-panes to the main chart's range NOW (not only on later scroll)
+      requestAnimationFrame(()=>{ const r=chart.timeScale().getVisibleLogicalRange();
+        if(r){ if(indState.vol) volChart.timeScale().setVisibleLogicalRange(r); if(indState.rsi) rsiChart.timeScale().setVisibleLogicalRange(r); } });
       // header
       const last=candles[candles.length-1].close, first=candles[0].close, chg=(last/first-1)*100;
       $('hLast').textContent='$'+fmt(last);
@@ -667,7 +682,9 @@
       return;  // don't hijack keys while typing a symbol
     }
     const k=e.key.toLowerCase();
-    if(k>='1' && k<='4'){ const t=TIMEFRAMES[+k-1]; if(t){ curTf=t; renderTfs(); load(); } }
+    // number keys cycle timeframes by index (1..9); also [ ] step down/up
+    if(k>='1' && k<='9'){ const t=TIMEFRAMES[+k-1]; if(t){ curTf=t; renderTfs(); load(); } }
+    else if(e.key==='['||e.key===']'){ const i=TIMEFRAMES.indexOf(curTf); const ni=Math.max(0,Math.min(TIMEFRAMES.length-1,i+(e.key===']'?1:-1))); curTf=TIMEFRAMES[ni]; renderTfs(); load(); }
     else if(k==='b'){ setArm('buy'); }
     else if(k==='s'){ setArm('sell'); }
     else if(k==='l'){ $('btPanel').classList.remove('on'); $('jPanel').classList.toggle('on'); if($('jPanel').classList.contains('on')) renderJournal(); }
