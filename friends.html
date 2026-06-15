@@ -151,11 +151,26 @@ if (!configured) {
 
     elSignin.disabled = false;
 
+    // Turn Firebase's cryptic error codes into plain English.
+    function explain(code, fallback) {
+      const map = {
+        'auth/operation-not-allowed': 'Google sign-in isn’t enabled yet. Firebase console → Authentication → Sign-in method → enable Google.',
+        'auth/unauthorized-domain':   'This site isn’t authorized. Firebase console → Authentication → Settings → Authorized domains → add oksoimcodingnow.github.io.',
+        'auth/popup-blocked':         'Your browser blocked the popup — allow popups for this site and try again.',
+        'auth/popup-closed-by-user':  'Sign-in window was closed before finishing.',
+        'auth/cancelled-popup-request': '', // benign double-click; show nothing
+        'auth/network-request-failed':'Network problem — check your connection and retry.',
+      };
+      return code in map ? map[code] : ('Sign-in failed: ' + (fallback || code));
+    }
+
     elSignin.addEventListener('click', () => {
+      elStatus.classList.remove('err');
       elStatus.textContent = 'Opening Google…';
       auth.signInWithPopup(provider).catch((e) => {
-        elStatus.textContent = 'Sign-in failed: ' + (e.code || e.message);
-        elStatus.classList.add('err');
+        const msg = explain(e.code, e.message);
+        elStatus.textContent = msg;
+        elStatus.classList.toggle('err', !!msg);
       });
     });
 
@@ -176,7 +191,8 @@ if (!configured) {
           : 'You’re in. Right now this is just the front door — soon there’ll be a board game and a few things shared only with friends.';
         elSignin.style.display = 'none';
         elCard.classList.add('show');
-        elStatus.textContent = '';
+        elStatus.textContent = '';   // signed in → never leave a stale error showing
+        elStatus.classList.remove('err');
       } else {
         elSignin.style.display = '';
         elCard.classList.remove('show');
