@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hall of Fame · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(243,213,154,0.45); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--gold);color:var(--bg);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(760px 420px at 50% -12%, rgba(243,213,154,0.10), transparent 62%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--gold);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--gold);background:rgba(243,213,154,0.08);}
+  .wrap{position:relative;z-index:2;max-width:840px;margin:0 auto;padding:clamp(30px,6vw,60px) var(--gutter) 90px;}
+
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:16px;text-align:center;}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(48px,11vw,108px);line-height:0.9;letter-spacing:-0.02em;margin-bottom:18px;text-align:center;}
+  h1 em{font-style:italic;color:var(--gold);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.3vw,24px);line-height:1.45;color:var(--muted);max-width:540px;margin:0 auto 8px;text-align:center;}
+  .sub{font-size:12.5px;color:var(--faint);text-align:center;margin-bottom:40px;}
+
+  .add{display:block;margin:0 auto 34px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--gold);background:transparent;border:1px solid rgba(243,213,154,0.4);border-radius:999px;padding:10px 22px;cursor:pointer;transition:.15s;}
+  .add:hover{background:rgba(243,213,154,0.1);}
+
+  .trophies{display:flex;flex-direction:column;gap:14px;}
+  .trophy{position:relative;border:1px solid var(--rule);border-radius:16px;background:var(--panel);padding:22px 24px;overflow:hidden;}
+  .trophy::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);opacity:0.7;}
+  .trophy.win::before{background:var(--gold);} .trophy.finalist::before{background:var(--accent);} .trophy.entered::before{background:var(--green);} .trophy.milestone::before{background:var(--pink);}
+  .t-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
+  .t-title{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--text);line-height:1.15;}
+  .t-rank{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;padding:4px 11px;border-radius:999px;white-space:nowrap;flex:none;border:1px solid var(--rule);}
+  .t-rank.win{color:var(--gold);border-color:rgba(243,213,154,0.5);background:rgba(243,213,154,0.08);}
+  .t-rank.finalist{color:var(--accent);border-color:rgba(184,192,255,0.5);background:rgba(184,192,255,0.08);}
+  .t-rank.entered{color:var(--green);border-color:rgba(95,211,154,0.5);background:rgba(95,211,154,0.08);}
+  .t-rank.milestone{color:var(--pink);border-color:rgba(255,141,179,0.5);background:rgba(255,141,179,0.08);}
+  .t-meta{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin-bottom:10px;}
+  .t-note{font-size:13.5px;color:var(--muted);line-height:1.6;}
+  .t-rm{position:absolute;top:14px;right:14px;display:none;font-size:15px;color:var(--faint);background:transparent;border:1px solid var(--rule);border-radius:8px;width:30px;height:30px;cursor:pointer;}
+  .trophy:hover .t-rm{display:block;} .t-rm:hover{color:var(--pink);border-color:var(--pink);}
+
+  .empty{text-align:center;border:1px dashed var(--rule);border-radius:18px;padding:40px 24px;color:var(--faint);}
+  .empty .big{font-family:var(--serif);font-style:italic;font-size:26px;color:var(--muted);margin-bottom:8px;}
+  .empty p{font-size:13.5px;line-height:1.65;max-width:420px;margin:0 auto;}
+
+  /* modal */
+  .ov{position:fixed;inset:0;z-index:50;background:rgba(6,6,12,0.86);display:none;align-items:center;justify-content:center;padding:18px;}
+  .ov.show{display:flex;}
+  .ov-card{max-width:460px;width:100%;border:1px solid var(--rule);border-radius:18px;background:#0b0b16;padding:26px;}
+  .ov-card h2{font-family:var(--serif);font-style:italic;font-size:26px;margin-bottom:16px;}
+  .fld{margin-bottom:13px;}
+  .fld label{display:block;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:5px;}
+  .fld input,.fld textarea,.fld select{width:100%;font-family:var(--sans);font-size:14px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:9px;padding:10px 12px;}
+  .fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--gold);}
+  .fld textarea{resize:vertical;min-height:64px;}
+  .ov-btns{display:flex;gap:10px;margin-top:18px;}
+  .ov-btns button{flex:1;font-family:var(--sans);font-size:14px;font-weight:600;border-radius:999px;padding:11px;cursor:pointer;border:1px solid var(--rule);}
+  .ov-btns .save{background:var(--gold);color:var(--bg);border-color:var(--gold);}
+  .ov-btns .cancel{background:transparent;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Hall of Fame</span></div><a class="back" href="index.html">← Home</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Wins worth keeping</div>
+  <h1>Hall of <em>Fame.</em></h1>
+  <p class="lede">Every competition entered, every cut survived, every trophy. Proof you showed up and got better.</p>
+  <p class="sub">Entering counts. Finishing counts. Winning counts most — but the trail matters more than any one result.</p>
+
+  <button class="add" id="addBtn">+ enshrine an achievement</button>
+
+  <div class="trophies" id="trophies"></div>
+</div>
+
+<!-- modal -->
+<div class="ov" id="ov">
+  <div class="ov-card">
+    <h2 id="ovTitle">New achievement</h2>
+    <div class="fld"><label>Title</label><input id="fTitle" placeholder="e.g. AI × Finance Hackathon"></div>
+    <div class="fld"><label>Result</label>
+      <select id="fRank">
+        <option value="win">🏆 Won / placed</option>
+        <option value="finalist">🎯 Finalist / made the cut</option>
+        <option value="entered">✅ Entered / competed</option>
+        <option value="milestone">⭐ Milestone</option>
+      </select>
+    </div>
+    <div class="fld"><label>When &amp; where</label><input id="fMeta" placeholder="e.g. Aug 2026 · CFA Society Thailand"></div>
+    <div class="fld"><label>The story (optional)</label><textarea id="fNote" placeholder="What you did, who was on the team, what you learned…"></textarea></div>
+    <div class="ov-btns"><button class="cancel" id="ovCancel">Cancel</button><button class="save" id="ovSave">Enshrine</button></div>
+  </div>
+</div>
+
+<script>
+const $ = (id)=>document.getElementById(id);
+const KEY = 'atlas_hof';
+const RANK = { win:'Won', finalist:'Finalist', entered:'Entered', milestone:'Milestone' };
+function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch{ return []; } }
+function save(a){ localStorage.setItem(KEY, JSON.stringify(a)); }
+let items = load();
+
+function render(){
+  if(!items.length){
+    $('trophies').innerHTML = `<div class="empty"><div class="big">No trophies yet — but you're aiming.</div><p>Your first one is coming: register for the AI × Finance Hackathon, and "Entered" goes here the day you sign up. Showing up is the first achievement.</p></div>`;
+    return;
+  }
+  // sort: win > finalist > entered > milestone, then newest added last stays in order
+  const order = {win:0,finalist:1,entered:2,milestone:3};
+  const sorted = [...items].sort((a,b)=>(order[a.rank]??9)-(order[b.rank]??9));
+  $('trophies').innerHTML = sorted.map(it=>{
+    const idx = items.indexOf(it);
+    return `<div class="trophy ${it.rank}">
+      <button class="t-rm" data-rm="${idx}" title="remove">×</button>
+      <div class="t-top">
+        <div class="t-title">${esc(it.title)}</div>
+        <span class="t-rank ${it.rank}">${RANK[it.rank]||it.rank}</span>
+      </div>
+      ${it.meta?`<div class="t-meta">${esc(it.meta)}</div>`:''}
+      ${it.note?`<div class="t-note">${esc(it.note)}</div>`:''}
+    </div>`;
+  }).join('');
+  $('trophies').querySelectorAll('[data-rm]').forEach(b=>{
+    b.onclick=()=>{ if(confirm('Remove this achievement?')){ items.splice(+b.dataset.rm,1); save(items); render(); } };
+  });
+}
+
+function openModal(){ $('fTitle').value=$('fMeta').value=$('fNote').value=''; $('fRank').value='entered'; $('ov').classList.add('show'); $('fTitle').focus(); }
+function closeModal(){ $('ov').classList.remove('show'); }
+$('addBtn').onclick = openModal;
+$('ovCancel').onclick = closeModal;
+$('ov').onclick = (e)=>{ if(e.target===$('ov')) closeModal(); };
+$('ovSave').onclick = ()=>{
+  const title=$('fTitle').value.trim();
+  if(!title){ $('fTitle').focus(); return; }
+  items.push({ title, rank:$('fRank').value, meta:$('fMeta').value.trim(), note:$('fNote').value.trim(), at:Date.now() });
+  save(items); closeModal(); render();
+};
+
+render();
+</script>
+<script src="lib/atlas-fx.js"></script>
+</body>
+</html>

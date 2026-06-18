@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hackathon Playbook · Library · Atlas</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --max:780px; --gutter:clamp(22px,5vw,48px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(720px 380px at 72% -8%,rgba(184,192,255,0.10),transparent 65%);}
+  a{color:inherit;}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:22px var(--gutter);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--accent);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:clamp(28px,5vw,52px) var(--gutter) 100px;}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,80px);line-height:0.92;letter-spacing:-0.02em;margin-bottom:18px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.45;color:var(--text);max-width:620px;margin-bottom:14px;}
+  .note-top{font-size:13px;color:var(--muted);max-width:600px;}
+
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px;}
+  .jump a{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .18s;}
+  .jump a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+
+  .sec{margin-top:48px;scroll-margin-top:20px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule);}
+  .sec-head .n{font-family:var(--mono);font-size:13px;color:var(--faint);}
+  .sec-head .h{font-family:var(--serif);font-style:italic;font-weight:500;font-size:28px;color:var(--text);}
+  h3{font-size:16px;font-weight:700;margin:24px 0 8px;color:var(--text);}
+  p{margin-bottom:14px;} p .hl{color:var(--accent);font-weight:500;} strong{font-weight:600;}
+  ul{margin:0 0 16px 0;padding-left:0;list-style:none;}
+  li{position:relative;padding-left:24px;margin-bottom:9px;line-height:1.55;}
+  li::before{content:'';position:absolute;left:6px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--accent);}
+  li b{color:var(--text);}
+
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(21px,3vw,28px);line-height:1.35;margin:30px 0;padding-left:20px;border-left:2px solid var(--accent-2);color:#ded6ea;}
+  .box{border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:18px 20px;margin:22px 0;}
+  .box .t{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--accent-2);margin-bottom:10px;}
+  .box.win{border-color:rgba(95,211,154,0.35);} .box.win .t{color:var(--green);}
+  .box.trap{border-color:rgba(255,141,179,0.35);} .box.trap .t{color:var(--pink);}
+  .box ul{margin-bottom:0;} .box li::before{background:var(--accent-2);}
+  .box.win li::before{background:var(--green);} .box.trap li::before{background:var(--pink);}
+
+  .steps{counter-reset:step;}
+  .step{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);}
+  .step:last-child{border-bottom:0;}
+  .step .num{counter-increment:step;font-family:var(--serif);font-style:italic;font-size:28px;color:var(--accent);line-height:1;}
+  .step .num::before{content:counter(step);}
+  .step .b .lbl{font-weight:700;font-size:15px;} .step .b .t{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.55;}
+  .step .b .time{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:4px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:top;}
+  th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700;}
+  td b{color:var(--accent);}
+  code{font-family:var(--mono);font-size:13px;color:var(--accent-2);background:rgba(243,213,154,0.08);padding:1px 5px;border-radius:4px;}
+
+  .foot{margin-top:48px;padding-top:24px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;}
+  .foot a{font-size:13px;color:var(--muted);padding:11px 18px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
+  .foot a:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .src{margin-top:18px;font-size:11.5px;color:var(--faint);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · Library · <span>Hackathon</span></div><a class="back" href="index.html">← Library</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Your first AI × Finance hackathon</div>
+  <h1>The <em>Hackathon</em> playbook.</h1>
+  <p class="lede">A case competition asks <em>“what should they do?”</em> A hackathon asks <em>“what can you build?”</em> — and you answer with a working thing. Here’s how a first-timer wins, especially this one.</p>
+  <p class="note-top">Written for the CFA Society Thailand <strong>AI × Finance Hackathon</strong> — but the principles hold for any. Pair it with the live command center for dates, your roster, and the checklist.</p>
+
+  <div class="jump">
+    <a href="#what">01 What it is</a>
+    <a href="#vs">02 Hackathon vs case</a>
+    <a href="#clock">03 The clock</a>
+    <a href="#idea">04 Pick a winnable idea</a>
+    <a href="#roles">05 Roles</a>
+    <a href="#claude">06 Claude as build-partner</a>
+    <a href="#demo">07 The demo</a>
+    <a href="#traps">08 Traps</a>
+    <a href="#thishack">09 This hackathon</a>
+  </div>
+
+  <!-- 01 -->
+  <section class="sec" id="what">
+    <div class="sec-head"><span class="n">01</span><span class="h">What a hackathon actually is</span></div>
+    <p>A <strong>hackathon</strong> is a build sprint: a theme is announced, you get a fixed window (sometimes 24–48 hours straight, sometimes a few weeks part-time), and you ship <span class="hl">a working prototype</span> — usually an app, a website, or a tool — then <strong>demo</strong> it to judges. You are not graded on a report. You are graded on: does it work, is the idea good, and can you show it convincingly.</p>
+    <p>The single most important truth, and the one beginners get wrong:</p>
+    <p class="pull">A winning hackathon project is not the most complex one. It’s a small thing that <em>actually works</em>, solving a real problem, shown well.</p>
+    <p>Teams that win pick the right problem, scope ruthlessly, and deliver a demo that makes judges take notice. Teams that lose dream big and have nothing that runs when the clock hits zero.</p>
+  </section>
+
+  <!-- 02 -->
+  <section class="sec" id="vs">
+    <div class="sec-head"><span class="n">02</span><span class="h">Hackathon vs. case competition</span></div>
+    <p>You’ve done a case comp, so anchor on the difference:</p>
+    <table>
+      <tr><th>&nbsp;</th><th>Case competition</th><th>Hackathon</th></tr>
+      <tr><td><b>The ask</b></td><td>What should they <i>do</i>?</td><td>What can you <i>build</i>?</td></tr>
+      <tr><td><b>Output</b></td><td>A deck + you presenting</td><td>A working demo</td></tr>
+      <tr><td><b>Rewards</b></td><td>Reasoning, finance, persuasion</td><td>Making, scoping, showing</td></tr>
+      <tr><td><b>Won/lost in</b></td><td>The Q&amp;A</td><td>The demo (and <i>finishing</i>)</td></tr>
+      <tr><td><b>Rookie killer</b></td><td>No clear recommendation</td><td>Too ambitious → nothing works</td></tr>
+      <tr><td><b>Your edge</b></td><td>Finance brain</td><td>Building with AI</td></tr>
+    </table>
+    <p>This particular event is a <strong>hybrid</strong>: the deliverable is a <em>slide presentation</em>, not 48 hours of non-stop code. That means your case-comp muscles — framing a problem, defending a recommendation, presenting — transfer directly. It’s a hackathon wearing a case-comp costume. That should lower your fear.</p>
+  </section>
+
+  <!-- 03 -->
+  <section class="sec" id="clock">
+    <div class="sec-head"><span class="n">03</span><span class="h">How to spend the clock</span></div>
+    <p>The proven time split that winners use — read the judging rubric first, then:</p>
+    <div class="steps">
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Validate the idea (~15% of time)</div><div class="t">Define the target user and the one problem. Check what already exists. <b>Do not write a single line of code until the idea is validated.</b></div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Build the MVP (~65%)</div><div class="t">Heads-down. Build the smallest version that demonstrates the idea end-to-end. Cut everything that isn’t the core “wow”.</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Polish + demo prep (~20%)</div><div class="t">Make it presentable, fix the demo path, build the slides, record a backup video, and <b>rehearse the pitch out loud.</b></div></div></div>
+    </div>
+    <div class="box win"><div class="t">The rule that saves you</div><ul><li><b>Read the judging criteria before you build.</b> Teams that optimize for the rubric win more than teams that build what merely excites them.</li><li>Build toward the demo from hour one — every feature should be something you’ll <i>show</i>.</li></ul></div>
+  </section>
+
+  <!-- 04 -->
+  <section class="sec" id="idea">
+    <div class="sec-head"><span class="n">04</span><span class="h">Pick a winnable idea</span></div>
+    <p>A good hackathon idea is <strong>narrow, real, and demoable</strong>. For an AI × Finance theme, the sweet spot is: a specific finance pain + AI that visibly removes it + a number you can point to.</p>
+    <h3>The test for a good idea</h3>
+    <ul>
+      <li><b>Can you demo it in 2 minutes?</b> If the value only shows after 10 steps, it’s too big.</li>
+      <li><b>Is the problem real to a finance person?</b> Judges here are CFA Charterholders — pick a pain they recognize.</li>
+      <li><b>Does AI do something a spreadsheet can’t?</b> Summarize a 200-page filing, flag a risk in plain language, draft an analysis. Don’t use AI as decoration.</li>
+      <li><b>Can you tie it to impact?</b> “Cuts research time from 3 hours to 5 minutes.” A number makes it land.</li>
+    </ul>
+    <div class="box"><div class="t">Example shapes (don’t copy — calibrate)</div><ul>
+      <li>An assistant that reads a company’s annual report and answers an analyst’s questions with citations.</li>
+      <li>A tool that turns messy financial data into a one-page risk summary.</li>
+      <li>A “junior analyst” that drafts a first-cut valuation and explains its assumptions.</li>
+    </ul></div>
+    <p class="pull">One sharp idea you can finish beats three clever ideas you can’t.</p>
+  </section>
+
+  <!-- 05 -->
+  <section class="sec" id="roles">
+    <div class="sec-head"><span class="n">05</span><span class="h">Assign roles before you start</span></div>
+    <p>Diverse skills win: building, design, pitching, project management. For an AI project specifically, <strong>a subject-matter expert on the team gets you a long way ahead</strong> — and on a finance hackathon, <span class="hl">that expert is you.</span></p>
+    <table>
+      <tr><th>Seat</th><th>Owns</th></tr>
+      <tr><td><b>Finance lead</b> (you)</td><td>Is the problem real? Is the impact number honest? The credibility in Q&amp;A. Your edge — own it.</td></tr>
+      <tr><td><b>Builder</b></td><td>Drives the prototype (with Claude). Keeps scope small enough to finish.</td></tr>
+      <tr><td><b>Designer / slides</b></td><td>Makes the demo and deck clean. One message per slide.</td></tr>
+      <tr><td><b>Presenter</b></td><td>Tells the story in the pitch. Can be you if you’re comfortable — finance + delivery is a strong combo.</td></tr>
+    </table>
+    <p>Roles can overlap on a 3–5 person team — the point is that <strong>someone owns each</strong>, so nothing falls through at 2am.</p>
+  </section>
+
+  <!-- 06 -->
+  <section class="sec" id="claude">
+    <div class="sec-head"><span class="n">06</span><span class="h">Claude as your build-partner</span></div>
+    <p>This is your unfair advantage. Most teams have one stressed coder. You have a tireless pair-programmer that explains as it goes — and the workshop literally teaches Claude &amp; Codex, so you walk in fluent in tools others are just meeting.</p>
+    <ul>
+      <li><b>Make Claude scope, not just code.</b> Ask “what’s the smallest version that demos the idea?” before building — it’s great at cutting ambition down to finishable.</li>
+      <li><b>Build in thin slices.</b> One working feature at a time, verified, before the next. (Exactly how Atlas itself is built.)</li>
+      <li><b>Have it write your demo script + slide outline too</b> — recommendation first, then how, then the live demo.</li>
+      <li><b>Let it explain the code to you</b> so you can answer “how does it work?” in Q&amp;A. Judges respect a team that understands its own build.</li>
+    </ul>
+    <div class="box trap"><div class="t">Honest caution</div><ul><li>AI writes plausible-looking code that can be subtly wrong. <b>Test the demo path repeatedly</b> — don’t trust “it should work.”</li><li>Don’t let AI invent finance facts. You’re the expert; <b>you verify every number.</b></li></ul></div>
+  </section>
+
+  <!-- 07 -->
+  <section class="sec" id="demo">
+    <div class="sec-head"><span class="n">07</span><span class="h">The demo — where it’s won</span></div>
+    <p>Judges want to understand your problem in the <strong>first 30 seconds</strong>, see a <strong>working demo</strong> (not slides about what you planned), and hear <strong>why it matters</strong>. A clean three-minute pitch with a live walkthrough beats a technically impressive project explained badly — every time.</p>
+    <h3>The pitch shape</h3>
+    <div class="steps">
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">The problem (30 sec)</div><div class="t">Who hurts, and how much. Make the judge feel it.</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">The solution, live (90 sec)</div><div class="t">Show it working. Real screen, real result. The heart of the pitch.</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Why it matters (40 sec)</div><div class="t">The impact number + why AI is the right tool here.</div></div></div>
+      <div class="step"><div class="num"></div><div class="b"><div class="lbl">Close (20 sec)</div><div class="t">What’s next if you had more time. Confident, not apologetic.</div></div></div>
+    </div>
+    <div class="box win"><div class="t">The pro move everyone forgets</div><ul><li><b>Record a backup video of the working app.</b> Wifi drops and APIs fail during judging — a pre-recorded demo means a crash can’t sink you.</li><li>Rehearse out loud, with a timer, at least twice. Reading it in your head is not rehearsing.</li></ul></div>
+  </section>
+
+  <!-- 08 -->
+  <section class="sec" id="traps">
+    <div class="sec-head"><span class="n">08</span><span class="h">Traps that sink new teams</span></div>
+    <div class="box trap"><div class="t">Avoid these</div><ul>
+      <li><b>Over-scoping.</b> The #1 killer. You’ll feel ambitious at hour 2 and desperate at hour 20. Cut early, cut hard.</li>
+      <li><b>Building before validating.</b> A day spent building the wrong thing can’t be refunded.</li>
+      <li><b>Ignoring the rubric.</b> Build for how you’re scored, not for what’s fun.</li>
+      <li><b>A demo that needs explaining.</b> If you have to narrate why it’s cool, it isn’t showing it.</li>
+      <li><b>No backup.</b> Live demo only → one glitch and you’re done.</li>
+      <li><b>AI as decoration.</b> Bolting “AI” on for buzz. Judges (CFA pros) see through it. Make AI do real work.</li>
+      <li><b>Silent team.</b> Roles undefined → two people build the same thing, one builds nothing.</li>
+    </ul></div>
+  </section>
+
+  <!-- 09 -->
+  <section class="sec" id="thishack">
+    <div class="sec-head"><span class="n">09</span><span class="h">Why THIS hackathon fits you</span></div>
+    <p>Honest read: if someone designed a competition for your exact strengths, it would look like this one.</p>
+    <ul>
+      <li><b>AI × Finance</b> = your two edges on one table. Finance reasoning + AI building, together — most events reward only one.</li>
+      <li><b>They teach Claude &amp; Codex</b> in the workshop — you’re already fluent. You start ahead.</li>
+      <li><b>The output is a slide presentation</b> — your case-comp skills transfer; it’s gentler than a 48-hour code sprint.</li>
+      <li><b>It’s the first ever in Thailand</b> — everyone’s figuring it out together; lower floor, higher prestige to win.</li>
+      <li><b>3–5 people, cross-institution, ม.ปลาย–ป.เอก</b> — flexible team; your case-comp friends qualify.</li>
+    </ul>
+    <div class="box win"><div class="t">Remember the two sentences</div><ul>
+      <li><b>Case comp = commit to an answer.</b></li>
+      <li><b>Hackathon = finish something small that works, and show it well.</b></li>
+    </ul></div>
+    <p class="note-top">The scary part is the unknown. You now have the map. Go register, lock the team, and treat the workshop as a checkpoint to reach — not optional.</p>
+  </section>
+
+  <div class="foot">
+    <a href="hackathon.html">← Library</a>
+    <a href="../hackathon.html">Command center (dates, team, checklist) →</a>
+    <a href="case-comp.html">Case Competition playbook →</a>
+  </div>
+  <p class="src">Sources: HackerEarth — <em>10 Tips to Win a Hackathon</em>; Gary-Yau Chan — <em>Ultimate Guide to Winning Hackathons</em> (Medium); Innovation Mode — <em>How to Win a Hackathon</em>; WPC 2025 — <em>How to Win Your First Hackathon</em>. Event details from the CFA Society Thailand AI × Finance Hackathon flyer (2026). Verify dates and rules on CFA Society Thailand’s official channels before relying on them.</p>
+</div>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>

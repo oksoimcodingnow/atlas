@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI × Finance Hackathon · Atlas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(184,192,255,0.45); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3; --busy:#ff8d6b;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);} body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(720px 400px at 72% -10%, rgba(184,192,255,0.10), transparent 65%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--accent);font-style:normal;font-weight:600;}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:880px;margin:0 auto;padding:clamp(22px,4vw,40px) var(--gutter) 90px;}
+
+  .eyebrow{font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,76px);line-height:0.95;letter-spacing:-0.02em;margin-bottom:14px;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .sub{font-family:var(--serif);font-size:clamp(17px,2.2vw,22px);color:var(--muted);max-width:560px;line-height:1.45;margin-bottom:8px;}
+  .host{font-family:var(--mono);font-size:12px;color:var(--faint);margin-bottom:30px;}
+
+  /* countdown */
+  .countdown{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .cd-cell{flex:1;min-width:70px;text-align:center;border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:14px 8px;}
+  .cd-cell .n{font-family:var(--mono);font-size:clamp(26px,6vw,40px);font-weight:600;color:var(--accent);line-height:1;}
+  .cd-cell .l{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint);margin-top:7px;}
+  .cd-target{font-size:12.5px;color:var(--muted);margin-bottom:34px;}
+  .cd-target b{color:var(--gold);}
+  .cd-target select{font-family:var(--sans);font-size:12.5px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:8px;padding:4px 8px;cursor:pointer;}
+
+  h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:26px;color:var(--text);margin:34px 0 14px;padding-bottom:9px;border-bottom:1px solid var(--rule);}
+
+  /* timeline */
+  .timeline{display:flex;flex-direction:column;gap:0;}
+  .ev{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--rule);position:relative;}
+  .ev:last-child{border-bottom:0;}
+  .ev .date{font-family:var(--mono);font-size:12.5px;color:var(--gold);font-weight:500;padding-top:2px;}
+  .ev .what{font-size:15px;font-weight:600;color:var(--text);}
+  .ev .det{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.5;}
+  .ev.done{opacity:0.5;}
+  .ev.next .what::after{content:' ← next';font-family:var(--mono);font-size:10.5px;color:var(--green);font-weight:500;letter-spacing:0.04em;}
+  .ev .tag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);margin-left:8px;vertical-align:middle;}
+  .ev .tag.cut{color:var(--pink);border-color:rgba(255,141,179,0.4);}
+
+  /* roster */
+  .roster{display:flex;flex-direction:column;gap:8px;}
+  .seat{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;}
+  .seat input{font-family:var(--sans);font-size:13.5px;color:var(--text);background:var(--bg-2);border:1px solid var(--rule);border-radius:9px;padding:9px 11px;width:100%;}
+  .seat input:focus{outline:none;border-color:var(--accent);}
+  .seat input::placeholder{color:var(--faint);}
+  .seat .role-in{font-family:var(--mono);font-size:11px;}
+  .seat .rm{font-family:var(--sans);font-size:16px;color:var(--faint);background:transparent;border:1px solid var(--rule);border-radius:9px;width:38px;height:38px;cursor:pointer;flex:none;transition:.15s;}
+  .seat .rm:hover{color:var(--pink);border-color:var(--pink);}
+  .addseat{font-family:var(--sans);font-size:13px;color:var(--muted);background:transparent;border:1px dashed var(--rule);border-radius:10px;padding:10px;cursor:pointer;margin-top:4px;transition:.15s;width:100%;}
+  .addseat:hover{color:var(--accent);border-color:var(--rule-hi);}
+  .roster-note{font-size:12px;color:var(--faint);margin-top:10px;}
+
+  /* checklist */
+  .check{display:flex;flex-direction:column;gap:3px;}
+  .ck{display:flex;align-items:flex-start;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .15s;border:1px solid transparent;}
+  .ck:hover{background:var(--bg-2);}
+  .ck input{appearance:none;width:18px;height:18px;border:1.5px solid var(--rule);border-radius:5px;flex:none;margin-top:1px;cursor:pointer;position:relative;transition:.15s;}
+  .ck input:checked{background:var(--green);border-color:var(--green);}
+  .ck input:checked::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--bg);font-size:12px;font-weight:700;}
+  .ck .ct{font-size:14px;color:var(--text);line-height:1.5;}
+  .ck .ct small{display:block;color:var(--faint);font-size:12px;margin-top:2px;}
+  .ck input:checked + .ct{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint);}
+  .ck-group{font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:18px 0 6px;}
+
+  /* register CTA */
+  .cta{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 6px;}
+  .cta a{font-family:var(--sans);font-size:14px;font-weight:600;padding:12px 20px;border-radius:999px;transition:.15s;}
+  .cta a.primary{background:var(--accent);color:var(--bg);}
+  .cta a.primary:hover{background:#cdd3ff;}
+  .cta a.ghost{border:1px solid var(--rule);color:var(--muted);}
+  .cta a.ghost:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.07);}
+  .warn{font-size:12.5px;color:var(--busy);margin-top:8px;line-height:1.5;border-left:2px solid var(--busy);padding-left:11px;}
+
+  .card{border:1px solid var(--rule);border-radius:16px;background:var(--panel);padding:20px 22px;}
+  @media(max-width:560px){ .ev{grid-template-columns:78px 1fr;gap:11px;} .seat{grid-template-columns:1fr;gap:6px;} .seat .rm{width:100%;} }
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Atlas · <span>Hackathon</span></div><a class="back" href="index.html">← Home</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">CFA Society Thailand · first ever in Thailand</div>
+  <h1>AI × Finance<br><em>Hackathon.</em></h1>
+  <p class="sub">Your command center for it — the timeline, the countdown, your team, and exactly what to prep. Built for a home game: finance brain + AI build-partner.</p>
+  <p class="host">การแข่งขันด้าน AI ในภาคการเงิน · ทีมละ 3–5 คน · ม.ปลาย–ป.เอก · ต่างสถาบันได้ · 70 ทีม, first come first served</p>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown" id="countdown">
+    <div class="cd-cell"><div class="n" id="cdD">–</div><div class="l">days</div></div>
+    <div class="cd-cell"><div class="n" id="cdH">–</div><div class="l">hours</div></div>
+    <div class="cd-cell"><div class="n" id="cdM">–</div><div class="l">mins</div></div>
+    <div class="cd-cell"><div class="n" id="cdS">–</div><div class="l">secs</div></div>
+  </div>
+  <p class="cd-target">Counting down to
+    <select id="cdSelect"></select>
+    — <b id="cdLabel">—</b>
+  </p>
+
+  <!-- REGISTER -->
+  <h2>Step zero — register</h2>
+  <div class="card">
+    <p style="font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:4px;">Registration is <b style="color:var(--gold)">15–28 June 2026</b>, first-come-first-served, 70 team cap. Register through CFA Society Thailand’s <em>official</em> channels only.</p>
+    <div class="cta">
+      <a class="primary" href="https://linktr.ee/cfast" target="_blank" rel="noopener">CFA Thailand · Linktree ↗</a>
+      <a class="ghost" href="https://www.facebook.com/CFASocietyThailand" target="_blank" rel="noopener">Their Facebook ↗</a>
+    </div>
+    <p class="warn">The real registration form is the <b>QR code on the flyer</b> (scan with your phone) or linked on the channels above. Only sign up via CFA Society Thailand’s own pages — a first-come event attracts fake forms. Register with whatever team info you have <b>now</b>; you can usually edit members before the deadline. The scarce thing is the slot, not a perfect roster.</p>
+  </div>
+
+  <!-- TIMELINE -->
+  <h2>The timeline</h2>
+  <div class="timeline" id="timeline"></div>
+
+  <!-- TEAM -->
+  <h2>The team</h2>
+  <div class="roster" id="roster"></div>
+  <button class="addseat" id="addSeat">+ add a teammate</button>
+  <p class="roster-note">3–5 people. Cross-institution is allowed. Saved on this device. One captain (contact person) — probably you.</p>
+
+  <!-- CHECKLIST -->
+  <h2>What to prep</h2>
+  <div class="check" id="checklist"></div>
+</div>
+
+<script>
+const $ = (id)=>document.getElementById(id);
+const LS = { team:'atlas_hack_team', check:'atlas_hack_check' };
+
+/* ---- the real event dates (2569 BE = 2026 CE) ---- */
+const EVENTS = [
+  { key:'reg',    date:'2026-06-28T23:59:00', label:'Registration closes',           what:'Registration window closes', det:'15–28 June 2026. First come, first served — 70 teams. Get your slot.', tag:'deadline' },
+  { key:'orient', date:'2026-07-11T09:00:00', label:'Orientation & AI Workshop Day', what:'Orientation & AI Workshop Day', det:'Top 20 teams only. Full-day workshop on AI in finance (Codex, Claude, hands-on tools) by CFA Charterholders. You WANT to be in this room.', tag:'cut' },
+  { key:'submit', date:'2026-07-19T23:59:00', label:'Submit your work',               what:'Submit work (Slide Presentation)', det:'Your deliverable is a slide presentation. This is where the case-comp skills transfer.', tag:'deadline' },
+  { key:'finals', date:'2026-07-31T18:00:00', label:'Finalists announced',            what:'Finalist teams announced', det:'The teams advancing to the final round are named.', tag:'cut' },
+  { key:'final',  date:'2026-08-02T09:00:00', label:'Final round',                    what:'Final round — championship', det:'Present to a panel of professionals. The day it all pays off.', tag:'' },
+];
+
+/* ---- TIMELINE render ---- */
+function renderTimeline(){
+  const now = Date.now();
+  // next = first event still in the future
+  const nextKey = (EVENTS.find(e => new Date(e.date).getTime() > now) || {}).key;
+  $('timeline').innerHTML = EVENTS.map(e=>{
+    const t = new Date(e.date).getTime();
+    const done = t < now;
+    const isNext = e.key === nextKey;
+    const d = new Date(e.date);
+    const ds = d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+    const tag = e.tag ? `<span class="tag ${e.tag==='cut'?'cut':''}">${e.tag}</span>` : '';
+    return `<div class="ev ${done?'done':''} ${isNext?'next':''}">
+      <div class="date">${ds}<br><span style="color:var(--faint);font-size:11px">2026</span></div>
+      <div><div class="what">${e.what}${tag}</div><div class="det">${e.det}</div></div>
+    </div>`;
+  }).join('');
+  return nextKey;
+}
+
+/* ---- COUNTDOWN ---- */
+let cdTargetKey;
+function buildSelect(nextKey){
+  const sel = $('cdSelect');
+  sel.innerHTML = EVENTS.map(e=>`<option value="${e.key}">${e.label}</option>`).join('');
+  cdTargetKey = nextKey || EVENTS[EVENTS.length-1].key;
+  sel.value = cdTargetKey;
+  sel.onchange = ()=>{ cdTargetKey = sel.value; tickCountdown(); };
+}
+function tickCountdown(){
+  const ev = EVENTS.find(e=>e.key===cdTargetKey) || EVENTS[0];
+  $('cdLabel').textContent = ev.label + ' · ' + new Date(ev.date).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  let diff = new Date(ev.date).getTime() - Date.now();
+  if (diff < 0){ $('cdD').textContent=$('cdH').textContent=$('cdM').textContent=$('cdS').textContent='0'; $('cdLabel').textContent = ev.label + ' · passed'; return; }
+  const d=Math.floor(diff/864e5); diff-=d*864e5;
+  const h=Math.floor(diff/36e5); diff-=h*36e5;
+  const m=Math.floor(diff/6e4); diff-=m*6e4;
+  const s=Math.floor(diff/1e3);
+  $('cdD').textContent=d; $('cdH').textContent=String(h).padStart(2,'0');
+  $('cdM').textContent=String(m).padStart(2,'0'); $('cdS').textContent=String(s).padStart(2,'0');
+}
+
+/* ---- TEAM roster ---- */
+function loadTeam(){ try{ return JSON.parse(localStorage.getItem(LS.team)) || null; }catch{ return null; } }
+function saveTeam(t){ localStorage.setItem(LS.team, JSON.stringify(t)); }
+let team = loadTeam() || [{name:'',inst:'',role:'Captain (you)'}, {name:'',inst:'',role:''}, {name:'',inst:'',role:''}];
+function renderRoster(){
+  $('roster').innerHTML = team.map((s,i)=>`
+    <div class="seat">
+      <input data-i="${i}" data-f="name" placeholder="Name" value="${(s.name||'').replace(/"/g,'&quot;')}">
+      <input data-i="${i}" data-f="inst" placeholder="Institution / year" value="${(s.inst||'').replace(/"/g,'&quot;')}">
+      <button class="rm" data-rm="${i}" title="remove">×</button>
+    </div>`).join('');
+  $('roster').querySelectorAll('input').forEach(inp=>{
+    inp.oninput = ()=>{ team[inp.dataset.i][inp.dataset.f]=inp.value; saveTeam(team); };
+  });
+  $('roster').querySelectorAll('[data-rm]').forEach(b=>{
+    b.onclick = ()=>{ if(team.length<=1) return; team.splice(+b.dataset.rm,1); saveTeam(team); renderRoster(); };
+  });
+}
+$('addSeat').onclick = ()=>{ if(team.length>=5){ alert('Max 5 teammates for this hackathon.'); return; } team.push({name:'',inst:'',role:''}); saveTeam(team); renderRoster(); };
+
+/* ---- CHECKLIST ---- */
+const CHECK = [
+  ['Before registration closes (28 Jun)', [
+    'Confirm at least 2 teammates say YES (register even if not all 5 are locked)',
+    'Pick a team name (placeholder is fine — change later)',
+    'Gather each member: full name, institution, year, email, phone',
+    'Register via the official QR / linktr.ee/cfast',
+    'Save the confirmation email + add all dates to your calendar',
+  ]],
+  ['To reach the Top 20 (Workshop Day)', [
+    'Read whatever brief/theme they release — twice',
+    'Sketch 2–3 finance problems AI could realistically help with',
+    'Assign roles now: finance lead (you), builder, designer/slides, presenter',
+    'Decide your ONE strong idea — judges reward a clear problem + a number',
+  ]],
+  ['Build & demo (toward 19 Jul submission)', [
+    'Scope RUTHLESSLY — small thing that works beats big thing that breaks',
+    'Build the MVP with Claude as your pair-programmer (you already know how)',
+    'Tie the solution to a finance impact ("saves X%", "flags Y risk")',
+    'Make the deck: recommendation FIRST, then how, then the demo',
+    'Record a backup video of it working in case wifi/API fails on the day',
+    'Rehearse the pitch out loud — 30 sec to the problem, then show it working',
+  ]],
+];
+function loadCheck(){ try{ return JSON.parse(localStorage.getItem(LS.check)) || {}; }catch{ return {}; } }
+let checked = loadCheck();
+function renderCheck(){
+  let html='', n=0;
+  CHECK.forEach(([grp,items])=>{
+    html += `<div class="ck-group">${grp}</div>`;
+    items.forEach(it=>{
+      const id='c'+(n++);
+      html += `<label class="ck"><input type="checkbox" data-c="${id}" ${checked[id]?'checked':''}><span class="ct">${it}</span></label>`;
+    });
+  });
+  $('checklist').innerHTML = html;
+  $('checklist').querySelectorAll('input').forEach(inp=>{
+    inp.onchange = ()=>{ checked[inp.dataset.c]=inp.checked; localStorage.setItem(LS.check, JSON.stringify(checked)); };
+  });
+}
+
+/* ---- boot ---- */
+const nextKey = renderTimeline();
+buildSelect(nextKey);
+tickCountdown();
+setInterval(tickCountdown, 1000);
+renderRoster();
+renderCheck();
+</script>
+<script src="lib/atlas-fx.js"></script>
+</body>
+</html>
