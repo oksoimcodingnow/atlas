@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WTK · Hotseat MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3; --red:#ff6b6b;
+    --gutter:clamp(14px,3.5vw,34px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  ::selection{background:var(--accent);color:var(--bg);}
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(720px 400px at 50% -12%, rgba(243,213,154,0.08), transparent 64%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:14px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:16px;} .brand span{color:var(--gold);font-style:normal;font-weight:600;}
+  .brand small{font-family:var(--mono);font-style:normal;font-size:10px;color:var(--faint);letter-spacing:0.1em;}
+  .btn{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;background:transparent;cursor:pointer;transition:.18s;}
+  .btn:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:clamp(16px,3vw,28px) var(--gutter) 60px;}
+
+  /* ---- setup screen ---- */
+  .setup{text-align:center;padding-top:clamp(20px,6vw,60px);}
+  .eyebrow{font-size:11px;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px;}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(44px,10vw,92px);line-height:0.92;letter-spacing:-0.02em;margin-bottom:14px;}
+  h1 em{font-style:italic;color:var(--gold);}
+  .lede{font-family:var(--serif);font-size:clamp(17px,2.3vw,22px);color:var(--muted);max-width:480px;margin:0 auto 8px;line-height:1.45;}
+  .note{font-size:12.5px;color:var(--faint);max-width:440px;margin:0 auto 30px;line-height:1.6;}
+  .pcount{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+  .pcount button{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--muted);width:46px;height:46px;border:1px solid var(--rule);border-radius:12px;background:var(--panel);cursor:pointer;transition:.15s;}
+  .pcount button.on{color:var(--bg);background:var(--gold);border-color:var(--gold);}
+  .pcount button:hover:not(.on){border-color:var(--gold);color:var(--text);}
+  .roledist{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:26px;min-height:18px;}
+  .roledist b{color:var(--gold);}
+  .start{font-family:var(--sans);font-size:16px;font-weight:700;color:var(--bg);background:var(--gold);border:0;border-radius:999px;padding:14px 36px;cursor:pointer;transition:.15s;}
+  .start:hover{background:#f7e0b0;}
+
+  /* ---- privacy / pass-device gate ---- */
+  .gate{position:fixed;inset:0;z-index:40;background:rgba(7,7,13,0.96);display:none;align-items:center;justify-content:center;padding:20px;text-align:center;}
+  .gate.show{display:flex;}
+  .gate-card{max-width:420px;}
+  .gate .pass{font-family:var(--serif);font-style:italic;font-size:clamp(26px,6vw,40px);margin-bottom:10px;}
+  .gate .who{color:var(--accent);font-style:normal;font-weight:600;}
+  .gate p{font-size:13.5px;color:var(--muted);margin-bottom:24px;line-height:1.6;}
+  .gate .reveal{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--bg);background:var(--accent);border:0;border-radius:999px;padding:13px 30px;cursor:pointer;}
+  .gate .reveal:hover{background:#cdd3ff;}
+  .secret{display:none;}
+  .secret.show{display:block;}
+  .role-big{font-family:var(--serif);font-size:clamp(40px,9vw,72px);font-weight:600;line-height:1;margin:6px 0 4px;}
+  .role-cn{font-family:var(--serif);font-size:22px;color:var(--muted);margin-bottom:12px;}
+  .role-win{font-size:13px;color:var(--muted);max-width:360px;margin:0 auto 24px;line-height:1.6;}
+  .role-lord{color:var(--gold);} .role-loyalist{color:var(--accent);} .role-rebel{color:var(--red);} .role-spy{color:var(--pink);}
+
+  /* ---- game board ---- */
+  .game{display:none;}
+  .game.show{display:block;}
+  .turn-banner{font-family:var(--mono);font-size:12px;color:var(--gold);letter-spacing:0.08em;text-align:center;margin:6px 0 16px;}
+  .turn-banner b{color:var(--text);}
+  .seats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px;}
+  .seat{border:1px solid var(--rule);border-radius:14px;background:var(--panel);padding:13px 14px;position:relative;transition:.18s;}
+  .seat.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 6px 24px rgba(243,213,154,0.12);}
+  .seat.dead{opacity:0.4;}
+  .seat.target{cursor:pointer;border-color:var(--red);}
+  .seat.target:hover{background:rgba(255,107,107,0.08);}
+  .seat .nm{font-weight:600;font-size:14px;display:flex;align-items:center;gap:6px;}
+  .seat .nm .lordtag{font-family:var(--mono);font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(243,213,154,0.4);border-radius:999px;padding:2px 6px;}
+  .seat .hp{display:flex;gap:3px;margin-top:8px;flex-wrap:wrap;}
+  .seat .pip{width:13px;height:13px;border-radius:3px;background:var(--bg-2);border:1px solid var(--rule);}
+  .seat .pip.full{background:var(--red);border-color:var(--red);}
+  .seat .meta{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:8px;}
+  .seat .deadrole{font-family:var(--mono);font-size:10px;margin-top:6px;letter-spacing:0.06em;}
+
+  /* hand + actions */
+  .panel{border:1px solid var(--rule);border-radius:16px;background:var(--panel);padding:16px;margin-bottom:14px;}
+  .panel-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .panel-h .t{font-family:var(--serif);font-style:italic;font-size:20px;}
+  .panel-h .t b{font-style:normal;color:var(--accent);font-weight:600;}
+  .hand{display:flex;gap:10px;flex-wrap:wrap;}
+  .card{width:92px;border:1px solid var(--rule);border-radius:12px;background:var(--bg-2);padding:11px 9px;cursor:pointer;transition:.15s;text-align:center;position:relative;}
+  .card:hover{border-color:var(--accent);transform:translateY(-3px);background:#15152e;}
+  .card.disabled{opacity:0.4;cursor:not-allowed;} .card.disabled:hover{transform:none;border-color:var(--rule);background:var(--bg-2);}
+  .card .ico{font-size:26px;line-height:1;margin-bottom:6px;}
+  .card .cn{font-family:var(--serif);font-size:18px;font-weight:600;}
+  .card .en{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
+  .card .suit{position:absolute;top:6px;right:8px;font-size:11px;}
+  .card .suit.red{color:var(--red);} .card .suit.black{color:var(--text);}
+  .card.strike .ico{color:var(--red);} .card.dodge .ico{color:var(--accent);} .card.peach .ico{color:var(--green);}
+
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+  .endturn{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--bg);background:var(--accent);border:0;border-radius:999px;padding:11px 22px;cursor:pointer;}
+  .endturn:hover{background:#cdd3ff;}
+  .hint{font-size:12.5px;color:var(--faint);margin-top:10px;line-height:1.5;}
+  .hint b{color:var(--muted);}
+
+  .log{font-family:var(--mono);font-size:11.5px;color:var(--muted);border:1px solid var(--rule);border-radius:12px;background:var(--panel);padding:10px 13px;max-height:130px;overflow-y:auto;line-height:1.7;}
+  .log .hit{color:var(--red);} .log .heal{color:var(--green);} .log .info{color:var(--accent);} .log .die{color:var(--pink);font-weight:600;}
+
+  /* win overlay */
+  .ov{position:fixed;inset:0;z-index:50;background:rgba(7,7,13,0.92);display:none;align-items:center;justify-content:center;padding:20px;text-align:center;}
+  .ov.show{display:flex;}
+  .ov h2{font-family:var(--serif);font-size:clamp(36px,9vw,68px);font-weight:600;margin-bottom:10px;}
+  .ov h2 em{font-style:italic;color:var(--gold);}
+  .ov p{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:420px;}
+  .modal-ask{position:fixed;inset:0;z-index:45;background:rgba(7,7,13,0.9);display:none;align-items:center;justify-content:center;padding:20px;text-align:center;}
+  .modal-ask.show{display:flex;}
+  .modal-ask .mc{max-width:380px;}
+  .modal-ask .mq{font-family:var(--serif);font-style:italic;font-size:24px;margin-bottom:8px;}
+  .modal-ask .ms{font-size:13px;color:var(--muted);margin-bottom:20px;}
+  .modal-ask .mb{display:flex;gap:10px;justify-content:center;}
+  .modal-ask .mb button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:999px;padding:11px 24px;cursor:pointer;border:1px solid var(--rule);}
+  .modal-ask .mb .yes{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+  .modal-ask .mb .no{background:transparent;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="brand">WTK · <span>三国杀</span> &nbsp;<small>HOTSEAT MVP</small></div>
+  <button class="btn" id="restartBtn" style="display:none">↻ New game</button>
+</div>
+
+<div class="wrap">
+  <!-- SETUP -->
+  <div class="setup" id="setup">
+    <div class="eyebrow">War of the Three Kingdoms · local prototype</div>
+    <h1>WTK <em>Hotseat.</em></h1>
+    <p class="lede">One device, passed around. Secret roles, real combat, last alliance standing.</p>
+    <p class="note">This is the playable core: deal hidden roles, then take turns with Strike / Dodge / Peach until a side wins. No internet, no accounts — pass the phone. The foundation the online version plugs into.</p>
+    <div class="pcount" id="pcount"></div>
+    <div class="roledist" id="roledist"></div>
+    <button class="start" id="startBtn">Deal &amp; begin →</button>
+  </div>
+
+  <!-- GAME -->
+  <div class="game" id="game">
+    <div class="turn-banner" id="turnBanner"></div>
+    <div class="seats" id="seats"></div>
+
+    <div class="panel" id="handPanel">
+      <div class="panel-h"><div class="t"><b id="curName">—</b>’s hand</div><div class="meta" style="font-family:var(--mono);font-size:11px;color:var(--faint)" id="handMeta"></div></div>
+      <div class="hand" id="hand"></div>
+      <div class="actions">
+        <button class="endturn" id="endTurn">End turn →</button>
+      </div>
+      <p class="hint" id="hint"></p>
+    </div>
+
+    <div class="log" id="log"></div>
+  </div>
+</div>
+
+<!-- pass-device gate (privacy for secret roles) -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="ask">
+      <div class="pass">Pass the device to<br><span class="who" id="gateName">—</span></div>
+      <p>Everyone else: look away. <span id="gateWhy">Your secret role is waiting.</span></p>
+      <button class="reveal" id="gateReveal">I’m <span id="gateName2">—</span> — reveal</button>
+    </div>
+    <div class="secret" id="gateSecret">
+      <div class="role-big" id="secretRole">—</div>
+      <div class="role-cn" id="secretCn">—</div>
+      <div class="role-win" id="secretWin">—</div>
+      <button class="reveal" id="gateHide">Got it — hide &amp; continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- yes/no modal (for dodge prompts) -->
+<div class="modal-ask" id="ask">
+  <div class="mc">
+    <div class="mq" id="askQ">—</div>
+    <div class="ms" id="askS">—</div>
+    <div class="mb">
+      <button class="yes" id="askYes">Yes</button>
+      <button class="no" id="askNo">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- win overlay -->
+<div class="ov" id="ov">
+  <div>
+    <h2 id="ovTitle">—</h2>
+    <p id="ovText">—</p>
+    <button class="start" id="ovAgain">Play again</button>
+  </div>
+</div>
+
+<script>
+const $ = (id)=>document.getElementById(id);
+
+/* ---------- role tables (faithful to standard Sanguosha role distribution) ---------- */
+const ROLE_INFO = {
+  lord:     { name:'Lord',     cn:'主公', cls:'role-lord',     win:'Survive and eliminate all Rebels and the Spy.' },
+  loyalist: { name:'Loyalist', cn:'忠臣', cls:'role-loyalist', win:'Keep the Lord alive. You win when the Lord wins.' },
+  rebel:    { name:'Rebel',    cn:'反贼', cls:'role-rebel',    win:'Kill the Lord, by any means. Rebels win together.' },
+  spy:      { name:'Spy',      cn:'内奸', cls:'role-spy',      win:'Be the LAST player alive alongside the Lord, then defeat the Lord. You play everyone.' },
+};
+// standard distributions by player count
+const DIST = {
+  2: ['lord','rebel'],
+  3: ['lord','rebel','spy'],
+  4: ['lord','loyalist','rebel','spy'],
+  5: ['lord','loyalist','rebel','rebel','spy'],
+  6: ['lord','loyalist','rebel','rebel','rebel','spy'],
+  7: ['lord','loyalist','loyalist','rebel','rebel','rebel','spy'],
+  8: ['lord','loyalist','loyalist','rebel','rebel','rebel','rebel','spy'],
+};
+const SUITS = [['spade','black','♠'],['heart','red','♥'],['club','black','♣'],['diamond','red','♦']];
+const CARD_DEFS = {
+  strike: { cn:'杀', en:'Strike', ico:'⚔' },
+  dodge:  { cn:'闪', en:'Dodge',  ico:'🛡' },
+  peach:  { cn:'桃', en:'Peach',  ico:'🍑' },
+};
+
+/* ---------- game state ---------- */
+let N = 4;
+let players = [];      // {id,name,role,hp,maxHp,hand:[],alive,seen}
+let cur = 0;           // current player index
+let phase = 'setup';
+let pendingGate = 0;   // index of player whose role we're revealing
+let turnNo = 0;        // total turns taken — drives sudden death so a game can never hang
+const SUDDEN_DEATH = 60; // after this many turns, every Strike deals +1 and healing is capped (forces an ending)
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function randCard(){
+  const kind = (Math.random()<0.45) ? 'strike' : (Math.random()<0.62 ? 'dodge' : 'peach'); // ~ weighted like the real deck
+  const s = SUITS[Math.floor(Math.random()*4)];
+  return { kind, suit:s[0], color:s[1], glyph:s[2], num: 1+Math.floor(Math.random()*13) };
+}
+function drawCards(n){ const out=[]; for(let i=0;i<n;i++) out.push(randCard()); return out; }
+
+/* ---------- setup screen ---------- */
+function renderSetup(){
+  $('pcount').innerHTML = [2,3,4,5,6,7,8].map(n=>`<button data-n="${n}" class="${n===N?'on':''}">${n}</button>`).join('');
+  $('pcount').querySelectorAll('button').forEach(b=>b.onclick=()=>{ N=+b.dataset.n; renderSetup(); });
+  const d = DIST[N]; const c = {};
+  d.forEach(r=>c[r]=(c[r]||0)+1);
+  $('roledist').innerHTML = Object.entries(c).map(([r,n])=>`<b>${n}</b> ${ROLE_INFO[r].name}${n>1?'s':''}`).join(' · ');
+}
+
+/* ---------- start ---------- */
+function startGame(){
+  const roles = shuffle([...DIST[N]]);
+  players = roles.map((role,i)=>({
+    id:i, name:'Player '+(i+1), role,
+    maxHp: role==='lord' ? 5 : 4,   // Lord gets +1 HP (standard)
+    hp:    role==='lord' ? 5 : 4,
+    hand: drawCards(4),
+    alive:true, seen:false,
+  }));
+  // Lord goes first
+  cur = players.findIndex(p=>p.role==='lord');
+  phase='reveal'; pendingGate = 0; turnNo = 0;
+  $('setup').style.display='none'; $('game').classList.add('show'); $('restartBtn').style.display='';
+  log('Game begins. '+N+' players. The Lord is revealed; everyone else is secret.', 'info');
+  // reveal roles one by one via the pass-device gate, in seat order
+  openGateForReveal(0);
+}
+
+/* ---------- pass-device reveal sequence ---------- */
+function openGateForReveal(i){
+  pendingGate=i;
+  const p=players[i];
+  if(p.role==='lord'){ p.seen=true; // lord is public, skip the secret
+    // brief gate just to announce
+    $('gateName').textContent=p.name; $('gateName2').textContent=p.name;
+    $('gateWhy').textContent='You are the LORD — your role is public.';
+    showGateAsk(()=>{ // on reveal, show then next
+      showSecret(p); });
+    $('gate').classList.add('show');
+    return;
+  }
+  $('gateName').textContent=p.name; $('gateName2').textContent=p.name;
+  $('gateWhy').textContent='Your secret role is waiting — keep it hidden.';
+  showGateAsk(()=>showSecret(p));
+  $('gate').classList.add('show');
+}
+function showGateAsk(onReveal){
+  document.querySelector('#gate .ask').style.display='block';
+  $('gateSecret').classList.remove('show');
+  $('gateReveal').onclick = onReveal;
+}
+function showSecret(p){
+  document.querySelector('#gate .ask').style.display='none';
+  $('gateSecret').classList.add('show');
+  const info=ROLE_INFO[p.role];
+  $('secretRole').textContent=info.name; $('secretRole').className='role-big '+info.cls;
+  $('secretCn').textContent=info.cn;
+  $('secretWin').textContent=info.win;
+  $('gateHide').onclick=()=>{
+    p.seen=true;
+    $('gate').classList.remove('show');
+    const next=pendingGate+1;
+    if(next<players.length){ openGateForReveal(next); }
+    else { phase='play'; beginTurn(); }
+  };
+}
+
+/* ---------- turn flow ---------- */
+function beginTurn(){
+  const p=players[cur];
+  if(!p.alive){ nextTurn(); return; }
+  turnNo++;
+  if(turnNo===SUDDEN_DEATH) log('⚔ Sudden death — Strikes now bite harder. The siege ends soon.', 'die');
+  // draw phase: +2 cards
+  p.hand.push(...drawCards(2));
+  log(`— ${p.name}'s turn — draws 2 (hand: ${p.hand.length}).`, 'info');
+  // pass-device gate so the active player sees their own hand privately
+  openHandGate(p);
+}
+function openHandGate(p){
+  $('gateName').textContent=p.name; $('gateName2').textContent=p.name;
+  $('gateWhy').textContent='Your turn — look at your hand in private.';
+  document.querySelector('#gate .ask').style.display='block';
+  $('gateSecret').classList.remove('show');
+  $('gateReveal').onclick=()=>{ $('gate').classList.remove('show'); renderGame(); };
+  $('gate').classList.add('show');
+}
+function endTurn(){
+  const p=players[cur];
+  // discard down to hp (hand limit = current hp)
+  if(p.hand.length>p.hp){
+    const over=p.hand.length-p.hp;
+    p.hand.splice(p.hp); // drop the extras (simplified: from the end)
+    log(`${p.name} discards ${over} (hand limit = ${p.hp} health).`);
+  }
+  nextTurn();
+}
+function nextTurn(){
+  let tries=0;
+  do { cur=(cur+1)%players.length; tries++; } while(!players[cur].alive && tries<=players.length);
+  if(checkWin()) return;
+  beginTurn();
+}
+
+/* ---------- actions ---------- */
+let strikeUsedThisTurn=false;
+function renderGame(){
+  const p=players[cur];
+  strikeUsedThisTurn = p._struck || false;
+  $('turnBanner').innerHTML = `Turn — <b>${p.name}</b> (${ROLE_INFO[p.role].name==='Lord'?'<span style="color:var(--gold)">Lord</span>':'secret'})`;
+  $('curName').textContent=p.name;
+  $('handMeta').textContent=`${p.hand.length} cards · ${p.hp}/${p.maxHp} HP · range 1`;
+  // seats
+  $('seats').innerHTML = players.map((pl,i)=>{
+    const pips = Array.from({length:pl.maxHp},(_,k)=>`<div class="pip ${k<pl.hp?'full':''}"></div>`).join('');
+    const lord = pl.role==='lord' ? '<span class="lordtag">Lord</span>' : '';
+    const dead = !pl.alive;
+    const deadrole = dead ? `<div class="deadrole ${ROLE_INFO[pl.role].cls}">was ${ROLE_INFO[pl.role].name}</div>`:'';
+    return `<div class="seat ${i===cur?'active':''} ${dead?'dead':''}" data-seat="${i}">
+      <div class="nm">${pl.name} ${lord}</div>
+      <div class="hp">${pips}</div>
+      <div class="meta">${dead?'eliminated':pl.hand.length+' cards in hand'}</div>
+      ${deadrole}
+    </div>`;
+  }).join('');
+  // hand
+  $('hand').innerHTML = p.hand.map((c,idx)=>{
+    const def=CARD_DEFS[c.kind];
+    const playable = canPlay(p,c);
+    return `<div class="card ${c.kind} ${playable?'':'disabled'}" data-card="${idx}">
+      <div class="suit ${c.color}">${c.glyph}${c.num>10?['','','','','','','','','','','J','Q','K'][c.num]:c.num}</div>
+      <div class="ico">${def.ico}</div>
+      <div class="cn">${def.cn}</div>
+      <div class="en">${def.en}</div>
+    </div>`;
+  }).join('') || '<span style="color:var(--faint);font-size:13px">No cards.</span>';
+  $('hand').querySelectorAll('.card:not(.disabled)').forEach(el=>{
+    el.onclick=()=>playCard(+el.dataset.card);
+  });
+  $('hint').innerHTML = hintText(p);
+  $('endTurn').onclick=endTurn;
+}
+function canPlay(p,c){
+  if(c.kind==='strike') return !p._struck && players.some(t=>t.alive && t.id!==p.id); // one strike/turn (standard)
+  if(c.kind==='peach')  return p.hp<p.maxHp;
+  if(c.kind==='dodge')  return false; // dodge is reactive only
+  return false;
+}
+function hintText(p){
+  const canStrike = !p._struck && p.hand.some(c=>c.kind==='strike');
+  return `<b>Strike</b> ⚔ attacks a target (1/turn). <b>Peach</b> 🍑 heals you. <b>Dodge</b> 🛡 is automatic when you're struck. Tap a card to use it, then <b>End turn</b>.`;
+}
+
+function playCard(idx){
+  const p=players[cur]; const c=p.hand[idx];
+  if(!canPlay(p,c)) return;
+  if(c.kind==='peach'){
+    p.hand.splice(idx,1); p.hp=Math.min(p.maxHp,p.hp+1);
+    log(`${p.name} plays Peach 🍑 — heals to ${p.hp}.`, 'heal');
+    renderGame(); return;
+  }
+  if(c.kind==='strike'){
+    // choose a target: highlight live opponents
+    p._pendingStrike=idx;
+    enterTargeting(p);
+  }
+}
+function enterTargeting(p){
+  $('hint').innerHTML = `<b style="color:var(--red)">Choose a target</b> for your Strike — tap a player.`;
+  document.querySelectorAll('.seat').forEach(el=>{
+    const i=+el.dataset.seat;
+    if(players[i].alive && i!==p.id){ el.classList.add('target'); el.onclick=()=>resolveStrike(p,i); }
+  });
+}
+function resolveStrike(attacker, ti){
+  const idx=attacker._pendingStrike; attacker._pendingStrike=null;
+  const card=attacker.hand[idx];
+  attacker.hand.splice(idx,1);
+  attacker._struck=true;
+  const target=players[ti];
+  log(`${attacker.name} strikes ${target.name} ⚔`, 'hit');
+  document.querySelectorAll('.seat').forEach(el=>{el.classList.remove('target'); el.onclick=null;});
+  // does target have a dodge? ask them (pass device feel — but keep simple: auto-prompt)
+  const dodgeIdx = target.hand.findIndex(c=>c.kind==='dodge');
+  if(dodgeIdx>=0){
+    askYesNo(`${target.name}: dodge the Strike?`, `You have a Dodge 🛡. Use it to take no damage?`, (yes)=>{
+      if(yes){ target.hand.splice(dodgeIdx,1); log(`${target.name} plays Dodge 🛡 — no damage.`, 'info'); }
+      else { dealDamage(target,1,attacker); }
+      renderGame();
+    });
+  } else {
+    dealDamage(target,1,attacker);
+    renderGame();
+  }
+}
+function dealDamage(target,amt,source){
+  if(turnNo>=SUDDEN_DEATH) amt+=1;   // sudden death: every Strike hits harder so the game must end
+  target.hp-=amt;
+  log(`${target.name} takes ${amt} damage → ${Math.max(0,target.hp)} HP.`, 'hit');
+  if(target.hp<=0) tryDying(target);
+}
+function tryDying(target){
+  // dying: anyone may play Peach to save (simplified: the dying player's own peach auto, else dies)
+  const ownPeach = target.hand.findIndex(c=>c.kind==='peach');
+  if(ownPeach>=0 && target.hp<=0){
+    target.hand.splice(ownPeach,1); target.hp=1;
+    log(`${target.name} uses Peach 🍑 to cling to life (1 HP).`, 'heal');
+    return;
+  }
+  target.alive=false; target.hp=0;
+  log(`${target.name} is eliminated — was ${ROLE_INFO[target.role].name}.`, 'die');
+  checkWin();
+}
+
+/* ---------- win conditions (standard) ---------- */
+function checkWin(){
+  const alive = players.filter(p=>p.alive);
+  const lord = players.find(p=>p.role==='lord');
+  const rebelsAlive = players.some(p=>p.alive && p.role==='rebel');
+  const spyAlive = players.some(p=>p.alive && p.role==='spy');
+  // Lord dead → rebels win, unless only the spy + lord remained and spy lands the kill → spy wins
+  if(lord && !lord.alive){
+    if(alive.length===1 && alive[0].role==='spy'){ return win('spy'); }
+    return win('rebel');
+  }
+  // Lord alive and all rebels + spy dead → lord side wins
+  if(lord && lord.alive && !rebelsAlive && !spyAlive){ return win('lord'); }
+  return false;
+}
+function win(side){
+  phase='over';
+  const titles={ lord:'The Lord <em>prevails.</em>', rebel:'The Rebels <em>win.</em>', spy:'The Spy <em>wins it all.</em>' };
+  const texts={
+    lord:'The throne holds. Lord and Loyalists eliminated every threat.',
+    rebel:'The Lord has fallen. The rebellion succeeds.',
+    spy:'Last one standing with the throne — and then the betrayal. The Spy played everyone.',
+  };
+  $('ovTitle').innerHTML=titles[side]; $('ovText').textContent=texts[side];
+  // reveal everyone
+  log('— GAME OVER — '+side.toUpperCase()+' wins. Roles: '+players.map(p=>p.name+'='+ROLE_INFO[p.role].name).join(', '), 'die');
+  $('ov').classList.add('show');
+  return true;
+}
+
+/* ---------- yes/no modal ---------- */
+function askYesNo(q,s,cb){
+  $('askQ').textContent=q; $('askS').textContent=s; $('ask').classList.add('show');
+  $('askYes').onclick=()=>{ $('ask').classList.remove('show'); cb(true); };
+  $('askNo').onclick=()=>{ $('ask').classList.remove('show'); cb(false); };
+}
+
+/* ---------- log ---------- */
+function log(msg,cls){ const d=document.createElement('div'); if(cls)d.className=cls; d.textContent=msg; $('log').prepend(d); }
+
+/* ---------- reset between turns: clear per-turn flags on turn start ---------- */
+const _origBeginTurn = beginTurn;
+beginTurn = function(){ const p=players[cur]; if(p){ p._struck=false; } _origBeginTurn(); };
+
+/* ---------- wire up ---------- */
+$('startBtn').onclick=startGame;
+$('restartBtn').onclick=()=>location.reload();
+$('ovAgain').onclick=()=>location.reload();
+renderSetup();
+</script>
+</body>
+</html>
