@@ -19,6 +19,7 @@ Summaries of business cases / competition briefs, so I have one place for everyt
 | [DHL-CARBON-ECONOMICS.md](DHL-CARBON-ECONOMICS.md) | Carbon-cost ladder + customer-contribution & ROI model |
 | [DHL-SAF-vs-jetfuel.md](DHL-SAF-vs-jetfuel.md) | Full SAF vs jet-fuel comparison (price/emissions/energy/supply) + the **carbon lifecycle** |
 | [DHL-ECONOMICS-bigpicture.md](DHL-ECONOMICS-bigpicture.md) | **Connected economics** — the flywheel, money trail, value stack + new plays |
+| [DHL-MARGIN-money-story.md](DHL-MARGIN-money-story.md) | **The money story** — margin of selling eco, for DHL *and* the SME seller (sourced; the bank's-eye view) |
 | [DHL-CREATIVE-international.md](DHL-CREATIVE-international.md) | Creative & international angle — award-winning moves to borrow, Thai emotional layer |
 | [DHL-BENCHMARK-awareness.md](DHL-BENCHMARK-awareness.md) | How other brands (Patagonia, Oatly, EcoCart, Maersk, UOB) raise sustainability awareness |
 
