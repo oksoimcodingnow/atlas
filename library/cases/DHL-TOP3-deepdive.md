@@ -26,10 +26,12 @@ says nothing about the planet. Turn that ignored slip into **proof the customer 
 ### The mechanic (exactly what happens)
 1. Customer ships at a ServicePoint (esp. via GoGreen Plus / SAF).
 2. Receipt (physical + digital via LINE/email) prints a **specific line**:
-   *"การส่งครั้งนี้บินด้วยเชื้อเพลิง SAF — คุณช่วยลด CO₂ ไป X กก."*
-   ("This shipment flew on SAF — you helped cut X kg CO₂.")
-3. A **QR code** → a page explaining *how* the number is calculated (SAF, insetting). This is the
-   Green-Claims shield: specific + provable, not vague.
+   *"คุณช่วยลด CO₂ ไป X กก. ผ่านเชื้อเพลิงการบินยั่งยืน (SAF) ในเครือข่ายของ DHL"*
+   ("You funded a verified cut of X kg CO₂ via sustainable aviation fuel in DHL's network.")
+   ⚠️ NOT "บินด้วย SAF / flew on SAF" — GoGreen Plus is **book-and-claim**; the parcel may not physically
+   fly on SAF, the customer funds a *certified* reduction. (See [research](DHL-RESEARCH-deepdive.md) §0.)
+3. A **QR code** → a page explaining *how* the number is calculated (SAF, insetting, book-and-claim).
+   This is the Green-Claims shield: specific + provable, not vague.
 4. **Carbon → tangible**: show the number as something feel-able ("≈ X km not driven").
 5. **Running total** for repeat shippers: "You've helped cut ___ kg CO₂ with DHL."
 

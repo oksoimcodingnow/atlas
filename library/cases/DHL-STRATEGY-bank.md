@@ -26,7 +26,7 @@ Three strategic angles you can build a campaign around. Most strong ideas are on
 > Don't evaluate yet, just see the field. Deep build-outs of the best are in Part C.
 
 ### Make-the-invisible-visible
-1. **Your Green Receipt** — the receipt shows "this shipment flew on SAF, you cut X kg CO₂" + QR. *(built out)*
+1. **Your Green Receipt** — receipt shows "you funded a verified cut of X kg CO₂ via SAF" + QR. *(built out)*
 2. **The Impact Counter** — a live screen at each branch + online: "customers here cut ___ kg CO₂ this month."
 3. **Carbon-to-something tangible** — translate kg CO₂ into relatable units ("= 3 trees for a day," "= X km not driven"). Easier to feel than abstract kg.
 
@@ -52,8 +52,10 @@ Three strategic angles you can build a campaign around. Most strong ideas are on
 ### ⭐ IDEA 1 — "Your Green Receipt" (ใบเสร็จสีเขียว)
 **Angle:** make-the-invisible-visible + give-a-role.
 **Mechanic:** every ServicePoint shipment (esp. GoGreen Plus/SAF) produces a receipt — physical AND
-digital (LINE/email) — carrying a specific line: *"This shipment flew on SAF — you helped cut X kg CO₂"*
-plus a QR that explains the calculation (SAF / insetting). Optional running personal total.
+digital (LINE/email) — carrying a specific line: *"You funded a verified cut of X kg CO₂ via sustainable
+aviation fuel (SAF) in DHL's network"* plus a QR that explains the calculation (SAF / insetting /
+book-and-claim). Optional running personal total. ⚠️ Wording matters — book-and-claim means the parcel
+may not physically fly on SAF; claim the *certified reduction*, not "flew on SAF."
 **Customer journey:** walk in → ship → staff says "this one helped cut CO₂" → receive Green Receipt →
 scan QR (see how) → keep/screenshot → (SME) reuse as proof to own customers → return next time.
 **Why it scores:**
@@ -62,7 +64,7 @@ scan QR (see how) → keep/screenshot → (SME) reuse as proof to own customers 
 - Feasibility: uses existing receipts + screens + LINE; no new tech, no celebs; fits ฿5M/36/3mo.
 - Impact/ROI: QR scans, LINE opens, repeat rate, before/after awareness survey.
 - Storytelling: "the proof is in your hands."
-**Green Claims safety:** specific kg number, QR explains method, never "carbon neutral."
+**Green Claims safety:** specific kg number, QR explains method (incl. book-and-claim), never "carbon neutral" or "flew on SAF."
 **Budget sketch (฿5M / 3mo):** receipt+screen redesign & rollout to 36 branches · QR landing page +
 LINE integration · staff briefing · awareness survey (pre/post) · social amplification of real receipts.
 **Risks & answers:**

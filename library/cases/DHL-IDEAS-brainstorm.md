@@ -10,8 +10,11 @@
 ### Big Idea: "Your Green Receipt" (ใบเสร็จสีเขียว)
 Turn the receipt every shipper already gets into the **proof** that "you just helped the planet."
 The green already exists — what's missing is the *moment the customer feels it.* The receipt
-(physical + digital via LINE/email) carries a specific line: *"This shipment flew on SAF —
-you helped cut X kg CO₂,"* with a QR explaining how (keeps it Green-Claims-compliant).
+(physical + digital via LINE/email) carries a specific line: *"You funded a verified cut of X kg
+CO₂ via sustainable aviation fuel (SAF) in DHL's network,"* with a QR explaining how (keeps it
+Green-Claims-compliant). ⚠️ NOT "your parcel flew on SAF" — GoGreen Plus is **book-and-claim**, so
+the specific parcel may not fly on SAF; the customer funds a *certified* reduction. See
+[research deep-dive](DHL-RESEARCH-deepdive.md) §0.
 
 ### Target persona
 - **PRIMARY: SME / online sellers** — why:
