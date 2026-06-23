@@ -26,6 +26,12 @@
   }
   body { background:var(--bg); color:var(--text); font-family:var(--sans);
     line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh; }
+  /* Calm reading scrim: dims the constellation behind text so it's easy to read.
+     Sits above #bg-canvas (z0) and below content (z2+). */
+  body::before { content:''; position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:radial-gradient(120% 80% at 50% 0%, rgba(10,10,20,0.55), rgba(10,10,20,0.9) 70%);
+    backdrop-filter:blur(2px); }
+  .top-bar, .wrap { position:relative; z-index:2; }
   .top-bar { display:flex; justify-content:space-between; align-items:center;
     padding:16px var(--gutter); border-bottom:1px solid var(--rule);
     position:sticky; top:0; background:rgba(10,10,20,0.82); backdrop-filter:blur(10px); z-index:50; }
@@ -41,7 +47,7 @@
 
   /* a case card */
   .case { border:1px solid var(--rule); border-radius:16px; overflow:hidden;
-    background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent); margin-bottom:26px; }
+    background:rgba(13,13,24,0.94); box-shadow:0 18px 50px rgba(0,0,0,0.5); margin-bottom:26px; }
   .case-head { display:flex; align-items:center; gap:16px; padding:22px 24px; }
   .case-badge { flex:none; width:52px; height:52px; border-radius:12px; display:grid; place-items:center;
     font-weight:700; font-size:1.5rem; background:var(--dhl-yellow); color:var(--dhl-red); }
@@ -128,10 +134,11 @@
         <h3>What DHL actually does for the planet (your ammo)</h3>
         <ul>
           <li><strong>GoGreen Plus</strong> ⭐ — cut shipping carbon via SAF; available to walk-in customers. The thing to communicate.</li>
-          <li><strong>EV fleet</strong> — first logistics co. in TH to use EVs commercially. TH: 43 EVs (18.9%), goal 60% by 2030.</li>
+          <li><strong>EV fleet</strong> — first logistics co. in TH to use EVs commercially. TH: 43 EVs (18.9%); <strong>global 50,604 EVs = 46.2%</strong> of fleet. Goal 60% by 2030.</li>
           <li><strong>SAF in cargo planes</strong> — now 10% of fuel.</li>
-          <li><strong>Solar</strong> on 13 Thai facilities (92%, goal 100% by 2030).</li>
-          <li>Global: cut 2.1M metric tons carbon in 2025 · Net Zero by 2050.</li>
+          <li><strong>Solar / renewable buildings</strong> — 13 Thai facilities (92%); <strong>global 96.9%</strong> renewable. Goal 100% by 2030.</li>
+          <li>Global: cut 2.1M metric tons carbon in 2025.</li>
+          <li><strong>Net Zero target:</strong> 40M → under 29M metric tons GHG by 2030, then Net Zero by 2050.</li>
         </ul>
 
         <h3>Target personas (pick main + secondary)</h3>
@@ -192,6 +199,53 @@
           <li>Devil's-advocate Q&A prep</li>
         </ul>
         <p class="src">Working notes — strategy to be developed with the team.</p>
+      </div>
+    </details>
+
+    <!-- STRATEGY BANK -->
+    <details>
+      <summary>🧠 Strategy bank (every angle, to optimize later)</summary>
+      <div class="body">
+        <h3>The 3 strategic angles (any idea should hit one)</h3>
+        <ul>
+          <li><strong>Make the invisible visible</strong> — surface the green impact the customer already causes</li>
+          <li><strong>Give the customer a role</strong> — "you + DHL," a co-contributor, not a bystander</li>
+          <li><strong>Give them something to carry/share</strong> — proof that travels (receipt, badge, sticker, post)</li>
+        </ul>
+
+        <h3>The idea bank (12 directions)</h3>
+        <table>
+          <tr><th>#</th><th>Idea</th><th>Angle</th></tr>
+          <tr><td>1</td><td><strong>Your Green Receipt</strong> — receipt shows "you cut X kg CO₂" + QR ⭐</td><td>visible + role</td></tr>
+          <tr><td>2</td><td><strong>The Impact Counter</strong> — live "customers here cut ___ kg CO₂"</td><td>visible</td></tr>
+          <tr><td>3</td><td><strong>Carbon → tangible</strong> — "= 3 trees / X km not driven"</td><td>visible</td></tr>
+          <tr><td>4</td><td><strong>"You + DHL" co-badge</strong> — customer framed as partner</td><td>role</td></tr>
+          <tr><td>5</td><td><strong>Green Streak / loyalty</strong> — reward repeat green shipments</td><td>role</td></tr>
+          <tr><td>6</td><td><strong>Pledge wall</strong> — join the green-shipping movement</td><td>role</td></tr>
+          <tr><td>7</td><td><strong>Green Stamp/Sticker</strong> on the box → cross-border word of mouth</td><td>share</td></tr>
+          <tr><td>8</td><td><strong>Seller badge</strong> — "Ships greener with DHL" for SMEs ⭐</td><td>share</td></tr>
+          <tr><td>9</td><td><strong>#MyGreenShipment</strong> — UGC, student-friendly</td><td>share</td></tr>
+          <tr><td>10</td><td><strong>ServicePoint takeover</strong> — coherent in-branch green story</td><td>channel</td></tr>
+          <tr><td>11</td><td><strong>LINE OA green journey</strong> — digital impact home</td><td>channel</td></tr>
+          <tr><td>12</td><td><strong>Edutainment series</strong> — kill "green = slower/pricier" myth</td><td>channel</td></tr>
+        </table>
+
+        <h3>Strongest spine (built out)</h3>
+        <ul>
+          <li><strong>Green Receipt</strong> (felt moment) + <strong>Seller Badge</strong> (B2B2C multiplier) + <strong>Impact Counter</strong> (collective proof) — they reinforce each other and cover all 5 judging criteria.</li>
+        </ul>
+
+        <h3>Supporting layers (mix into any idea)</h3>
+        <ul>
+          <li><strong>Mechanics:</strong> carbon → relatable units · physical token · personal "you cut X total" counter · staff one-liner script (free, high-impact)</li>
+          <li><strong>Channels (all existing — feasibility win):</strong> branch screens/posters/counter cards · LINE OA · FB/IG · receipt & packaging as media</li>
+          <li><strong>Partnerships (no celebs):</strong> seller communities/marketplaces · universities/student orgs · expat groups</li>
+          <li><strong>KPIs (20% of score):</strong> awareness pre/post survey · QR scans · LINE opens · badge claims · GoGreen Plus uptake · repeat rate · always → ฿ ROI</li>
+        </ul>
+
+        <h3>Optimize-later filter</h3>
+        <p>Score each idea on: felt moment? · buildable in ฿5M/36/3mo, no celebs? · measurable? · distinctive? · one clean story? · shows you understood Green Claims? (the last separates winners)</p>
+        <p class="src">Full deep version with budgets, journeys & risk answers in Documents/Case_Library/DHL-STRATEGY-bank.md</p>
       </div>
     </details>
   </div>
