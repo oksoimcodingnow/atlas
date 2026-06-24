@@ -100,6 +100,56 @@
     .flow { flex-direction:column; }
     .flow-arrow { transform:rotate(90deg); padding:2px 0; }
   }
+
+  /* ── animated build-up: hidden until .play, then staggered reveal, then settles ── */
+  .flow.anim .flow-step, .flow.anim .flow-arrow { opacity:0; }
+  .flow.anim.play .flow-step {
+    animation: flowIn .5s cubic-bezier(.2,.8,.2,1) forwards; }
+  .flow.anim.play .flow-arrow {
+    animation: arrowIn .35s ease forwards; }
+  /* left-to-right stagger: step → arrow → step → arrow … */
+  .flow.anim.play .flow-step:nth-child(1){ animation-delay:.05s; }
+  .flow.anim.play .flow-arrow:nth-child(2){ animation-delay:.40s; }
+  .flow.anim.play .flow-step:nth-child(3){ animation-delay:.55s; }
+  .flow.anim.play .flow-arrow:nth-child(4){ animation-delay:.90s; }
+  .flow.anim.play .flow-step:nth-child(5){ animation-delay:1.05s; }
+  .flow.anim.play .flow-arrow:nth-child(6){ animation-delay:1.40s; }
+  .flow.anim.play .flow-step:nth-child(7){ animation-delay:1.55s; }
+  @keyframes flowIn {
+    from { opacity:0; transform:translateY(14px) scale(.96); }
+    to   { opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes arrowIn {
+    from { opacity:0; transform:translateX(-8px); }
+    to   { opacity:1; transform:translateX(0); } }
+  @media (max-width:640px){
+    @keyframes arrowIn { from{opacity:0;transform:rotate(90deg) translateX(-8px);} to{opacity:1;transform:rotate(90deg);} }
+  }
+  /* flowing pulse: after the build-up settles, a soft light travels along the
+     arrows in sequence to show the loop direction. Gentle, repeating, on-brand. */
+  .flow.anim.play .flow-arrow {
+    animation: arrowIn .35s ease forwards, flowPulse 4s ease-in-out infinite; }
+  .flow.anim.play .flow-arrow:nth-child(2){ animation-delay:.40s, 2.0s; }
+  .flow.anim.play .flow-arrow:nth-child(4){ animation-delay:.90s, 2.6s; }
+  .flow.anim.play .flow-arrow:nth-child(6){ animation-delay:1.40s, 3.2s; }
+  @keyframes flowPulse {
+    0%, 18%, 100% { color:var(--gold); text-shadow:none; transform:translateX(0); }
+    8%  { color:#ffe7a3; text-shadow:0 0 12px rgba(243,213,154,.9); transform:translateX(2px); }
+  }
+  @media (max-width:640px){
+    @keyframes flowPulse {
+      0%,18%,100%{color:var(--gold);text-shadow:none;transform:rotate(90deg);}
+      8%{color:#ffe7a3;text-shadow:0 0 12px rgba(243,213,154,.9);transform:rotate(90deg) translateX(2px);}
+    }
+  }
+  .flow-replay { display:inline-flex; align-items:center; gap:6px; margin:2px 0 14px; cursor:pointer;
+    font-size:.78rem; color:var(--accent); background:rgba(184,192,255,.08);
+    border:1px solid var(--rule); border-radius:999px; padding:5px 12px; font-family:var(--sans); }
+  .flow-replay:hover { background:rgba(184,192,255,.16); }
+  /* accessibility: if reduced motion, everything is just visible, no animation */
+  @media (prefers-reduced-motion: reduce) {
+    .flow.anim .flow-step, .flow.anim .flow-arrow { opacity:1 !important; animation:none !important; }
+    .flow-replay { display:none; }
+  }
 </style>
 </head>
 <body>
@@ -131,7 +181,7 @@
         <div class="key"><strong>Big Idea — "Proof That Travels":</strong> we don't tell people DHL is green — we hand them <em>proof they personally helped</em>, and let it travel: onto the box, across the border, onto a national map, into the seller's shop. <strong>Ship Love. Ship Light.</strong> (ส่งความรัก ส่งอย่างรักษ์โลก)</div>
 
         <h3>The system — 4 connected pieces</h3>
-        <div class="flow">
+        <div class="flow anim" id="flowChain">
           <div class="flow-step">
             <span class="ico">🧾</span>
             <span class="step-n">① Feel</span>
@@ -161,6 +211,7 @@
           </div>
         </div>
         <p class="flow-loop">↻ the Receipt's data feeds the <b>Map</b> · the Stamp carries it <b>abroad</b> · the Badge makes sellers <b>spread</b> it → more customers → loop repeats</p>
+        <button class="flow-replay" type="button" onclick="(function(b){var f=document.getElementById('flowChain');f.classList.remove('play');void f.offsetWidth;f.classList.add('play');})(this)">↻ Replay animation</button>
         <table>
           <tr><th>Step</th><th>Piece</th><th>What it does</th></tr>
           <tr><td><strong>① Feel</strong></td><td>Your Green Receipt</td><td>"you funded a verified cut of X kg CO₂ ≈ Y km not driven" + QR (book-and-claim correct)</td></tr>
@@ -650,5 +701,23 @@
 </div>
 
 <script src="../lib/atlas-fx.js"></script>
+<script>
+  // Play the flow-chain build-up when it first scrolls into view (once). The
+  // diagram is fully visible by default if JS/observer is unavailable — we only
+  // ADD animation, never gate content on it. <details> must be open to be seen.
+  (function () {
+    var flow = document.getElementById('flowChain');
+    if (!flow) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { flow.classList.remove('anim'); return; } // just show it, no motion
+    if (!('IntersectionObserver' in window)) { flow.classList.add('play'); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { flow.classList.add('play'); io.disconnect(); }
+      });
+    }, { threshold: 0.4 });
+    io.observe(flow);
+  })();
+</script>
 </body>
 </html>
