@@ -1,7 +1,7 @@
 /* Atlas service worker — cache-first with on-the-fly population.
  * Bump CACHE_VERSION to force a refresh after deploying changes.
  */
-const CACHE_VERSION = 'atlas-v126';
+const CACHE_VERSION = 'atlas-v127';
 const ASSETS = [
   './',
   './index.html',
@@ -36,24 +36,7 @@ const ASSETS = [
   './library/case-comp.html',
   './library/cases.html',
   './library/dhl-roi.html',
-  './library/cases/DHL-MASTER-strategy.md',
-  './library/cases/DHL-SITUATION-analysis.md',
-  './library/cases/DHL-Express-UOB-WonderLab-2026.md',
-  './library/cases/DHL-STRATEGY-bank.md',
-  './library/cases/DHL-TOP3-deepdive.md',
-  './library/cases/DHL-CHEAT-SHEET.md',
-  './library/cases/DHL-IDEAS-brainstorm.md',
-  './library/cases/DHL-RESEARCH-deepdive.md',
-  './library/cases/DHL-CARBON-ECONOMICS.md',
-  './library/cases/DHL-SAF-vs-jetfuel.md',
-  './library/cases/DHL-ECONOMICS-bigpicture.md',
-  './library/cases/DHL-MARGIN-money-story.md',
-  './library/cases/DHL-FACT-AUDIT.md',
-  './library/cases/DHL-TEAM-feedback.md',
-  './library/cases/DHL-BUDGET-5M.md',
-  './library/cases/DHL-TIER-loyalty.md',
-  './library/cases/DHL-CREATIVE-international.md',
-  './library/cases/DHL-BENCHMARK-awareness.md',
+  './library/cases/DHL.md',
   './library/cases/README.md',
   './library/hackathon.html',
   './learn/',
