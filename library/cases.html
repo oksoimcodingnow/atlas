@@ -82,6 +82,24 @@
   .stat span { font-size:.78rem; color:var(--muted); }
   .src { margin-top:8px; font-size:11px; color:var(--faint); }
   .empty { color:var(--faint); font-size:.9rem; text-align:center; padding:30px; border:1px dashed var(--rule); border-radius:12px; }
+
+  /* ── flow chain diagram (Feel → Carry → Belong → Spread) ── */
+  .flow { display:flex; align-items:stretch; gap:0; margin:16px 0 20px; flex-wrap:nowrap; }
+  .flow-step { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px;
+    padding:14px 12px; border:1px solid var(--rule); border-radius:13px;
+    background:linear-gradient(180deg,rgba(184,192,255,0.07),rgba(184,192,255,0.02));
+    text-align:center; position:relative; }
+  .flow-step .ico { font-size:1.5rem; line-height:1; }
+  .flow-step .step-n { font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .flow-step .step-t { font-weight:700; color:var(--text); font-size:.95rem; }
+  .flow-step .step-d { font-size:.74rem; color:var(--muted); line-height:1.4; }
+  .flow-arrow { flex:none; align-self:center; color:var(--gold); font-size:1.3rem; padding:0 4px; user-select:none; }
+  .flow-loop { text-align:center; font-size:.78rem; color:var(--faint); margin:-6px 0 16px; }
+  .flow-loop b { color:var(--gold); }
+  @media (max-width:640px) {
+    .flow { flex-direction:column; }
+    .flow-arrow { transform:rotate(90deg); padding:2px 0; }
+  }
 </style>
 </head>
 <body>
@@ -113,6 +131,36 @@
         <div class="key"><strong>Big Idea — "Proof That Travels":</strong> we don't tell people DHL is green — we hand them <em>proof they personally helped</em>, and let it travel: onto the box, across the border, onto a national map, into the seller's shop. <strong>Ship Love. Ship Light.</strong> (ส่งความรัก ส่งอย่างรักษ์โลก)</div>
 
         <h3>The system — 4 connected pieces</h3>
+        <div class="flow">
+          <div class="flow-step">
+            <span class="ico">🧾</span>
+            <span class="step-n">① Feel</span>
+            <span class="step-t">Green Receipt</span>
+            <span class="step-d">"you funded a verified cut of X kg CO₂" + QR</span>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">
+            <span class="ico">📮</span>
+            <span class="step-n">② Carry</span>
+            <span class="step-t">Green Stamp</span>
+            <span class="step-d">receiver abroad sees it → free cross-border reach</span>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">
+            <span class="ico">🗺️</span>
+            <span class="step-n">③ Belong</span>
+            <span class="step-t">Thailand's Green Map</span>
+            <span class="step-d">collective national total, live on screens</span>
+          </div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">
+            <span class="ico">🏷️</span>
+            <span class="step-n">④ Spread</span>
+            <span class="step-t">Seller Badge</span>
+            <span class="step-d">SMEs broadcast "Ships greener with DHL"</span>
+          </div>
+        </div>
+        <p class="flow-loop">↻ the Receipt's data feeds the <b>Map</b> · the Stamp carries it <b>abroad</b> · the Badge makes sellers <b>spread</b> it → more customers → loop repeats</p>
         <table>
           <tr><th>Step</th><th>Piece</th><th>What it does</th></tr>
           <tr><td><strong>① Feel</strong></td><td>Your Green Receipt</td><td>"you funded a verified cut of X kg CO₂ ≈ Y km not driven" + QR (book-and-claim correct)</td></tr>
