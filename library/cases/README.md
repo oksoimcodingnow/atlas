@@ -24,6 +24,7 @@ Summaries of business cases / competition briefs, so I have one place for everyt
 | [DHL-BUDGET-5M.md](DHL-BUDGET-5M.md) | **The ฿5M budget** — split + 3-month phasing + cost-effectiveness/ROI (why no OpEx/CapEx) |
 | [DHL-CREATIVE-international.md](DHL-CREATIVE-international.md) | Creative & international angle — award-winning moves to borrow, Thai emotional layer |
 | [DHL-BENCHMARK-awareness.md](DHL-BENCHMARK-awareness.md) | How other brands (Patagonia, Oatly, EcoCart, Maersk, UOB) raise sustainability awareness |
+| [DHL-TIER-loyalty.md](DHL-TIER-loyalty.md) | **Green Shipper tier** — the loyalty/status layer that closes the flywheel loop (drives repeat) |
 
 > Rendered for the live site at [`../cases.html`](../cases.html). Architecture & conventions in [ARCHITECTURE.md](ARCHITECTURE.md).
 
