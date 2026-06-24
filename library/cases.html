@@ -14,9 +14,8 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg:#0a0a14; --bg-2:#11112a; --panel:#0b0b16;
-    --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
-    --rule:rgba(241,239,230,0.14); --rule-hi:rgba(184,192,255,0.45);
+    --bg:#0a0a14; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14);
     --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
     --dhl-yellow:#FFCC00; --dhl-red:#D40511;
     --gutter:clamp(18px,4.5vw,44px);
@@ -26,11 +25,9 @@
   }
   body { background:var(--bg); color:var(--text); font-family:var(--sans);
     line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh; }
-  /* Calm reading scrim: dims the constellation behind text so it's easy to read.
-     Sits above #bg-canvas (z0) and below content (z2+). */
+  /* calm static scrim so text reads easily over the constellation; no per-element motion */
   body::before { content:''; position:fixed; inset:0; z-index:1; pointer-events:none;
-    background:radial-gradient(120% 80% at 50% 0%, rgba(10,10,20,0.55), rgba(10,10,20,0.9) 70%);
-    backdrop-filter:blur(2px); }
+    background:radial-gradient(120% 80% at 50% 0%, rgba(10,10,20,0.55), rgba(10,10,20,0.9) 70%); }
   .top-bar, .wrap { position:relative; z-index:2; }
   .top-bar { display:flex; justify-content:space-between; align-items:center;
     padding:16px var(--gutter); border-bottom:1px solid var(--rule);
@@ -39,15 +36,14 @@
   .brand span { color:var(--text); }
   .back { color:var(--accent); text-decoration:none; font-size:13px; }
   .back:hover { text-decoration:underline; }
-  .wrap { max-width:880px; margin:0 auto; padding:clamp(28px,6vw,64px) var(--gutter) 90px; }
+  .wrap { max-width:860px; margin:0 auto; padding:clamp(28px,6vw,60px) var(--gutter) 90px; }
   .eyebrow { font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); margin-bottom:14px; }
   h1 { font-family:var(--serif); font-weight:600; font-size:clamp(2.2rem,6vw,3.4rem); line-height:1.05; margin-bottom:14px; }
   h1 em { font-style:italic; color:var(--gold); }
-  .lede { color:var(--muted); font-size:1.06rem; max-width:60ch; margin-bottom:30px; }
+  .lede { color:var(--muted); font-size:1.06rem; max-width:62ch; margin-bottom:28px; }
 
-  /* a case card */
   .case { border:1px solid var(--rule); border-radius:16px; overflow:hidden;
-    background:rgba(13,13,24,0.94); box-shadow:0 18px 50px rgba(0,0,0,0.5); margin-bottom:26px; }
+    background:rgba(13,13,24,0.94); box-shadow:0 18px 50px rgba(0,0,0,0.5); margin-bottom:22px; }
   .case-head { display:flex; align-items:center; gap:16px; padding:22px 24px; }
   .case-badge { flex:none; width:52px; height:52px; border-radius:12px; display:grid; place-items:center;
     font-weight:700; font-size:1.5rem; background:var(--dhl-yellow); color:var(--dhl-red); }
@@ -57,8 +53,8 @@
     color:var(--green); border:1px solid rgba(95,211,154,.4); border-radius:999px; padding:4px 10px; }
 
   details { border-top:1px solid var(--rule); }
-  summary { cursor:pointer; padding:16px 24px; font-weight:600; font-size:.95rem; list-style:none;
-    display:flex; align-items:center; gap:10px; color:var(--text); transition:background .15s; }
+  summary { cursor:pointer; padding:15px 24px; font-weight:600; font-size:.95rem; list-style:none;
+    display:flex; align-items:center; gap:10px; color:var(--text); }
   summary::-webkit-details-marker { display:none; }
   summary::before { content:'+'; color:var(--accent); font-family:var(--mono); font-size:1.1rem; width:14px; }
   details[open] summary::before { content:'–'; }
@@ -67,8 +63,7 @@
   .body h3 { color:var(--text); font-size:1rem; margin:18px 0 8px; }
   .body h3:first-child { margin-top:6px; }
   .body p { margin-bottom:10px; }
-  .body ul { margin:0 0 12px 20px; }
-  .body li { margin-bottom:5px; }
+  .body ul { margin:0 0 12px 20px; } .body li { margin-bottom:5px; }
   .body strong { color:var(--text); }
   .body .key { background:rgba(243,213,154,0.1); border:1px solid rgba(243,213,154,0.3);
     border-radius:10px; padding:12px 14px; color:var(--gold); margin:12px 0; }
@@ -76,80 +71,22 @@
   .body th, .body td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--rule); vertical-align:top; }
   .body th { color:var(--faint); font-weight:600; text-transform:uppercase; font-size:11px; letter-spacing:.05em; }
   .good { color:var(--green); } .bad { color:var(--pink); }
-  .num-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin:12px 0; }
+  .num-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:10px; margin:12px 0; }
   .stat { border:1px solid var(--rule); border-radius:10px; padding:12px; }
   .stat b { display:block; color:var(--gold); font-size:1.3rem; font-family:var(--mono); }
   .stat span { font-size:.78rem; color:var(--muted); }
-  .src { margin-top:8px; font-size:11px; color:var(--faint); }
-  .empty { color:var(--faint); font-size:.9rem; text-align:center; padding:30px; border:1px dashed var(--rule); border-radius:12px; }
-
-  /* ── flow chain diagram (Feel → Carry → Belong → Spread) ── */
-  .flow { display:flex; align-items:stretch; gap:0; margin:16px 0 20px; flex-wrap:nowrap; }
-  .flow-step { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px;
-    padding:14px 12px; border:1px solid var(--rule); border-radius:13px;
-    background:linear-gradient(180deg,rgba(184,192,255,0.07),rgba(184,192,255,0.02));
-    text-align:center; position:relative; }
-  .flow-step .ico { font-size:1.5rem; line-height:1; }
-  .flow-step .step-n { font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; }
-  .flow-step .step-t { font-weight:700; color:var(--text); font-size:.95rem; }
-  .flow-step .step-d { font-size:.74rem; color:var(--muted); line-height:1.4; }
-  .flow-arrow { flex:none; align-self:center; color:var(--gold); font-size:1.3rem; padding:0 4px; user-select:none; }
-  .flow-loop { text-align:center; font-size:.78rem; color:var(--faint); margin:-6px 0 16px; }
-  .flow-loop b { color:var(--gold); }
-  @media (max-width:640px) {
-    .flow { flex-direction:column; }
-    .flow-arrow { transform:rotate(90deg); padding:2px 0; }
-  }
-
-  /* ── animated build-up: hidden until .play, then staggered reveal, then settles ── */
-  .flow.anim .flow-step, .flow.anim .flow-arrow { opacity:0; }
-  .flow.anim.play .flow-step {
-    animation: flowIn .5s cubic-bezier(.2,.8,.2,1) forwards; }
-  .flow.anim.play .flow-arrow {
-    animation: arrowIn .35s ease forwards; }
-  /* left-to-right stagger: step → arrow → step → arrow … */
-  .flow.anim.play .flow-step:nth-child(1){ animation-delay:.05s; }
-  .flow.anim.play .flow-arrow:nth-child(2){ animation-delay:.40s; }
-  .flow.anim.play .flow-step:nth-child(3){ animation-delay:.55s; }
-  .flow.anim.play .flow-arrow:nth-child(4){ animation-delay:.90s; }
-  .flow.anim.play .flow-step:nth-child(5){ animation-delay:1.05s; }
-  .flow.anim.play .flow-arrow:nth-child(6){ animation-delay:1.40s; }
-  .flow.anim.play .flow-step:nth-child(7){ animation-delay:1.55s; }
-  @keyframes flowIn {
-    from { opacity:0; transform:translateY(14px) scale(.96); }
-    to   { opacity:1; transform:translateY(0) scale(1); } }
-  @keyframes arrowIn {
-    from { opacity:0; transform:translateX(-8px); }
-    to   { opacity:1; transform:translateX(0); } }
-  @media (max-width:640px){
-    @keyframes arrowIn { from{opacity:0;transform:rotate(90deg) translateX(-8px);} to{opacity:1;transform:rotate(90deg);} }
-  }
-  /* flowing pulse: after the build-up settles, a soft light travels along the
-     arrows in sequence to show the loop direction. Gentle, repeating, on-brand. */
-  .flow.anim.play .flow-arrow {
-    animation: arrowIn .35s ease forwards, flowPulse 4s ease-in-out infinite; }
-  .flow.anim.play .flow-arrow:nth-child(2){ animation-delay:.40s, 2.0s; }
-  .flow.anim.play .flow-arrow:nth-child(4){ animation-delay:.90s, 2.6s; }
-  .flow.anim.play .flow-arrow:nth-child(6){ animation-delay:1.40s, 3.2s; }
-  @keyframes flowPulse {
-    0%, 18%, 100% { color:var(--gold); text-shadow:none; transform:translateX(0); }
-    8%  { color:#ffe7a3; text-shadow:0 0 12px rgba(243,213,154,.9); transform:translateX(2px); }
-  }
-  @media (max-width:640px){
-    @keyframes flowPulse {
-      0%,18%,100%{color:var(--gold);text-shadow:none;transform:rotate(90deg);}
-      8%{color:#ffe7a3;text-shadow:0 0 12px rgba(243,213,154,.9);transform:rotate(90deg) translateX(2px);}
-    }
-  }
-  .flow-replay { display:inline-flex; align-items:center; gap:6px; margin:2px 0 14px; cursor:pointer;
-    font-size:.78rem; color:var(--accent); background:rgba(184,192,255,.08);
-    border:1px solid var(--rule); border-radius:999px; padding:5px 12px; font-family:var(--sans); }
-  .flow-replay:hover { background:rgba(184,192,255,.16); }
-  /* accessibility: if reduced motion, everything is just visible, no animation */
-  @media (prefers-reduced-motion: reduce) {
-    .flow.anim .flow-step, .flow.anim .flow-arrow { opacity:1 !important; animation:none !important; }
-    .flow-replay { display:none; }
-  }
+  /* flow chain — static (no animation), readable, stacks on mobile */
+  .flow { display:flex; align-items:stretch; gap:0; margin:14px 0 6px; }
+  .flow-step { flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; padding:12px 10px;
+    border:1px solid var(--rule); border-radius:12px; background:rgba(184,192,255,0.05); text-align:center; }
+  .flow-step .ico { font-size:1.4rem; } .flow-step .step-n { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+  .flow-step .step-t { font-weight:700; color:var(--text); font-size:.9rem; } .flow-step .step-d { font-size:.72rem; color:var(--muted); line-height:1.35; }
+  .flow-arrow { flex:none; align-self:center; color:var(--gold); font-size:1.2rem; padding:0 3px; }
+  @media (max-width:640px){ .flow{flex-direction:column} .flow-arrow{transform:rotate(90deg);padding:2px 0} }
+  .src { margin-top:10px; font-size:11px; color:var(--faint); }
+  .src a { color:var(--accent); }
+  .full-link { display:inline-block; margin:4px 0 2px; color:var(--dhl-red); background:var(--dhl-yellow);
+    padding:9px 16px; border-radius:10px; font-weight:700; text-decoration:none; font-size:.9rem; }
 </style>
 </head>
 <body>
@@ -161,626 +98,136 @@
 <div class="wrap">
   <div class="eyebrow">Library · cases</div>
   <h1>Case <em>Library.</em></h1>
-  <p class="lede">Live case briefs I'm working on — the situation, the numbers, the traps, and the idea in progress. New cases get added here. For how to actually win a competition, see the <a href="case-comp.html" style="color:var(--accent)">Playbook</a>.</p>
+  <p class="lede">Live case briefs — situation, idea, money, and the proof. The full detail lives in one master doc; the highlights are below. For how to win a competition, see the <a href="case-comp.html" style="color:var(--accent)">Playbook</a>.</p>
 
-  <!-- ===================== DHL CASE ===================== -->
   <div class="case">
     <div class="case-head">
       <div class="case-badge">📦</div>
       <div>
         <div class="case-title">DHL Express — UOB Wonder Lab 2026</div>
-        <div class="case-sub">Our idea: "Ship Love. Ship Light." · sustainability awareness challenge</div>
+        <div class="case-sub">"Ship Love. Ship Light." · sustainability awareness challenge</div>
       </div>
       <div class="case-status">Active</div>
     </div>
 
-    <!-- MASTER STRATEGY (flagship) -->
+    <!-- 1 · THE IDEA -->
     <details open>
-      <summary>🏆 Our flagship — "Ship Love. Ship Light."</summary>
+      <summary>🏆 The idea — "Ship Love. Ship Light."</summary>
       <div class="body">
-        <div class="key"><strong>Big Idea — "Proof That Travels":</strong> we don't tell people DHL is green — we hand them <em>proof they personally helped</em>, and let it travel: onto the box, across the border, onto a national map, into the seller's shop. <strong>Ship Love. Ship Light.</strong> (ส่งความรัก ส่งอย่างรักษ์โลก)</div>
-
-        <h3>The system — 4 connected pieces</h3>
-        <div class="flow anim" id="flowChain">
-          <div class="flow-step">
-            <span class="ico">🧾</span>
-            <span class="step-n">① Feel</span>
-            <span class="step-t">Green Receipt</span>
-            <span class="step-d">"you funded a verified cut of X kg CO₂" + QR</span>
-          </div>
+        <div class="key"><strong>Big Idea — "Proof That Travels":</strong> we don't tell people DHL is green — we hand them <em>proof they personally helped</em>, and let it travel: onto the box, across the border, onto a national map, into the seller's shop.</div>
+        <h3>The system — Feel → Carry → Belong → Spread</h3>
+        <div class="flow">
+          <div class="flow-step"><span class="ico">🧾</span><span class="step-n">① Feel</span><span class="step-t">Green Receipt</span><span class="step-d">"you funded a verified cut of X kg CO₂" + QR</span></div>
           <span class="flow-arrow">→</span>
-          <div class="flow-step">
-            <span class="ico">📮</span>
-            <span class="step-n">② Carry</span>
-            <span class="step-t">Green Stamp</span>
-            <span class="step-d">receiver abroad sees it → free cross-border reach</span>
-          </div>
+          <div class="flow-step"><span class="ico">📮</span><span class="step-n">② Carry</span><span class="step-t">Green Stamp</span><span class="step-d">receiver abroad sees it → free reach</span></div>
           <span class="flow-arrow">→</span>
-          <div class="flow-step">
-            <span class="ico">🗺️</span>
-            <span class="step-n">③ Belong</span>
-            <span class="step-t">Thailand's Green Map</span>
-            <span class="step-d">collective national total, live on screens</span>
-          </div>
+          <div class="flow-step"><span class="ico">🗺️</span><span class="step-n">③ Belong</span><span class="step-t">Green Map</span><span class="step-d">collective national total</span></div>
           <span class="flow-arrow">→</span>
-          <div class="flow-step">
-            <span class="ico">🏷️</span>
-            <span class="step-n">④ Spread</span>
-            <span class="step-t">Seller Badge</span>
-            <span class="step-d">SMEs broadcast "Ships greener with DHL"</span>
-          </div>
+          <div class="flow-step"><span class="ico">🏷️</span><span class="step-n">④ Spread</span><span class="step-t">Seller Badge</span><span class="step-d">SMEs broadcast "Ships greener with DHL"</span></div>
         </div>
-        <p class="flow-loop">↻ the Receipt's data feeds the <b>Map</b> · the Stamp carries it <b>abroad</b> · the Badge makes sellers <b>spread</b> it → more customers → loop repeats</p>
-        <button class="flow-replay" type="button" onclick="(function(b){var f=document.getElementById('flowChain');f.classList.remove('play');void f.offsetWidth;f.classList.add('play');})(this)">↻ Replay animation</button>
-        <table>
-          <tr><th>Step</th><th>Piece</th><th>What it does</th></tr>
-          <tr><td><strong>① Feel</strong></td><td>Your Green Receipt</td><td>"you funded a verified cut of X kg CO₂ ≈ Y km not driven" + QR (book-and-claim correct)</td></tr>
-          <tr><td><strong>② Carry</strong></td><td>Green Stamp on the box</td><td>receiver <em>abroad</em> sees it → free cross-border reach</td></tr>
-          <tr><td><strong>③ Belong</strong></td><td>Thailand's Green Map</td><td>localize DHL's real GoGreen Dashboard → collective national total</td></tr>
-          <tr><td><strong>④ Spread</strong></td><td>Seller Badge</td><td>SMEs broadcast "Ships greener with DHL" → mirrors UOB's SME mission</td></tr>
-        </table>
-        <p><strong>They plug together:</strong> the Receipt's data feeds the Map; the Stamp carries it abroad; the Badge makes sellers spread it. <strong>Feel → Carry → Belong → Spread.</strong></p>
-
-        <h3>The two closers (what separates winners)</h3>
-        <ul>
-          <li><strong>Green-Claims mastery:</strong> "you funded a verified reduction," never "flew on SAF" (book-and-claim) — survives the 2026 EmpCo rules.</li>
-          <li><strong>The UOB mirror:</strong> just as UOB's Sustainability Compass helps SMEs start their green journey, Ship Light lets SME shippers <em>prove</em> theirs.</li>
-        </ul>
-        <p class="src">Full plan (journey, ฿5M phased rollout, KPIs, pitch flow) in cases/DHL-MASTER-strategy.md</p>
+        <p><strong>🏅 The loop-closer — Green Shipper tier:</strong> status earned by repeat green choices (Sprout→Bronze→Silver→Gold). The Receipt's running total = the progress bar; the Badge levels up with the tier. Makes the loop <em>repeat.</em></p>
+        <p><strong>Target:</strong> Micro-SME / online sellers (primary) + students (secondary) — "fairness for the little guy," which mirrors UOB's SME mission.</p>
       </div>
     </details>
 
-    <!-- TIER / LOYALTY (closes the loop) -->
+    <!-- 2 · SITUATION -->
     <details>
-      <summary>🏅 The Green Shipper tier (closes the loop)</summary>
+      <summary>🔬 Situation (read first with the team)</summary>
       <div class="body">
-        <div class="key"><strong>Pakkapon's "tier" idea — it closes the flywheel.</strong> The loop's weak link is "comes back again." A status tier is a repeat-engagement engine: the Receipt's <em>running total</em> becomes the tier progress bar, and the Seller Badge <em>levels up</em> with your tier. Not a 5th piece — the connective tissue that makes Feel→Carry→Belong→Spread actually <em>repeat.</em></div>
-
-        <h3>"Green Shipper" status (earned by repeat green choices)</h3>
-        <table>
-          <tr><th>Tier</th><th>Earned by</th><th>Reward (escalating, mostly free)</th></tr>
-          <tr><td>🌱 Sprout</td><td>1st green shipment</td><td>welcome + first Green Receipt</td></tr>
-          <tr><td>🥉 Bronze</td><td>a few green shipments</td><td>basic "Green Shipper" badge</td></tr>
-          <tr><td>🥈 Silver</td><td>steady repeat</td><td>better badge + featured on the Green Map</td></tr>
-          <tr><td>🥇 Gold</td><td>power green-shipper</td><td>premium badge + spotlight story (the SME video)</td></tr>
-        </table>
-        <p>Lives in LINE OA (where the receipt + running total already are) → near-zero build. Visible progress ("2 more to Silver") = the nudge that drives return.</p>
-
-        <h3>Why it fits the Micro-SME spine</h3>
-        <p>A small home seller earning <strong>"Gold Green Shipper"</strong> is the empowerment story we locked in — status they show their own customers (the multiplier). Mirrors UOB's SME loyalty logic.</p>
-
-        <h3>⚠️ Guardrails</h3>
-        <ul>
-          <li>Reward repeat green <strong>choices, not raw spend</strong> (never "spend more to rank up" — a bank judge will smell it)</li>
-          <li>Keep it a <strong>10-second beat</strong> in the pitch ("and the tier makes the loop repeat") — not a 5th competing pillar</li>
-          <li>Tier names = behaviour ("Green Shipper"), never outcome claims ("carbon-neutral customer") — Green-Claims safe</li>
-          <li>Don't paywall the good feeling — anyone who ships green once gets the Receipt; tiers add status on top</li>
-        </ul>
-        <p class="src">Full version + the loop diagram in cases/DHL-TIER-loyalty.md</p>
-      </div>
-    </details>
-
-    <!-- SITUATION ANALYSIS -->
-    <details>
-      <summary>🔬 Situation analysis (read first with the team)</summary>
-      <div class="body">
-        <div class="key"><strong>Situation in one line:</strong> DHL already does the green work and customers already love DHL — they just don't know the two are connected. Connect them at the moment of shipping, compliantly, and let the customers who ship most carry the message.</div>
-
-        <h3>5C snapshot</h3>
-        <ul>
-          <li><strong>Company:</strong> market leader, real first-mover green creds (EVs, SAF, solar, GoGreen Plus). Has done the work, hasn't communicated it at the counter.</li>
-          <li><strong>Customers:</strong> come for speed/reliability, not green. 83% satisfied — on <em>service</em>, not sustainability. SMEs = highest value (repeat + own audience).</li>
-          <li><strong>Competitors:</strong> rivals also green but communicate it poorly too. Real competitor = <em>indifference/attention</em> at the counter, not another courier.</li>
-          <li><strong>Collaborators (no celebs):</strong> SME sellers as broadcasters · staff · seller communities · universities · owned channels (LINE, FB/IG, branch screens).</li>
-          <li><strong>Context:</strong> tightening green-marketing law (specificity required) + rising eco-awareness + green skepticism (vague claims distrusted).</li>
-        </ul>
-
-        <h3>The problem tree</h3>
-        <p><strong>Symptom:</strong> low awareness of DHL's sustainability → <strong>Trunk:</strong> the green is real but invisible at the moment of shipping → <strong>Roots:</strong> (1) no green message at point of sale, (2) GoGreen Plus not surfaced to walk-ins, (3) customers come for speed, (4) legal caution → under-communication.</p>
-
-        <h3>SWOT (sharp)</h3>
+        <div class="key">DHL already does the green work and customers already love DHL (83% satisfied) — they just don't know the two are connected. The green is <strong>invisible at the point of sale.</strong> Connect them at the moment of shipping, compliantly, and let the customers who ship most carry the message.</div>
+        <p><strong>Key Question (p16):</strong> how do we make customers realize that every time they ship at one of DHL's 36 ServicePoints, they're helping the environment alongside DHL?</p>
+        <p><strong>Problem tree:</strong> low awareness (symptom) → green invisible at point of sale (trunk) → no green message on receipt/screen/staff; GoGreen Plus not surfaced; customers come for speed; legal caution (roots).</p>
         <table>
           <tr><th>Strengths</th><th>Weaknesses</th></tr>
-          <tr><td class="good">Real provable green creds · a customer-usable product (GoGreen Plus) · 83% satisfied warm audience · owned touchpoints (36 branches, screens, LINE, every receipt)</td><td class="bad">Story untold at point of sale · green isn't why they come · legal caution → under-communicates</td></tr>
+          <tr><td class="good">Provable creds · customer-usable product (GoGreen Plus) · 83% warm audience · owned touchpoints</td><td class="bad">Story untold at point of sale · green isn't why they come</td></tr>
           <tr><th>Opportunities</th><th>Threats</th></tr>
-          <tr><td class="good">Turn satisfaction into pride · SME multiplier (free reach) · own the open positioning · specificity-as-trust</td><td class="bad">Greenwashing perception / legal misstep · green skepticism · ignored at a transactional moment · ฿5M/3mo/no-celeb limits</td></tr>
+          <tr><td class="good">Turn satisfaction into pride · SME multiplier (free reach) · specificity-as-trust</td><td class="bad">Greenwashing/legal misstep · green skepticism · ฿5M/3mo limits</td></tr>
         </table>
-
-        <h3>The awareness funnel (where we lose people)</h3>
-        <p>Aware DHL is green? ✗ low → Understand THEY're part of it? ✗ lower → Feel something? ✗ (no moment exists) → Act again / tell others? ✗ (no loop). <strong>Intervene:</strong> felt moment (Green Receipt) · tell-others loop (Seller Badge) · belonging (Impact Counter).</p>
-
-        <h3>Key tensions for the team</h3>
-        <ul>
-          <li>Speed vs. message (don't slow the counter → tiny passive touchpoints)</li>
-          <li>Awareness vs. behavior (decide what "success" means → sets KPIs)</li>
-          <li>Specific vs. emotional (pair a hard number with a human framing)</li>
-          <li>One persona vs. all four (recommend SME primary, students secondary)</li>
-          <li>Compliance vs. boldness (bold <em>format</em>, conservative <em>claims</em>)</li>
-        </ul>
-
-        <h3>So what (what the situation demands)</h3>
-        <p>A winning idea must: live at the <strong>point of sale</strong> · make the customer a <strong>participant</strong> · use a <strong>specific provable number in a human moment</strong> · exploit the <strong>SME multiplier</strong> · fit ฿5M/36/3mo, no celebs · visibly respect Green Claims. → This is exactly why the Green Receipt + Seller Badge + Impact Counter spine fits: it's the situation's logical conclusion.</p>
-        <p class="src">Full version (5C detail, stakeholder map, all tensions) in cases/DHL-SITUATION-analysis.md</p>
+        <p><strong>Constraints:</strong> ฿5M · 36 ServicePoints · 3 months · no celebrities. <strong>Judging:</strong> Creativity · Insight · Feasibility · Impact/ROI · Storytelling (20% each).</p>
       </div>
     </details>
 
-    <!-- CHEAT SHEET -->
+    <!-- 3 · MONEY & BUDGET -->
     <details>
-      <summary>⚡ Cheat sheet (glance before the meeting)</summary>
+      <summary>💵 The money & the ฿5M budget</summary>
       <div class="body">
-        <p><strong>The problem in one line:</strong> Customers love DHL's service (83% satisfied) but <strong>don't know DHL is green.</strong> → Make them feel that shipping abroad at a ServicePoint = helping the planet.</p>
-        <div class="num-grid">
-          <div class="stat"><b>36</b><span>ServicePoint branches</span></div>
-          <div class="stat"><b>฿5M</b><span>budget</span></div>
-          <div class="stat"><b>3 mo</b><span>timeline</span></div>
-          <div class="stat"><b>No</b><span>presenter/celeb budget (p14)</span></div>
-        </div>
-        <h3>The hero to promote</h3>
-        <p><strong>GoGreen Plus</strong> = customers fund a <strong>certified</strong> carbon cut via <strong>SAF</strong> (sustainable aviation fuel). It already exists. Nobody knows. That's the gap.</p>
-        <div class="key"><strong>⚠️ Claim it right:</strong> GoGreen Plus is <strong>book-and-claim</strong> — say "you funded a verified reduction," NOT "your parcel flew on SAF" (it may not have). This precision is the Green-Claims shield.</div>
-        <div class="key"><strong>Your one-liner:</strong> "Everyone's satisfied but nobody knows DHL's green. Our job: turn the ServicePoint counter into a moment where the customer <em>feels</em> they just helped the planet — measurably, within Green Claims rules."</div>
-      </div>
-    </details>
-
-    <!-- FULL SUMMARY -->
-    <details>
-      <summary>📋 Full case summary</summary>
-      <div class="body">
-        <h3>The core problem</h3>
-        <p>DHL ServicePoint customers are very satisfied (83%) — but only about service, helpfulness, professionalism. They have <strong>no idea DHL does serious green-logistics work.</strong> Awareness is low.</p>
-        <div class="key"><strong>Key Question (p16):</strong> How do we make customers realize that every time they ship abroad at one of DHL's 36 ServicePoints, they're helping reduce environmental impact alongside DHL?</div>
-
-        <h3>What DHL actually does for the planet (your ammo)</h3>
+        <div class="key"><strong>Money thesis:</strong> the ฿5M doesn't pay for carbon — customers do (GoGreen Plus). It buys <em>awareness</em> → opt-ins (high-margin for DHL) + seller conversion lift. <strong>OpEx, not CapEx</strong> — a 3-month marketing spend, no asset built. Judo line: "DHL already made the €7B CapEx; our ฿5M is awareness OpEx."</div>
+        <h3>Why it pays</h3>
         <ul>
-          <li><strong>GoGreen Plus</strong> ⭐ — cut shipping carbon via SAF; available to walk-in customers. The thing to communicate.</li>
-          <li><strong>EV fleet</strong> — first logistics co. in TH to use EVs commercially. TH: 43 EVs (18.9%); <strong>global 50,604 EVs = 46.2%</strong> of fleet. Goal 60% by 2030.</li>
-          <li><strong>SAF in cargo planes</strong> — now 10% of fuel.</li>
-          <li><strong>Solar / renewable buildings</strong> — 13 Thai facilities (92%); <strong>global 96.9%</strong> renewable. Goal 100% by 2030.</li>
-          <li>Global: cut 2.1M metric tons carbon in 2025.</li>
-          <li><strong>Net Zero target:</strong> 40M → under 29M metric tons GHG by 2030, then Net Zero by 2050.</li>
+          <li><strong>DHL:</strong> GoGreen Plus ≈ €325/tonne = incremental revenue on a parcel already shipping; 9.7% WTP premium = pricing moat.</li>
+          <li><strong>SME seller:</strong> ESG-claim products grew 28% vs 20% (McKinsey/NielsenIQ); eco-at-checkout lifts conversion +10–25% even at ~1-in-10 opt-in. Badge = margin-positive credential → why sellers spread it.</li>
         </ul>
-
-        <h3>Target personas (pick main + secondary)</h3>
-        <ul>
-          <li><strong>Micro SMEs / online sellers</strong> — overseas orders (frequent shippers)</li>
-          <li><strong>Expats</strong> — shipping home / fulfilling orders</li>
-          <li><strong>Students</strong> — studying/moving abroad, or families sending to them</li>
-          <li><strong>Tourists</strong> — short-term visitors shipping home</li>
-        </ul>
-
-        <h3>⚠️ The trap — Green Claims rules (Appendix p17)</h3>
-        <table>
-          <tr><th>Do</th><th>Don't</th></tr>
-          <tr>
-            <td class="good">Specific & measurable ("% emissions cut"); explain <em>how</em> (SAF, insetting); plain language; transparent scope</td>
-            <td class="bad">Vague words alone ("green," "eco-friendly," "sustainable"); exaggerate; rely on offsetting alone; <strong>NEVER</strong> "emission-free," "climate neutral," "climate positive"</td>
-          </tr>
-        </table>
-        <p><strong>Rule of thumb:</strong> specific, transparent, evidence-backed — if you can't prove it, don't say it.</p>
-
-        <h3>Judging — ⚠️ assumed, not in booklet (confirm)</h3>
-        <p>Creativity & Big Idea · Insight & Problem Understanding · Feasibility · Impact/ROI · Storytelling & Presentation</p>
-        <p class="src">Apply by 30 Jun 2026 (p18) · Total prize pool over ฿120,000 (p18). ⚠️ Final-pitch date &amp; per-place amounts are not in the booklet — confirm with organizers.</p>
-      </div>
-    </details>
-
-    <!-- THE IDEA -->
-    <details>
-      <summary>💡 Our idea: "Your Green Receipt"</summary>
-      <div class="body">
-        <h3>The Big Idea — "Your Green Receipt" (ใบเสร็จสีเขียว)</h3>
-        <p>Turn the receipt every shipper already gets into the <strong>proof</strong> that "you just helped the planet." The green already exists — what's missing is the moment the customer <em>feels</em> it.</p>
-        <p>The receipt (physical + digital via LINE/email) carries: <em>"You funded a verified cut of X kg CO₂ via sustainable aviation fuel in DHL's network,"</em> with a QR explaining how (keeps it Green-Claims-compliant). <strong>Not</strong> "flew on SAF" — it's book-and-claim.</p>
-
-        <h3>Target: SME / online sellers (primary) + Students (secondary)</h3>
-        <ul>
-          <li>Frequent shippers → the receipt repeats → awareness actually builds (measurable)</li>
-          <li><strong>Multiplier (B2B2C):</strong> the seller passes the green message to their own customers ("I ship greener with DHL" = their selling point)</li>
-          <li>Reachable in budget/time via LINE OA, seller groups, social commerce</li>
-        </ul>
-        <p>Evolution hook: Green Receipt → a shareable <strong>badge</strong> for sellers, "This seller ships greener with DHL." Gives them value, not just info.</p>
-
-        <h3>Why it wins the 5 criteria</h3>
-        <ul>
-          <li><strong>Creativity:</strong> reframes a boring receipt into a thank-you moment</li>
-          <li><strong>Insight:</strong> answers the Key Question at the exact point of action</li>
-          <li><strong>Feasibility:</strong> existing receipts + screens + LINE; no new tech, no celebs</li>
-          <li><strong>Impact/ROI:</strong> QR scans, LINE opens, before/after awareness survey</li>
-          <li><strong>Storytelling:</strong> "the proof is in your hands"</li>
-        </ul>
-
-        <h3>Still to do</h3>
-        <ul>
-          <li>Campaign name + slogan (TH + EN)</li>
-          <li>Customer journey / touchpoints</li>
-          <li>฿5M budget allocation</li>
-          <li>KPIs + measurement plan</li>
-          <li>Devil's-advocate Q&A prep</li>
-        </ul>
-        <p class="src">Working notes — strategy to be developed with the team.</p>
-      </div>
-    </details>
-
-    <!-- STRATEGY BANK -->
-    <details>
-      <summary>🧠 Strategy bank (every angle, to optimize later)</summary>
-      <div class="body">
-        <h3>The 3 strategic angles (any idea should hit one)</h3>
-        <ul>
-          <li><strong>Make the invisible visible</strong> — surface the green impact the customer already causes</li>
-          <li><strong>Give the customer a role</strong> — "you + DHL," a co-contributor, not a bystander</li>
-          <li><strong>Give them something to carry/share</strong> — proof that travels (receipt, badge, sticker, post)</li>
-        </ul>
-
-        <h3>The idea bank (12 directions)</h3>
-        <table>
-          <tr><th>#</th><th>Idea</th><th>Angle</th></tr>
-          <tr><td>1</td><td><strong>Your Green Receipt</strong> — receipt shows "you cut X kg CO₂" + QR ⭐</td><td>visible + role</td></tr>
-          <tr><td>2</td><td><strong>The Impact Counter</strong> — live "customers here cut ___ kg CO₂"</td><td>visible</td></tr>
-          <tr><td>3</td><td><strong>Carbon → tangible</strong> — "= 3 trees / X km not driven"</td><td>visible</td></tr>
-          <tr><td>4</td><td><strong>"You + DHL" co-badge</strong> — customer framed as partner</td><td>role</td></tr>
-          <tr><td>5</td><td><strong>Green Streak / loyalty</strong> — reward repeat green shipments</td><td>role</td></tr>
-          <tr><td>6</td><td><strong>Pledge wall</strong> — join the green-shipping movement</td><td>role</td></tr>
-          <tr><td>7</td><td><strong>Green Stamp/Sticker</strong> on the box → cross-border word of mouth</td><td>share</td></tr>
-          <tr><td>8</td><td><strong>Seller badge</strong> — "Ships greener with DHL" for SMEs ⭐</td><td>share</td></tr>
-          <tr><td>9</td><td><strong>#MyGreenShipment</strong> — UGC, student-friendly</td><td>share</td></tr>
-          <tr><td>10</td><td><strong>ServicePoint takeover</strong> — coherent in-branch green story</td><td>channel</td></tr>
-          <tr><td>11</td><td><strong>LINE OA green journey</strong> — digital impact home</td><td>channel</td></tr>
-          <tr><td>12</td><td><strong>Edutainment series</strong> — kill "green = slower/pricier" myth</td><td>channel</td></tr>
-        </table>
-
-        <h3>Strongest spine (built out)</h3>
-        <ul>
-          <li><strong>Green Receipt</strong> (felt moment) + <strong>Seller Badge</strong> (B2B2C multiplier) + <strong>Impact Counter</strong> (collective proof) — they reinforce each other and cover all 5 judging criteria.</li>
-        </ul>
-
-        <h3>Supporting layers (mix into any idea)</h3>
-        <ul>
-          <li><strong>Mechanics:</strong> carbon → relatable units · physical token · personal "you cut X total" counter · staff one-liner script (free, high-impact)</li>
-          <li><strong>Channels (all existing — feasibility win):</strong> branch screens/posters/counter cards · LINE OA · FB/IG · receipt & packaging as media</li>
-          <li><strong>Partnerships (no celebs):</strong> seller communities/marketplaces · universities/student orgs · expat groups</li>
-          <li><strong>KPIs (20% of score):</strong> awareness pre/post survey · QR scans · LINE opens · badge claims · GoGreen Plus uptake · repeat rate · always → ฿ ROI</li>
-        </ul>
-
-        <h3>Optimize-later filter</h3>
-        <p>Score each idea on: felt moment? · buildable in ฿5M/36/3mo, no celebs? · measurable? · distinctive? · one clean story? · shows you understood Green Claims? (the last separates winners)</p>
-        <p class="src">Full deep version with budgets, journeys & risk answers in cases/DHL-STRATEGY-bank.md</p>
-      </div>
-    </details>
-
-    <!-- TOP 3 DEEP DIVE -->
-    <details>
-      <summary>🏆 Top 3 ideas — deep dive</summary>
-      <div class="body">
-        <div class="key"><strong>One system:</strong> DHL's green is real but invisible. We make it <em>felt</em> (Green Receipt), <em>spread</em> it through frequent shippers (Seller Badge), and make it <em>collective</em> (Impact Counter). <strong>Feel → Share → Belong.</strong></div>
-
-        <h3>⭐ 1. Your Green Receipt — the felt moment</h3>
-        <p><strong>Slogan:</strong> "Proof you helped the planet." / "ส่งของวันนี้ ช่วยโลกไปด้วยกัน"</p>
-        <p><strong>Mechanic:</strong> receipt (paper + LINE/email) shows "you helped cut X kg CO₂" + QR explaining how (SAF/insetting) + carbon-as-tangible ("≈ X km not driven") + a running personal total.</p>
-        <ul>
-          <li><strong>Journey:</strong> staff one-liner → ship → Green Receipt → scan QR → keep/share → return, total grows</li>
-          <li><strong>KPIs:</strong> QR scans · LINE opens · awareness lift (pre/post survey) · GoGreen Plus uptake · repeat rate</li>
-          <li><strong>Tough Q:</strong> "receipt gets tossed" → it's also digital + on-screen + staff line; "credible?" → QR shows method, never "carbon neutral"</li>
-        </ul>
-
-        <h3>⭐ 2. "Ships Greener with DHL" Seller Badge — the multiplier</h3>
-        <p><strong>Slogan:</strong> "Sell it. Ship it greener." / "ร้านนี้ส่งของแบบรักษ์โลกกับ DHL"</p>
-        <p><strong>Mechanic:</strong> SME ships green → unlocks a verified badge in LINE OA → adds it to shop/socials/packaging → their buyers see it. One DHL message reaches the seller AND their whole audience (B2B2C earned reach).</p>
-        <ul>
-          <li><strong>Why it's the ROI play:</strong> SMEs ship most + have their own audiences + actually want the badge (it helps them sell)</li>
-          <li><strong>KPIs:</strong> badge claims · seller-audience reach (earned) · repeat volume/seller · new customers attributed</li>
-          <li><strong>Tough Q:</strong> "will sellers bother?" → it's a sales asset, 1-tap; "overclaim risk?" → wording controlled, scoped to green shipments only</li>
-        </ul>
-
-        <h3>⭐ 3. The Impact Counter — collective pride</h3>
-        <p><strong>Slogan:</strong> "Look what we cut, together." / "รวมกันเราลด CO₂ ได้เท่านี้"</p>
-        <p><strong>Mechanic:</strong> live tally on each branch screen + online dashboard: "customers here cut ___ kg CO₂ this month," fed by the Green Receipt data → the three ideas plug together. Carbon shown as tangible units; national total across 36 branches.</p>
-        <ul>
-          <li><strong>Solves:</strong> "my one parcel feels tiny" → shared growing total people want to join</li>
-          <li><strong>KPIs:</strong> screen dwell · dashboard visits · milestone shares · repeat correlation</li>
-          <li><strong>Tough Q:</strong> "data source?" → real GoGreen Plus data, sourced numbers only; "looks small?" → tangible units + growth + national aggregate</li>
-        </ul>
-
-        <h3>How to pitch</h3>
-        <p>Lead with <strong>Green Receipt</strong> as the hero; present Badge + Counter as "the system that makes it spread and stick." Or pitch Green Receipt alone if the format wants one tight idea (safest standalone). Narrative: <strong>Feel → Share → Belong</strong> — covers all 5 criteria + shows Green-Claims literacy (the winner-separator).</p>
-        <p class="src">Full deep dive (budgets, full journeys, all Q&A) in cases/DHL-TOP3-deepdive.md</p>
-      </div>
-    </details>
-
-    <!-- RESEARCH DEEP-DIVE -->
-    <details>
-      <summary>🔬 External research (competitors, regulation, SAF reality)</summary>
-      <div class="body">
-        <div class="key"><strong>The catch we fixed:</strong> GoGreen Plus is <strong>book-and-claim</strong> — a customer's parcel may not physically fly on SAF; they fund a <em>certified</em> reduction somewhere in DHL's network. Claim "you funded a verified cut," never "flew on SAF." Showing the judges you understood this is the clearest signal you understood the brief.</div>
-
-        <h3>Why DHL wins (esp. in Thailand)</h3>
-        <table>
-          <tr><th></th><th>DHL Express TH</th><th>FedEx TH</th><th>UPS</th></tr>
-          <tr><td>EVs in Thailand</td><td class="good">43 (18.9%)</td><td>12</td><td>minimal TH</td></tr>
-          <tr><td>Net-zero target</td><td>2050</td><td>2040 (bolder yr)</td><td>2050</td></tr>
-          <tr><td>SAF</td><td>10% of cargo fuel</td><td>limited / early-stage</td><td>30% goal by 2030</td></tr>
-          <tr><td>Customer-usable green product</td><td class="good">GoGreen Plus (at counter)</td><td>carbon-neutral shipping</td><td>carbon-neutral option</td></tr>
-        </table>
-        <p>FedEx's target <em>year</em> looks bolder, but on the ground in TH, DHL leads (43 EVs vs 12, first commercial-EV mover) <strong>and</strong> is the only one with a green product a walk-in customer can use and feel. Rivals <em>have</em> sustainability; DHL has sustainability the customer can <strong>participate in</strong>.</p>
-
-        <h3>The regulatory trap (and why DHL is safe)</h3>
-        <ul>
-          <li>The booklet cites the EU <strong>Empowering Consumers (EmpCo) Directive</strong> — binding from <strong>Sept 2026</strong>; it bans generic green claims and <strong>offset-based "climate neutral"</strong> claims.</li>
-          <li>DHL uses <strong>insetting</strong> (reductions inside its own supply chain), not offsetting → the <strong>future-proof</strong> kind. Pitch line: <em>"DHL's method is the one that survives the 2026 rules."</em></li>
-        </ul>
-
-        <h3>Consumer insight — the value–action gap</h3>
-        <p>Thai consumers: <strong>79% interested in EVs/HEVs</strong> and willing to pay an <strong>~11% (APAC) premium</strong> (above the global 9.7%, PwC), but economic worry stops them acting (attitude ≠ behavior). <strong>Don't ask them to pay more or do more</strong> — show they're <strong>already helping, free,</strong> just by shipping. Gen Z buys on social influence → supports the shareable seller badge.</p>
-
-        <h3>Name the mechanism (judges love this)</h3>
-        <p>Green Receipt = <strong>salience + feedback nudge</strong> · Impact Counter = <strong>social-proof nudge</strong> · Seller Badge = <strong>social influence</strong>. Evidence-based design, not creative guesses.</p>
-        <p class="src">Full version + sources in cases/DHL-RESEARCH-deepdive.md</p>
-      </div>
-    </details>
-
-    <!-- FACT AUDIT -->
-    <details>
-      <summary>✅ Fact audit — what to say out loud (and what to fix)</summary>
-      <div class="body">
-        <div class="key"><strong>Rule for the room:</strong> lead with ✅ numbers, always name the source, quote ranges not false precision. One wrong number in Q&A costs more than ten right ones gain. (Verified live, 23 Jun 2026.)</div>
-
-        <h3>🟢 Lead with these (rock-solid)</h3>
-        <ul>
-          <li><strong>28% vs 20%</strong> ESG-claim 5-yr growth + 56% of all growth + 2× multi-claim (McKinsey/NielsenIQ)</li>
-          <li><strong>+10–25% conversion</strong> eco-at-checkout (+22%/+19% cases, EcoCart) — even at ~1-in-10 opt-in</li>
-          <li><strong>43 vs 12 EVs</strong> in Thailand (DHL vs FedEx, Apr 2026) — the on-the-ground moat</li>
-          <li><strong>EmpCo binding 27 Sep 2026</strong>; bans generic + offset "carbon neutral" claims</li>
-          <li><strong>GoGreen Plus ≈ €325/tonne</strong>, 10–100% selectable · <strong>SAF 2–4×</strong> pricier, <strong>under 1%</strong> of jet fuel</li>
-        </ul>
-
-        <h3>🟡 Use with care (qualify these)</h3>
-        <ul>
-          <li>WTP premium: say <strong>"APAC ~11% / global 9.7%"</strong> — NOT "9.7% in Thailand"</li>
-          <li>SAF cut: <strong>"up to ~80% on waste-based SAF"</strong> — never a blanket 80% (crop ~55%)</li>
-          <li>Never "your parcel flew on SAF" → <strong>"you funded a verified reduction"</strong> (book-and-claim)</li>
-          <li>€7B is <strong>DHL Group</strong>-wide, not Thailand</li>
-        </ul>
-
-        <h3>🔴 Fixed / dropped</h3>
-        <ul>
-          <li><strong>"97% of Thais concerned"</strong> — unverified → replaced with <strong>79% EV-interested</strong> (PwC TH)</li>
-          <li><strong>FedEx "SAF at 2 US airports"</strong> — not cleanly sourced → softened to "limited/early-stage"</li>
-        </ul>
-
-        <h3>🎯 The 3 numbers to lead the pitch with</h3>
-        <p><strong>28% vs 20%</strong> (sellers grow faster) · <strong>+10–25% conversion</strong> (the badge pays) · <strong>43 vs 12 EVs</strong> (DHL's TH lead). Back-pocket: €325/tonne · EmpCo 27 Sep 2026 · book-and-claim.</p>
-        <p class="src">Full audit with every verdict + sources in cases/DHL-FACT-AUDIT.md</p>
-      </div>
-    </details>
-
-    <!-- CARBON ECONOMICS -->
-    <details>
-      <summary>💰 Carbon economics & customer-contribution model</summary>
-      <div class="body">
-        <h3>The cost ladder — what it costs to cut 1 tonne CO₂</h3>
-        <table>
-          <tr><th>Method</th><th>Cost / tonne CO₂</th><th>Quality</th></tr>
-          <tr><td>Cheap offsets (forestry/REDD+)</td><td>~$3–14</td><td class="bad">banned for "neutral" claims 2026</td></tr>
-          <tr><td>Nature-based removals</td><td>~$20</td><td>better, still offsetting</td></tr>
-          <tr><td>Corporate offset average</td><td>~$25–80</td><td>typical</td></tr>
-          <tr><td><strong>SAF / insetting (DHL)</strong></td><td class="good">~$300</td><td class="good">real, in-sector, future-proof</td></tr>
-          <tr><td>Direct air capture</td><td>$100–1,000+</td><td>gold standard, not scalable</td></tr>
-        </table>
-        <div class="key"><strong>The insight that wins points:</strong> SAF reductions cost ~15–100× more than cheap offsets. DHL <em>chose</em> the expensive, credible route. <em>"DHL didn't take the cheap offset shortcut — it pays ~$300/tonne for real SAF cuts. The credibility is paid for; that's why we can say it out loud."</em></div>
-
-        <h3>The customer-contribution model</h3>
-        <p>GoGreen Plus ≈ <strong>€325/tonne CO₂e</strong> (≈ ฿12/kg), charged on weight × route × SAF volume. One click = 30% cut; customizable 10–100%.</p>
-        <div class="num-grid">
-          <div class="stat"><b>~10 kg</b><span>CO₂ for a 2kg TH→EU parcel (illustrative)</span></div>
-          <div class="stat"><b>30%</b><span>one-click reduction</span></div>
-          <div class="stat"><b>~฿36</b><span>extra to cut ~3 kg (illustrative)</span></div>
-        </div>
-        <p>Tiny individually ("my one parcel?") — which is exactly why the <strong>Impact Counter</strong> (collective total) exists.</p>
-
-        <h3>How the ROI really works</h3>
-        <p>The <strong>฿5M buys awareness, not carbon</strong> — customers fund the carbon by opting into GoGreen Plus. Measure: GoGreen Plus uptake lift · awareness lift (pre/post survey) · cost per aware customer · CO₂ enabled · earned reach. <em>"₿5M doesn't cut carbon — it makes thousands realise they can, and measurably more of them do."</em></p>
-        <div class="key">⚠️ <strong>Get real numbers before pitching:</strong> exact kg CO₂/shipment + GoGreen Plus THB surcharge from the <strong>MyDHL+</strong> calculator; current uptake %; customers/day per branch.</div>
-        <p class="src">Full model + sources in cases/DHL-CARBON-ECONOMICS.md</p>
-      </div>
-    </details>
-
-    <!-- SAF vs JET FUEL -->
-    <details>
-      <summary>⛽ SAF vs jet fuel + the carbon lifecycle</summary>
-      <div class="body">
-        <table>
-          <tr><th>Aspect</th><th>Jet fuel</th><th>SAF</th></tr>
-          <tr><td>Cost premium</td><td>1×</td><td class="bad">~2–4× (≈4.2× in 2025)</td></tr>
-          <tr><td>Price / tonne (2024)</td><td>~€734</td><td>~€2,085 (gap $400–700)</td></tr>
-          <tr><td>CO₂ abatement cost</td><td>—</td><td>~$300 / tonne CO₂</td></tr>
-          <tr><td>Lifecycle CO₂</td><td>baseline 100%</td><td class="good">50–80%+ lower (UCO 76–97%)</td></tr>
-          <tr><td>Compatibility</td><td>standard</td><td class="good">100% drop-in (up to 50% blend)</td></tr>
-          <tr><td>Supply</td><td>abundant</td><td>~0.7% of jet fuel — scarce</td></tr>
-          <tr><td>Co-benefits</td><td>—</td><td class="good">−65% soot · −40% sulfur · fewer contrails</td></tr>
-        </table>
-        <p><strong>Why the premium matters:</strong> SAF costing 2–4× more is <em>why</em> GoGreen Plus has a surcharge — and why it's credible. Cheap = suspect; DHL paying ~$300/tonne for real cuts = trustworthy.</p>
-
-        <h3>The carbon lifecycle — where the CO₂ actually goes</h3>
-        <div class="key">SAF emits <strong>roughly the same CO₂ at the tailpipe</strong> as jet fuel. The saving isn't in the burn — it's in <strong>where the carbon came from</strong> ("well-to-wake").</div>
-        <ul>
-          <li><strong>Fossil jet fuel = one-way street:</strong> ancient carbon dug up from underground → burned → <em>added</em> to the air. Atmosphere CO₂ ↑.</li>
-          <li><strong>SAF = near closed loop:</strong> plants/waste absorbed CO₂ from <em>today's</em> air → become fuel → burned → carbon <em>returned</em>. Roughly circular.</li>
-          <li><strong>Why ~50–80%, not zero:</strong> making & moving SAF still uses some energy — that's the leftover ~20–50%. Waste feedstocks (used cooking oil) score best.</li>
-        </ul>
-        <p><em>Judge-line:</em> "SAF doesn't burn cleaner — it <strong>recycles carbon.</strong> Fossil fuel adds ancient carbon to the sky; SAF burns carbon plants pulled from today's air, so the loop nearly closes."</p>
-        <p class="src">Full comparison + lifecycle + sources in cases/DHL-SAF-vs-jetfuel.md</p>
-      </div>
-    </details>
-
-    <!-- CONNECTED ECONOMICS -->
-    <details>
-      <summary>🔭 The connected economics (bigger picture)</summary>
-      <div class="body">
-        <div class="key"><strong>The flywheel:</strong> DHL already spent <strong>€7B</strong> building green capability + a usable product (GoGreen Plus on SAF). At the counter it's invisible, so the flywheel barely turns. The <strong>฿5M campaign is the cheap spark</strong> that spins it — customers fund certified CO₂ cuts, see proof, broadcast it, bring more customers.</div>
-
-        <h3>Follow one customer's ฿36</h3>
-        <p>Customer pays ~฿36 surcharge → DHL buys SAF (2–4× premium) → independent body <strong>certifies</strong> the cut (book-and-claim) → ~3 kg CO₂ counted toward the customer <em>and</em> DHL's Net-Zero-2050 → <strong>Receipt</strong> proves it → <strong>Map</strong> aggregates it → <strong>Badge</strong> broadcasts it → more customers. Every baht is traceable, certified, visible.</p>
-
-        <h3>Every green shipment creates 5 kinds of value</h3>
-        <table>
-          <tr><th>Layer</th><th>Value</th></tr>
-          <tr><td>Environmental</td><td>certified CO₂ cut + cleaner air near airports</td></tr>
-          <tr><td>Commercial</td><td>GoGreen Plus revenue · repeat · loyalty</td></tr>
-          <tr><td>Brand</td><td>only <em>usable</em> green product · transparency = trust</td></tr>
-          <tr><td>Regulatory</td><td>insetting survives the 2026 EmpCo rules</td></tr>
-          <tr><td>Social</td><td>SME enablement — mirrors UOB's mission</td></tr>
-        </table>
-        <p><strong>ROI line:</strong> "฿5M doesn't cut carbon — it spins a flywheel DHL already spent €7B building."</p>
-        <p><a href="dhl-roi.html" style="display:inline-block;margin:6px 0;color:var(--dhl-red);background:var(--dhl-yellow);padding:9px 16px;border-radius:10px;font-weight:700;text-decoration:none;">▶ Open the interactive ROI calculator</a></p>
-
-        <h3>💡 New plays worth adding</h3>
-        <ul>
-          <li><strong>"Your Green Year"</strong> — a Spotify-Wrapped-style annual impact summary, built to be screenshotted &amp; shared (great for SMEs).</li>
-          <li><strong>UOB co-marketing</strong> — partner with the sponsor's SME banking base: "ship greener, bank greener." Free reach + judge delight.</li>
-          <li><strong>Green Streak</strong> loyalty (drive repeat) · <strong>Match Moment</strong> at launch (seed first-time adoption).</li>
-        </ul>
-        <p class="src">Full flywheel, money trail & plays in cases/DHL-ECONOMICS-bigpicture.md</p>
-      </div>
-    </details>
-
-    <!-- MONEY STORY / MARGIN -->
-    <details>
-      <summary>💵 The money story (margin of selling eco)</summary>
-      <div class="body">
-        <div class="key"><strong>Money thesis:</strong> our ฿5M doesn't pay for carbon — <strong>customers do</strong> (GoGreen Plus). The ฿5M buys <em>awareness</em> → awareness drives <em>opt-ins</em> → opt-ins are high-margin revenue for DHL AND a conversion lift for sellers. Green = a margin story, not a cost. <em>(UOB is a bank — they reward this.)</em></div>
-
-        <h3>Margin for DHL</h3>
-        <ul>
-          <li><strong>GoGreen Plus ≈ €325/tonne CO₂e</strong>, reduction selectable 10–100% (1 click = 30%). Every opt-in = incremental revenue on a parcel that was shipping anyway → near-zero extra cost to sell.</li>
-          <li><strong>Chain:</strong> ฿5M awareness → more customers know/feel good → opt-in rate ↑ (today low, because awareness is low — the case's whole problem) → high-margin green revenue + loyalty halo.</li>
-          <li><strong>Premium moat:</strong> 9.7% stated willingness-to-pay premium (PwC 2024); a credible green reason-to-choose protects pricing power vs. cheaper couriers.</li>
-          <li><strong>Honest caveat:</strong> stated WTP ≠ actual spend → that's why our frame is "you're already helping, free, just by shipping." Margin is upside, not a dependency.</li>
-        </ul>
-
-        <h3>Margin for the SME seller (why they spread the badge)</h3>
-        <ul>
-          <li><strong>ESG claims track with faster growth:</strong> McKinsey × NielsenIQ ($400B, 600k SKUs, 5 yrs) — claim products grew <strong>28% vs 20%</strong>, were <strong>56% of all growth</strong>, multi-claim grew <strong>~2×</strong>.</li>
-          <li><strong>Eco-at-checkout lifts conversion +10–25%</strong> — cases: +22% (Nuzest), +19% (Tribe Kelley) — <em>even when only ~1 in 10 buyers opt in.</em> The lift comes from the <em>signal of values</em>, not everyone going green.</li>
-          <li><strong>Marketplaces</strong> (Amazon/Etsy) run sustainability badges + may rank by them → a DHL-verified badge is a free sales tool sellers will use across channels.</li>
-          <li><strong>Seller P&L:</strong> cost ≈ 0 (badge free, surcharge small/optional, often passed to buyer) · benefit = trust + conversion lift + faster-growth claim. → margin-positive credential = why the multiplier is self-interested, not charity.</li>
-        </ul>
-
-        <h3>The two-sided flywheel</h3>
-        <p>฿5M awareness → customers opt in (DHL margin ↑) <strong>+</strong> sellers get badge (seller conversion +10–25%) → sellers broadcast it free → more green shipping → awareness compounds → margin compounds on both sides. <strong>Awareness is the only thing we buy; margin is what it manufactures.</strong></p>
-
-        <h3>Numbers to say out loud (re-confirm your lead 2)</h3>
-        <p>€325/tonne GoGreen Plus · 9.7% WTP premium · 28% vs 20% ESG growth + 56% of growth + 2× multi-claim · +10–25% eco-checkout conversion (+22%/+19% cases). <strong>Lead with the McKinsey/NielsenIQ + EcoCart numbers</strong> (strongest, most defensible); quote ranges, cite source, don't overstate.</p>
-        <p class="src">Full money story with sources in cases/DHL-MARGIN-money-story.md</p>
-      </div>
-    </details>
-
-    <!-- BUDGET ฿5M -->
-    <details>
-      <summary>💸 The ฿5M budget (3-month plan)</summary>
-      <div class="body">
-        <div class="key"><strong>OpEx/CapEx? No.</strong> This is a 3-month <em>marketing</em> spend — that's OpEx by definition; nothing is a capitalized asset, so CapEx is irrelevant (3 months isn't even one business cycle). Right tool = budget allocation + cost-effectiveness + ROI. <strong>The judo line:</strong> "DHL already made the CapEx (€7B). Our ฿5M is marketing OpEx that <em>activates</em> awareness of an asset that already exists — customers fund the carbon."</div>
-
-        <h3>The split (฿5,000,000) — ≈฿46k/branch/month</h3>
+        <h3>The ฿5M split (≈฿46k/branch/month, indicative)</h3>
         <table>
           <tr><th>Bucket</th><th>%</th><th>฿</th></tr>
-          <tr><td>In-branch experience (36 ServicePoints)</td><td>30%</td><td>1,500,000</td></tr>
-          <tr><td>Digital build (Receipt QR · LINE OA · the Map)</td><td>20%</td><td>1,000,000</td></tr>
+          <tr><td>In-branch experience (36 branches)</td><td>30%</td><td>1,500,000</td></tr>
+          <tr><td>Digital build (Receipt QR · LINE · Map)</td><td>20%</td><td>1,000,000</td></tr>
           <tr><td>Seller Badge + SME activation</td><td>18%</td><td>900,000</td></tr>
           <tr><td>Content & social (SME video · #ShipLight)</td><td>15%</td><td>750,000</td></tr>
-          <tr><td>Staff enablement (briefing + script)</td><td>5%</td><td>250,000</td></tr>
-          <tr><td>Measurement (pre/post awareness survey)</td><td>7%</td><td>350,000</td></tr>
+          <tr><td>Staff enablement</td><td>5%</td><td>250,000</td></tr>
+          <tr><td>Measurement (pre/post survey)</td><td>7%</td><td>350,000</td></tr>
           <tr><td>Contingency</td><td>5%</td><td>250,000</td></tr>
           <tr><td><strong>Total</strong></td><td><strong>100%</strong></td><td><strong>5,000,000</strong></td></tr>
         </table>
-        <p class="src">Indicative planning allocation, not quotes. Favour cheap repeating touchpoints (receipt, screen, staff line, LINE) over one-off spectacle. No celebrities (excluded by brief).</p>
-
-        <h3>Phased over 3 months</h3>
-        <ul>
-          <li><strong>Wk 1–3 Build & baseline:</strong> design assets, build LINE + Map, staff script, baseline survey</li>
-          <li><strong>Wk 4–8 Launch:</strong> go live across 36 branches; screens/posters/cards; LINE push; seed the Map</li>
-          <li><strong>Wk 9–12 Spread & prove:</strong> Seller Badge to SME communities; #ShipLight UGC; post survey + ROI readout</li>
-        </ul>
-
-        <h3>Cost-effectiveness / ROI</h3>
-        <p>Cost per aware customer · per QR scan · per LINE open · per badge claim · GoGreen Plus opt-in lift (high-margin) · earned reach abroad. <strong>ROI line:</strong> "฿5M of awareness OpEx activates a €7B green capability, lifts GoGreen Plus, and turns SME customers into free broadcasters — proven by a before/after survey."</p>
-        <p class="src">Full budget + phasing + ROI detail in cases/DHL-BUDGET-5M.md</p>
+        <p><strong>Phasing:</strong> Wk1–3 Build & baseline · Wk4–8 Launch · Wk9–12 Spread & prove (post survey + ROI).</p>
       </div>
     </details>
 
-    <!-- CREATIVE / INTERNATIONAL -->
+    <!-- 4 · PROOF: SCIENCE, CLAIMS, FACTS -->
     <details>
-      <summary>🎨 Creative &amp; international angle</summary>
+      <summary>✅ The proof — science, Green Claims & facts</summary>
       <div class="body">
-        <div class="key"><strong>The unlock:</strong> it's cross-border shipping — every parcel crosses borders, so the green story can too. <em>"Your kindness to the planet crosses borders with your parcel."</em></div>
-        <h3>Award-winning moves to borrow</h3>
+        <h3>SAF science (defend it)</h3>
+        <p>SAF = renewable/waste jet fuel, drop-in (<strong>same speed</strong>). Costs 2–4×, under 1% of supply (→ why book-and-claim exists). Cuts up to ~80% lifecycle CO₂ on waste feedstocks. The saving is biogenic carbon (from today's air), not the tailpipe.</p>
+        <h3>Green Claims — the winner-separator</h3>
         <ul>
-          <li><strong>Renault "Cars to Work"</strong> (Cannes 2024 Grand Prix) — solve a barrier, don't advertise → show customers they're <em>already</em> helping, free.</li>
-          <li><strong>Natura "Amazon Greenventory"</strong> (Cannes 2025) — make the invisible visible → the Impact Map.</li>
-          <li><strong>Thai Life insurance films</strong> — Thailand's superpower is emotional storytelling → wrap the carbon number in a Thai family / cross-border story.</li>
+          <li><strong>Book-and-claim:</strong> say "you funded a <em>verified reduction</em> via SAF," NEVER "your parcel flew on SAF."</li>
+          <li><strong>Cite GLEC Framework / ISO 14083</strong> — the industry standard, and <strong>DHL is a member</strong> → citing the method DHL itself uses.</li>
+          <li><strong>EmpCo</strong> binding 27 Sep 2026 bans generic + offset claims; DHL's insetting survives it.</li>
+          <li>Never: "green/eco-friendly/sustainable" alone, "emission-free," "climate neutral." Always: specific %, explain how, provable.</li>
         </ul>
-        <h3>The Thai emotional layer (your edge)</h3>
-        <p>People ship abroad to stay close to people they love. <em>"You're not just sending a parcel across the world — you're protecting the world they live in too."</em> (ไม่ใช่แค่ส่งของข้ามโลก แต่คุณกำลังดูแลโลกที่คนที่คุณรักอาศัยอยู่)</p>
-        <p class="src">Full version in cases/DHL-CREATIVE-international.md</p>
+        <h3>Fact audit — what to say out loud</h3>
+        <p><strong>🟢 Lead:</strong> 28% vs 20% ESG growth · +10–25% conversion · 43 vs 12 EVs (DHL vs FedEx) · €325/tonne · SAF 2–4×.<br>
+        <strong>🟡 Qualify:</strong> WTP "APAC ~11% / global 9.7%" · SAF "up to ~80% on waste" · €7B = DHL Group.<br>
+        <strong>🔴 Dropped:</strong> "97% concerned" (→ 79% EV-interested) · FedEx "2 US airports" (→ "limited").</p>
+        <p><strong>The 3 to lead the pitch:</strong> 28% vs 20% · +10–25% conversion · 43 vs 12 EVs.</p>
       </div>
     </details>
 
-    <!-- BENCHMARK -->
+    <!-- 5 · PITCH & CREATIVE -->
     <details>
-      <summary>🌐 How other brands raise awareness (benchmark)</summary>
+      <summary>🎤 The pitch & creative angle</summary>
       <div class="body">
-        <h3>The 6 patterns every great campaign uses</h3>
-        <p>Transparency = trust · customer as participant · invisible → visible/tangible · customers as broadcasters · a simple dashboard/proof · be provocative. <strong>Our spine hits all six.</strong></p>
-        <table>
-          <tr><th>Brand</th><th>Move</th><th>Lesson for DHL</th></tr>
-          <tr><td>Patagonia</td><td>"Don't Buy This Jacket" — showed real harm; +30% sales</td><td>honesty = trust (= Green-Claims shield)</td></tr>
-          <tr><td>Oatly / Allbirds</td><td>carbon number on every product, like a nutrition label</td><td>normalize the number on the receipt</td></tr>
-          <tr><td>EcoCart / Ecosia</td><td>impact counters + tree equivalence → +10% conversion</td><td>the Map converts, not just informs</td></tr>
-          <tr><td>Maersk / Lufthansa</td><td>emissions dashboard + customer-funded SAF</td><td>localizing DHL's dashboard is proven &amp; low-risk</td></tr>
-        </table>
-        <div class="key"><strong>The UOB move:</strong> UOB runs a "Sustainability Compass" to help SMEs start their green journey — our primary persona is SMEs. Mirroring the sponsor's own mission tells the judges you understood <em>why UOB is hosting this.</em></div>
-        <p class="src">Full benchmark + sources in cases/DHL-BENCHMARK-awareness.md</p>
+        <h3>6-beat pitch flow</h3>
+        <ol style="margin:0 0 12px 20px">
+          <li><strong>Emotion</strong> — 20-sec story: a parcel sent abroad to someone loved.</li>
+          <li><strong>Gap</strong> — 83% love DHL; nobody knows it's green.</li>
+          <li><strong>Idea</strong> — "Proof That Travels" / "Ship Love. Ship Light."</li>
+          <li><strong>System</strong> — Feel→Carry→Belong→Spread (+ the tier closes the loop).</li>
+          <li><strong>Proof</strong> — precedents + reuses DHL's real assets + GLEC/book-and-claim.</li>
+          <li><strong>Close</strong> — Green-Claims mastery + the UOB mirror + "X tonnes cut, a country that knows."</li>
+        </ol>
+        <h3>Creative angle</h3>
+        <p>International is the gift — the parcel crosses borders, so the green story can too. Emotional Thai layer + <strong>SDG 10 (Reduced Inequalities):</strong> shipping is an equalizer — even a small home seller reaches the world. Carbon = the proof; opportunity = the heart. Precedents to borrow: Patagonia (transparency), EcoCart (impact counters), Maersk (dashboards), TOMS (participation).</p>
+      </div>
+    </details>
+
+    <!-- FULL DOC -->
+    <details>
+      <summary>📄 Full master doc + archive</summary>
+      <div class="body">
+        <p>Everything in depth — every number, source, journey, and the team feedback log — lives in one master document:</p>
+        <p><a class="full-link" href="cases/DHL.md">▶ Open the full master doc (DHL.md)</a></p>
+        <p class="src">Granular working docs (situation, research, SAF, economics, creative, benchmark, tier, etc.) are in <a href="cases/archive/">cases/archive/</a> and in git history.</p>
+        <h3>📖 Practice more cases</h3>
+        <p>Where to find real case booklets + free case studies to train on (TUBC, Yale, MIT, Case Study Club): <a href="cases/WHERE-TO-STUDY-CASES.md">cases/WHERE-TO-STUDY-CASES.md</a></p>
       </div>
     </details>
   </div>
 
-  <p class="empty">More cases will appear here as you take them on.</p>
-
-  <p class="src" style="margin-top:22px;text-align:center;">
-    Raw editable notes (travel with a <code>git clone</code>):
-    <a style="color:var(--accent)" href="cases/DHL-MASTER-strategy.md">🏆 Master strategy</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-Express-UOB-WonderLab-2026.md">Summary + page map</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-SITUATION-analysis.md">Situation</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-STRATEGY-bank.md">Strategy bank</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-TOP3-deepdive.md">Top 3</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-RESEARCH-deepdive.md">Research</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-CARBON-ECONOMICS.md">Carbon economics</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-SAF-vs-jetfuel.md">SAF vs jet fuel</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-ECONOMICS-bigpicture.md">Bigger picture</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-CREATIVE-international.md">Creative</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-BENCHMARK-awareness.md">Benchmark</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-CHEAT-SHEET.md">Cheat sheet</a> ·
-    <a style="color:var(--accent)" href="cases/DHL-IDEAS-brainstorm.md">Brainstorm</a>
-  </p>
+  <p class="src" style="text-align:center;margin-top:20px">More cases will appear here as you take them on.</p>
 </div>
 
 <script src="../lib/atlas-fx.js"></script>
-<script>
-  // Play the flow-chain build-up when it first scrolls into view (once). The
-  // diagram is fully visible by default if JS/observer is unavailable — we only
-  // ADD animation, never gate content on it. <details> must be open to be seen.
-  (function () {
-    var flow = document.getElementById('flowChain');
-    if (!flow) return;
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) { flow.classList.remove('anim'); return; } // just show it, no motion
-    if (!('IntersectionObserver' in window)) { flow.classList.add('play'); return; }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { flow.classList.add('play'); io.disconnect(); }
-      });
-    }, { threshold: 0.4 });
-    io.observe(flow);
-  })();
-</script>
 </body>
 </html>
