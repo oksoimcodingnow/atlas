@@ -1,7 +1,7 @@
 /* Atlas service worker — cache-first with on-the-fly population.
  * Bump CACHE_VERSION to force a refresh after deploying changes.
  */
-const CACHE_VERSION = 'atlas-v122';
+const CACHE_VERSION = 'atlas-v123';
 const ASSETS = [
   './',
   './index.html',
@@ -49,6 +49,7 @@ const ASSETS = [
   './library/cases/DHL-ECONOMICS-bigpicture.md',
   './library/cases/DHL-MARGIN-money-story.md',
   './library/cases/DHL-FACT-AUDIT.md',
+  './library/cases/DHL-TEAM-feedback.md',
   './library/cases/DHL-CREATIVE-international.md',
   './library/cases/DHL-BENCHMARK-awareness.md',
   './library/cases/README.md',
