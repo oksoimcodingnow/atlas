@@ -184,7 +184,59 @@ spread and stick." Or pitch Green Receipt alone if the format wants one tight id
 - **SME social badge risk** → made it a genuine sales asset (the money story answers "why bother").
 - **SDG 10 / "shipping is an equalizer" / LV angle** → became the emotional spine (§10).
 - **Customer tier** → the Green Shipper tier (§4), closes the loop.
-- ⚠️ **Open to verify:** does DHL offer biodegradable/sustainable *packaging*? Don't claim it unless confirmed (DHL's story is shipping carbon, not packaging).
+- ✅ **Packaging — VERIFIED:** DHL Thailand offers **GoGreen recyclable packaging** (unbleached brown
+  boxes, single-colour ink, recyclable, **free to customers**). So Pakkapon's box angle works — but say
+  **"recyclable," NOT "biodegradable"** (Green-Claims precision). A nice bonus layer: the box itself is
+  already greener, before the shipment even flies. [DHL Thailand]
+
+---
+
+## 13. PRODUCTION — the tangible artifacts (mockups)
+
+> Judges remember what they *see.* These are draft artifacts to put on slides — concrete, not placeholder.
+> ⚠️ All carbon figures are **illustrative** — pull exact numbers from **MyDHL+** before final.
+
+### A. The Green Receipt (sample)
+```
+────────────────────────────────
+   DHL EXPRESS · ServicePoint
+   ส่งความรัก ส่งอย่างรักษ์โลก
+────────────────────────────────
+ To:  Tokyo, Japan 🇯🇵
+ Service: Express Worldwide + GoGreen Plus
+ ────────────────────────────
+ 🌱 YOUR GREEN IMPACT
+ You funded a verified reduction of
+        ~340 g CO₂
+   ≈ 3 km not driven 🚗
+ via Sustainable Aviation Fuel (book-and-claim)
+ Method: GLEC Framework / ISO 14083
+ ────────────────────────────
+ [ QR ]  See how it's calculated →
+ Your total this year: 2.1 kg CO₂ cut
+ 🥉 Bronze Green Shipper · 1 more to Silver
+────────────────────────────────
+```
+
+### B. The QR landing page (content)
+- **Headline:** "You just helped — here's exactly how."
+- The number (340 g) → the tangible unit (≈3 km not driven) → a one-line plain explanation of SAF.
+- **"How we calculate it":** GLEC Framework / ISO 14083 + book-and-claim, in 2 sentences (the trust shield).
+- **Your running total** + your tier progress (Sprout→Gold).
+- CTA: "Ship greener next time" + (for SMEs) "Get your Ships-Greener badge."
+- Footer: never "carbon neutral / emission-free" — only specific, verified language.
+
+### C. The ServicePoint video (60-sec script)
+1. **0–10s:** A small Thai home-seller packs an order at her kitchen table. VO: *"Ploy sells her crafts from a small room in Chiang Mai."*
+2. **10–25s:** She ships it at a DHL ServicePoint. VO: *"Today it reaches a customer in Paris — the same shelf as the big brands."* (the SDG-10 equalizer beat)
+3. **25–40s:** Close-up: the **Green Receipt** prints. VO: *"And this parcel flew lighter — she funded a verified cut of CO₂, certified, GLEC-standard."*
+4. **40–55s:** Her badge appears on her shop page; the national **Map** ticks up. VO: *"Her customers see it. The country sees it. Small shop, real impact."*
+5. **55–60s:** Logo + **"Ship Love. Ship Light."** End.
+
+### D. Thailand's Green Map (concept)
+- Live screen at ServicePoints + web: a map of Thailand with glowing lines arcing to 220 countries.
+- Big number: "Customers cut ___ kg CO₂ this month" (national total across 36 branches, GLEC-based).
+- Milestone moments ("we just passed 1 tonne!") = shareable social beats.
 
 ---
 *Granular source docs live in `/archive` (and in git history). This master doc is the single source of truth.*
