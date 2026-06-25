@@ -3,6 +3,7 @@
 > The team's single source of truth: the brief, the validated problem, the idea, the AI stack, the build
 > workflow, and the 4-minute video plan. **CFA Society Thailand · AI × Finance Hackathon (first in Thailand).**
 > Pair with the [playbook](../hackathon.html) (how to win) and the [command center](../../hackathon.html) (dates, roster, checklist).
+> Deep dive on the build: [Financial Modeling × Stats × AI architecture](FINANCIAL-MODELING-AI.md).
 > **Built:** 23 Jun 2026.
 
 ---
