@@ -32,17 +32,14 @@
   .logo span{color:var(--muted);font-weight:500;}
   .sub{font-size:12px;color:var(--muted);margin-top:5px;letter-spacing:.14em;text-transform:uppercase;}
 
-  /* fixed cinematic stage */
   .stage{position:relative; width:min(900px,94vw); height:min(460px,62vh);}
   .panel{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    opacity:0; transform:translateY(10px) scale(.99); transition:opacity .6s ease, transform .6s ease; pointer-events:none;}
+    opacity:0; transform:translateY(10px) scale(.99); transition:opacity .5s ease, transform .5s ease; pointer-events:none;}
   .panel.show{opacity:1; transform:none;}
 
-  /* counter */
   .counter{font-family:var(--mono); font-size:14px; color:var(--muted); margin-bottom:16px; height:18px;}
   .counter b{color:var(--signal); font-size:15px;}
 
-  /* chips */
   .chips{display:flex; flex-wrap:wrap; gap:7px; justify-content:center; align-content:center; max-width:840px;}
   .chip{font-family:var(--mono); font-size:11px; padding:5px 9px; border-radius:7px;
     border:1px solid var(--line); background:rgba(255,255,255,0.03); color:var(--muted);
@@ -51,7 +48,6 @@
   .chip.signal{color:#04130d; background:var(--signal); border-color:var(--signal);
     font-weight:600; transform:scale(1.12); box-shadow:0 6px 22px rgba(52,211,153,.35);}
 
-  /* signals list */
   .sig-row{display:flex; flex-direction:column; gap:10px; width:min(560px,90%);}
   .sig{display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--line);
     border-left:3px solid var(--signal); border-radius:10px; background:var(--panel);
@@ -60,7 +56,6 @@
   .sig .tag{font-family:var(--mono); font-weight:600; color:var(--signal); font-size:13px; min-width:104px;}
   .sig .why{font-size:13.5px; color:var(--muted);}
 
-  /* hypotheses */
   .hypos{display:flex; flex-direction:column; gap:12px; width:min(640px,92%);}
   .hypo{display:flex; gap:13px; padding:14px 17px; border:1px solid var(--line); border-radius:12px;
     background:linear-gradient(180deg, rgba(129,140,248,0.08), rgba(255,255,255,0.01));
@@ -70,7 +65,6 @@
   .hypo .t{font-size:14px; line-height:1.5;}
   .hypo .t b{color:var(--text);font-weight:600}
 
-  /* backtest */
   .bt{width:min(680px,94%);}
   .bt .chart{border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:14px 14px 8px;}
   .bt svg{width:100%; height:auto; display:block;}
@@ -83,24 +77,30 @@
   .stat span{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.07em;}
   .illus{font-size:10px;color:var(--dim);text-align:right;margin-top:7px;font-family:var(--mono)}
 
-  /* finale */
   .finale{text-align:center;}
   .finale .big{font-size:clamp(26px,4.6vw,44px); font-weight:800; letter-spacing:-.02em; line-height:1.12;}
   .finale .big .g{color:var(--signal);}
   .finale .flow{margin-top:18px; font-family:var(--mono); font-size:13px; color:var(--muted); letter-spacing:.04em;}
   .finale .flow b{color:var(--ai);} .finale .flow .h{color:var(--signal);}
 
-  /* caption + controls */
-  .caption{position:fixed; bottom:78px; left:0; right:0; text-align:center; font-size:15px;
-    color:var(--text); opacity:0; transition:opacity .5s; padding:0 20px; min-height:22px;}
+  .caption{position:fixed; bottom:84px; left:0; right:0; text-align:center; font-size:15px;
+    color:var(--text); opacity:0; transition:opacity .45s; padding:0 20px; min-height:22px;}
   .caption.show{opacity:1;}
   .caption b{color:var(--signal);} .caption .ai{color:var(--ai);}
-  .replay{position:fixed; bottom:26px; right:26px; font-family:var(--mono); font-size:12px;
-    color:var(--muted); background:rgba(255,255,255,0.04); border:1px solid var(--line);
-    border-radius:999px; padding:9px 16px; cursor:pointer; opacity:0; transition:opacity .4s; z-index:20;}
-  .replay.show{opacity:1;} .replay:hover{color:var(--text);border-color:var(--signal);}
-  .hint{position:fixed; bottom:30px; left:26px; font-family:var(--mono); font-size:11px; color:var(--dim);}
-  @media (max-width:560px){ .sig .tag{min-width:0} .caption{bottom:64px} }
+
+  /* bottom control bar */
+  .bar{position:fixed; bottom:24px; left:0; right:0; display:flex; align-items:center; justify-content:center; gap:18px;}
+  .dots{display:flex; gap:8px;}
+  .dots .d{width:8px;height:8px;border-radius:50%;background:var(--dim); transition:.3s;}
+  .dots .d.on{background:var(--signal); box-shadow:0 0 10px var(--signal); transform:scale(1.25);}
+  .nav{font-family:var(--mono); font-size:11.5px; color:var(--dim);}
+  .nav b{color:var(--muted);}
+  .step-n{font-family:var(--mono); font-size:11.5px; color:var(--muted); min-width:64px; text-align:right;}
+  .next-btn{position:fixed; bottom:20px; right:24px; font-family:var(--mono); font-size:12px;
+    color:var(--text); background:rgba(52,211,153,0.12); border:1px solid rgba(52,211,153,0.4);
+    border-radius:999px; padding:9px 16px; cursor:pointer; transition:.2s; z-index:20;}
+  .next-btn:hover{background:rgba(52,211,153,0.22);}
+  @media (max-width:560px){ .sig .tag{min-width:0} .caption{bottom:70px} .nav{display:none} }
 </style>
 </head>
 <body>
@@ -110,25 +110,21 @@
   </div>
 
   <div class="stage">
-    <!-- 1+2 chips -->
     <div class="panel" id="p-chips">
       <div class="counter" id="counter">scanning&nbsp;<b>100</b>&nbsp;factors…</div>
       <div class="chips" id="chips"></div>
     </div>
 
-    <!-- 3 signals -->
     <div class="panel" id="p-signals">
       <div class="counter">100 factors&nbsp;→&nbsp;<b>5 signals</b></div>
       <div class="sig-row" id="sigRow"></div>
     </div>
 
-    <!-- 4 hypotheses -->
     <div class="panel" id="p-hypos">
       <div class="counter">3 testable hypotheses</div>
       <div class="hypos" id="hypoBox"></div>
     </div>
 
-    <!-- 5 backtest -->
     <div class="panel" id="p-bt">
       <div class="bt">
         <div class="chart">
@@ -157,7 +153,6 @@
       </div>
     </div>
 
-    <!-- 6 finale -->
     <div class="panel" id="p-finale">
       <div class="finale">
         <div class="big">AI does the grind.<br><span class="g">You keep the judgment.</span></div>
@@ -167,11 +162,15 @@
   </div>
 
   <div class="caption" id="caption"></div>
-  <div class="hint">press <b>R</b> to replay</div>
-  <div class="replay" id="replay">↻ Replay</div>
+
+  <div class="bar">
+    <div class="nav"><b>Space</b>/→ next · <b>←</b> back · <b>R</b> restart</div>
+    <div class="dots" id="dots"></div>
+    <div class="step-n" id="stepN">1 / 6</div>
+  </div>
+  <div class="next-btn" id="nextBtn">Next →</div>
 
 <script>
-  // ---- factor universe (the "overload") ----
   const FACTORS = [
     "P/E","P/B","P/S","EV/EBITDA","PEG","ROE","ROA","ROIC","Debt/Equity","Current Ratio",
     "Quick Ratio","Gross Margin","Op Margin","Net Margin","FCF Yield","Div Yield","EPS Growth",
@@ -185,7 +184,6 @@
     "Capital Intensity","Goodwill/Assets","Float","Volume Δ","Price Gap","Skew","Kurtosis","Sharpe(stock)",
     "Sortino","Max DD","Correlation","Drawdown Days","Earnings Surprise","Analyst Rating","Target Δ"
   ];
-  // the 5 survivors (must exist above)
   const SIGNALS = [
     {tag:"P/E (low)",        why:"cheap relative to what it earns"},
     {tag:"ROE (high)",       why:"quality — compounds capital well"},
@@ -199,114 +197,96 @@
     {h:"H2", t:"<b>Rising earnings momentum</b> → positive 3-month returns"},
     {h:"H3", t:"<b>Low Debt/Equity + FCF yield</b> → smaller drawdowns"},
   ];
+  const CAPTIONS = [
+    'Hundreds of factors. <span class="ai">Which ones actually matter?</span>',
+    'AI separates <b>signal</b> from noise…',
+    '5 signals — and <b>why each matters</b>.',
+    'Testable hypotheses — <span class="ai">in plain words</span>.',
+    'Backtested — <b>AI proposes, statistics decides</b>.',
+    ''  // finale: tagline carries it
+  ];
+  const PANELS = ['p-chips','p-chips','p-signals','p-hypos','p-bt','p-finale'];
+  const LAST = 5;
 
   const $=id=>document.getElementById(id);
-  const chipsEl=$('chips');
-  let chipNodes=[];
+  let cur=0, gen=0, timers=[];
+  const at=(ms,fn)=>{const t=setTimeout(fn,ms); timers.push(t); return t;};
+  const clearTimers=()=>{timers.forEach(clearTimeout); timers=[];};
 
-  function buildChips(){
-    chipsEl.innerHTML=''; chipNodes=[];
-    FACTORS.forEach(f=>{
-      const c=document.createElement('span');
-      c.className='chip'; c.textContent=f; c.dataset.k=f;
-      chipsEl.appendChild(c); chipNodes.push(c);
-    });
-  }
-  function buildSignals(){
-    const r=$('sigRow'); r.innerHTML='';
-    SIGNALS.forEach(s=>{
-      const d=document.createElement('div'); d.className='sig';
-      d.innerHTML='<div class="tag">'+s.tag+'</div><div class="why">'+s.why+'</div>';
-      r.appendChild(d);
-    });
-  }
-  function buildHypos(){
-    const b=$('hypoBox'); b.innerHTML='';
-    HYPOS.forEach(h=>{
-      const d=document.createElement('div'); d.className='hypo';
-      d.innerHTML='<div class="h">'+h.h+'</div><div class="t">'+h.t+'</div>';
-      b.appendChild(d);
-    });
-  }
-
-  let timers=[];
-  const at=(ms,fn)=>timers.push(setTimeout(fn,ms));
-  const show=(id,on=true)=>$(id).classList.toggle('show',on);
-  const cap=(html)=>{ const c=$('caption'); c.innerHTML=html; c.classList.add('show'); };
-  const capHide=()=>$('caption').classList.remove('show');
+  // build content
+  (function(){
+    const ch=$('chips'); FACTORS.forEach(f=>{const c=document.createElement('span');c.className='chip';c.textContent=f;c.dataset.k=f;ch.appendChild(c);});
+    const sr=$('sigRow'); SIGNALS.forEach(s=>{const d=document.createElement('div');d.className='sig';d.innerHTML='<div class="tag">'+s.tag+'</div><div class="why">'+s.why+'</div>';sr.appendChild(d);});
+    const hb=$('hypoBox'); HYPOS.forEach(h=>{const d=document.createElement('div');d.className='hypo';d.innerHTML='<div class="h">'+h.h+'</div><div class="t">'+h.t+'</div>';hb.appendChild(d);});
+    const dd=$('dots'); for(let i=0;i<=LAST;i++){const d=document.createElement('span');d.className='d';dd.appendChild(d);}
+  })();
 
   function animateCount(el,from,to,ms,fmt){
-    const t0=performance.now();
-    function step(now){
-      const p=Math.min(1,(now-t0)/ms);
-      const v=from+(to-from)*(1-Math.pow(1-p,3));
+    const myGen=gen, t0=performance.now();
+    (function step(now){
+      if(myGen!==gen) return;
+      const p=Math.min(1,(now-t0)/ms), v=from+(to-from)*(1-Math.pow(1-p,3));
       el.textContent=fmt(v);
       if(p<1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+    })(t0);
   }
 
-  function reset(){
-    timers.forEach(clearTimeout); timers=[];
-    ['p-chips','p-signals','p-hypos','p-bt','p-finale'].forEach(id=>show(id,false));
-    capHide(); show('replay',false);
-    buildChips(); buildSignals(); buildHypos();
-    $('counter').innerHTML='scanning&nbsp;<b>100</b>&nbsp;factors…';
-    $('benchLine').style.transition='none'; $('benchLine').style.strokeDashoffset='1400';
-    $('stratLine').style.transition='none'; $('stratLine').style.strokeDashoffset='1500';
+  function resetChips(){ document.querySelectorAll('.chip').forEach(c=>c.classList.remove('noise','signal')); }
+  function resetSig(){ document.querySelectorAll('.sig').forEach(s=>s.classList.remove('in')); }
+  function resetHypo(){ document.querySelectorAll('.hypo').forEach(h=>h.classList.remove('in')); }
+  function resetBT(){
+    const b=$('benchLine'),s=$('stratLine');
+    b.style.transition='none'; b.style.strokeDashoffset='1400';
+    s.style.transition='none'; s.style.strokeDashoffset='1500';
     $('sRet').textContent='0%'; $('sShp').textContent='0.0'; $('sDD').textContent='0%';
   }
 
-  function play(){
-    reset();
-    // PHASE 1 — the overload
-    at(300,()=>{ show('p-chips'); cap('Hundreds of factors. <span class="ai">Which ones actually matter?</span>'); });
+  // per-stage entry
+  const enter = {
+    0(){ resetChips(); $('counter').innerHTML='scanning&nbsp;<b>'+FACTORS.length+'</b>&nbsp;factors…'; },
+    1(){ resetChips();
+         const b=$('counter').querySelector('b'); animateCount(b,FACTORS.length,5,1500,v=>Math.round(v));
+         document.querySelectorAll('.chip').forEach((c,i)=>{ const sig=SIGNAL_KEYS.includes(c.dataset.k);
+           at(i*14,()=>c.classList.add(sig?'signal':'noise')); });
+         at(1600,()=>$('counter').innerHTML=FACTORS.length+' factors&nbsp;→&nbsp;<b>5 signals</b>'); },
+    2(){ resetSig(); document.querySelectorAll('.sig').forEach((s,i)=>at(i*160,()=>s.classList.add('in'))); },
+    3(){ resetHypo(); document.querySelectorAll('.hypo').forEach((h,i)=>at(i*200,()=>h.classList.add('in'))); },
+    4(){ resetBT();
+         at(120,()=>{ const b=$('benchLine'),s=$('stratLine');
+           b.style.transition='stroke-dashoffset 1.5s ease'; b.style.strokeDashoffset='0';
+           s.style.transition='stroke-dashoffset 1.7s ease .15s'; s.style.strokeDashoffset='0'; });
+         at(650,()=>{ animateCount($('sRet'),0,18.4,1400,v=>'+'+v.toFixed(1)+'%');
+           animateCount($('sShp'),0,1.6,1400,v=>v.toFixed(1));
+           animateCount($('sDD'),0,-9.2,1400,v=>v.toFixed(1)+'%'); }); },
+    5(){}
+  };
 
-    // PHASE 2 — filter noise → signal
-    at(2700,()=>{
-      cap('AI separates <b>signal</b> from noise…');
-      const counterB=$('counter').querySelector('b');
-      animateCount(counterB,100,5,1900,v=>Math.round(v));
-      chipNodes.forEach((c,i)=>{
-        const isSig=SIGNAL_KEYS.includes(c.dataset.k);
-        at(i*16,()=> c.classList.add(isSig?'signal':'noise'));
-      });
-      at(2000,()=>$('counter').innerHTML='100 factors&nbsp;→&nbsp;<b>5 signals</b>');
-    });
-
-    // PHASE 3 — the 5 signals, explained
-    at(5800,()=>{
-      show('p-chips',false); show('p-signals'); cap('5 signals — and <b>why each matters</b>.');
-      document.querySelectorAll('#sigRow .sig').forEach((s,i)=> at(i*180,()=>s.classList.add('in')));
-    });
-
-    // PHASE 4 — hypotheses
-    at(9600,()=>{
-      show('p-signals',false); show('p-hypos'); cap('Testable hypotheses — <span class="ai">in plain words</span>.');
-      document.querySelectorAll('#hypoBox .hypo').forEach((h,i)=> at(i*220,()=>h.classList.add('in')));
-    });
-
-    // PHASE 5 — backtest
-    at(13200,()=>{
-      show('p-hypos',false); show('p-bt'); cap('Backtested — <b>AI proposes, statistics decides</b>.');
-      const b=$('benchLine'), s=$('stratLine');
-      b.style.transition='stroke-dashoffset 1.6s ease'; b.style.strokeDashoffset='0';
-      s.style.transition='stroke-dashoffset 1.8s ease .2s'; s.style.strokeDashoffset='0';
-      at(700,()=>{
-        animateCount($('sRet'),0,18.4,1500,v=>'+'+v.toFixed(1)+'%');
-        animateCount($('sShp'),0,1.6,1500,v=>v.toFixed(1));
-        animateCount($('sDD'),0,-9.2,1500,v=>v.toFixed(1)+'%');
-      });
-    });
-
-    // PHASE 6 — finale
-    at(17800,()=>{ show('p-bt',false); capHide(); show('p-finale'); });
-    at(18600,()=>show('replay'));
+  function goTo(i){
+    i=Math.max(0,Math.min(LAST,i));
+    clearTimers(); gen++;
+    cur=i;
+    // panels
+    ['p-chips','p-signals','p-hypos','p-bt','p-finale'].forEach(id=>$(id).classList.remove('show'));
+    $(PANELS[i]).classList.add('show');
+    // caption
+    const cap=$('caption');
+    if(CAPTIONS[i]){ cap.innerHTML=CAPTIONS[i]; cap.classList.add('show'); } else cap.classList.remove('show');
+    // dots + step
+    document.querySelectorAll('#dots .d').forEach((d,k)=>d.classList.toggle('on',k===i));
+    $('stepN').textContent=(i+1)+' / '+(LAST+1);
+    $('nextBtn').textContent = i===LAST ? '↻ Restart' : 'Next →';
+    enter[i]();
   }
+  const next=()=> goTo(cur>=LAST ? 0 : cur+1);
+  const prev=()=> goTo(cur-1);
 
-  $('replay').addEventListener('click',play);
-  document.addEventListener('keydown',e=>{ if(e.key==='r'||e.key==='R'||e.key===' '){ e.preventDefault(); play(); }});
-  play();
+  $('nextBtn').addEventListener('click',next);
+  document.addEventListener('keydown',e=>{
+    if(e.key===' '||e.key==='ArrowRight'||e.key==='Enter'){ e.preventDefault(); next(); }
+    else if(e.key==='ArrowLeft'){ e.preventDefault(); prev(); }
+    else if(e.key==='r'||e.key==='R'){ e.preventDefault(); goTo(0); }
+  });
+  goTo(0);
 </script>
 </body>
 </html>
