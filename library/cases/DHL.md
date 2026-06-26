@@ -9,6 +9,7 @@
 4. The Big Idea + the system (Feel→Carry→Belong→Spread + the tier) 5. Persona & targeting
 6. The money story & ฿5M budget 7. Carbon/SAF science 8. Green-Claims & methodology
 9. Fact audit (what to say) 10. Creative & benchmarks 11. The pitch 12. Team feedback log
+13. Production mockups 14. Success metrics 15. Risk register 16. Q&A prep 17. Beyond the pilot 18. Deck outline
 
 ---
 
@@ -237,6 +238,80 @@ spread and stick." Or pitch Green Receipt alone if the format wants one tight id
 - Live screen at ServicePoints + web: a map of Thailand with glowing lines arcing to 220 countries.
 - Big number: "Customers cut ___ kg CO₂ this month" (national total across 36 branches, GLEC-based).
 - Milestone moments ("we just passed 1 tonne!") = shareable social beats.
+
+---
+
+## 14. SUCCESS METRICS — baseline → target (the Impact/ROI answer · 40% of the score)
+
+> ⚠️ Baselines are **assumed — confirm with DHL Thailand.** Targets = the 3-month pilot goal across 36 ServicePoints.
+> **North-star metric: sustainability-awareness lift** (this is an awareness campaign — lead with this).
+
+| Metric | Baseline (assumed) | 3-mo target | How measured |
+|---|---|---|---|
+| **Sustainability awareness @ ServicePoints** ⭐ | ~15% | **45%** | pre/post intercept survey (mirror the booklet's own 83% method) |
+| GoGreen Plus opt-in rate (walk-in) | ~5% | **+8 pts → ~13%** | DHL ServicePoint data |
+| Green Receipt QR scan rate | — | **25%+** | QR analytics |
+| LINE OA: receipt opens / new followers | — | **20k opens / 8k followers** | LINE OA analytics |
+| Seller Badge claims (SMEs) | 0 | **2,000+** | badge dashboard |
+| #ShipLight UGC posts / earned reach | 0 | **500 posts / 1M impressions** | social listening |
+| CO₂ enabled (incremental opt-ins) | — | **~X tonnes** *(illustrative — MyDHL+)* | GoGreen Plus data × GLEC |
+| Cost per aware customer | — | **≤ ฿X** | ฿5M ÷ (reach × awareness lift) |
+
+**Headline ROI line:** *"₿5M moved awareness from ~15% to ~45% and lifted green opt-in 8 points — activating an asset DHL already spent €7B building."*
+
+---
+
+## 15. RISK REGISTER (what could go wrong → how we cover it)
+
+| Risk | L×I | Mitigation |
+|---|---|---|
+| Receipt ignored / tossed | M×M | multi-touch: also digital (LINE) + branch screen + staff line + the tier's running total. A *moment*, not a slip. |
+| SMEs don't adopt the badge | M×H | it's a **sales asset** (ESG products grow 28% vs 20%), 1-tap in LINE, tied to buyer trust — not a chore |
+| Greenwashing / legal backlash | L×H | **GLEC/ISO 14083 + book-and-claim + specific certified figures**; never banned words; survives EmpCo 2026; legal review pre-launch |
+| kg numbers questioned | M×H | sourced from **MyDHL+ / GLEC**; QR shows the method; **DHL is a GLEC member** |
+| Staff don't deliver the one-liner | M×M | dead-simple script + enablement budget (5%) + a small team incentive |
+| Awareness lift not attributable | M×M | pre/post survey + QR/LINE analytics + opt-in delta; measure both awareness *and* behaviour |
+| Message ignored at a transactional moment | M×M | tiny **passive** touchpoints that never slow shipping |
+| Budget overrun | L×M | 5% contingency + phased spend (review/kill-switch after Wk8) |
+
+---
+
+## 16. Q&A PREP — the devil's-advocate questions (have these ready)
+
+1. **"A receipt just gets thrown away."** → It's also digital (LINE/email), on the branch screen, and in the staff line; the paper is one of *several* touchpoints, and the tier total persists.
+2. **"Isn't this greenwashing?"** → No — GLEC/ISO 14083 method, book-and-claim wording, a specific *certified* figure, and we never say "carbon neutral." That precision *is* the campaign.
+3. **"Why would an SME bother with the badge?"** → It helps them *sell* — ESG-claim products grow 28% vs 20%; it's 1-tap and margin-positive. A credential, not a chore.
+4. **"How is the kg number credible?"** → MyDHL+ / GLEC-based; the QR shows the calculation; DHL itself is a GLEC member.
+5. **"Does awareness actually change behaviour?"** → The tier + repeat loop turn awareness into habit; we measure *both* the awareness lift *and* the GoGreen Plus opt-in lift.
+6. **"₿5M across 36 branches in 3 months — is that enough?"** → It buys *awareness*, not carbon; it reuses DHL's existing channels and activates a €7B asset. High leverage, not high spend.
+7. **"Why not just a normal ad campaign?"** → A point-of-sale *felt moment* + the SME multiplier + Green-Claims mastery beat a generic awareness ad — and cost less.
+8. **"Isn't 'flew on SAF' misleading?"** → Exactly why we say **"funded a verified reduction"** — book-and-claim. We got this right on purpose.
+
+---
+
+## 17. BEYOND THE PILOT — scale & sustain (it's not a one-off)
+
+- **Roll-out:** after the 3-month, 36-branch pilot → all DHL TH touchpoints + account/contract customers via **MyDHL+**; hand to DHL as **business-as-usual** (low ongoing cost — the assets are already built).
+- **Self-sustaining loop:** the **tier + badge** drive repeat behaviour and **earned reach** → it keeps spinning without fresh spend.
+- **Data flywheel:** more opt-ins → richer Green Map → more social proof → more opt-ins.
+- **Regional template:** package it for **DHL APAC** (same GoGreen Plus, same GLEC standard).
+- **Legacy:** positions DHL ahead of **EmpCo (27 Sep 2026)**; the **Green Shipper community** persists as owned audience.
+
+---
+
+## 18. DECK OUTLINE — slide by slide (~11 slides)
+
+1. **Title** — "Ship Love. Ship Light." + the team.
+2. **Emotional open** — Ploy's parcel (the 20-sec story).
+3. **The gap** — 83% love DHL, nobody knows it's green + the Key Question.
+4. **The insight** — green is invisible at the counter; primary persona = Micro-SMEs.
+5. **The Big Idea** — "Proof That Travels."
+6. **The system** — Feel → Carry → Belong → Spread (+ the Green Shipper tier).
+7. **Show it** — the Green Receipt + QR mockup (the felt moment).
+8. **Why it's trustworthy** — GLEC / book-and-claim (the winner-separator).
+9. **The money story** — margin not cost; ฿5M = awareness OpEx on a €7B asset + the budget split.
+10. **Proof & metrics** — feasibility (reuses real assets, 43 vs 12 EVs, precedents) + success targets (§14).
+11. **Close** — the UOB mirror + "X tonnes cut, and a country that knows." End on the line.
 
 ---
 *Granular source docs live in `/archive` (and in git history). This master doc is the single source of truth.*
