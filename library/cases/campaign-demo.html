@@ -73,8 +73,9 @@
 
   /* stamp / box */
   .box-wrap{display:flex; align-items:center; gap:26px; flex-wrap:wrap; justify-content:center;}
-  .pbox{width:170px;height:130px;border-radius:8px;background:linear-gradient(160deg,#caa33c,#FFCC00);position:relative;box-shadow:0 16px 40px rgba(0,0,0,.45);}
-  .pbox::before{content:'';position:absolute;inset:0;border-top:14px solid rgba(0,0,0,.12);}
+  .pbox{width:184px;height:132px;border-radius:6px;background:linear-gradient(160deg,#e6c255,#FFCC00);position:relative;box-shadow:0 20px 46px rgba(0,0,0,.5);overflow:hidden;}
+  .pbox::before{content:'';position:absolute;top:0;left:0;right:0;height:14px;background:rgba(0,0,0,.16);} /* top flap shadow */
+  .pbox::after{content:'';position:absolute;top:0;bottom:0;left:50%;width:24px;transform:translateX(-50%);background:rgba(255,255,255,.20);} /* packing tape */
   .pbox .stamp{position:absolute;bottom:12px;right:12px;background:#04130d;color:var(--green);font-size:10px;font-weight:700;
      border:2px solid var(--green);border-radius:8px;padding:5px 8px;font-family:var(--mono);line-height:1.2;text-align:left;}
   .arc{font-size:2rem;color:var(--dhl-yellow);}
@@ -83,8 +84,16 @@
   /* map */
   .mapwrap{position:relative; width:min(560px,92%);}
   .mapwrap svg{width:100%;height:auto;display:block}
-  .mapnum{position:absolute; top:14px; left:0; right:0; text-align:center;}
-  .mapnum b{font-family:var(--mono); font-size:2.2rem; color:var(--green);} .mapnum span{display:block;color:var(--muted);font-size:12px}
+  .mapnum{text-align:center; margin-bottom:10px;}
+  .mapnum b{font-family:var(--mono); font-size:clamp(1.7rem,4vw,2.6rem); color:var(--green); text-shadow:0 0 24px rgba(52,211,153,.35);} .mapnum span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+  /* world map (BELONG beat) */
+  #worldmap{width:min(900px,96%); height:auto; display:block; overflow:visible;}
+  #worldmap .grid line{stroke:rgba(255,255,255,0.05); stroke-width:1;}
+  #worldmap .arc{fill:none; stroke:var(--green); stroke-width:1.4; opacity:.8; stroke-linecap:round;}
+  #worldmap .dest{fill:var(--green);}
+  #worldmap .lbl{fill:#cdd6e6; font-family:var(--mono); font-size:8px; opacity:.85;}
+  #worldmap .o-dot{fill:var(--dhl-yellow);}
+  #worldmap .o-lbl{fill:var(--dhl-yellow); font-family:var(--mono); font-size:10px; font-weight:700;}
 
   /* badge + tier */
   .badge{display:inline-flex;align-items:center;gap:10px;border:2px solid var(--green);border-radius:999px;
@@ -190,23 +199,14 @@
       <div class="sub">The parcel crosses the border — and the green story crosses with it. Free cross-border reach.</div>
     </div>
 
-    <!-- 6 map -->
+    <!-- 6 BELONG — world map -->
     <div class="panel" id="p6">
-      <div class="mapwrap">
-        <div class="mapnum"><b>1,284 kg</b><span>CO₂ cut by ServicePoint customers this month</span></div>
-        <svg viewBox="0 0 560 280" aria-hidden="true">
-          <circle cx="280" cy="200" r="6" fill="#FFCC00"/>
-          <path d="M280,200 Q160,80 60,120"  fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
-          <path d="M280,200 Q240,60 360,70"  fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
-          <path d="M280,200 Q420,120 500,90" fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
-          <path d="M280,200 Q380,200 480,210" fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
-          <path d="M280,200 Q180,220 90,230" fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
-          <circle cx="60" cy="120" r="4" fill="#34d399"/><circle cx="360" cy="70" r="4" fill="#34d399"/>
-          <circle cx="500" cy="90" r="4" fill="#34d399"/><circle cx="480" cy="210" r="4" fill="#34d399"/>
-          <circle cx="90" cy="230" r="4" fill="#34d399"/>
-        </svg>
-      </div>
-      <div class="sub">Every green shipment adds to a live national total — across all 36 ServicePoints.</div>
+      <div class="mapnum"><b>1,284 kg</b><span>CO₂ cut by ServicePoint customers this month — across all 36 branches</span></div>
+      <svg id="worldmap" viewBox="0 0 1000 500" aria-hidden="true">
+        <g class="grid" id="wmGrid"></g>
+        <g id="wmArcs"></g>
+        <g id="wmDots"></g>
+      </svg>
     </div>
 
     <!-- 7 badge + tier -->
@@ -316,6 +316,38 @@
     else if(e.key==='ArrowLeft'){e.preventDefault();prev();}
     else if(e.key==='r'||e.key==='R'){e.preventDefault();goTo(0);}
   });
+  // ---- build the world map in the BELONG beat (static, with flowing particles) ----
+  (function(){
+    const W=1000,H=500, NS='http://www.w3.org/2000/svg';
+    const proj=(lat,lon)=>({x:(lon+180)/360*W,y:(90-lat)/180*H});
+    const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+    const grid=$('wmGrid'), arcs=$('wmArcs'), dots=$('wmDots'); if(!grid) return;
+    const o=proj(13.7,100.5);
+    const D=[['Tokyo',35.7,139.7],['Seoul',37.6,127],['Singapore',1.35,103.8],['Sydney',-33.9,151.2],
+      ['Dubai',25.2,55.3],['Mumbai',19.1,72.9],['London',51.5,-0.1],['Paris',48.9,2.35],
+      ['Berlin',52.5,13.4],['New York',40.7,-74],['Los Angeles',34,-118.2],['São Paulo',-23.5,-46.6],['Cape Town',-33.9,18.4]];
+    for(let lon=-180;lon<=180;lon+=30){const x=(lon+180)/360*W; grid.appendChild(mk('line',{x1:x,y1:0,x2:x,y2:H}));}
+    for(let lat=-90;lat<=90;lat+=30){const y=(90-lat)/180*H; grid.appendChild(mk('line',{x1:0,y1:y,x2:W,y2:y}));}
+    D.forEach((d,i)=>{
+      const p=proj(d[1],d[2]); const dist=Math.hypot(p.x-o.x,p.y-o.y);
+      const cx=(o.x+p.x)/2, cy=(o.y+p.y)/2 - dist*0.28;
+      arcs.appendChild(mk('path',{class:'arc',id:'wmArc'+i,d:`M ${o.x} ${o.y} Q ${cx} ${cy} ${p.x} ${p.y}`}));
+      const part=mk('circle',{r:2.2,fill:'#FFCC00',opacity:.9});
+      const am=mk('animateMotion',{dur:(2.6+i*0.12)+'s',repeatCount:'indefinite',begin:(i*0.2)+'s'});
+      am.appendChild(mk('mpath',{href:'#wmArc'+i})); part.appendChild(am); arcs.appendChild(part);
+    });
+    D.forEach(d=>{
+      const p=proj(d[1],d[2]); dots.appendChild(mk('circle',{class:'dest',cx:p.x,cy:p.y,r:3}));
+      const end=p.x>900; const t=mk('text',{class:'lbl',x:end?p.x-6:p.x+6,y:p.y+3,'text-anchor':end?'end':'start'}); t.textContent=d[0]; dots.appendChild(t);
+    });
+    const glow=mk('circle',{class:'o-dot',cx:o.x,cy:o.y,r:5,opacity:.5});
+    glow.appendChild(mk('animate',{attributeName:'r',values:'5;20;5',dur:'2.6s',repeatCount:'indefinite'}));
+    glow.appendChild(mk('animate',{attributeName:'opacity',values:'.5;0;.5',dur:'2.6s',repeatCount:'indefinite'}));
+    dots.appendChild(glow);
+    dots.appendChild(mk('circle',{class:'o-dot',cx:o.x,cy:o.y,r:5}));
+    const ol=mk('text',{class:'o-lbl',x:o.x,y:o.y+18,'text-anchor':'middle'}); ol.textContent='BANGKOK'; dots.appendChild(ol);
+  })();
+
   goTo(0);
 </script>
 </body>
