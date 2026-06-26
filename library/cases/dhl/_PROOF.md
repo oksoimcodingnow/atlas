@@ -39,6 +39,7 @@
 | Compass: 1,600+ SMEs | "More than **1,600 businesses** have used it" (launched May 2024) | Bangkok Post / Digital Banker | ✅ |
 | SIP: 240+ SMEs | "equipped over **240 SMEs**" | Digital Banker | ✅ |
 | U-Solar: 359 GWh / 167,000t | "359 GWh... avoiding over **167,000 tonnes** of emissions" since 2020 (TH) | UOB / SCMP | ✅ |
+| ฿33.96B sustainable finance (TH 2024) | "In 2024, UOB Thailand approved **THB 33.96 billion** in sustainable finance loans" | The Digital Banker / Bangkok Post | ✅ (verified 26 Jun) |
 
 ### Market sizing (Thai e-commerce)
 | Claim | Exact wording at source | Source | Verdict |
@@ -68,7 +69,7 @@
 ---
 
 ## 🟡 USE WITH CARE / RE-CHECK BEFORE QUOTING
-- **UOB ฿33.96B sustainable finance (TH 2024)** — appears in UOB's 2024 Sustainability Report PDF but NOT independently re-confirmed this pass. **Verify in the report before saying it on stage**, or just use the ✅ "1,600+ SMEs" figure instead.
+- **UOB ฿33.96B sustainable finance (TH 2024)** — ✅ NOW VERIFIED (26 Jun): confirmed in multiple sources (The Digital Banker, Bangkok Post). Safe to quote.
 - **Product badges "+55%"** — a vendor/marketing blog number, not peer-reviewed. Soften to "badges measurably lift conversion; eco-labels reliably shift product selection (56-study review)."
 - **DHL Express Thailand daily shipment volume** — NOT publicly disclosed. ROI denominator uses market-size proxy. If pushed, say so plainly.
 
