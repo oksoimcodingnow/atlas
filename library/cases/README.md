@@ -6,6 +6,7 @@ Summaries of business cases / competition briefs, in one place.
 
 ### DHL Express — UOB Wonder Lab 2026 · *Active · apply by 30 Jun 2026*
 
+- **[SUMMARY.md](SUMMARY.md) — share-with-the-team overview** (the idea + all 5 live visuals + links).
 - **[DHL.md](DHL.md) — the master doc (single source of truth).** Situation, idea & system,
   persona, money & ฿5M budget, SAF science, Green Claims/GLEC, fact audit, creative, the pitch,
   and the team feedback log — all in one place.
