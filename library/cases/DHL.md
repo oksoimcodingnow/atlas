@@ -88,6 +88,19 @@ The Receipt's running total = the tier progress bar; the Seller Badge levels up 
 makes the loop *repeat* (fixes the awareness→habit gap). Lives in LINE OA (near-zero build).
 *Guardrails:* reward choices not spend · keep it a 10-sec pitch beat · behaviour-named (Green-Claims safe) · don't paywall the good feeling.
 
+**Reasonable thresholds — by *lifetime green shipments* (choices, not baht):**
+| Tier | Green shipments | Unlocks |
+|---|---|---|
+| 🌱 Sprout | 1st | your impact starts counting |
+| 🥉 Bronze | 5 | a digital Green Shipper badge (LINE) |
+| 🥈 Silver | 20 | shareable badge + featured on the Green Map |
+| 🥇 Gold | 50 | top badge + the SME "Ships Greener — Gold" credential |
+
+*Why these are reasonable:* **lifetime** (everyone keeps progressing — no punishing annual reset) · counts
+**green choices**, not spend (honours the guardrail) · reachable for an active SME (~1 green ship/week → Gold
+in a year), aspirational for an occasional shipper · rewards are **recognition / a sales credential — never the
+good feeling itself.**
+
 ---
 
 ## 5. PERSONA & TARGETING
@@ -224,8 +237,8 @@ spread and stick." Or pitch Green Receipt alone if the format wants one tight id
  Method: GLEC Framework / ISO 14083
  ────────────────────────────
  [ QR ]  See how it's calculated →
- Your total this year: 2.1 kg CO₂ cut
- 🥉 Bronze Green Shipper · 1 more to Silver
+ Your impact: 2.1 kg CO₂ cut · 8 green ships
+ 🥉 Bronze Green Shipper · 12 to Silver
 ────────────────────────────────
 ```
 

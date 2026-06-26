@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How we calculate it — Ship Love. Ship Light.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0b0d12; --panel:#141821; --line:rgba(255,255,255,0.09);
+    --text:#f4f6fb; --muted:#9aa3b2; --dim:#3b4150;
+    --dhl-yellow:#FFCC00; --dhl-red:#D40511; --green:#34d399; --blue:#60a5fa;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{height:100%}
+  body{background:
+      radial-gradient(900px 480px at 50% -12%, rgba(52,211,153,0.10), transparent 60%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased;
+    display:flex; align-items:center; justify-content:center; min-height:100vh; overflow:hidden; padding:24px;}
+  ::selection{background:var(--green);color:#04130d}
+
+  .head{position:fixed; top:26px; left:0; right:0; text-align:center;}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--muted);}
+  .tag b{background:var(--dhl-yellow);color:var(--dhl-red);font-weight:800;padding:2px 8px;border-radius:5px;}
+
+  .stage{position:relative; width:min(760px,94vw); height:min(440px,62vh);}
+  .panel{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    opacity:0; transform:translateY(8px); transition:opacity .35s, transform .35s; pointer-events:none; text-align:center;}
+  .panel.show{opacity:1; transform:none;}
+
+  h1{font-size:clamp(30px,6vw,52px); font-weight:900; letter-spacing:-.02em; line-height:1.05;}
+  h1 .g{color:var(--green);}
+  .sub{color:var(--muted); font-size:15px; margin-top:14px; max-width:46ch; line-height:1.6;}
+  .step-lbl{font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--green); font-weight:700; margin-bottom:14px;}
+
+  .ship{border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:20px 26px; font-size:15px; line-height:1.9;}
+  .ship b{color:var(--text);} .ship .em{color:var(--green);font-weight:700;}
+
+  .calc{font-family:var(--mono); font-size:clamp(14px,2.2vw,18px); line-height:2.1; color:var(--muted);}
+  .calc .op{color:var(--dim);}
+  .calc .res{color:var(--green); font-weight:700; font-size:1.3em;}
+  .calc .hl{color:var(--text);}
+
+  .big-num{font-family:var(--mono); font-weight:700; font-size:clamp(40px,9vw,88px); color:var(--green); line-height:1; text-shadow:0 0 30px rgba(52,211,153,.4);}
+  .big-cap{color:var(--muted); font-size:14px; margin-top:12px;}
+
+  .proof{display:flex; flex-direction:column; gap:10px; width:min(520px,92%);}
+  .pr{display:flex; align-items:center; gap:14px; padding:13px 18px; border:1px solid var(--line); border-left:3px solid var(--green);
+    border-radius:10px; background:var(--panel); text-align:left;}
+  .pr .t{font-family:var(--mono); color:var(--green); font-weight:700; font-size:13px; min-width:128px;}
+  .pr .d{font-size:13.5px; color:var(--muted);}
+
+  .caption{position:fixed; bottom:82px; left:0; right:0; text-align:center; font-size:15px; color:var(--text);
+    opacity:0; transition:opacity .35s; padding:0 20px; min-height:22px;} .caption.show{opacity:1;}
+  .caption b{color:var(--green);}
+  .illus{position:fixed; bottom:58px; left:0; right:0; text-align:center; font-family:var(--mono); font-size:10px; color:var(--dim);}
+
+  .bar{position:fixed; bottom:24px; left:0; right:0; display:flex; align-items:center; justify-content:center; gap:18px;}
+  .dots{display:flex; gap:7px;} .dots .d{width:8px;height:8px;border-radius:50%;background:var(--dim);transition:.3s;}
+  .dots .d.on{background:var(--green);box-shadow:0 0 10px var(--green);transform:scale(1.25);}
+  .nav{font-family:var(--mono);font-size:11.5px;color:var(--dim);} .nav b{color:var(--muted);}
+  .step-n{font-family:var(--mono);font-size:11.5px;color:var(--muted);min-width:60px;text-align:right;}
+  .next-btn{position:fixed;bottom:20px;right:24px;font-family:var(--mono);font-size:12px;color:#04130d;
+    background:var(--green);border:none;border-radius:999px;padding:10px 18px;cursor:pointer;font-weight:700;z-index:20;}
+  .back-link{position:fixed;top:24px;left:24px;font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none;z-index:20;}
+  .back-link:hover{color:var(--text);}
+  @media(max-width:560px){.nav{display:none}.caption{bottom:70px}}
+</style>
+</head>
+<body>
+  <a class="back-link" href="campaign-demo.html">← back</a>
+  <div class="head"><div class="tag"><b>DHL</b> GoGreen Plus · how the number is calculated</div></div>
+
+  <div class="stage">
+    <!-- 0 -->
+    <div class="panel" id="p0">
+      <h1>How we <span class="g">calculate</span> it.</h1>
+      <div class="sub">Your <b style="color:var(--text)">340 g</b> isn't a marketing number. Here's the exact path — proven, not claimed.</div>
+    </div>
+    <!-- 1 -->
+    <div class="panel" id="p1">
+      <div class="step-lbl">Your shipment</div>
+      <div class="ship"><b>2 kg parcel</b><br>Bangkok 🇹🇭 → Tokyo 🇯🇵 · <span class="em">~4,600 km</span><br>Express Worldwide + GoGreen Plus</div>
+    </div>
+    <!-- 2 -->
+    <div class="panel" id="p2">
+      <div class="step-lbl">Step 1 · Baseline emissions — GLEC / ISO 14083</div>
+      <div class="calc">
+        2 kg <span class="op">→</span> 0.002 t<br>
+        0.002 t <span class="op">×</span> 4,600 km <span class="op">=</span> <span class="hl">9.2 tonne-km</span><br>
+        9.2 <span class="op">×</span> ≈0.47 kg CO₂e / t·km <span class="op">(GLEC, well-to-wake)</span><br>
+        <span class="op">=</span> <span class="res">≈ 4.3 kg CO₂e</span>
+      </div>
+    </div>
+    <!-- 3 -->
+    <div class="panel" id="p3">
+      <div class="step-lbl">Step 2 · Your reduction — SAF, book-and-claim</div>
+      <div class="sub" style="margin-top:0;margin-bottom:18px">DHL funds <b style="color:var(--text)">Sustainable Aviation Fuel</b>; an independent body certifies the cut (<b style="color:var(--text)">ISCC / CORSIA</b>). Your certified share:</div>
+      <div class="calc"><span class="res" style="font-size:1.6em">≈ 340 g CO₂</span></div>
+    </div>
+    <!-- 4 -->
+    <div class="panel" id="p4">
+      <div class="step-lbl">Step 3 · Made real</div>
+      <div class="big-num">≈ 3 km</div>
+      <div class="big-cap">not driven 🚗  &nbsp;(340 g ÷ ~120 g per km)</div>
+    </div>
+    <!-- 5 -->
+    <div class="panel" id="p5">
+      <div class="step-lbl">Verified, not claimed</div>
+      <div class="proof">
+        <div class="pr"><div class="t">GLEC / ISO 14083</div><div class="d">the emissions calculation (DHL is a member)</div></div>
+        <div class="pr"><div class="t">ISCC / CORSIA</div><div class="d">the SAF sustainability certification</div></div>
+        <div class="pr"><div class="t">Book-and-claim</div><div class="d">how the reduction is allocated to you</div></div>
+      </div>
+      <div class="sub">Every gram is traceable to a standard. <b style="color:var(--green)">That's the difference between proof and a claim.</b></div>
+    </div>
+  </div>
+
+  <div class="caption" id="caption"></div>
+  <div class="illus">illustrative worked example — actual figures from MyDHL+</div>
+
+  <div class="bar">
+    <div class="nav"><b>Space</b>/→ next · <b>←</b> back · <b>R</b> restart</div>
+    <div class="dots" id="dots"></div>
+    <div class="step-n" id="stepN">1 / 6</div>
+  </div>
+  <button class="next-btn" id="nextBtn">Next →</button>
+
+<script>
+  const CAPTIONS=['','Start with your actual shipment.','Step 1 — baseline emissions, the GLEC standard.',
+    'Step 2 — your SAF-funded reduction, <b>certified</b>.','Step 3 — turned into something you can feel.',
+    'Every gram traceable to a standard.'];
+  const LAST=5; const $=id=>document.getElementById(id); let cur=-1;
+  (function(){const dd=$('dots');for(let i=0;i<=LAST;i++){const d=document.createElement('span');d.className='d';dd.appendChild(d);}})();
+  function goTo(i){ i=Math.max(0,Math.min(LAST,i)); cur=i;
+    for(let k=0;k<=LAST;k++) $('p'+k).classList.toggle('show',k===i);
+    const c=$('caption'); if(CAPTIONS[i]){c.innerHTML=CAPTIONS[i];c.classList.add('show');} else c.classList.remove('show');
+    document.querySelectorAll('#dots .d').forEach((d,k)=>d.classList.toggle('on',k===i));
+    $('stepN').textContent=(i+1)+' / '+(LAST+1); $('nextBtn').textContent=i===LAST?'↻ Restart':'Next →';
+  }
+  const next=()=>goTo(cur>=LAST?0:cur+1), prev=()=>goTo(cur-1);
+  $('nextBtn').addEventListener('click',next);
+  document.addEventListener('keydown',e=>{ if(e.key===' '||e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();next();}
+    else if(e.key==='ArrowLeft'){e.preventDefault();prev();} else if(e.key==='r'||e.key==='R'){e.preventDefault();goTo(0);}});
+  goTo(0);
+</script>
+</body>
+</html>
