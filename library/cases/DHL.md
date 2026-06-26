@@ -109,6 +109,35 @@ little guy."* Why: frequent shippers (repeat → measurable), and they broadcast
 (B2B2C multiplier). **SECONDARY: Students** (social shareability). Expats/tourists = lower priority
 (niche / one-time). Whole campaign leans into **small-business empowerment** → mirrors UOB perfectly.
 
+### Who counts as an SME — and how we know (so "help the little guy" is precise)
+
+**The legal definition (Thailand · OSMEP 2020) — by revenue *and* staff:**
+| Size | Annual revenue | Staff |
+|---|---|---|
+| **Micro** ⭐ *(our core)* | ≤ **฿1.8M** | ≤ 5 |
+| Small | ≤ ฿50M (trade/svc) · ฿100M (mfg) | ≤ 30 · 50 |
+| Medium | ≤ ฿300M (trade/svc) · ฿500M (mfg) | ≤ 100 |
+| **Large = "big firm"** | **> ฿300M** | **> 100** |
+*(If revenue & headcount land in different tiers, the higher one wins.)*
+
+**The scale (why this market is the whole game):** Thailand has **~3.26M SMEs = 99.5% of all firms**, and
+**84% are *micro*** · ~**3M online sellers** (Shopee/Lazada/TikTok). SMEs = **34.8% of GDP** and **70% of jobs**
+— **but only 14.3% of exports.** → 99.5% of firms, 14.3% of exports = **the little guy is locked out of going
+global** (big platforms & big firms dominate cross-border). *That exact gap is what "Ship Love. Ship Light." +
+the Seller Badge attacks.*
+
+**How DHL tells them apart (no tax-form checking needed):**
+| | Individual | **SME / online seller** ⭐ | Big firm |
+|---|---|---|---|
+| Account | MyDHL+ guest / personal | **free Business Account** · self-IDs "I sell online" | enterprise contract + account manager |
+| Ships | walk-in, one-off | ServicePoint / MyDHL+, **commercial & repeat** | scheduled pickups (not at a counter) |
+
+**Key insight:** big firms ship on **contract accounts with scheduled pickups — they are *not* the ServicePoint
+walk-in crowd.** So the ServicePoint audience is *already* Micro/Small + individuals → the campaign
+**structurally targets the little guy.** *Rule: the **Badge** is for business-account / online sellers (the SME
+perk); individuals still get the **Green Receipt + tier** — nobody's excluded.*
+*(Sources: OSMEP 2020 definition · OSMEP SME report 2024 · Statista/ADB.)*
+
 ---
 
 ## 6. THE MONEY STORY & ฿5M BUDGET
