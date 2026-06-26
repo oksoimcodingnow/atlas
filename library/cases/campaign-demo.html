@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ship Love. Ship Light. — Campaign Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0b0d12; --panel:#141821; --line:rgba(255,255,255,0.09);
+    --text:#f4f6fb; --muted:#9aa3b2; --dim:#3b4150;
+    --dhl-yellow:#FFCC00; --dhl-red:#D40511; --green:#34d399; --blue:#60a5fa;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{height:100%}
+  body{background:
+      radial-gradient(900px 480px at 50% -12%, rgba(255,204,0,0.10), transparent 60%),
+      radial-gradient(700px 500px at 82% 112%, rgba(52,211,153,0.07), transparent 60%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); -webkit-font-smoothing:antialiased;
+    display:flex; align-items:center; justify-content:center; min-height:100vh; overflow:hidden; padding:24px;}
+  ::selection{background:var(--dhl-yellow);color:#000}
+
+  .head{position:fixed; top:24px; left:0; right:0; text-align:center;}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--muted);}
+  .tag b{background:var(--dhl-yellow);color:var(--dhl-red);font-weight:800;padding:2px 8px;border-radius:5px;letter-spacing:.02em;}
+
+  .stage{position:relative; width:min(940px,95vw); height:min(500px,66vh);}
+  .panel{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    opacity:0; transform:translateY(8px); transition:opacity .35s, transform .35s; pointer-events:none; text-align:center;}
+  .panel.show{opacity:1; transform:none;}
+
+  h1{font-size:clamp(34px,7vw,68px); font-weight:900; letter-spacing:-.02em; line-height:1.04;}
+  h1 .y{color:var(--dhl-yellow);}
+  .thai{font-size:clamp(16px,2.4vw,22px); color:var(--muted); margin-top:14px;}
+  .lead{font-size:clamp(18px,2.6vw,26px); font-weight:700; max-width:18ch; line-height:1.2;}
+  .lead .y{color:var(--dhl-yellow);} .lead .g{color:var(--green);}
+  .big-idea{font-size:clamp(30px,6vw,60px); font-weight:900; letter-spacing:-.02em;}
+  .big-idea .y{color:var(--dhl-yellow);}
+  .sub{color:var(--muted); font-size:15px; margin-top:16px; max-width:54ch; line-height:1.6;}
+
+  /* stat cards */
+  .stats{display:flex; gap:20px; flex-wrap:wrap; justify-content:center;}
+  .scard{border:1px solid var(--line); border-radius:16px; background:var(--panel); padding:26px 30px; min-width:200px;}
+  .scard b{display:block; font-family:var(--mono); font-size:3rem; line-height:1; }
+  .scard.yellow b{color:var(--dhl-yellow);} .scard.red b{color:var(--dhl-red);} .scard.green b{color:var(--green);}
+  .scard span{display:block; color:var(--muted); font-size:13px; margin-top:10px;}
+
+  /* system flow */
+  .flow{display:flex; align-items:stretch; gap:6px; flex-wrap:wrap; justify-content:center;}
+  .fstep{flex:1; min-width:150px; max-width:200px; border:1px solid var(--line); border-radius:14px; background:var(--panel); padding:18px 14px;}
+  .fstep .ic{font-size:2rem;} .fstep .n{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--dhl-yellow); font-weight:700; margin:8px 0 4px;}
+  .fstep .t{font-weight:700; font-size:1rem;} .fstep .d{font-size:12px; color:var(--muted); margin-top:5px; line-height:1.45;}
+  .farrow{align-self:center; color:var(--dhl-yellow); font-size:1.3rem;}
+  @media(max-width:680px){ .farrow{transform:rotate(90deg)} }
+
+  /* receipt */
+  .receipt{font-family:var(--mono); font-size:13px; line-height:1.7; background:#fdfcf7; color:#1a1a1a;
+    border-radius:10px; padding:22px 26px; width:min(380px,90%); text-align:left; box-shadow:0 20px 50px rgba(0,0,0,.5);}
+  .receipt .c{text-align:center;} .receipt hr{border:none;border-top:1px dashed #bbb; margin:9px 0;}
+  .receipt .impact{background:#eafbf3; border-radius:8px; padding:10px 12px; margin:8px 0;}
+  .receipt .kg{font-size:20px; font-weight:700; color:#0a7d4f; text-align:center;}
+  .receipt .km{text-align:center; color:#0a7d4f; font-size:12px;}
+  .receipt .meth{font-size:10.5px; color:#777;}
+  .receipt .tier{color:#b8860b; font-weight:600;}
+  .receipt .qr{display:inline-block;width:46px;height:46px;background:
+     repeating-linear-gradient(0deg,#000 0 3px,transparent 3px 6px),
+     repeating-linear-gradient(90deg,#000 0 3px,transparent 3px 6px);border:3px solid #000;vertical-align:middle;margin-right:8px}
+
+  /* stamp / box */
+  .box-wrap{display:flex; align-items:center; gap:26px; flex-wrap:wrap; justify-content:center;}
+  .pbox{width:170px;height:130px;border-radius:8px;background:linear-gradient(160deg,#caa33c,#FFCC00);position:relative;box-shadow:0 16px 40px rgba(0,0,0,.45);}
+  .pbox::before{content:'';position:absolute;inset:0;border-top:14px solid rgba(0,0,0,.12);}
+  .pbox .stamp{position:absolute;bottom:12px;right:12px;background:#04130d;color:var(--green);font-size:10px;font-weight:700;
+     border:2px solid var(--green);border-radius:8px;padding:5px 8px;font-family:var(--mono);line-height:1.2;text-align:left;}
+  .arc{font-size:2rem;color:var(--dhl-yellow);}
+  .globe{font-size:3.4rem;}
+
+  /* map */
+  .mapwrap{position:relative; width:min(560px,92%);}
+  .mapwrap svg{width:100%;height:auto;display:block}
+  .mapnum{position:absolute; top:14px; left:0; right:0; text-align:center;}
+  .mapnum b{font-family:var(--mono); font-size:2.2rem; color:var(--green);} .mapnum span{display:block;color:var(--muted);font-size:12px}
+
+  /* badge + tier */
+  .badge{display:inline-flex;align-items:center;gap:10px;border:2px solid var(--green);border-radius:999px;
+     padding:12px 22px;font-weight:800;color:var(--green);background:rgba(52,211,153,.08);font-size:1.1rem;}
+  .tierbar{display:flex;gap:6px;margin-top:26px;width:min(440px,92%)}
+  .tseg{flex:1;text-align:center;padding:10px 4px;border:1px solid var(--line);border-radius:9px;font-size:12px;color:var(--muted)}
+  .tseg.on{border-color:var(--dhl-yellow);background:rgba(255,204,0,.12);color:var(--text);font-weight:700}
+
+  /* trust two-col */
+  .cols{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;width:min(680px,94%)}
+  .col{flex:1;min-width:240px;border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--panel);text-align:left}
+  .col.ok{border-color:rgba(52,211,153,.4)} .col.no{border-color:rgba(212,5,17,.4)}
+  .col h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+  .col.ok h4{color:var(--green)} .col.no h4{color:var(--dhl-red)}
+  .col p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+  .col b{color:var(--text)}
+  .meth-line{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--dhl-yellow)}
+
+  .finale .big-idea{margin-bottom:6px}
+  .finale .flow-line{font-family:var(--mono);font-size:14px;color:var(--muted);margin-top:18px}
+  .finale .flow-line b{color:var(--dhl-yellow)} .finale .flow-line .g{color:var(--green)}
+
+  .caption{position:fixed; bottom:82px; left:0; right:0; text-align:center; font-size:15px; color:var(--text);
+    opacity:0; transition:opacity .35s; padding:0 20px; min-height:22px;}
+  .caption.show{opacity:1;} .caption b{color:var(--dhl-yellow);} .caption .g{color:var(--green);}
+
+  .bar{position:fixed; bottom:24px; left:0; right:0; display:flex; align-items:center; justify-content:center; gap:18px;}
+  .dots{display:flex; gap:7px;}
+  .dots .d{width:8px;height:8px;border-radius:50%;background:var(--dim); transition:.3s;}
+  .dots .d.on{background:var(--dhl-yellow); box-shadow:0 0 10px var(--dhl-yellow); transform:scale(1.25);}
+  .nav{font-family:var(--mono); font-size:11.5px; color:var(--dim);} .nav b{color:var(--muted);}
+  .step-n{font-family:var(--mono); font-size:11.5px; color:var(--muted); min-width:64px; text-align:right;}
+  .next-btn{position:fixed; bottom:20px; right:24px; font-family:var(--mono); font-size:12px; color:#000;
+    background:var(--dhl-yellow); border:none; border-radius:999px; padding:10px 18px; cursor:pointer; font-weight:700; z-index:20;}
+  @media(max-width:560px){ .nav{display:none} .caption{bottom:68px} }
+</style>
+</head>
+<body>
+  <div class="head"><div class="tag"><b>DHL</b> Express × UOB Wonder Lab 2026 · campaign walkthrough</div></div>
+
+  <div class="stage">
+    <!-- 0 title -->
+    <div class="panel" id="p0">
+      <h1>Ship Love. <span class="y">Ship Light.</span></h1>
+      <div class="thai">ส่งความรัก ส่งอย่างรักษ์โลก</div>
+      <div class="sub">"Proof That Travels" — the awareness campaign for DHL's 36 ServicePoints.</div>
+    </div>
+
+    <!-- 1 gap -->
+    <div class="panel" id="p1">
+      <div class="stats">
+        <div class="scard yellow"><b>83%</b><span>love DHL's service</span></div>
+        <div class="scard red"><b>~0%</b><span>know DHL is green</span></div>
+      </div>
+      <div class="sub">DHL's green work is real — but invisible at the moment of shipping.</div>
+    </div>
+
+    <!-- 2 big idea -->
+    <div class="panel" id="p2">
+      <div class="big-idea">Proof That <span class="y">Travels.</span></div>
+      <div class="sub">We don't <em>tell</em> people DHL is green — we hand them <b style="color:var(--text)">proof they personally helped</b>, and let it travel: onto the box, across the border, onto a national map, into the seller's shop.</div>
+    </div>
+
+    <!-- 3 system -->
+    <div class="panel" id="p3">
+      <div class="flow">
+        <div class="fstep"><div class="ic">🧾</div><div class="n">① Feel</div><div class="t">Green Receipt</div><div class="d">proof you helped, in your hand</div></div>
+        <div class="farrow">→</div>
+        <div class="fstep"><div class="ic">📦</div><div class="n">② Carry</div><div class="t">Green Stamp</div><div class="d">the receiver abroad sees it</div></div>
+        <div class="farrow">→</div>
+        <div class="fstep"><div class="ic">🗺️</div><div class="n">③ Belong</div><div class="t">Green Map</div><div class="d">a national total, ticking up</div></div>
+        <div class="farrow">→</div>
+        <div class="fstep"><div class="ic">🏅</div><div class="n">④ Spread</div><div class="t">Seller Badge</div><div class="d">SMEs broadcast it to buyers</div></div>
+      </div>
+    </div>
+
+    <!-- 4 receipt -->
+    <div class="panel" id="p4">
+      <div class="receipt">
+        <div class="c"><b>DHL EXPRESS · ServicePoint</b><br>ส่งความรัก ส่งอย่างรักษ์โลก</div>
+        <hr>
+        To: Tokyo, Japan 🇯🇵<br>Service: Express Worldwide + GoGreen Plus
+        <div class="impact">
+          <div style="text-align:center">🌱 YOUR GREEN IMPACT</div>
+          <div class="kg">~340 g CO₂</div>
+          <div class="km">≈ 3 km not driven 🚗</div>
+          <div class="meth" style="text-align:center">via SAF (book-and-claim) · GLEC / ISO 14083</div>
+        </div>
+        <span class="qr"></span> See how it's calculated →
+        <hr>
+        Your total this year: <b>2.1 kg CO₂ cut</b><br>
+        <span class="tier">🥉 Bronze Green Shipper · 1 more to Silver</span>
+      </div>
+    </div>
+
+    <!-- 5 stamp -->
+    <div class="panel" id="p5">
+      <div class="box-wrap">
+        <div class="pbox"><div class="stamp">SHIPPED GREENER<br>FROM THAILAND ✓</div></div>
+        <div class="arc">✈ →</div>
+        <div class="globe">🌍</div>
+      </div>
+      <div class="sub">The parcel crosses the border — and the green story crosses with it. Free cross-border reach.</div>
+    </div>
+
+    <!-- 6 map -->
+    <div class="panel" id="p6">
+      <div class="mapwrap">
+        <div class="mapnum"><b>1,284 kg</b><span>CO₂ cut by ServicePoint customers this month</span></div>
+        <svg viewBox="0 0 560 280" aria-hidden="true">
+          <circle cx="280" cy="200" r="6" fill="#FFCC00"/>
+          <path d="M280,200 Q160,80 60,120"  fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
+          <path d="M280,200 Q240,60 360,70"  fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
+          <path d="M280,200 Q420,120 500,90" fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
+          <path d="M280,200 Q380,200 480,210" fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
+          <path d="M280,200 Q180,220 90,230" fill="none" stroke="#34d399" stroke-width="2" opacity=".8"/>
+          <circle cx="60" cy="120" r="4" fill="#34d399"/><circle cx="360" cy="70" r="4" fill="#34d399"/>
+          <circle cx="500" cy="90" r="4" fill="#34d399"/><circle cx="480" cy="210" r="4" fill="#34d399"/>
+          <circle cx="90" cy="230" r="4" fill="#34d399"/>
+        </svg>
+      </div>
+      <div class="sub">Every green shipment adds to a live national total — across all 36 ServicePoints.</div>
+    </div>
+
+    <!-- 7 badge + tier -->
+    <div class="panel" id="p7">
+      <div class="badge">✓ Ships Greener with DHL</div>
+      <div class="tierbar">
+        <div class="tseg">🌱 Sprout</div>
+        <div class="tseg on">🥉 Bronze</div>
+        <div class="tseg">🥈 Silver</div>
+        <div class="tseg">🥇 Gold</div>
+      </div>
+      <div class="sub">SMEs show the badge to their own customers; repeat green choices earn status. The loop repeats.</div>
+    </div>
+
+    <!-- 8 trust -->
+    <div class="panel" id="p8">
+      <div class="cols">
+        <div class="col ok"><h4>✅ Always say</h4>
+          <p>"You <b>funded a verified reduction</b> via SAF"</p>
+          <p>A specific, certified number</p>
+          <p>Explain <b>how</b> (GLEC / book-and-claim)</p></div>
+        <div class="col no"><h4>❌ Never say</h4>
+          <p>"Your parcel <b>flew on SAF</b>" (it's book-and-claim)</p>
+          <p>"Carbon neutral" / "emission-free"</p>
+          <p>"Green / eco-friendly" alone</p></div>
+      </div>
+      <div class="meth-line">Method: GLEC Framework / ISO 14083 — the standard DHL itself uses.</div>
+    </div>
+
+    <!-- 9 money -->
+    <div class="panel" id="p9">
+      <div class="stats">
+        <div class="scard yellow"><b>฿5M</b><span>buys awareness (not carbon)</span></div>
+        <div class="scard green"><b>€325</b><span>/tonne — customers fund it</span></div>
+        <div class="scard yellow"><b>28%</b><span>ESG-product growth (vs 20%)</span></div>
+      </div>
+      <div class="sub">Green isn't a cost — it's a <b style="color:var(--text)">margin</b> story. The ฿5M activates a €7B asset DHL already built.</div>
+    </div>
+
+    <!-- 10 close -->
+    <div class="panel finale" id="p10">
+      <div class="big-idea">Ship Love. <span class="y">Ship Light.</span></div>
+      <div class="flow-line"><b>Feel</b> → <b>Carry</b> → <b>Belong</b> → <b>Spread</b></div>
+      <div class="sub">"X tonnes cut — and a country that knows it shipped them." <span class="g" style="color:var(--green)">🌱</span></div>
+    </div>
+  </div>
+
+  <div class="caption" id="caption"></div>
+
+  <div class="bar">
+    <div class="nav"><b>Space</b>/→ next · <b>←</b> back · <b>R</b> restart</div>
+    <div class="dots" id="dots"></div>
+    <div class="step-n" id="stepN">1 / 11</div>
+  </div>
+  <button class="next-btn" id="nextBtn">Next →</button>
+
+<script>
+  const CAPTIONS = [
+    '', // title
+    'They love the service. They have no idea it\'s green.',
+    'So we don\'t tell them — we give them <b>proof</b>.',
+    'One system, four reinforcing touchpoints.',
+    '<b>FEEL</b> — the receipt becomes proof you helped.',
+    '<b>CARRY</b> — the proof crosses the border with the parcel.',
+    '<b>BELONG</b> — every shipment adds to a national total.',
+    '<b>SPREAD</b> — sellers broadcast it; repeat earns status.',
+    'And it\'s bulletproof — <b>GLEC standard</b>, book-and-claim.',
+    'The money: ฿5M buys awareness; <b>customers fund the carbon</b>.',
+    '' // close
+  ];
+  const LAST = 10;
+  const $=id=>document.getElementById(id);
+  let cur=-1;
+  (function(){ const dd=$('dots'); for(let i=0;i<=LAST;i++){const d=document.createElement('span');d.className='d';dd.appendChild(d);} })();
+
+  function goTo(i){
+    i=Math.max(0,Math.min(LAST,i)); cur=i;
+    for(let k=0;k<=LAST;k++) $('p'+k).classList.toggle('show',k===i);
+    const cap=$('caption');
+    if(CAPTIONS[i]){ cap.innerHTML=CAPTIONS[i]; cap.classList.add('show'); } else cap.classList.remove('show');
+    document.querySelectorAll('#dots .d').forEach((d,k)=>d.classList.toggle('on',k===i));
+    $('stepN').textContent=(i+1)+' / '+(LAST+1);
+    $('nextBtn').textContent = i===LAST ? '↻ Restart' : 'Next →';
+  }
+  const next=()=> goTo(cur>=LAST?0:cur+1);
+  const prev=()=> goTo(cur-1);
+  $('nextBtn').addEventListener('click',next);
+  document.addEventListener('keydown',e=>{
+    if(e.key===' '||e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();next();}
+    else if(e.key==='ArrowLeft'){e.preventDefault();prev();}
+    else if(e.key==='r'||e.key==='R'){e.preventDefault();goTo(0);}
+  });
+  goTo(0);
+</script>
+</body>
+</html>
