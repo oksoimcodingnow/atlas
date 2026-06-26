@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaign Budget — Ship Love. Ship Light.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#16181d; --muted:#5b6472; --faint:#8b95a3; --line:#e7e9ee; --line2:#d4d8e0;
+    --paper:#ffffff; --band:#fafbfc; --yellow:#FFCC00; --red:#D40511; --green:#0a8a55;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  body{background:#eef0f4; color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased;
+    padding:32px 16px; line-height:1.5;}
+  .sheet{max-width:880px; margin:0 auto; background:var(--paper); border:1px solid var(--line2);
+    border-radius:6px; box-shadow:0 10px 40px rgba(20,24,40,.12); overflow:hidden;}
+
+  .top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+    padding:26px 34px; border-top:5px solid var(--yellow); border-bottom:1px solid var(--line);}
+  .top .brand{font-size:12px; letter-spacing:.04em; color:var(--muted); font-weight:600;}
+  .top h1{font-size:23px; font-weight:800; letter-spacing:-.01em; margin-top:4px;}
+  .top .idea{color:var(--red); font-weight:700; font-size:13px; margin-top:3px;}
+  .top .meta{text-align:right; font-size:11.5px; color:var(--muted); font-family:var(--mono); line-height:1.7; white-space:nowrap;}
+  .top .meta b{color:var(--ink);}
+
+  .uses{display:grid; grid-template-columns:1fr 1fr; gap:0; border-bottom:1px solid var(--line);}
+  .uses .cell{padding:16px 34px;}
+  .uses .cell:first-child{border-right:1px solid var(--line);}
+  .uses .lbl{font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); font-weight:700;}
+  .uses .amt{font-family:var(--mono); font-size:22px; font-weight:600; margin-top:5px;}
+  .uses .amt.src{color:var(--green);} .uses .note{font-size:11px; color:var(--muted); margin-top:3px;}
+
+  .section-title{padding:16px 34px 6px; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--faint); font-weight:700;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  thead th{font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); font-weight:700;
+    text-align:left; padding:8px 34px; border-bottom:1px solid var(--line2);}
+  thead th.num{text-align:right;}
+  td{padding:7px 34px; border-bottom:1px solid var(--line); vertical-align:top;}
+  td.num{text-align:right; font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .cat td{background:var(--band); font-weight:700; border-top:1px solid var(--line2); border-bottom:1px solid var(--line2);}
+  .cat td .pct{color:var(--muted); font-weight:600; font-family:var(--mono); font-size:11.5px; margin-left:8px;}
+  .item td{color:var(--muted);} .item td:first-child{padding-left:48px;}
+  .item td.num{color:var(--ink);}
+  .total td{font-weight:800; font-size:14.5px; background:#16181d; color:#fff; border:none;}
+  .total td.num{font-family:var(--mono);}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid var(--line2);}
+  .grid2 > div{padding:18px 34px;} .grid2 > div:first-child{border-right:1px solid var(--line);}
+  h3{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); font-weight:700; margin-bottom:10px;}
+  .kv{display:flex; justify-content:space-between; font-size:12.5px; padding:5px 0; border-bottom:1px dotted var(--line2);}
+  .kv b{font-family:var(--mono); font-weight:600;}
+  .phase{display:flex; justify-content:space-between; align-items:baseline; font-size:12.5px; padding:6px 0; border-bottom:1px dotted var(--line2);}
+  .phase .p{font-weight:600;} .phase .w{color:var(--faint); font-size:11px; font-family:var(--mono);}
+  .phase b{font-family:var(--mono);}
+
+  .notes{padding:18px 34px 26px; border-top:1px solid var(--line2); background:var(--band);}
+  .notes h3{margin-bottom:8px;}
+  .notes ol{margin:0; padding-left:18px; color:var(--muted); font-size:11.5px; line-height:1.7;}
+  .notes b{color:var(--ink);}
+  .foot{padding:12px 34px; font-size:10.5px; color:var(--faint); text-align:center; font-family:var(--mono); border-top:1px solid var(--line);}
+
+  @media print{ body{background:#fff; padding:0;} .sheet{box-shadow:none; border:none; max-width:none;} }
+  @media(max-width:640px){ .uses,.grid2{grid-template-columns:1fr} .uses .cell:first-child,.grid2>div:first-child{border-right:none;border-bottom:1px solid var(--line)} td,thead th{padding-left:18px;padding-right:18px} .item td:first-child{padding-left:30px} }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="top">
+    <div>
+      <div class="brand">DHL EXPRESS × UOB WONDER LAB 2026</div>
+      <h1>Campaign Investment Plan</h1>
+      <div class="idea">"Ship Love. Ship Light." — awareness campaign</div>
+    </div>
+    <div class="meta">
+      Currency: <b>THB (฿)</b><br>
+      Period: <b>3 months</b><br>
+      Coverage: <b>36 ServicePoints</b><br>
+      Basis: <b>OpEx</b>
+    </div>
+  </div>
+
+  <div class="uses">
+    <div class="cell"><div class="lbl">Source of funds</div><div class="amt src">฿5,000,000</div><div class="note">UOB Wonder Lab campaign budget (p14)</div></div>
+    <div class="cell"><div class="lbl">Total uses</div><div class="amt">฿5,000,000</div><div class="note">fully allocated · 5% contingency held</div></div>
+  </div>
+
+  <div class="section-title">Detailed allocation</div>
+  <table>
+    <thead><tr><th>Line item</th><th class="num">Amount (฿)</th><th class="num">% total</th></tr></thead>
+    <tbody>
+      <!-- 1 -->
+      <tr class="cat"><td>1 · In-branch experience<span class="pct">36 branches</span></td><td class="num">1,500,000</td><td class="num">30%</td></tr>
+      <tr class="item"><td>Green Receipt redesign & thermal-print rollout</td><td class="num">350,000</td><td class="num">7.0%</td></tr>
+      <tr class="item"><td>Branch screens — Green Map display content & feed</td><td class="num">450,000</td><td class="num">9.0%</td></tr>
+      <tr class="item"><td>Posters, counter cards & standees (design + print)</td><td class="num">300,000</td><td class="num">6.0%</td></tr>
+      <tr class="item"><td>Green Stamp — box sticker design & production</td><td class="num">250,000</td><td class="num">5.0%</td></tr>
+      <tr class="item"><td>Installation, logistics & rollout (36 sites)</td><td class="num">150,000</td><td class="num">3.0%</td></tr>
+      <!-- 2 -->
+      <tr class="cat"><td>2 · Digital build<span class="pct">receipt · LINE · map</span></td><td class="num">1,000,000</td><td class="num">20%</td></tr>
+      <tr class="item"><td>QR "how it's calculated" landing page (design + dev)</td><td class="num">200,000</td><td class="num">4.0%</td></tr>
+      <tr class="item"><td>LINE OA integration — digital receipt, running total, tier engine</td><td class="num">380,000</td><td class="num">7.6%</td></tr>
+      <tr class="item"><td>Thailand Green Map dashboard (web + screen feed + data)</td><td class="num">320,000</td><td class="num">6.4%</td></tr>
+      <tr class="item"><td>Hosting, maintenance & QA (3 mo)</td><td class="num">100,000</td><td class="num">2.0%</td></tr>
+      <!-- 3 -->
+      <tr class="cat"><td>3 · Seller Badge & SME activation<span class="pct">B2B2C multiplier</span></td><td class="num">900,000</td><td class="num">18%</td></tr>
+      <tr class="item"><td>Badge system + verification (tied to GoGreen Plus use)</td><td class="num">300,000</td><td class="num">6.0%</td></tr>
+      <tr class="item"><td>SME asset kit (IG stickers, shop banners, packaging inserts)</td><td class="num">180,000</td><td class="num">3.6%</td></tr>
+      <tr class="item"><td>SME community outreach & onboarding (marketplaces, partners)</td><td class="num">250,000</td><td class="num">5.0%</td></tr>
+      <tr class="item"><td>Early-adopter seed kit (recyclable-packaging starter bundle)</td><td class="num">170,000</td><td class="num">3.4%</td></tr>
+      <!-- 4 -->
+      <tr class="cat"><td>4 · Content & social<span class="pct">#ShipLight</span></td><td class="num">750,000</td><td class="num">15%</td></tr>
+      <tr class="item"><td>Hero 60-sec ServicePoint film (production)</td><td class="num">250,000</td><td class="num">5.0%</td></tr>
+      <tr class="item"><td>Short-form content batch (12–15 clips/posts)</td><td class="num">150,000</td><td class="num">3.0%</td></tr>
+      <tr class="item"><td>Paid social amplification — FB / IG / LINE (3 mo)</td><td class="num">300,000</td><td class="num">6.0%</td></tr>
+      <tr class="item"><td>UGC seeding & community moderation</td><td class="num">50,000</td><td class="num">1.0%</td></tr>
+      <!-- 5 -->
+      <tr class="cat"><td>5 · Staff enablement</td><td class="num">250,000</td><td class="num">5%</td></tr>
+      <tr class="item"><td>Briefing toolkit + one-liner script (design + print)</td><td class="num">100,000</td><td class="num">2.0%</td></tr>
+      <tr class="item"><td>Frontline incentive program (opt-in lift rewards)</td><td class="num">150,000</td><td class="num">3.0%</td></tr>
+      <!-- 6 -->
+      <tr class="cat"><td>6 · Measurement & evaluation</td><td class="num">350,000</td><td class="num">7%</td></tr>
+      <tr class="item"><td>Pre- & post- awareness intercept survey (research vendor)</td><td class="num">220,000</td><td class="num">4.4%</td></tr>
+      <tr class="item"><td>Analytics setup & dashboards (QR / LINE / Map)</td><td class="num">80,000</td><td class="num">1.6%</td></tr>
+      <tr class="item"><td>Final ROI readout & report</td><td class="num">50,000</td><td class="num">1.0%</td></tr>
+      <!-- 7 -->
+      <tr class="cat"><td>7 · Contingency</td><td class="num">250,000</td><td class="num">5%</td></tr>
+      <tr class="item"><td>Reserve — overruns, FX, scope adjustment</td><td class="num">250,000</td><td class="num">5.0%</td></tr>
+
+      <tr class="total"><td>TOTAL CAMPAIGN INVESTMENT</td><td class="num">5,000,000</td><td class="num">100%</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid2">
+    <div>
+      <h3>Phasing (indicative)</h3>
+      <div class="phase"><span><span class="p">Phase 1 — Build & baseline</span> <span class="w">Wk 1–3</span></span><b>฿1,750,000</b></div>
+      <div class="phase"><span><span class="p">Phase 2 — Launch (36 branches)</span> <span class="w">Wk 4–8</span></span><b>฿2,000,000</b></div>
+      <div class="phase"><span><span class="p">Phase 3 — Spread & prove</span> <span class="w">Wk 9–12</span></span><b>฿1,250,000</b></div>
+    </div>
+    <div>
+      <h3>Cost efficiency</h3>
+      <div class="kv"><span>Per ServicePoint (total)</span><b>฿138,889</b></div>
+      <div class="kv"><span>Per branch / month</span><b>฿46,296</b></div>
+      <div class="kv"><span>Activation vs build vs measure</span><b>68 / 25 / 7</b></div>
+      <div class="kv"><span>Carbon funded by this budget</span><b>฿0</b></div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>Notes & assumptions</h3>
+    <ol>
+      <li><b>Illustrative planning estimates</b> in THB — to be refined against DHL & vendor quotes before final submission.</li>
+      <li><b>OpEx</b>: a 3-month marketing programme; no capitalised assets. DHL's green capability (≈€7B Group CapEx) already exists — this activates it.</li>
+      <li><b>Excludes</b> presenter / brand ambassador / celebrity endorsement, per booklet p14.</li>
+      <li><b>Carbon is customer-funded</b> via GoGreen Plus — not drawn from this budget. The ฿5M buys <b>awareness</b>, which lifts opt-ins.</li>
+      <li>Contingency held at <b>5%</b>; spend is phased with a review/kill-switch after Week 8.</li>
+    </ol>
+  </div>
+  <div class="foot">DHL Express × UOB Wonder Lab 2026 · "Ship Love. Ship Light." · prepared for internal review — figures illustrative</div>
+</div>
+</body>
+</html>
