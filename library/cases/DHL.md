@@ -132,6 +132,15 @@ so CapEx is irrelevant (not even one business cycle). *Judo line:* "DHL already 
 - **The lifecycle truth:** SAF emits ~same CO₂ at the tailpipe; the saving is the carbon *came from today's
   air* (biogenic), not ancient oil. "Fossil = one-way street; SAF = near-closed loop. Leftover ~20–50% is the energy to make it."
 
+### The SAF ecosystem (name the players = credibility + a bigger story)
+- **The chain:** waste oil → **producers (bp · Neste · World Energy · Cosmo Energy)** → blended at airports →
+  DHL flies → **ISCC Credit Transfer System** (the formal book-and-claim chain-of-custody) → GoGreen Plus → the customer.
+- **Real deals to cite:** DHL bought **800M+ litres** from bp + Neste (2022) and **667M litres** from World Energy (2024);
+  ISCC traces the benefit across the chain. *(Naming real partners + a real registry = instant credibility, and it makes book-and-claim concrete.)*
+- ⭐ **The bigger story — "your opt-in scales the industry":** SAF is **<1%** of jet fuel. Every GoGreen Plus choice
+  is a **demand signal** that funds SAF growing — DHL's giant offtake deals exist *because* of demand. So a customer
+  isn't just cutting one parcel's 340 g; they're **helping clean aviation take off.** → use in the **Belong** beat + the close.
+
 ---
 
 ## 8. GREEN-CLAIMS & METHODOLOGY (the winner-separator)
