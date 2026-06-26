@@ -10,6 +10,7 @@
 6. The money story & ฿5M budget 7. Carbon/SAF science 8. Green-Claims & methodology
 9. Fact audit (what to say) 10. Creative & benchmarks 11. The pitch 12. Team feedback log
 13. Production mockups 14. Success metrics 15. Risk register 16. Q&A prep 17. Beyond the pilot 18. Deck outline
+19. Green-hushing & strategy S/W
 
 ---
 
@@ -321,6 +322,36 @@ spread and stick." Or pitch Green Receipt alone if the format wants one tight id
 9. **The money story** — margin not cost; ฿5M = awareness OpEx on a €7B asset + the budget split.
 10. **Proof & metrics** — feasibility (reuses real assets, 43 vs 12 EVs, precedents) + success targets (§14).
 11. **Close** — the UOB mirror + "X tonnes cut, and a country that knows." End on the line.
+
+---
+
+## 19. THE REAL PURPOSE — breaking green-hushing (+ strategy S/W)
+
+**Sharper purpose:** DHL isn't just *quiet* — it's **green-hushing**: doing real green work but
+under-communicating it for fear of greenwashing accusations (the booklet's "legal caution → under-communication").
+**~1 in 3 companies now intentionally communicate *less* on sustainability** even while increasing ESG spend.
+So the real job isn't *"tell the world we're green"* — that **triggers the backlash** (52% of consumers already
+distrust green claims; viral call-outs wreck brands instantly). It's: **help DHL break out of green-hushing in
+a way that survives 2025 skepticism.** Our proof-based, certified, book-and-claim design **is** the antidote —
+*the strategy's design is the risk mitigation.* (Say this in the pitch — almost no team will spot it.)
+
+**Three research-backed levers:**
+- **3rd-party certification is the #1 trust source** (out-ranks experts/NGOs) → make **"certified" (GLEC/ISCC/CORSIA)** the hero word, not "green."
+- **Transparency over perfection = +34% trust** → openly admit the gap ("not carbon-neutral; SAF still <1%; here's our path"). Honesty *builds* trust (the Patagonia effect).
+- **Brands are now the most-trusted institution** (Edelman 2025) → convert DHL's trusted brand into green credibility.
+
+**Strategy STRENGTHS:** greenwash-proof by design · built on the most-trusted source (certification) · solves the
+point-of-sale root cause · SME multiplier (earned reach + identity advocacy) · feasible (real assets + UOB mirror).
+
+**Strategy WEAKNESSES (pre-empt these):** attention scarcity at a transactional moment · awareness ≠ behaviour
+(the tier mitigates, but it's real) · skepticism spillover (~52% distrust *any* claim) · SME-adoption dependency ·
+3-month/฿5M ceiling (it's a *pilot*) · the "you're marketing <1% SAF" attack (answer with the honest number).
+
+**New angle — "The Honest Number":** while everyone green-hushes, DHL breaks the silence *with receipts.*
+> *"Most companies are going quiet on climate, afraid to be called out. DHL is doing the opposite — showing
+> you exactly what your shipment did, certified, down to the gram. Not 'carbon neutral.' Just true."*
+
+An ownable, provocative position (Oatly's standard-setter move), backed by the +34%-trust research → fold into §10 creative + the close.
 
 ---
 *Granular source docs live in `/archive` (and in git history). This master doc is the single source of truth.*
