@@ -12,7 +12,7 @@
 - Core problem: DHL does real green work, but at the counter it's **invisible** — 83% satisfied customers don't know they're part of it.
 - Our strategy: **"Proof That Travels" / "Ship Love. Ship Light."** — system of 4 pieces: **Feel → Carry → Belong → Spread.**
 - All docs live in this folder; consolidated in `DHL-Case-Master.md`. Knowledge graph in `graph/`.
-- Repo: `oksoimcodingnow/atlas` → `library/cases/dhl/` (branch `dhl-case-import`, PR #1).
+- Repo: `oksoimcodingnow/atlas` → `library/cases/dhl/` (merged to `main`, PR #1).
 
 ---
 
@@ -85,8 +85,8 @@ One wrong number in Q&A costs more than ten right ones gain.
 - `DHL-BUDGET-5M.md` — the ฿5M split + ROI framing
 - `DHL-RESEARCH-deepdive.md` — competitive/regulatory/consumer (97% already corrected)
 - `graph/graph.html` — interactive knowledge graph (open in browser)
-- Repo branch: `dhl-case-import` · PR: github.com/oksoimcodingnow/atlas/pull/1
+- Repo: `main` · PR: github.com/oksoimcodingnow/atlas/pull/1
 
 
 ---
-↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/main/library/cases)** · part of the Atlas project.

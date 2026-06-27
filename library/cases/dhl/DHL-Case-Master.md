@@ -1,34 +1,45 @@
 # DHL Express × UOB — WonderLab 2026: Case Master
 
-> Consolidated master document. Auto-assembled from 22 source files in the DHL case bundle.
-> Each section below corresponds to one source file; original file name is noted under each heading.
+> **The complete consolidated case.** Auto-assembled from 32 source files.
+> Rebuilt 27 Jun 2026 — includes all research, finance, policy, ecosystem, tier model, and stress-test.
+> Live on GitHub: github.com/oksoimcodingnow/atlas/tree/main/library/cases/dhl
 
 ---
 
 ## Table of Contents
 
 1. [📚 Case Library](#1--case-library)
-2. [📦 DHL Express — Case Summary](#2--dhl-express-case-summary)
-3. [⚡ DHL CHEAT SHEET — glance before the meeting](#3--dhl-cheat-sheet-glance-before-the-meeting)
-4. [📦 DHL Express × UOB Wonder Lab 2026 — Master Case Doc](#4--dhl-express-uob-wonder-lab-2026-master-case-doc)
-5. [🔬 DHL Challenge — Situation Analysis (deep)](#5--dhl-challenge-situation-analysis-deep)
-6. [✅ DHL Challenge — Fact Audit (verify before you pitch)](#6--dhl-challenge-fact-audit-verify-before-you-pitch)
-7. [🔬 DHL Challenge — External Research Deep-Dive](#7--dhl-challenge-external-research-deep-dive)
-8. [🌐 DHL Challenge — How Other Companies Raise Sustainability Awareness (Benchmark)](#8--dhl-challenge-how-other-companies-raise-sustainability-awareness-benchmark)
-9. [🎯 DHL Challenge — MASTER Strategy (the combined flagship)](#9--dhl-challenge-master-strategy-the-combined-flagship)
-10. [🧠 DHL Challenge — Strategy Bank (deep)](#10--dhl-challenge-strategy-bank-deep)
-11. [🏆 DHL Challenge — Top 3 Ideas, Deep Dive](#11--dhl-challenge-top-3-ideas-deep-dive)
-12. [💡 DHL Challenge — Brainstorm (working doc)](#12--dhl-challenge-brainstorm-working-doc)
-13. [🎨 DHL Challenge — Creative & International Strategy](#13--dhl-challenge-creative-international-strategy)
-14. [🔭 DHL Challenge — The Connected Economics (bigger picture)](#14--dhl-challenge-the-connected-economics-bigger-picture)
-15. [💰 DHL Challenge — The Money Story (margin of selling eco)](#15--dhl-challenge-the-money-story-margin-of-selling-eco)
-16. [💰 DHL Challenge — Carbon Economics & Customer-Contribution Model](#16--dhl-challenge-carbon-economics-customer-contribution-model)
-17. [⛽ SAF vs Conventional Jet Fuel — Full Comparison (every aspect)](#17--saf-vs-conventional-jet-fuel-full-comparison-every-aspect)
-18. [💸 DHL Challenge — The ฿5M Budget (3-month campaign)](#18--dhl-challenge-the-5m-budget-3-month-campaign)
-19. [🏅 DHL Challenge — The Green Shipper Tier (loyalty / status)](#19--dhl-challenge-the-green-shipper-tier-loyalty-status)
-20. [🏛️ Atlas · Case Project — Architecture](#20--atlas-case-project-architecture)
-21. [🗣️ DHL Challenge — Team Feedback & Actions](#21--dhl-challenge-team-feedback-actions)
-22. [📖 Where to Study Cases — Practice Sources](#22--where-to-study-cases-practice-sources)
+2. [🚨 _CRITICAL.md — read this first (DHL × UOB WonderLab 2026)](#2--_criticalmd-read-this-first-dhl-uob-wonderlab-2026)
+3. [📦 DHL Express — Case Summary](#3--dhl-express-case-summary)
+4. [⚡ DHL CHEAT SHEET — glance before the meeting](#4--dhl-cheat-sheet-glance-before-the-meeting)
+5. [📦 DHL Express × UOB Wonder Lab 2026 — Master Case Doc](#5--dhl-express-uob-wonder-lab-2026-master-case-doc)
+6. [🔬 DHL Challenge — Situation Analysis (deep)](#6--dhl-challenge-situation-analysis-deep)
+7. [✅ DHL Challenge — Fact Audit (verify before you pitch)](#7--dhl-challenge-fact-audit-verify-before-you-pitch)
+8. [🔍 _PROOF.md — every number, pinned to its source](#8--_proofmd-every-number-pinned-to-its-source)
+9. [🔬 DHL Challenge — External Research Deep-Dive](#9--dhl-challenge-external-research-deep-dive)
+10. [🔬 DHL Challenge — Deep Research Round 2 (consumer, carbon math, DHL precedent, competitor proof)](#10--dhl-challenge-deep-research-round-2-consumer-carbon-math-dhl-precedent-competitor-proof)
+11. [📊 DHL Challenge — Hard Numbers Deep-Dive (the figures judges want)](#11--dhl-challenge-hard-numbers-deep-dive-the-figures-judges-want)
+12. [🌐 DHL Challenge — How Other Companies Raise Sustainability Awareness (Benchmark)](#12--dhl-challenge-how-other-companies-raise-sustainability-awareness-benchmark)
+13. [🎯 DHL Challenge — MASTER Strategy (the combined flagship)](#13--dhl-challenge-master-strategy-the-combined-flagship)
+14. [🧠 DHL Challenge — Strategy Bank (deep)](#14--dhl-challenge-strategy-bank-deep)
+15. [🏆 DHL Challenge — Top 3 Ideas, Deep Dive](#15--dhl-challenge-top-3-ideas-deep-dive)
+16. [💡 DHL Challenge — Brainstorm (working doc)](#16--dhl-challenge-brainstorm-working-doc)
+17. [🎨 DHL Challenge — Creative & International Strategy](#17--dhl-challenge-creative-international-strategy)
+18. [🏅 DHL Challenge — The Green Shipper Tier (loyalty / status)](#18--dhl-challenge-the-green-shipper-tier-loyalty-status)
+19. [🧮 DHL Challenge — The Green Shipper Tier MODEL (the math behind the fairness)](#19--dhl-challenge-the-green-shipper-tier-model-the-math-behind-the-fairness)
+20. [🔭 DHL Challenge — The Connected Economics (bigger picture)](#20--dhl-challenge-the-connected-economics-bigger-picture)
+21. [💰 DHL Challenge — The Money Story (margin of selling eco)](#21--dhl-challenge-the-money-story-margin-of-selling-eco)
+22. [💵 DHL Challenge — Finance Justification (where every baht comes from)](#22--dhl-challenge-finance-justification-where-every-baht-comes-from)
+23. [💰 DHL Challenge — Carbon Economics & Customer-Contribution Model](#23--dhl-challenge-carbon-economics-customer-contribution-model)
+24. [⛽ SAF vs Conventional Jet Fuel — Full Comparison (every aspect)](#24--saf-vs-conventional-jet-fuel-full-comparison-every-aspect)
+25. [💸 DHL Challenge — The ฿5M Budget (3-month campaign)](#25--dhl-challenge-the-5m-budget-3-month-campaign)
+26. [🌐 DHL Challenge — The Sustainability Ecosystem (who makes "Ship Light" real)](#26--dhl-challenge-the-sustainability-ecosystem-who-makes-ship-light-real)
+27. [⚖️ DHL Challenge — Policy & Law Risk Audit (where our strategy could break a rule)](#27--dhl-challenge-policy-law-risk-audit-where-our-strategy-could-break-a-rule)
+28. [🥊 DHL Challenge — Stress Test / Red-Team (the hostile-judge Q&A)](#28--dhl-challenge-stress-test-red-team-the-hostile-judge-qa)
+29. [🎨 _SLIDE-STRUCTURE.md — the deck map (build this in Canva)](#29--_slide-structuremd-the-deck-map-build-this-in-canva)
+30. [🏛️ Atlas · Case Project — Architecture](#30--atlas-case-project-architecture)
+31. [🗣️ DHL Challenge — Team Feedback & Actions](#31--dhl-challenge-team-feedback-actions)
+32. [📖 Where to Study Cases — Practice Sources](#32--where-to-study-cases-practice-sources)
 
 ---
 
@@ -56,7 +67,102 @@ Summaries of business cases / competition briefs, in one place.
 
 ---
 
-## 2. 📦 DHL Express — Case Summary
+## 2. 🚨 _CRITICAL.md — read this first (DHL × UOB WonderLab 2026)
+
+*Source: `_CRITICAL.md`*
+
+## 🚨 _CRITICAL.md — read this first (DHL × UOB WonderLab 2026)
+
+> One-file briefing of everything that must NOT be lost. If you (or Claude) are
+> picking this up cold — on the notebook, day of the meeting — start here.
+> Written 26 Jun 2026. Owner: Paphangkorn Onrueang (Fin. Eng, KMITL Y3).
+
+---
+
+### 0. CONTEXT (what this is)
+- Case competition: **DHL Express × UOB "WonderLab 2026."** Sustainability/marketing brief.
+- Constraints (brief p14): **฿5,000,000 · 36 ServicePoints · 3 months · NO celebrity/ambassador fees.**
+- Core problem: DHL does real green work, but at the counter it's **invisible** — 83% satisfied customers don't know they're part of it.
+- Our strategy: **"Proof That Travels" / "Ship Love. Ship Light."** — system of 4 pieces: **Feel → Carry → Belong → Spread.**
+- All docs live in this folder; consolidated in `DHL-Case-Master.md`. Knowledge graph in `graph/`.
+- Repo: `oksoimcodingnow/atlas` → `library/cases/dhl/` (merged to `main`, PR #1).
+
+---
+
+### 1. ⚠️ NUMBER LANDMINES — say it wrong and you lose the room
+
+| ❌ DON'T say | ✅ DO say | Why |
+|---|---|---|
+| "97% of Thais concerned about climate" (alone) | ✅ now OK to use, but **pair with "79% interested in EVs"** | 97% IS sourced (TGM/PwC TH) — use it to set up the value-action gap, not as a standalone |
+| "9.7% WTP premium in Thailand" | "**APAC ~11%**, above the 9.7% global avg" | TH is in APAC, not the global figure |
+| "SAF cuts up to 80%" (blanket) | "up to ~80% **on waste-based** SAF" | crop-based is only ~55% |
+| "your parcel flew on SAF" | "**you funded a verified reduction via SAF**" | book-and-claim — this is our TRUMP CARD |
+| "DHL's €7B" (implying Thailand) | "DHL **Group's** €7B" | it's group-wide, not local |
+
+**Rule for the room:** lead with ✅ numbers, name the source, quote ranges not false precision.
+One wrong number in Q&A costs more than ten right ones gain.
+
+---
+
+### 2. ✅ THE NUMBERS TO LEAD WITH (safe + sourced + persuasive)
+1. **12,000+ APAC customers** already use GoGreen Plus (2,800+ on contracts) → demand is real. *Feasibility.*
+2. **฿1T+ Thai e-commerce, ~30% cross-border** → the market we activate. *Impact.*
+3. **10% conservative opt-in** (proven range 10–30%, outlier 43%) → our ROI assumption. *Defensible.*
+4. **UOB: 1,600+ SMEs on the Sustainability Compass**; ฿33.96B green loans → speaks to the room.
+5. Back-pocket: **DHL 185kt SAF in 2025 = top-3 global buyer (~3× vs 2024)** · **43 vs 12 EVs** (DHL vs FedEx TH) · GoGreen Plus **€325/tonne** · ESG products grow **28% vs 20%** · eco-checkout **+10–25%** conversion · EmpCo binding **27 Sep 2026**.
+
+---
+
+### 3. 🛡️ PRESSURE-TEST — the 6 questions judges WILL ask (have answers ready)
+
+1. **"What's your opt-in rate assumption?"** → "Conservative **~10%**, the low end of the proven 10–30% range. Anything above is upside."
+2. **"What does the ฿5M actually buy?"** → Top-line split exists in `DHL-BUDGET-5M.md`. Guardrail: **฿46k/branch/month** → favour cheap, repeating touchpoints. Has a 5% contingency.
+3. **"How do you prove ROI if customers fund the carbon, not the ฿5M?"** → "฿5M buys **awareness** (measured pre/post survey, same method as the booklet's 83%); customers fund carbon via GoGreen Plus. Cost-per-aware-customer + opt-in lift."
+4. **"Why would an overseas buyer care about a Thai green badge?"** → "Badges lift conversion up to 55% **when credible** — ours is backed by certified book-and-claim data, not a vague 'eco' sticker. We test reach in Phase 3, low-cost."
+5. **"How is this different from DHL just promoting GoGreen Plus harder?"** → "The **receipt at the felt moment** + it **travels** — onto the box, across the border, onto a national map, into the seller's shop. Promotion tells; we hand proof."
+6. **"36 branches, 3 months — is awareness lift measurable?"** → "Yes — pre/post ServicePoint survey, the exact method DHL used to get the 83% satisfaction number."
+
+---
+
+### 4. ⚠️ THE 36 vs 71 TRAP (don't get caught by your own number)
+- Brief says campaign runs at **36 ServicePoints.**
+- Research shows DHL's real TH retail network is **71 outlets** (+15 service centers, 244 weekly flights).
+- If asked: **"36 is our focused pilot footprint; success scales to all 71."** Not an error — it's headroom.
+- Honest caveat: DHL Express TH's **exact daily shipment volume is NOT public.** ROI denominator uses market size + cross-border share as a proxy. If pushed: say so plainly.
+
+---
+
+### 5. 🏆 OUR TWO WINNING CLOSERS (what separates winners)
+1. **Green-Claims mastery:** "We say *you funded a verified reduction*, never *your parcel flew on SAF* — because GoGreen Plus is book-and-claim. That precision is why our campaign survives the 2026 EmpCo rules." (DHL uses **insetting**, not offsetting — the future-proof method.)
+2. **The UOB mirror:** "UOB's Sustainability Compass has guided **1,600+ SMEs** to *start* their green journey — Ship Light lets those same SMEs **prove** theirs, on every parcel."
+
+---
+
+### 6. 🎤 PERSONAL PITCH (Paphangkorn, ~40–45s, "how it works" angle)
+> Hi, I'm **Paphangkorn Onrueang**, third-year Financial Engineering at KMITL.
+> I built **Atlas** — a platform that turns messy research into a map of what connects. I kept hitting the same wall: the hard part was never *finding* information; it was knowing what to **trust**.
+> That's exactly what Signal Reliability Engine does — and here's how it earns the word "reliable."
+> A signal that worked last year isn't trustworthy — it's lucky. So we don't ask "does it predict returns?" We ask "does it **survive**?" — across bull, bear, and volatility shocks.
+> The few that hold get a reliability score, backed by real company disclosures. Evidence, not a black box.
+> **That's** a signal you can trust.
+
+*(Note: this is the SRE hackathon pitch — separate from the DHL case, kept here so it's not lost.)*
+
+---
+
+### 7. 📁 WHERE EVERYTHING IS
+- `DHL-Case-Master.md` — everything in one doc (linked TOC)
+- `DHL-MASTER-strategy.md` — the flagship plan (the 6-beat pitch flow is in §9)
+- `DHL-FACT-AUDIT.md` — every stat checked (✅/🟡/🔴)
+- `DHL-NUMBERS-deepdive.md` — the hard sourced figures (newest research)
+- `DHL-BUDGET-5M.md` — the ฿5M split + ROI framing
+- `DHL-RESEARCH-deepdive.md` — competitive/regulatory/consumer (97% already corrected)
+- `graph/graph.html` — interactive knowledge graph (open in browser)
+- Repo: `main` · PR: github.com/oksoimcodingnow/atlas/pull/1
+
+---
+
+## 3. 📦 DHL Express — Case Summary
 
 *Source: `DHL-Express-UOB-WonderLab-2026.md`*
 
@@ -179,7 +285,7 @@ DHL is legally strict about green marketing. A winning team shows it understands
 
 ---
 
-## 3. ⚡ DHL CHEAT SHEET — glance before the meeting
+## 4. ⚡ DHL CHEAT SHEET — glance before the meeting
 
 *Source: `DHL-CHEAT-SHEET.md`*
 
@@ -219,7 +325,7 @@ Creativity · Insight · Feasibility · Impact/ROI · Storytelling
 
 ---
 
-## 4. 📦 DHL Express × UOB Wonder Lab 2026 — Master Case Doc
+## 5. 📦 DHL Express × UOB Wonder Lab 2026 — Master Case Doc
 
 *Source: `DHL.md`*
 
@@ -468,7 +574,7 @@ spread and stick." Or pitch Green Receipt alone if the format wants one tight id
 
 ---
 
-## 5. 🔬 DHL Challenge — Situation Analysis (deep)
+## 6. 🔬 DHL Challenge — Situation Analysis (deep)
 
 *Source: `DHL-SITUATION-analysis.md`*
 
@@ -645,7 +751,7 @@ situation's logical conclusion, not a random creative leap.
 
 ---
 
-## 6. ✅ DHL Challenge — Fact Audit (verify before you pitch)
+## 7. ✅ DHL Challenge — Fact Audit (verify before you pitch)
 
 *Source: `DHL-FACT-AUDIT.md`*
 
@@ -718,7 +824,117 @@ Back-pocket: GoGreen Plus €325/tonne · EmpCo 27 Sep 2026 · book-and-claim (y
 
 ---
 
-## 7. 🔬 DHL Challenge — External Research Deep-Dive
+## 8. 🔍 _PROOF.md — every number, pinned to its source
+
+*Source: `_PROOF.md`*
+
+## 🔍 _PROOF.md — every number, pinned to its source
+
+> Verification pass done 26 Jun 2026. Each figure shows the exact claim, the source,
+> and a verdict: ✅ verified at primary/strong source · 🟡 use with care / re-check · 🔴 do not use.
+> Goal: when a judge says "source?", you have the answer cold.
+
+---
+
+### ✅ VERIFIED — quote these freely (with the source)
+
+#### Consumer willingness-to-pay
+| Claim | Exact wording at source | Source | Verdict |
+|---|---|---|---|
+| 9.7% WTP premium | "consumers are willing to spend an average of **9.7% more** on sustainably produced or sourced goods" — 20,000 consumers, 31 countries, pub. 15 May 2024 | PwC 2024 Voice of the Consumer (newsroom) | ✅ |
+| 80% willing to pay more | "more than four-fifths (**80%**) of consumers say they are willing to pay more" | PwC 2024 VoC | ✅ |
+| APAC ~11% | APAC snapshot sits above the 9.7% global average (~11%) | PwC APAC / Thailand snapshot | ✅ (say "APAC incl. Thailand, ~11%" — NOT "9.7% in Thailand") |
+| 85% feel climate effects | "almost nine-in-ten (**85%**) consumers are experiencing... climate change" | PwC 2024 VoC | ✅ |
+| ⚠️ Honest caveat | PwC itself: "this may **not translate into actual spend**" (value-action gap) | PwC 2024 VoC | ✅ — this is WHY our campaign exists |
+
+#### GoGreen Plus adoption (DHL's own press)
+| Claim | Exact wording at source | Source | Verdict |
+|---|---|---|---|
+| 12,000+ APAC customers | "more than **12,000 customers** who have taken up GoGreen Plus in Asia Pacific (excluding China)" in one year | DHL press 2024 | ✅ |
+| 2,800+ companies on contract | "more than **2,800 companies** who have signed a contractual agreement" | DHL press 2024 | ✅ |
+| 2,000+ chose 30% cut | "over **2,000 companies** have opted to reduce 30 percent carbon emissions... through SAF" | DHL press 2024 | ✅ (bonus detail) |
+| GoGreen Plus launched | "Introduced in **February 2023**" | DHL press 2024 | ✅ |
+
+#### DHL SAF scale (GreenAir, 17 Apr 2026)
+| Claim | Exact wording at source | Source | Verdict |
+|---|---|---|---|
+| 185 kilotonnes SAF (2025) | "**185 kilotonnes** of sustainable aviation fuel" | GreenAir 2026 | ✅ |
+| ~10% of jet fuel | "a **10% share** of total jet fuel consumption" | GreenAir 2026 | ✅ |
+| ~3× vs 2024 | "a **near tripling** use of SAF compared to 2024" | GreenAir 2026 | ✅ |
+| Top-3 global buyer | "Along with IAG and Air France-KLM, DHL was **one of the top three SAF purchasers**" | GreenAir 2026 | ✅ |
+
+#### UOB programs (the partner — verify cold)
+| Claim | Exact wording at source | Source | Verdict |
+|---|---|---|---|
+| Compass: 1,600+ SMEs | "More than **1,600 businesses** have used it" (launched May 2024) | Bangkok Post / Digital Banker | ✅ |
+| SIP: 240+ SMEs | "equipped over **240 SMEs**" | Digital Banker | ✅ |
+| U-Solar: 359 GWh / 167,000t | "359 GWh... avoiding over **167,000 tonnes** of emissions" since 2020 (TH) | UOB / SCMP | ✅ |
+| ฿33.96B sustainable finance (TH 2024) | "In 2024, UOB Thailand approved **THB 33.96 billion** in sustainable finance loans" | The Digital Banker / Bangkok Post | ✅ (verified 26 Jun) |
+
+#### Market sizing (Thai e-commerce)
+| Claim | Exact wording at source | Source | Verdict |
+|---|---|---|---|
+| ฿1.07T e-commerce 2025 | market "projected to reach **1.07 trillion baht** in 2025" | Nation Thailand | ✅ |
+| ~30% cross-border | "cross-border purchases account for **30 percent** of the market" | trade.gov | ✅ |
+| ~3M sellers | "approximately **3 million sellers**" on Shopee/Lazada/TikTok | trade.gov | ✅ |
+| DHL TH: 71 outlets | "**71 retail outlets and ServicePoints**... 15 service centers... 244 weekly flights" | DHL TH | ✅ |
+
+#### Behavioral / conversion
+| Claim | Source | Verdict |
+|---|---|---|
+| Eco-checkout opt-in 10–30% (outlier 43% JuneShine) | Bigblue / EcoCart | ✅ (we plan conservative 10%) |
+| ESG products grew 28% vs 20% | McKinsey × NielsenIQ 2023 | ✅ |
+| Product badges +up to 55% conversion | tech-arms (secondary) | 🟡 say "badges measurably lift conversion" — 55% is a vendor figure |
+| Eco-labels shift selection (56-study review) | NIH/PMC systematic review | ✅ (strong, peer-reviewed) |
+
+#### Regulation / SAF science
+| Claim | Source | Verdict |
+|---|---|---|
+| EmpCo binding 27 Sep 2026; bans generic claims | EU Commission / ClimatePartner | ✅ |
+| SAF 2–4× cost, <1% of supply (~0.7%) | WEF / IATA | ✅ |
+| SAF cuts up to ~80% **on waste feedstock** (crop ~55%) | ICCT | ✅ (never blanket 80%) |
+| GoGreen Plus €325/tonne CO₂e | DHL | ✅ |
+| 43 vs 12 EVs (DHL vs FedEx TH) | FedEx Newsroom (confirms 12) | ✅ |
+
+---
+
+### 🟡 USE WITH CARE / RE-CHECK BEFORE QUOTING
+- **UOB ฿33.96B sustainable finance (TH 2024)** — ✅ NOW VERIFIED (26 Jun): confirmed in multiple sources (The Digital Banker, Bangkok Post). Safe to quote.
+- **Product badges "+55%"** — a vendor/marketing blog number, not peer-reviewed. Soften to "badges measurably lift conversion; eco-labels reliably shift product selection (56-study review)."
+- **DHL Express Thailand daily shipment volume** — NOT publicly disclosed. ROI denominator uses market-size proxy. If pushed, say so plainly.
+
+---
+
+### 🔴 DO NOT USE (killed in fact-audit)
+- ✅ UPDATE (26 Jun, round 2): "97% of Thais concerned about climate" is **CONFIRMED sourced** (TGM Research / PwC TH 2024) — no longer killed. Safe to use, but pair with "79% interested in EVs" to make the value-action-gap point rather than quoting 97% alone.
+- ❌ "your parcel flew on SAF" — false (book-and-claim). Say "you funded a verified reduction via SAF."
+- ❌ "9.7% in Thailand" — that's the global figure; TH is in the ~11% APAC band.
+- ❌ blanket "SAF cuts 80%" — only waste-based; crop ~55%.
+
+---
+
+### 📎 PRIMARY SOURCE LINKS
+- PwC 2024 Voice of the Consumer (9.7%, 80%, 85%): https://www.pwc.com/gx/en/news-room/press-releases/2024/pwc-2024-voice-of-consumer-survey.html
+- PwC Thailand/APAC snapshot (~11%, 79% EV): https://www.pwc.com/th/en/research-and-insights/voice-of-the-consumer-survey-2024-asia-pacific-thailand-snapshot-en.html
+- DHL GoGreen Plus 12,000+ / 2,800 / 2,000: https://www.dhl.com/th-en/home/press/press-archive/2024/dhl-express-gogreen-plus-helps-over-12000-asia-pacific-customers-in-sustainable-logistics.html
+- DHL 185kt SAF / 10% / top-3 (GreenAir, 17 Apr 2026): https://www.greenairnews.com/?p=8858
+- UOB Sustainability Compass 1,600+ SMEs (Bangkok Post): https://www.bangkokpost.com/thailand/pr/2803034/uob-thailand-launches-industry-first-sustainability-compass-to-support-smes
+- UOB programs overview: https://thedigitalbanker.com/restricted-uob-thailand-powers-sustainable-progress-across-sectors/
+- UOB Thailand Sustainability Report 2024 (PDF — verify ฿33.96B here): https://www.uob.co.th/assets/web-resources/pdf/sustainability-en/sustainability-report2024-en.pdf
+- Thai e-commerce ฿1.07T: https://www.nationthailand.com/business/economy/40058399
+- Thai e-commerce 30% cross-border / 3M sellers: https://www.trade.gov/country-commercial-guides/thailand-ecommerce
+- DHL TH network (71 outlets, 244 flights): https://www.dhl.com/discover/en-th/about-dhl/reports-and-press-releases/strengthen-asia-pacific-network
+- Eco-checkout opt-in 10–30% / 43%: https://www.bigblue.co/blog/carbon-neutral-shipping-the-guide-for-e-commerce
+- McKinsey × NielsenIQ (28% vs 20%): https://www.mckinsey.com/industries/consumer-packaged-goods/our-insights/consumers-care-about-sustainability-and-back-it-up-with-their-wallets
+- Eco-label systematic review (56 studies): https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8384304/
+- EmpCo binding 27 Sep 2026: https://www.climatepartner.com/en/knowledge/glossary/empowering-consumers-directive-empco
+- SAF cost/supply — WEF: https://www.weforum.org/stories/2025/07/the-cost-of-sustainable-aviation-fuel/
+- SAF lifecycle by feedstock — ICCT: https://theicct.org/understanding-the-ghg-emissions-of-different-saf-pathways-sept25/
+- FedEx TH EV (confirms 12, 2040 goal): https://newsroom.fedex.com/newsroom/amea/fedex-grows-thailand-ev-fleet-to-support-global-2040-carbon-neutral-operations-goal
+
+---
+
+## 9. 🔬 DHL Challenge — External Research Deep-Dive
 
 *Source: `DHL-RESEARCH-deepdive.md`*
 
@@ -812,7 +1028,7 @@ that this shipment funded a *certified* X kg reduction. That precision is exactl
 ### 🧠 5. THE CONSUMER INSIGHT THAT SHOULD DRIVE TARGETING
 
 Thai consumers have a big **value–action gap**:
-- **97%** concerned about climate change; **~79%** interested in EVs.
+- **~79%** interested in EVs/HEVs (PwC Thailand) — the *supported* Thai concern stat. *(Note: the earlier "97% concerned" figure is unsourced — dropped per the Fact Audit; do not cite it.)*
 - Globally, consumers claim a **~9.7% willingness-to-pay premium** for sustainable products...
 - ...**but economic worry stops them acting** — they trade down to essentials. Attitude ≠ behavior.
 
@@ -864,7 +1080,155 @@ Say the principle out loud in the pitch: it reframes the ideas from "creative gu
 
 ---
 
-## 8. 🌐 DHL Challenge — How Other Companies Raise Sustainability Awareness (Benchmark)
+## 10. 🔬 DHL Challenge — Deep Research Round 2 (consumer, carbon math, DHL precedent, competitor proof)
+
+*Source: `DHL-RESEARCH-round2.md`*
+
+## 🔬 DHL Challenge — Deep Research Round 2 (consumer, carbon math, DHL precedent, competitor proof)
+
+> Researched 26 Jun 2026. Four fronts to deepen the pitch + Q&A. All sourced.
+
+---
+
+### 1. THAI CONSUMER BEHAVIOR (deeper)
+- ✅ **97% of Thai consumers concern about climate** — NOW CONFIRMED (TGM Research / PwC TH 2024).
+  *(Correction: we'd dropped this as unsourced; it's real. Still pair with the action stat below.)*
+- **83%** believe climate will seriously impact future generations; **90%+** directly affected (food/energy/air).
+- **79%** interested in EVs/HEVs (PwC TH) — the *action* proxy.
+- **The value-action gap is the story:** high concern (97%) but economic worry → trade down to essentials.
+  Our frame ("already helping, free") removes the barrier that stops the 97% from acting.
+- **Gen Z drivers (3):** ① social influence / peer identity (social media), ② brand image + loyalty +
+  online experience, ③ authenticity (they punish greenwashing). → supports Seller Badge + #ShipLight + the
+  book-and-claim honesty.
+- **2025 top-3 consumer trends:** Sustainability · Smart Spending · Self-Healing.
+
+### 2. CARBON MATH (so "X kg = Y km not driven" is precise)
+- **Average petrol car ≈ 165–192 g CO₂ per km** (UK/EU medium-car data); diesel ~170 g.
+- US EPA: typical vehicle ~**400 g CO₂/mile** (~250 g/km); ~**4.6 tonnes/year**.
+- **Defensible conversion for the Green Receipt:** use **~170 g CO₂/km** → **1 kg CO₂ ≈ 5.9 km not driven**
+  (round to "~6 km"). So a 10 kg cut ≈ "~59 km not driven." State the assumption ("based on an average
+  petrol car, ~170 g/km") so it's bulletproof.
+- ⚠️ Keep it a comparison, not a claim of identical impact: "equivalent to ~6 km not driven."
+
+### 3. DHL'S OWN PRECEDENT (build on, don't reinvent)
+- GoGreen Plus launched in TH **2023** via MyDHL+; reductions selectable **10% / 30% / 70%**.
+- DHL TH already has **free GoGreen recyclable packaging** — an existing green touchpoint we can ride.
+- **Real TH customers to name:** **Kasikornbank** (first bank to ship docs via SAF at no extra charge),
+  **The Board Factory** (surfboard SME, used GoGreen Plus for Scope-3 reporting). → proof SMEs already do this.
+- ⚠️ Implication: DHL markets GoGreen Plus *functionally* (a shipping option), not *emotionally*. Our gap =
+  the felt/visible/shareable layer they're missing. Say: "DHL built the product; we build the feeling."
+
+### 4. COMPETITOR / CAMPAIGN PROOF (real measured results)
+- **Patagonia "Don't Buy This Jacket":** honesty-led → **+30% sales.** (honesty sells — our book-and-claim bet)
+- **Lavazza sustainability film (Amazon Ads brand-lift):** aided awareness **2×** market norm, favorability
+  **8×**, purchase intent **20×**. (proves a story-led green campaign moves real awareness metrics)
+- **IKEA People & Planet Positive:** **75%** say sustainability improves their brand perception; ~10% annual
+  growth. (proves sustainability = brand equity, not cost)
+- **Method to cite:** "brand-lift study" — pre/post awareness, favorability, purchase intent. Exactly our
+  pre/post survey approach → our measurement plan is industry-standard, not invented.
+
+---
+
+### 📎 SOURCES
+- Thai consumer 97%/83%/90% + Gen Z drivers: https://tgmresearch.com/thailand-sustainability-insights-2024.html · https://www.frontiersin.org/journals/sustainability/articles/10.3389/frsus.2025.1716245/full
+- PwC Thailand (79% EV, trade-down): https://www.pwc.com/th/en/press-room/press-release/2024/press-release-30-08-24-en.html
+- Car CO₂/km (EPA + EU): https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle · https://www.eea.europa.eu/en/analysis/indicators/co2-performance-of-new-passenger
+- DHL GoGreen Plus TH + Kasikornbank/Board Factory: https://www.dhl.com/discover/en-th/logistics-advice/sustainability-and-green-logistics/dhl-gogreen-plus-reduces-scope3-emissions · https://www.dhl.com/th-en/home/press/press-archive/2023/dhl-express-launches-gogreen-plus.html
+- Patagonia +30% / Lavazza brand-lift / IKEA 75%: https://thegrowthshark.com/blog/green-gold-unveiling-success-stories-in-sustainable-marketing/ · https://advertising.amazon.com/library/guides/effectively-promote-sustainability-efforts
+
+---
+
+## 11. 📊 DHL Challenge — Hard Numbers Deep-Dive (the figures judges want)
+
+*Source: `DHL-NUMBERS-deepdive.md`*
+
+## 📊 DHL Challenge — Hard Numbers Deep-Dive (the figures judges want)
+
+> Real, sourced numbers to back the strategy and survive Q&A. Researched 26 Jun 2026.
+> Companions: [research](DHL-RESEARCH-deepdive.md) · [budget](DHL-BUDGET-5M.md) · [fact audit](DHL-FACT-AUDIT.md).
+> **Rule:** quote ranges, name the source, never false precision.
+
+---
+
+### 1. THE ROI DENOMINATOR — how big is the playing field
+
+| Number | Value | Source | Use in pitch |
+|---|---|---|---|
+| Thai e-commerce market 2025 | **฿1.07 trillion** (→ ฿1.15T, +7%) | Nation Thailand | "We're activating awareness inside a ฿1T+ market" |
+| Cross-border share | **~30% of market; ~half of shoppers buy cross-border** | trade.gov | DHL Express *is* cross-border — this is our exact arena |
+| Online sellers in TH | **~3 million** (Shopee/Lazada/TikTok) | trade.gov | The SME Seller-Badge addressable pool |
+| DHL Express TH network | **71 outlets/ServicePoints · 15 service centers · 244 weekly flights · 220+ countries** | DHL TH | The infrastructure already exists — we only add awareness |
+
+⚠️ **Note the 36 vs 71:** the brief scopes the campaign to **36 ServicePoints**, but DHL's real TH retail network is **71**. The 36 is our pilot footprint; the 71 shows headroom to scale if it works.
+
+---
+
+### 2. OPT-IN RATE (the assumption our whole ROI rests on)
+
+- **Industry eco-checkout opt-in: 10–30%.** [Bigblue / EcoCart]
+- Outlier high: **JuneShine 43%** at launch.
+- **Plan with the conservative floor:** *"We model a conservative ~10% opt-in — the low end of the proven 10–30% range. Anything above is upside."*
+- Pairs with the value-action gap: stated willingness (~11% APAC WTP) is higher than action, so 10% is realistic, not optimistic.
+
+---
+
+### 3. GOGREEN PLUS — PROOF IT ALREADY WORKS (use as feasibility ammo)
+
+- **12,000+ Asia-Pacific customers** adopted GoGreen Plus in one year; **2,800+ companies on contracts.** [DHL APAC press, 2024]
+- **185 kilotonnes of SAF used by DHL in 2025 = ~10% of jet fuel, ~3× vs 2024.** [GreenAir 2025]
+- **DHL = top-3 global SAF purchaser** (with IAG, Air France-KLM). Clients incl. **Google, SHEIN.**
+- ➡️ Updates the benchmark doc's "10% of cargo fuel" with hard tonnage + growth + ranking.
+- Pitch line: *"This isn't hypothetical — 12,000+ APAC customers already use GoGreen Plus. We're not inventing demand; we're making invisible demand visible at the counter."*
+
+---
+
+### 4. UOB — CONCRETE STATS (they are in the room — know these cold)
+
+| Program | Number | Source |
+|---|---|---|
+| Sustainability Compass | **1,600+ SMEs** mapped readiness | The Digital Banker |
+| Sustainable finance loans (TH, 2024) | **THB 33.96 billion** approved | thai.news / newswit |
+| Sustainability Innovation Programme (SIP) | **240+ SMEs** trained | The Digital Banker |
+| U-Solar (TH, since 2020) | **359 GWh renewable · 167,000 t CO₂ avoided** | UOB / SCMP |
+
+**Upgraded UOB mirror line:** *"UOB's Sustainability Compass has already guided 1,600+ SMEs to **start** their green journey — Ship Light lets those same SMEs **prove** theirs, on every parcel they send abroad."*
+
+---
+
+### 5. SPREAD PILLAR — BADGE EVIDENCE (turns our weakest link into a strength)
+
+- Product badges lift conversion **up to 55%** by cutting decision friction. [tech-arms]
+- Eco-labels reliably shift product selection — **systematic review of 56 studies.** [NIH/PMC]
+- **Critical caveat:** only credible, certified labels work; greenwashing is punished — buyers investigate and abandon fakes.
+- ➡️ **Our framing:** *"Badges work — but only when credible. Ours is backed by certified book-and-claim CO₂ data, not a vague 'eco' sticker. That's the difference between a badge buyers trust and one they ignore."*
+
+---
+
+### 6. THE NUMBERS TO LEAD WITH (safest + most persuasive, combined with Fact-Audit)
+
+1. **12,000+ APAC GoGreen Plus customers** — demand is already real (feasibility).
+2. **฿1T+ Thai e-commerce, ~30% cross-border** — the market size (impact).
+3. **10% conservative opt-in** (of proven 10–30%) — the ROI assumption (defensible).
+4. **UOB: 1,600+ SMEs on the Compass** — the partner mirror (relevance to the room).
+5. Back-pocket: 185kt SAF / top-3 buyer · 43 vs 12 EVs · €325/tonne · 28% vs 20% ESG growth.
+
+---
+
+### 📎 SOURCES
+- Thai e-commerce ฿1.07T: https://www.nationthailand.com/business/economy/40058399
+- Thai e-commerce / cross-border 30% / 3M sellers: https://www.trade.gov/country-commercial-guides/thailand-ecommerce
+- DHL TH network (71 outlets, 244 flights): https://www.dhl.com/discover/en-th/about-dhl/reports-and-press-releases/strengthen-asia-pacific-network
+- Eco-checkout opt-in 10–30% / JuneShine 43%: https://www.bigblue.co/blog/carbon-neutral-shipping-the-guide-for-e-commerce
+- GoGreen Plus 12,000+ APAC customers: https://www.dhl.com/th-en/home/press/press-archive/2024/dhl-express-gogreen-plus-helps-over-12000-asia-pacific-customers-in-sustainable-logistics.html
+- DHL 185kt SAF, top-3 buyer, 3x growth: https://www.greenairnews.com/?p=8858
+- UOB Sustainability Compass 1,600+ SMEs / programs: https://thedigitalbanker.com/restricted-uob-thailand-powers-sustainable-progress-across-sectors/
+- UOB Compass Forum / THB 33.96B / U-Solar: https://thai.news/news/thailand/uob-thailands-sustainability-compass-forum-paving-the-path-to-a-green-economy-in-2025
+- Product badges +55% conversion: https://tech-arms.io/blog/product-badges/
+- Eco-label systematic review (56 studies): https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8384304/
+
+---
+
+## 12. 🌐 DHL Challenge — How Other Companies Raise Sustainability Awareness (Benchmark)
 
 *Source: `DHL-BENCHMARK-awareness.md`*
 
@@ -972,7 +1336,7 @@ and broadcast* sustainability — **directly echoes UOB's own SME-sustainability
 
 ---
 
-## 9. 🎯 DHL Challenge — MASTER Strategy (the combined flagship)
+## 13. 🎯 DHL Challenge — MASTER Strategy (the combined flagship)
 
 *Source: `DHL-MASTER-strategy.md`*
 
@@ -1127,7 +1491,7 @@ Walk into ServicePoint
 
 ---
 
-## 10. 🧠 DHL Challenge — Strategy Bank (deep)
+## 14. 🧠 DHL Challenge — Strategy Bank (deep)
 
 *Source: `DHL-STRATEGY-bank.md`*
 
@@ -1282,7 +1646,7 @@ When the team narrows, score each idea on the **5 judging criteria** AND the **c
 
 ---
 
-## 11. 🏆 DHL Challenge — Top 3 Ideas, Deep Dive
+## 15. 🏆 DHL Challenge — Top 3 Ideas, Deep Dive
 
 *Source: `DHL-TOP3-deepdive.md`*
 
@@ -1455,7 +1819,7 @@ constraints, and demonstrates Green-Claims literacy throughout (the thing that s
 
 ---
 
-## 12. 💡 DHL Challenge — Brainstorm (working doc)
+## 16. 💡 DHL Challenge — Brainstorm (working doc)
 
 *Source: `DHL-IDEAS-brainstorm.md`*
 
@@ -1512,7 +1876,7 @@ Gives sellers *value*, not just info. Strong ROI angle.
 
 ---
 
-## 13. 🎨 DHL Challenge — Creative & International Strategy
+## 17. 🎨 DHL Challenge — Creative & International Strategy
 
 *Source: `DHL-CREATIVE-international.md`*
 
@@ -1644,7 +2008,330 @@ models. Their overseas buyers see it → DHL's green reputation spreads through 
 
 ---
 
-## 14. 🔭 DHL Challenge — The Connected Economics (bigger picture)
+## 18. 🏅 DHL Challenge — The Green Shipper Tier (loyalty / status)
+
+*Source: `DHL-TIER-loyalty.md`*
+
+## 🏅 DHL Challenge — The Green Shipper Tier (loyalty / status)
+
+> Pakkapon's "customer tier" idea, built to **close the flywheel loop.** It's not a 5th piece — it's the
+> **connective tissue** that makes Feel→Carry→Belong→Spread actually *repeat.*
+> Companions: [master strategy](DHL-MASTER-strategy.md) · [money story](DHL-MARGIN-money-story.md) ·
+> [team feedback](DHL-TEAM-feedback.md).
+
+---
+
+### 0. WHY IT FITS (the honest case)
+
+The flywheel's weakest link is **"comes back again"** — awareness is easy, but *repeat* green behaviour is
+hard (the whole value–action gap). A status tier is **literally a repeat-engagement engine**, and it
+plugs straight into two things we already have:
+- The **running total** on the Green Receipt → *becomes* the tier progress bar.
+- The **Seller Badge** → higher tiers = a more prestigious badge (more valuable to the SME).
+
+So the tier doesn't add a new mechanic — it **upgrades the loop** between the pieces we built.
+
+> **One line:** *The receipt shows your impact; the tier turns that impact into status; the status makes
+> you ship green again. That's the loop closing.*
+
+---
+
+### 1. THE MECHANIC — "Green Shipper" status
+
+Earned by **repeat green choices** (number of GoGreen Plus shipments / verified CO₂ cut over time),
+**not by raw spend.** (Critical — see the guardrail.)
+
+| Tier | Earned by | Reward (escalating, mostly free) |
+|---|---|---|
+| 🌱 **Sprout** | 1st green shipment | Welcome + your first Green Receipt + "you've started" |
+| 🥉 **Bronze** | a few green shipments | Basic "Green Shipper" badge for your shop/socials |
+| 🥈 **Silver** | steady repeat | Better badge tier + featured on the Green Map |
+| 🥇 **Gold** | power green-shipper | Premium "Gold Green Shipper" badge + a spotlight story (the SME video pipeline) |
+
+- Lives in **LINE OA** (where the digital receipt + running total already are) → near-zero build cost.
+- Progress is **visible** ("2 more shipments to Silver") → the salience nudge that drives return.
+
+---
+
+### 2. HOW IT THREADS THE EXISTING 4 PIECES (connective tissue, not a 5th mode)
+```
+① FEEL  — Green Receipt shows impact  ──► feeds your tier progress bar
+② CARRY — Green Stamp on the box      ──► higher tier = a nicer/branded stamp
+③ BELONG— Thailand's Green Map        ──► Silver+ shippers featured on the map
+④ SPREAD— Seller Badge                ──► the badge LEVELS UP with your tier
+            ▲                                        │
+            └──────────  status makes you ship green AGAIN  ◄──────────┘
+```
+The tier is the **arrow that returns** — it's what turns a one-time good feeling into a habit.
+
+---
+
+### 3. WHY IT STRENGTHENS THE MICRO-SME SPINE
+- A small home seller earning **"Gold Green Shipper"** is *exactly* the empowerment-of-the-little-guy
+  story you locked in. Status is something SMEs can **show their own customers** → ties to the multiplier.
+- It mirrors **UOB** again: tiers/levels are how banks build SME loyalty programs. Familiar, credible.
+- It rewards the behaviour DHL *wants* (repeat GoGreen Plus) without asking anyone to "pay more for green."
+
+---
+
+### 4. ⚠️ GUARDRAILS (so it helps, not hurts)
+1. **Reward repeat green CHOICES, not raw spend.** "Ship green often," never "spend more to rank up" —
+   the latter clashes with the "you're already helping, for free" frame and a bank judge will smell it.
+2. **Keep it connective, not a 5th pillar.** In the pitch it's *"and the tier makes the loop repeat,"*
+   a 10-second beat — not its own mode competing with the 4 pieces. (Resists scope creep.)
+3. **Green-Claims safe.** Tier names are about *behaviour* ("Green Shipper"), not unprovable outcome
+   claims ("carbon-neutral customer"). Status reflects verified GoGreen Plus usage (book-and-claim).
+4. **Don't gate the good feeling behind a tier.** Tier 0 (anyone who ships green once) already gets the
+   Receipt + the feeling; tiers add *status on top*, they don't paywall participation.
+
+---
+
+### 5. ONE-LINE FOR THE PITCH
+> *"The Green Receipt makes you feel it once. The Green Shipper tier makes you want to feel it again —
+> turning a single good choice into a status you carry, show, and grow. That's how awareness becomes habit."*
+
+---
+
+## 19. 🧮 DHL Challenge — The Green Shipper Tier MODEL (the math behind the fairness)
+
+*Source: `DHL-TIER-MODEL.md`*
+
+## 🧮 DHL Challenge — The Green Shipper Tier MODEL (the math behind the fairness)
+
+> The scoring engine under [DHL-TIER-loyalty.md](DHL-TIER-loyalty.md). Built to answer the killer
+> question: *"Won't big corporate clients just dominate your Gold tier?"* — **No, and here's the math.**
+> Design principle: a small seller who ships **greener** must be able to out-rank a big firm that ships
+> **more**. We score the *choice*, not the *size*. Built 26 Jun 2026 (Pakkapon's tier, made rigorous).
+
+---
+
+### 0. THE PROBLEM IN ONE LINE
+Rank by raw green volume → big firms win automatically (they ship more of everything).
+Rank by raw green % → a 1-of-1 shipper "wins" with 100%.
+**Solution: a blended score that is size-neutral, habit-rewarding, and gaming-resistant.**
+
+---
+
+### 1. THE FOUR INPUTS (per shipper, rolling 90-day window)
+
+| Symbol | Meaning | How measured |
+|---|---|---|
+| `G` | green shipments (GoGreen Plus) in window | count |
+| `T` | total shipments in window | count |
+| `W` | # distinct weeks with ≥1 green shipment | count (max 13 in 90 days) |
+| `D` | avg verified CO₂ reduction % chosen (30–100%) | from GoGreen Plus selection |
+| `R_now`, `R_prev` | green rate this window vs previous window | G/T this vs last |
+
+---
+
+### 2. THE SCORE (0–100)
+
+**Step 1 — four sub-scores, each 0–1:**
+```
+GreenRate     = G / T                          # the fairness core (size-neutral)
+Consistency   = W / 13                          # weeks active out of ~13 in 90 days
+Momentum      = clip( (R_now - R_prev) / 0.25 , 0, 1 )   # +25pp improvement = full marks
+Depth         = (D - 30) / 70                   # 30%→0, 100%→1 (verified reduction chosen)
+```
+
+**Step 2 — credibility floor (anti-gaming):**
+```
+Cred = min( T / 5 , 1 )      # need ~5 shipments for full credibility; 1-of-1 is discounted
+```
+This kills the "100% from a single shipment" exploit — a 1-shipment shipper gets Cred = 0.2.
+
+**Step 3 — small-firm fairness handicap (the anti-big-firm lever):**
+
+How do we know a shipper is "small"? **We don't guess — DHL already knows.** (See §3a.)
+```
+isSME      = 1 if DHL classifies the account as SME / retail / ServicePoint, else 0
+SizeBoost  = 1 + 0.15 * isSME
+## SME / ServicePoint account → +15% boost
+## Corporate / contract account → boost = 0  (no penalty, just no SME bonus)
+```
+Rationale: a tiny seller's effort is *harder* (less infrastructure, no sustainability team), so we tilt the
+field gently toward them. Big firms aren't punished — they simply don't get the SME bonus. The flag comes
+from **DHL's own customer classification**, which aligns with Thailand's official SME definition (§3a) — so
+"small" is defined by law + DHL's data, not by us.
+
+**Step 4 — combine:**
+```
+Base  = 0.50*GreenRate + 0.20*Consistency + 0.20*Momentum + 0.10*Depth
+Score = 100 * Base * Cred * SizeBoost      (capped at 100)
+```
+
+---
+
+### 3a. HOW WE DEFINE "SMALL" (the answer to "how do you even know?")
+
+We do **not** invent a size cutoff. Three layers, primary first:
+
+1. **DHL's own account flag (primary).** DHL already separates **Corporate / contract accounts** from
+   **SME / retail / MyDHL+ shippers**, and our campaign runs at **ServicePoints — inherently the SME /
+   walk-in channel.** So the SME flag is data DHL *already holds*; `isSME` reads straight off it.
+2. **Thailand's official SME definition (the legal backing).** Per OSMEP, Ministerial Regulation
+   B.E. 2562 (2019), for **trade & service** firms (where shippers/e-commerce sellers sit):
+   | Class | Annual revenue | Employees |
+   |---|---|---|
+   | Micro | ≤ ฿1.8M | ≤ 5 |
+   | Small | ≤ ฿50M | ≤ 30 |
+   | Medium | ≤ ฿300M | ≤ 100 |
+   | Large | above | above |
+   → "An SME is officially a firm under **฿300M revenue / 100 staff**. That's who the tier protects."
+3. **Shipment-volume backstop (only if the flag is missing).** If an account isn't tagged, low
+   parcels/quarter stands in as a proxy for "small." Approximate, used only as a fallback.
+
+**Pitch answer:** *"We don't decide who's small — DHL's own SME classification does, and it lines up with
+Thailand's legal SME definition. We just reward the small ones for shipping green."*
+
+#### 3a-bis. THE ACCURATE CATEGORIZATION (OSMEP + EU + World Bank reconciled)
+
+For the most *defensible* big/medium/small split, we anchor on **Thailand's OSMEP law** (it governs here),
+and note it aligns with international norms — so the model is locally correct AND internationally credible.
+
+**OSMEP (Thailand, legal — for Trade & Service, where shippers sit):**
+| Class | Annual revenue | Employees |
+|---|---|---|
+| Micro | ≤ ฿1.8M | ≤ 5 |
+| Small | > ฿1.8M – ฿50M | 6 – 30 |
+| Medium | > ฿50M – ฿300M | 31 – 100 |
+| Large | > ฿300M | > 100 |
+*(Manufacturing thresholds are higher: Small ≤฿100M/50 staff, Medium ≤฿500M/200 staff. Use Trade & Service
+for e-commerce sellers.)* **Tie-break rule:** if revenue and headcount disagree, OSMEP uses the **higher** class.
+
+**Cross-checks (shows we know the global picture):**
+- **EU:** by employees + turnover (Micro <10, Small <50, Medium <250 staff). Headcount-led.
+- **World Bank:** no single standard; applies a **~$2M revenue threshold** for Thailand — broadly consistent
+  with OSMEP's Small band.
+- → All three agree on the *shape* (micro→small→medium by revenue+staff); OSMEP is our binding version.
+
+**How DHL operationalizes it (the practical map):**
+| Signal DHL has | Maps to | Used for |
+|---|---|---|
+| SME/retail/ServicePoint account flag | "small" (Micro+Small) | SizeBoost = +15% |
+| Corporate/contract account | Medium+Large | SizeBoost = 0 |
+| Shipment volume (fallback) | proxy when flag missing | low volume → likely SME |
+
+**Pitch-safe statement:** *"Small = Thailand's legal OSMEP definition (≤฿300M revenue / 100 staff for trade),
+which matches EU and World Bank norms. DHL already tags accounts this way, so we apply it directly — no
+guessing, and it's auditable."*
+
+---
+
+### 3. THE TIER CUTOFFS
+
+| Tier | Score | Plain meaning |
+|---|---|---|
+| 🌱 **Sprout** | first green shipment (Score > 0) | "You started." |
+| 🥉 **Bronze** | ≥ 25 | Ships green sometimes, building the habit |
+| 🥈 **Silver** | ≥ 50 | Steady green shipper, consistent |
+| 🥇 **Gold** | ≥ 75 | High green rate + consistent + deep reductions |
+
+*(Cutoffs are tunable; these are the pitch defaults. Tier = status layer on top — Sprout already gets the
+Receipt + good feeling, per the loyalty-doc guardrail "don't paywall participation.")*
+
+---
+
+### 3b. WHAT EACH TIER GETS — the rewards breakdown
+
+Design rule (from loyalty research): **status/recognition/visibility beats discounts** — it's more
+motivating, on-brand, and **margin-safe** (no cash given away, fits the "you're already helping, for free"
+frame). Every reward below is **earned recognition, not a price cut.** Benefits **stack** (each tier keeps
+the ones below).
+
+| Tier | Earn it by | 🎁 Badge | 📣 Visibility | ⭐ Status perk | 💚 Real value to the SME |
+|---|---|---|---|---|---|
+| 🌱 **Sprout** | 1st green shipment (Score > 0) | "Green Shipper — Started" badge | — | Welcome + first Green Receipt | Proof to show "I ship green" from day one |
+| 🥉 **Bronze** | Score ≥ 25 | Bronze Green Shipper badge (shop/socials) | Listed on Thailand Green Map | Progress bar: "X to Silver" | A credible badge buyers recognize |
+| 🥈 **Silver** | Score ≥ 50 | Silver badge (nicer art) | **Featured** pin on the Green Map | Branded Green Stamp on their boxes | Stands out on the map; better box presentation |
+| 🥇 **Gold** | Score ≥ 75 | Premium Gold badge | **Spotlight story** (the SME video pipeline) | Priority on UGC features; "Gold Green Shipper" title | Real earned media — DHL tells their story |
+
+**Why these rewards (not discounts):**
+- **Badges/titles** = the SPREAD pillar — sellers show buyers → free marketing for them *and* DHL.
+- **Map features/spotlight** = the BELONG pillar — collective pride + recognition (research: status > price).
+- **Branded stamp** = the CARRY pillar — a tangible upgrade that costs DHL almost nothing.
+- **No cash, no % off** → protects DHL margin, stays Green-Claims safe, and never asks the SME to "pay more."
+
+**Cost guardrail:** loyalty best practice caps reward cost at ~5–10% of incremental revenue. Ours is mostly
+**digital/recognition (near-zero marginal cost)** — it fits inside the campaign, not on top of it.
+
+---
+
+### 4. ⭐ WORKED EXAMPLE — small firm BEATS big firm (this is the slide)
+
+**Small seller "Nong's Crafts":** ships 40 parcels/90 days, 32 green (80% rate), active 11 of 13 weeks,
+chose 50% reductions, last window was 60% green (improving +20pp).
+```
+GreenRate=0.80  Consistency=11/13=0.85  Momentum=(0.20/0.25)=0.80  Depth=(50-30)/70=0.29
+Base = 0.50*0.80 + 0.20*0.85 + 0.20*0.80 + 0.10*0.29 = 0.40+0.17+0.16+0.029 = 0.759
+Cred = min(40/5,1)=1.0    SizeBoost = 1+0.15*1 = 1.15  (DHL-tagged SME / ServicePoint account)
+Score = 100 * 0.759 * 1.0 * 1.15 = 87.3  → 🥇 GOLD
+```
+
+**Big firm "MegaCorp Logistics":** ships 8,000 parcels/90 days, 800 green (10% rate), active all 13 weeks,
+chose 30% reductions, flat vs last window.
+```
+GreenRate=0.10  Consistency=13/13=1.0  Momentum=0  Depth=(30-30)/70=0
+Base = 0.50*0.10 + 0.20*1.0 + 0.20*0 + 0.10*0 = 0.05+0.20 = 0.25
+Cred = 1.0    SizeBoost = 1+0.15*0 = 1.0   (Corporate / contract account — no SME bonus)
+Score = 100 * 0.25 * 1.0 * 1.0 = 25.0  → 🥉 BRONZE
+```
+
+➡️ **Nong's Crafts (40 parcels) = GOLD. MegaCorp (8,000 parcels) = BRONZE.** The small seller wins on
+*choice quality*, not size. **That's the answer to the takeover fear, in numbers.**
+
+*(Note: MegaCorp still cut far more absolute CO₂ — and that's fine. The TIER rewards green behaviour/loyalty;
+absolute tonnage is celebrated separately on the national Map. Two scoreboards, no conflict.)*
+
+---
+
+### 5. WHY EACH CHOICE IS DEFENSIBLE (judge Q&A)
+- **"Why rate not volume?"** → "Volume rewards being big. Rate rewards the *decision* — which is what we
+  want every shipper, especially SMEs, to make. Absolute impact is shown on the Map; the tier shows commitment."
+- **"Isn't the small-firm boost unfair to big clients?"** → "It's +15% max and fades to zero by 200 shipments.
+  Big firms aren't penalised — we just don't make a tiny seller compete on a corporation's infrastructure.
+  It mirrors how UOB's SME programs are *designed for* the small player."
+- **"Can't someone game it?"** → "The credibility floor (needs ~5 shipments) blocks the 1-of-1 trick, and
+  it's all verified GoGreen Plus usage — book-and-claim, not self-reported. Green-Claims safe."
+- **"Why a 90-day rolling window?"** → "Matches the campaign length, rewards *current* habit, and lets a
+  reformed shipper climb — momentum is built in."
+
+---
+
+### 6. FEASIBILITY (keep it cheap — it's still a marketing campaign)
+- All four inputs come from data DHL **already has** (GoGreen Plus usage in MyDHL+/LINE). No new tracking.
+- The whole model is **4 counts + a little arithmetic** → a spreadsheet or a few lines of code. Runs in LINE OA.
+- For the pitch: show the **two worked examples** (Nong vs MegaCorp). The formula is the back-up slide.
+
+---
+
+### 7. ⚠️ KEEP IT SIMPLE ON STAGE (don't make judges do the math)
+
+The formula is the **back-up slide, not the pitch.** Complexity kills if the audience has to follow it live.
+What you actually SAY (≈15 sec):
+
+> *"Four tiers — Sprout, Bronze, Silver, Gold — earned by how green your choices are, not how big you are.
+> Each unlocks a better badge and more spotlight. A small seller who ships green every week can hit Gold
+> while a corporation sits at Bronze."*
+
+Then **only if a judge asks "how exactly?"** → flip to the formula slide. Layered, not dumped:
+- **Layer 1 (always):** the 4-tier ladder + the rewards table (§3b) — concrete and satisfying.
+- **Layer 2 (on request):** "greenness = mostly your green *rate*, plus consistency and improvement."
+- **Layer 3 (deep Q&A):** the full weighted formula (§2) and the SME definition (§3a).
+
+Research backs this: 3–5 tiers is the simplicity sweet spot, and **transparent, clear benefits drive
+participation** — so show the *ladder and the prizes*, hide the *engine*.
+
+---
+
+### 8. ONE-LINE FOR THE PITCH
+> *"We rank shippers by the greenness of their choices, not the size of their wallet — so a home seller in
+> Chiang Mai who ships green every week can wear Gold while a giant corporation sits at Bronze. The tier
+> protects the little guy by design — it's in the math."*
+
+---
+
+## 20. 🔭 DHL Challenge — The Connected Economics (bigger picture)
 
 *Source: `DHL-ECONOMICS-bigpicture.md`*
 
@@ -1773,7 +2460,7 @@ the trial barrier, kick-starts the flywheel. Small, time-boxed, attention-grabbi
 
 ---
 
-## 15. 💰 DHL Challenge — The Money Story (margin of selling eco)
+## 21. 💰 DHL Challenge — The Money Story (margin of selling eco)
 
 *Source: `DHL-MARGIN-money-story.md`*
 
@@ -1908,7 +2595,93 @@ awareness compounds → opt-ins compound → everyone's margin compounds
 
 ---
 
-## 16. 💰 DHL Challenge — Carbon Economics & Customer-Contribution Model
+## 22. 💵 DHL Challenge — Finance Justification (where every baht comes from)
+
+*Source: `DHL-FINANCE-justification.md`*
+
+## 💵 DHL Challenge — Finance Justification (where every baht comes from)
+
+> Bottom-up proof of the ฿5M split, built from REAL Thai market rates (researched 26 Jun 2026).
+> Answers the judge question: "How did you get these numbers?" Each line ties to a sourced rate.
+> ⚠️ Label as **indicative planning estimates**, not quotes. Judges want sound logic + a contingency.
+
+---
+
+### 0. THE COSTING METHOD (say this first)
+"We costed bottom-up from real Thai market rates — agency, LINE, print, video, research — then rounded to
+planning buckets with a contingency. These are indicative allocations, not vendor quotes."
+
+---
+
+### 1. REAL THAI RATE CARD (the evidence base)
+
+| Item | Real market rate | Source |
+|---|---|---|
+| Digital marketing agency (retainer) | ฿15,000–250,000+/month | Ibex / Inspira |
+| LINE OA paid plan | from ฿1,500/month | Sphere Agency |
+| LINE "friend" acquisition | ฿5–30 per friend | Inspira |
+| Corporate video (studio day) | from ~฿20,000/day filming | Bangkok Video Productions |
+| Brand-awareness survey | min ~200 respondents/wave for valid tracking | Iconic / Standard Insights |
+| In-store signage/standee | quote-based; standee metal stand +฿180/unit | Gogoprint / Octopus |
+
+➡️ Our buckets sit **inside** these ranges → defensible, not made up.
+
+---
+
+### 2. THE ฿5M, JUSTIFIED LINE-BY-LINE
+
+| # | Bucket | ฿ | How we got the number (from §1 rates) |
+|---|---|---|---|
+| 1 | **In-branch experience** (36 branches) | 1,500,000 | Receipt redesign+print, counter cards, posters, screen content. ≈ ฿41.7k/branch over 3 mo = signage + printing at Gogoprint/Octopus scale. Largest bucket because it's the felt-moment touchpoint × 36 sites. |
+| 2 | **Digital build** (QR, LINE OA, Map) | 1,000,000 | Agency build of QR landing + LINE OA integration + localized Map. ≈ 4–5 months of a mid agency retainer (฿15–50k/mo each workstream) + LINE OA plan. One-time build, not ongoing ad spend. |
+| 3 | **Seller Badge + SME activation** | 900,000 | Badge system + asset kit + outreach. Includes LINE friend acquisition for SME sellers at ฿5–30 each → ~30k–60k seller reach is realistic inside this bucket. |
+| 4 | **Content & social** (video + UGC) | 750,000 | The real-SME ServicePoint video (~฿20k/day × multi-day shoot + edit + versions) + organic social. Video is the costly line; rate-card confirms ฿20k/day floor. |
+| 5 | **Staff enablement** | 250,000 | Briefing + one-liner script across 36 branches. Cheap, high-leverage (internal time + simple materials). |
+| 6 | **Measurement** (pre/post survey) | 350,000 | Two survey waves, ≥200 respondents each (the valid-tracking minimum), via a Thai research agency. Proves the awareness lift = proves ROI. |
+| 7 | **Contingency** | 250,000 | 5% buffer — best practice; shows financial discipline. |
+| | **TOTAL** | **5,000,000** | |
+
+**Guardrail restated:** ฿5M ÷ 36 ÷ 3 ≈ **฿46.3k/branch/month** → favour cheap, repeating touchpoints.
+
+---
+
+### 3. EXAMPLE: "why ฿100k for X?" (how to answer any line-item challenge)
+Template answer: *"That bucket is [rate] × [quantity] × [duration], from [Thai vendor benchmark], plus a
+share of contingency. For instance, the video line is ~฿20k/day studio rate × shoot+edit, which Bangkok
+production houses quote as the floor."*
+
+The point isn't invoice precision — it's showing **the number has a derivation**, not a guess.
+
+---
+
+### 4. THE ROI MATH (what ฿5M returns — with a worked number)
+Inputs (all defensible from _PROOF.md + this doc):
+- ฿5M awareness spend · 36 branches · 3 months
+- Conservative **10% opt-in** on GoGreen Plus (proven 10–30% range)
+- GoGreen Plus ≈ €325/tonne (DHL) — customers fund this, NOT the ฿5M
+
+```
+Cost per aware customer = ฿5,000,000 ÷ (customers reached × awareness-lift%)
+   → tracked directly by the pre/post survey (bucket 6)
+Behavioural return = incremental GoGreen Plus opt-ins × avg CO₂ cut  (the high-margin line for DHL)
+Earned return = stamp impressions abroad + seller-audience reach (free, multiplies the ฿5M)
+```
+Headline: *"฿5M of marketing OpEx activates a €7B green capability DHL already built, lifts a high-margin
+product, and turns SMEs into free broadcasters — all measured before/after."*
+
+---
+
+### 📎 SOURCES
+- Digital marketing agency cost TH: https://www.ibex.co.th/digital-marketing-agency-cost-thailand/ · https://www.inspiradigitalagency.com/digital-marketing-cost-thailand/
+- LINE OA setup/pricing: https://sphereagency.com/articles/line-oa-setup-guide-thailand
+- Video production cost TH (~฿20k/day): https://www.bangkokvideoproductions.com/film-services/film-video-production/video-production-costs-explained
+- Signage/standee TH: https://www.gogoprint.co.th/en/printing/signage.html · https://www.octopus.co.th/en/products/standee-corrugated-plastic
+- Market research/brand tracking TH (200/wave): https://iconicthai.com/brand-awareness/ · https://standard-insights.com/market-research-thailand/
+- GoGreen Plus €325/tonne: https://www.dhl.com/us-en/home/express/products-and-solutions/gogreen-plus.html
+
+---
+
+## 23. 💰 DHL Challenge — Carbon Economics & Customer-Contribution Model
 
 *Source: `DHL-CARBON-ECONOMICS.md`*
 
@@ -2034,7 +2807,7 @@ GoGreen Plus. So your ROI is:
 
 ---
 
-## 17. ⛽ SAF vs Conventional Jet Fuel — Full Comparison (every aspect)
+## 24. ⛽ SAF vs Conventional Jet Fuel — Full Comparison (every aspect)
 
 *Source: `DHL-SAF-vs-jetfuel.md`*
 
@@ -2146,7 +2919,7 @@ Plants/crops grow NOW → absorb CO₂ from today's air → become waste oil / b
 
 ---
 
-## 18. 💸 DHL Challenge — The ฿5M Budget (3-month campaign)
+## 25. 💸 DHL Challenge — The ฿5M Budget (3-month campaign)
 
 *Source: `DHL-BUDGET-5M.md`*
 
@@ -2231,91 +3004,410 @@ touchpoints (receipt, screen, staff line, LINE) over one-off spectacle. No celeb
 
 ---
 
-## 19. 🏅 DHL Challenge — The Green Shipper Tier (loyalty / status)
+## 26. 🌐 DHL Challenge — The Sustainability Ecosystem (who makes "Ship Light" real)
 
-*Source: `DHL-TIER-loyalty.md`*
+*Source: `DHL-ECOSYSTEM.md`*
 
-## 🏅 DHL Challenge — The Green Shipper Tier (loyalty / status)
+## 🌐 DHL Challenge — The Sustainability Ecosystem (who makes "Ship Light" real)
 
-> Pakkapon's "customer tier" idea, built to **close the flywheel loop.** It's not a 5th piece — it's the
-> **connective tissue** that makes Feel→Carry→Belong→Spread actually *repeat.*
-> Companions: [master strategy](DHL-MASTER-strategy.md) · [money story](DHL-MARGIN-money-story.md) ·
-> [team feedback](DHL-TEAM-feedback.md).
+> Researched 26 Jun 2026. The full value chain behind GoGreen Plus, so our campaign isn't a poster —
+> it sits on a real, audited supply chain. Shows judges the strategy plugs into something that exists.
 
 ---
 
-### 0. WHY IT FITS (the honest case)
-
-The flywheel's weakest link is **"comes back again"** — awareness is easy, but *repeat* green behaviour is
-hard (the whole value–action gap). A status tier is **literally a repeat-engagement engine**, and it
-plugs straight into two things we already have:
-- The **running total** on the Green Receipt → *becomes* the tier progress bar.
-- The **Seller Badge** → higher tiers = a more prestigious badge (more valuable to the SME).
-
-So the tier doesn't add a new mechanic — it **upgrades the loop** between the pieces we built.
-
-> **One line:** *The receipt shows your impact; the tier turns that impact into status; the status makes
-> you ship green again. That's the loop closing.*
+### 0. WHY THIS MATTERS
+Our campaign promises a "verified CO₂ cut." That promise is only credible because a real ecosystem of SAF
+suppliers, certification standards, and partners stands behind it. Naming it = proof we did the homework.
 
 ---
 
-### 1. THE MECHANIC — "Green Shipper" status
+### 1. THE VALUE CHAIN (upstream → customer → downstream)
 
-Earned by **repeat green choices** (number of GoGreen Plus shipments / verified CO₂ cut over time),
-**not by raw spend.** (Critical — see the guardrail.)
-
-| Tier | Earned by | Reward (escalating, mostly free) |
-|---|---|---|
-| 🌱 **Sprout** | 1st green shipment | Welcome + your first Green Receipt + "you've started" |
-| 🥉 **Bronze** | a few green shipments | Basic "Green Shipper" badge for your shop/socials |
-| 🥈 **Silver** | steady repeat | Better badge tier + featured on the Green Map |
-| 🥇 **Gold** | power green-shipper | Premium "Gold Green Shipper" badge + a spotlight story (the SME video pipeline) |
-
-- Lives in **LINE OA** (where the digital receipt + running total already are) → near-zero build cost.
-- Progress is **visible** ("2 more shipments to Silver") → the salience nudge that drives return.
-
----
-
-### 2. HOW IT THREADS THE EXISTING 4 PIECES (connective tissue, not a 5th mode)
 ```
-① FEEL  — Green Receipt shows impact  ──► feeds your tier progress bar
-② CARRY — Green Stamp on the box      ──► higher tier = a nicer/branded stamp
-③ BELONG— Thailand's Green Map        ──► Silver+ shippers featured on the map
-④ SPREAD— Seller Badge                ──► the badge LEVELS UP with your tier
-            ▲                                        │
-            └──────────  status makes you ship green AGAIN  ◄──────────┘
+SAF SUPPLIERS ──► DHL NETWORK ──► CERTIFICATION ──► GoGreen Plus ──► SME / CUSTOMER ──► RECEIVER ABROAD
+ (fuel in)        (buys & flies)   (verifies cut)    (the product)    (our campaign)     (earned reach)
 ```
-The tier is the **arrow that returns** — it's what turns a one-time good feeling into a habit.
+
+| Layer | Who | What they do | Source |
+|---|---|---|---|
+| **SAF suppliers** | **BP, Neste, World Energy, Cosmo Energy** | Sell DHL certified SAF. World Energy: 7-yr / 667M-litre deal (2024). Cosmo: 7,200 kL/yr, Asia's first regular SAF cargo service | Sustainability Mag / ESG Dive |
+| **Standards bodies** | **GHG Protocol · GLEC Framework v3.2 · ISO 14083** | Define how the CO₂ cut is measured/reported — the "verified" in our claim | DHL Reporting Hub |
+| **The product** | **GoGreen Plus** | Customer pays → DHL allocates SAF → certificate issued (supplier, feedstock, reduction amount) | DHL |
+| **Tech/decarb partners** | **Google, Envision** | Co-decarbonization partnerships; Google is a GoGreen Plus customer | ESG Dive |
+| **The bank** | **UOB** | SME sustainability financing/advisory (Compass, U-Solar) — the partner in the room | UOB |
+| **Our actors** | **SME sellers · walk-in customers · receivers abroad** | The people our campaign moves: choose green, feel it, spread it | (our strategy) |
+| **Regulators** | **EU (EmpCo) · Thai OCPB/PDPC** | Set the claim + data rules we comply with (see DHL-POLICY-RISK) | — |
 
 ---
 
-### 3. WHY IT STRENGTHENS THE MICRO-SME SPINE
-- A small home seller earning **"Gold Green Shipper"** is *exactly* the empowerment-of-the-little-guy
-  story you locked in. Status is something SMEs can **show their own customers** → ties to the multiplier.
-- It mirrors **UOB** again: tiers/levels are how banks build SME loyalty programs. Familiar, credible.
-- It rewards the behaviour DHL *wants* (repeat GoGreen Plus) without asking anyone to "pay more for green."
+### 2. WHERE OUR CAMPAIGN SITS IN THE ECOSYSTEM
+Our 4 pieces don't create new infrastructure — they **activate awareness of the chain that already exists**:
+- **FEEL (Receipt)** surfaces the certified cut from the SAF→certification layer.
+- **CARRY (Stamp)** extends it to the receiver-abroad layer (free reach).
+- **BELONG (Map)** aggregates the GoGreen Dashboard data into a national view.
+- **SPREAD (Badge)** turns SME sellers into a distribution layer for the whole chain.
+- **TIER** is the loyalty loop that keeps customers feeding the chain.
+
+➡️ Pitch line: *"We're not building a green supply chain — DHL already has one, audited to ISO 14083.
+We're building the awareness layer on top of it, so customers finally see the chain they're part of."*
 
 ---
 
-### 4. ⚠️ GUARDRAILS (so it helps, not hurts)
-1. **Reward repeat green CHOICES, not raw spend.** "Ship green often," never "spend more to rank up" —
-   the latter clashes with the "you're already helping, for free" frame and a bank judge will smell it.
-2. **Keep it connective, not a 5th pillar.** In the pitch it's *"and the tier makes the loop repeat,"*
-   a 10-second beat — not its own mode competing with the 4 pieces. (Resists scope creep.)
-3. **Green-Claims safe.** Tier names are about *behaviour* ("Green Shipper"), not unprovable outcome
-   claims ("carbon-neutral customer"). Status reflects verified GoGreen Plus usage (book-and-claim).
-4. **Don't gate the good feeling behind a tier.** Tier 0 (anyone who ships green once) already gets the
-   Receipt + the feeling; tiers add *status on top*, they don't paywall participation.
+### 3. THE ECOSYSTEM FLYWHEEL (two-sided)
+```
+        more SME sellers ship green
+                 │
+   more SAF demand ◄──┘        ▲
+        │                      │
+        ▼                      │
+  DHL buys more SAF      more buyers prefer
+  (BP/Neste/World Energy) green sellers (Badge)
+        │                      ▲
+        ▼                      │
+  more verified cuts ──► more proof to show ──► (loop)
+```
+Each green choice funds more SAF, which makes the next cut credible, which makes the badge more valuable,
+which recruits more sellers. The ecosystem **compounds**.
 
 ---
 
-### 5. ONE-LINE FOR THE PITCH
-> *"The Green Receipt makes you feel it once. The Green Shipper tier makes you want to feel it again —
-> turning a single good choice into a status you carry, show, and grow. That's how awareness becomes habit."*
+### 📎 SOURCES
+- DHL GoGreen Plus + certificate: https://www.dhl.com/us-en/home/express/products-and-solutions/gogreen-plus.html
+- SAF suppliers (BP/Neste/World Energy/Cosmo): https://sustainabilitymag.com/articles/inside-dhl-express-saf-procurement
+- DHL + Google/Envision partnerships: https://www.esgdive.com/news/dhl-inks-sustainability-partnerships-with-google-envision/722559/
+- GLEC v3.2 / ISO 14083 / GHG Protocol: https://reporting-hub.group.dhl.com/2025-fy/en/combined-management-report/group-sustainability-statement/environment-esrs-e1/
+- GoGreen Dashboard: https://www.parcelandpostaltechnologyinternational.com/features/how-deutsche-post-dhl-groups-new-gogreen-dashboard-leverages-a-user-friendly-design-to-promote-sustainability.html
 
 ---
 
-## 20. 🏛️ Atlas · Case Project — Architecture
+## 27. ⚖️ DHL Challenge — Policy & Law Risk Audit (where our strategy could break a rule)
+
+*Source: `DHL-POLICY-RISK.md`*
+
+## ⚖️ DHL Challenge — Policy & Law Risk Audit (where our strategy could break a rule)
+
+> Researched 26 Jun 2026. For each mechanic in our campaign, the law it touches, the risk, and the fix.
+> A bank judge (UOB) WILL probe compliance. Showing we pre-empted it is a credibility win.
+
+---
+
+### 🔴 RISK 1 — LINE marketing needs explicit opt-in (Thai PDPA)
+- **Law:** Thailand's PDPA (in force since 1 Jun 2022, GDPR-modelled). Marketing messages via LINE require
+  the customer to **opt in** (add the Official Account as a friend / give explicit consent).
+- **Where we touch it:** the Green Receipt (digital via LINE), the running total, the Seller Badge in LINE OA.
+- **Penalty if wrong:** PDPA fines up to **฿5 million**; first major administrative fines already issued
+  Aug 2025 (>฿21.5M). Real, not theoretical.
+- **✅ Our fix:** receipts are **opt-in** — the paper receipt is default (no data needed); the LINE/digital
+  version only on consent ("scan to get your digital Green Receipt + track your impact"). Frame consent as
+  a *benefit*, not a checkbox. Say this in the pitch: "fully PDPA-compliant, opt-in by design."
+
+### 🔴 RISK 2 — Misleading green claims (Consumer Protection Act + EmpCo)
+- **Law (TH):** Consumer Protection Act bans false/exaggerated product claims. Penalty: up to **6 months
+  jail + ฿50k** (repeat: 1 yr + ฿100k). Thai OCPB has warned influencers/sellers over exaggerated ads.
+- **Law (EU):** EmpCo binding **27 Sep 2026** — bans generic claims ("eco-friendly," "sustainable") and
+  offset-based "carbon neutral."
+- **Where we touch it:** every Green Receipt / stamp / badge that states a CO₂ claim.
+- **✅ Our fix (already our trump card):** book-and-claim wording — "you funded a **verified** reduction of
+  X kg via SAF," never "your parcel flew on SAF," never "carbon neutral." Specific kg + certificate + QR.
+  Insetting (in-network), not offsetting → survives EmpCo. **This is why precision = our moat.**
+
+### 🟡 RISK 3 — "Greenwashing" litigation trend (global)
+- Greenwashing class-actions are rising; courts fine "vague, generic, overly emphatic" claims.
+- **✅ Our fix:** we make ZERO vague claims. Every number is specific, sourced (see _PROOF.md), and
+  certificate-backed. We can defend each one. The Fact-Audit discipline IS our legal shield.
+
+### 🟡 RISK 4 — Cross-border claim accuracy (the Stamp abroad)
+- The Green Stamp travels to a receiver in another country with different ad laws.
+- **✅ Our fix:** the stamp states behaviour ("shipped greener from Thailand — this parcel helped cut CO₂"),
+  not an unprovable outcome. Optional QR links to DHL's own verified explanation. Low risk.
+
+### 🟢 RISK 5 — Data on the national Map
+- The Map shows an **aggregate national total**, not individual customer data → no PDPA issue at the
+  collective level. Individual recognition (Seller Badge) is opt-in (Risk 1 fix covers it).
+
+---
+
+### THE ONE-LINER FOR THE ROOM (UOB is a bank — they love this)
+> *"Every mechanic is compliance-first: LINE is opt-in under PDPA, every green claim is book-and-claim
+> specific (Consumer Protection Act + EmpCo safe), and nothing vague that greenwashing suits target. Our
+> precision isn't just marketing — it's our legal shield."*
+
+---
+
+### 📎 SOURCES
+- Thai PDPA + LINE consent: https://www.onetrust.com/blog/the-ultimate-guide-to-thai-pdpa-compliance/ · https://cookieinformation.com/blog/what-is-the-thailand-pdpa/
+- PDPA penalties (฿5M; Aug 2025 fines): https://www.dlapiperdataprotection.com/index.html?t=law&c=TH
+- Thai Consumer Protection Act (6mo/฿50k): https://gam-legalalliance.com/thai-statutory-laws/consumer-protection-act-thailand/
+- OCPB warning on exaggerated ads: https://www.nationthailand.com/news/general/40056899
+- EmpCo binding 27 Sep 2026: https://www.climatepartner.com/en/knowledge/glossary/empowering-consumers-directive-empco
+- Greenwashing litigation trend: https://news.bloomberglaw.com/esg/100-sustainable-claims-pose-mounting-legal-risk-for-companies
+
+---
+
+## 28. 🥊 DHL Challenge — Stress Test / Red-Team (the hostile-judge Q&A)
+
+*Source: `DHL-STRESS-TEST.md`*
+
+## 🥊 DHL Challenge — Stress Test / Red-Team (the hostile-judge Q&A)
+
+> I played the toughest judge in the room and attacked every weak point. For each: the attack, why it
+> stings, and your best answer. Rehearse these — Q&A is where cases are won or lost. (26 Jun 2026.)
+
+---
+
+### 🔴 THE 8 HARDEST QUESTIONS
+
+**Q1. "Your whole ROI rests on a 10% opt-in you assumed. What if it's 2%?"**
+- Why it stings: the entire behavioural return hinges on it.
+- ✅ Answer: "10% is the conservative floor of the proven 10–30% range; even at 2% the ฿5M is justified
+  because its job is **awareness lift** (measured by survey), not opt-in revenue. Opt-in is upside, not the
+  base case. And we de-risk it: the receipt is free, so trial cost is zero."
+
+**Q2. "DHL already sells GoGreen Plus. Why hasn't awareness happened on its own?"**
+- Why it stings: implies our idea is redundant.
+- ✅ Answer: "Because DHL markets it **functionally** — a checkbox in MyDHL+. No felt moment, nothing that
+  travels, nothing shareable. DHL built the product; we build the **feeling**. That's the exact gap."
+
+**Q3. "Isn't 'X kg = Y km not driven' just a gimmick? Defend the math."**
+- ✅ Answer: "It's a comparison, not an equivalence claim. Based on an average petrol car at ~170 g CO₂/km,
+  1 kg ≈ 6 km not driven. We state the assumption on the QR. It makes an abstract number tangible —
+  behavioural science calls it a salience nudge."
+
+**Q4. "You're a bank's case (UOB). Where's the financial return for DHL, in baht?"**
+- Why it stings: UOB judges want money, not vibes.
+- ✅ Answer: "GoGreen Plus is a **high-margin** line (≈€325/tonne). ฿5M of awareness OpEx lifts opt-ins of a
+  product DHL already paid €7B to enable. We don't spend on carbon — customers fund that. So every
+  incremental opt-in is near-pure margin. The ฿5M is customer-acquisition for a premium product."
+
+**Q5. "Overseas buyers don't know Thai green badges. Isn't SPREAD wishful thinking?"**
+- ✅ Answer: "Badges lift conversion measurably **when credible** (eco-label studies). Ours is certified
+  book-and-claim, not a vague sticker. We don't bet the campaign on it — it's Phase 3, low-cost, and tested.
+  Even domestically the badge drives the seller's Thai buyers."
+
+**Q6. "Greenwashing is a legal minefield. Aren't you exposing DHL?"**
+- ✅ Answer: "The opposite — compliance is our design principle. LINE is opt-in under PDPA; every claim is
+  book-and-claim specific (Consumer Protection Act + EmpCo safe); zero vague claims for greenwashing suits to
+  target. Our precision is DHL's legal shield." (see DHL-POLICY-RISK.md)
+
+**Q7. "36 branches in 3 months is tiny. Can you even measure a lift?"**
+- ✅ Answer: "Yes — a pre/post brand-lift survey, ≥200 respondents/wave, the industry-standard method
+  (same approach behind DHL's own 83% figure). 36 is a deliberate pilot; it scales to DHL TH's full 71."
+
+**Q8. "What's your single biggest risk, honestly?"** (the integrity test)
+- ✅ Answer (don't dodge): "Behaviour change is hard — the value-action gap is real. Our biggest risk is
+  opt-in conversion. That's exactly why we attack it with a **free, felt, status-driven** loop instead of
+  asking people to pay more, and why we measure relentlessly. We'd rather prove a real lift on 36 branches
+  than claim a fake one on 71." → Judges reward a team that names its own risk.
+
+---
+
+### 🎯 THE 3 PLACES WE'RE STILL THINNEST (know these cold)
+1. **Opt-in conversion** — single biggest dependency (Q1, Q8). Frame as upside + free trial.
+2. **Cross-border badge value** (Q5) — least evidenced. Frame as low-cost Phase-3 test, not a core bet.
+3. **DHL-internal volume data** — not public; ROI uses a market proxy. Say so plainly if pushed.
+
+### RULE FOR Q&A
+Answer in 2 sentences, then stop. Name the source. If you don't know, say "we'd validate that in Phase 1"
+— never invent a number. One honest "we'd test that" beats one fabricated stat.
+
+---
+
+## 29. 🎨 _SLIDE-STRUCTURE.md — the deck map (build this in Canva)
+
+*Source: `_SLIDE-STRUCTURE.md`*
+
+## 🎨 _SLIDE-STRUCTURE.md — the deck map (build this in Canva)
+
+> A visual blueprint of the whole pitch + how every doc maps to a slide.
+> Follows our real 6-beat flow (from DHL-MASTER-strategy §9). Built 26 Jun 2026.
+> ⭐ = on-stage slide · 🔒 = back-up slide (only if a judge asks).
+
+---
+
+### 1. THE PITCH AT A GLANCE (the spine)
+
+```
+   EMOTION → GAP → IDEA → SYSTEM → PROOF → CLOSE
+     (1)     (2)   (3)     (4)      (5)     (6)
+   hook    insight reveal  the plan  why it   land
+                                     works    it
+```
+
+One sentence per beat:
+1. A parcel carries love across borders.
+2. 83% love DHL — nobody knows it's green.
+3. **"Proof That Travels" — Ship Love. Ship Light.**
+4. **Feel → Carry → Belong → Spread** (+ the Tier that makes it repeat).
+5. Every piece is proven + reuses DHL's real assets.
+6. Green-Claims mastery + the UOB mirror + "X tonnes cut, a country that knows."
+
+---
+
+### 2. SLIDE-BY-SLIDE (the deck Canva should hold)
+
+| # | Slide | What's on it | Visual idea | Source doc |
+|---|---|---|---|---|
+| 1 ⭐ | **Title** | "Proof That Travels — Ship Love. Ship Light." + team names | Parcel with a glowing trail crossing a map | MASTER-strategy |
+| 2 ⭐ | **The Emotion** | 20-sec story: a gift shipped to someone abroad | One photo, few words | CREATIVE-international |
+| 3 ⭐ | **The Gap** | 83% satisfied, ~0% know DHL is green | Big "83%" vs a dim lightbulb | SITUATION-analysis |
+| 4 ⭐ | **The Insight** | Don't tell them DHL is green — hand them proof they helped | Receipt = proof, at the counter | RESEARCH-deepdive |
+| 5 ⭐ | **The Big Idea** | "Proof That Travels" reveal + tagline (EN/TH) | The hero line, full-bleed | MASTER-strategy |
+| 6 ⭐ | **The System** | Feel → Carry → Belong → Spread (the 4 pieces) | 4-icon loop diagram (see §3) | MASTER-strategy |
+| 7 ⭐ | **The Tier (repeat engine)** | Sprout→Bronze→Silver→Gold; small can beat big | Tier ladder + Nong vs MegaCorp | TIER-MODEL / TIER-loyalty |
+| 8 ⭐ | **The Numbers** | 5 lead figures (see §4) | Big bold stat tiles | NUMBERS-deepdive / _PROOF |
+| 9 ⭐ | **The ฿5M Plan** | Budget split + 3-month phasing | Donut chart + 3-phase timeline | BUDGET-5M |
+| 10 ⭐ | **Why It Wins / Close** | Green-Claims mastery + UOB mirror + ROI | Two closers, big | MASTER-strategy §8 |
+| — | | **— back-up slides below the line —** | | |
+| B1 🔒 | Competitive moat | DHL vs FedEx vs UPS (43 vs 12 EVs) | Comparison table | RESEARCH-deepdive |
+| B2 🔒 | Tier formula | The 4-component score + SME definition | Formula + OSMEP table | TIER-MODEL §2,§3a |
+| B3 🔒 | Fact/proof | Every number → source | Source list | _PROOF |
+| B4 🔒 | SAF / book-and-claim | Why our claim is compliant | Book-and-claim diagram | SAF-vs-jetfuel / CARBON-ECONOMICS |
+| B5 🔒 | Customer journey | Walk-in → receipt → stamp → map → badge | Flow arrows | MASTER-strategy §4 |
+
+➡️ **10 on-stage slides, 5 back-ups.** Clean. (Loyalty research: don't overload — layer detail into back-ups.)
+
+---
+
+### 2b. THE ACTUAL SLIDE TEXT (copy-paste into Canva)
+
+> Format per slide: **HEADLINE** (big) · body (the words on the slide) · 🎤 *what you SAY out loud.*
+> Keep on-slide text tight; the 🎤 line is spoken, NOT printed.
+
+---
+**SLIDE 1 — TITLE ⭐**
+- HEADLINE: **Proof That Travels**
+- Sub: *Ship Love. Ship Light.* · ส่งความรัก ส่งอย่างรักษ์โลก
+- Footer: DHL Express × UOB WonderLab 2026 · [Team name] · Paphangkorn Onrueang & team
+- 🎤 *"Every parcel already carries love across borders. We make it carry proof of something more."*
+
+---
+**SLIDE 2 — THE EMOTION ⭐**
+- HEADLINE: **A box is never just a box**
+- Body: *Someone in Thailand ships a gift to someone they love, abroad.*
+- 🎤 *(20-sec story) "A mother in Chiang Mai ships a parcel to her daughter overseas. That box carries her love — and now, it can carry proof she shipped it greener."*
+
+---
+**SLIDE 3 — THE GAP ⭐**
+- HEADLINE: **83% love DHL. Almost none know it's green.**
+- Body: High satisfaction · invisible sustainability
+- 🎤 *"DHL does real, expensive green work. But at the counter, it's invisible — so customers have no idea they're part of it."*
+
+---
+**SLIDE 4 — THE INSIGHT ⭐**
+- HEADLINE: **Don't tell them it's green. Hand them proof they helped.**
+- Body: Remove cost + effort → reward the choice they already make
+- 🎤 *"Thai consumers care but don't act — the value-action gap. So we don't ask them to pay more or do more. We show them they're already helping — for free — every time they ship."*
+
+---
+**SLIDE 5 — THE BIG IDEA ⭐**
+- HEADLINE: **Proof That Travels**
+- Body: *One honest act of good — made felt, visible, shareable, collective — at the moment of shipping.*
+- 🎤 *"The proof rides the parcel across the border, onto a national map, and into the seller's own shop. Ship Love. Ship Light."*
+
+---
+**SLIDE 6 — THE SYSTEM ⭐** *(the centerpiece — diagram in §3)*
+- HEADLINE: **Feel → Carry → Belong → Spread**
+- Body labels: ① FEEL: Green Receipt · ② CARRY: Green Stamp · ③ BELONG: Green Map · ④ SPREAD: Seller Badge
+- 🎤 *"Four connected pieces. The receipt makes you feel it; the stamp carries it abroad; the map makes it collective; the badge makes sellers spread it. One loop."*
+
+---
+**SLIDE 7 — THE TIER (repeat engine) ⭐**
+- HEADLINE: **Greenness, not bigness.**
+- Body: Sprout → Bronze → Silver → Gold · *ranked by how green your choices are, not your size*
+- Callout: *Nong's Crafts (40 parcels) = GOLD 🥇  ·  MegaCorp (8,000 parcels) = BRONZE 🥉*
+- 🎤 *"Status makes you ship green again. And it's ranked by the greenness of your choices, not your size — so a home seller can wear Gold while a corporation sits at Bronze. We protect SMEs by design."*
+
+---
+**SLIDE 8 — THE NUMBERS ⭐**
+- HEADLINE: **The case in 5 numbers**
+- Tiles: **12,000+** APAC GoGreen Plus users · **฿1T+** Thai e-commerce (~30% cross-border) · **~10%** opt-in · **1,600+** SMEs on UOB Compass · **43 vs 12** EVs (DHL vs FedEx)
+- 🎤 *"This isn't hypothetical. 12,000 customers already use GoGreen Plus, inside a trillion-baht market — and DHL out-greens FedEx on the ground today."*
+
+---
+**SLIDE 9 — THE ฿5M PLAN ⭐**
+- HEADLINE: **฿5M of awareness. Customers fund the carbon.**
+- Body: Donut: In-branch 30% · Digital 20% · Seller/SME 18% · Content 15% · Measure 7% · Staff 5% · Buffer 5%
+- Timeline: Build (wk 1–3) → Launch (4–8) → Spread & Prove (9–12)
+- 🎤 *"฿5M buys awareness — measured by a pre/post survey, the same method DHL used to get the 83%. We don't pay for carbon; customers do, through GoGreen Plus."*
+
+---
+**SLIDE 10 — WHY IT WINS / CLOSE ⭐**
+- HEADLINE: **Built to win — and to last.**
+- Body: ✅ Green-Claims mastery (book-and-claim, survives EmpCo 2026) · 🤝 The UOB mirror (Compass starts the journey; Ship Light proves it) · 📈 "X tonnes cut — and a country that knows it shipped them."
+- 🎤 *"We say you funded a verified reduction — never that your parcel flew on SAF. That precision survives the 2026 rules. And just as UOB's Compass helps SMEs start, Ship Light lets them prove it. Ship Love. Ship Light."*
+
+---
+
+### 3. THE SYSTEM DIAGRAM (slide 6 — the centerpiece visual)
+
+```
+        ┌─────────────────────────────────────────────┐
+        │              "PROOF THAT TRAVELS"            │
+        └─────────────────────────────────────────────┘
+
+   ① FEEL ───────► ② CARRY ───────► ③ BELONG ───────► ④ SPREAD
+  Green Receipt    Green Stamp     Green Map        Seller Badge
+  "you cut Xkg"    on the box      national total   sellers post it
+   (felt moment)   (crosses border) (collective)    (multiplier)
+        ▲                                                  │
+        │                                                  │
+        └──────────  🏅 GREEN SHIPPER TIER  ◄──────────────┘
+                   (status makes you ship green AGAIN —
+                    the arrow that closes the loop)
+```
+
+In Canva: 4 circles left→right with arrows, the Tier as the curved return arrow underneath. This ONE
+diagram is your most important slide — it shows the whole strategy is a *loop*, not a list.
+
+---
+
+### 4. THE 5 NUMBERS (slide 8 — big stat tiles)
+
+| Stat | Says |
+|---|---|
+| **12,000+** APAC GoGreen Plus customers | demand is already real |
+| **฿1T+** Thai e-commerce (~30% cross-border) | the market we activate |
+| **~10%** conservative opt-in (proven 10–30%) | our ROI assumption |
+| **1,600+** SMEs on UOB's Compass | speaks to the room |
+| **43 vs 12** EVs (DHL vs FedEx TH) | the on-the-ground moat |
+
+(All verified in _PROOF.md. ⚠️ avoid the landmines in _CRITICAL.md §1.)
+
+---
+
+### 5. EVERYTHING WE HAVE → WHERE IT GOES (doc inventory map)
+
+```
+STORY / STRATEGY                NUMBERS / PROOF              MODEL / FAIRNESS
+─────────────────               ───────────────              ────────────────
+MASTER-strategy   → slides 1,5,6,10   NUMBERS-deepdive → slide 8     TIER-MODEL    → slide 7 + B2
+SITUATION-analysis→ slide 3           _PROOF           → slide 8,B3   TIER-loyalty  → slide 7
+RESEARCH-deepdive → slides 4, B1      FACT-AUDIT       → B3           BUDGET-5M     → slide 9
+CREATIVE-intl     → slide 2           CARBON-ECONOMICS → B4           MARGIN-money  → slide 9/10
+TOP3-deepdive     → slide 6           SAF-vs-jetfuel   → B4           ECONOMICS-big → B4
+STRATEGY-bank     → (idea reserve)    Express-UOB brief→ (the ask)
+IDEAS-brainstorm  → (idea reserve)
+BENCHMARK-aware   → slide 4/B1
+
+REFERENCE (not slides): _CRITICAL (your battle plan) · _PROOF · _HANDOFF-NOTE ·
+ARCHITECTURE · TEAM-feedback · CHEAT-SHEET · WHERE-TO-STUDY · graph/
+```
+
+---
+
+### 6. CANVA BUILD ORDER (do it in this sequence)
+1. Slide 6 first (the system loop) — it's the heart; everything else supports it.
+2. Slide 7 (tier ladder) + slide 8 (stat tiles) — your two "wow, they did the work" slides.
+3. Slides 1–5 (the story run-up) — fast, visual, few words.
+4. Slides 9–10 (plan + close).
+5. Back-ups B1–B5 last — plain, functional, no polish needed.
+
+**Design rule:** ≤ 6 words of text per on-stage slide where possible. The DECK carries images; YOU carry
+the words. Detail lives in back-ups and in _CRITICAL.md.
+
+---
+
+## 30. 🏛️ Atlas · Case Project — Architecture
 
 *Source: `ARCHITECTURE.md`*
 
@@ -2425,7 +3517,7 @@ Hard rules:
 
 ---
 
-## 21. 🗣️ DHL Challenge — Team Feedback & Actions
+## 31. 🗣️ DHL Challenge — Team Feedback & Actions
 
 *Source: `DHL-TEAM-feedback.md`*
 
@@ -2539,7 +3631,7 @@ placeholders.
 
 ---
 
-## 22. 📖 Where to Study Cases — Practice Sources
+## 32. 📖 Where to Study Cases — Practice Sources
 
 *Source: `WHERE-TO-STUDY-CASES.md`*
 

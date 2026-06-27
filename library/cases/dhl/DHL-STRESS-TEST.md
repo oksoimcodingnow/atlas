@@ -61,4 +61,4 @@ Answer in 2 sentences, then stop. Name the source. If you don't know, say "we'd 
 — never invent a number. One honest "we'd test that" beats one fabricated stat.
 
 ---
-↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/main/library/cases)** · part of the Atlas project.

@@ -51,4 +51,4 @@
 - Patagonia +30% / Lavazza brand-lift / IKEA 75%: https://thegrowthshark.com/blog/green-gold-unveiling-success-stories-in-sustainable-marketing/ · https://advertising.amazon.com/library/guides/effectively-promote-sustainability-efforts
 
 ---
-↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/main/library/cases)** · part of the Atlas project.

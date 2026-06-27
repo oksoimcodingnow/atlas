@@ -189,4 +189,4 @@ the words. Detail lives in back-ups and in _CRITICAL.md.
 
 
 ---
-↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/main/library/cases)** · part of the Atlas project.
