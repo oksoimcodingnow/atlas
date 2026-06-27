@@ -86,6 +86,38 @@ We do **not** invent a size cutoff. Three layers, primary first:
 **Pitch answer:** *"We don't decide who's small — DHL's own SME classification does, and it lines up with
 Thailand's legal SME definition. We just reward the small ones for shipping green."*
 
+### 3a-bis. THE ACCURATE CATEGORIZATION (OSMEP + EU + World Bank reconciled)
+
+For the most *defensible* big/medium/small split, we anchor on **Thailand's OSMEP law** (it governs here),
+and note it aligns with international norms — so the model is locally correct AND internationally credible.
+
+**OSMEP (Thailand, legal — for Trade & Service, where shippers sit):**
+| Class | Annual revenue | Employees |
+|---|---|---|
+| Micro | ≤ ฿1.8M | ≤ 5 |
+| Small | > ฿1.8M – ฿50M | 6 – 30 |
+| Medium | > ฿50M – ฿300M | 31 – 100 |
+| Large | > ฿300M | > 100 |
+*(Manufacturing thresholds are higher: Small ≤฿100M/50 staff, Medium ≤฿500M/200 staff. Use Trade & Service
+for e-commerce sellers.)* **Tie-break rule:** if revenue and headcount disagree, OSMEP uses the **higher** class.
+
+**Cross-checks (shows we know the global picture):**
+- **EU:** by employees + turnover (Micro <10, Small <50, Medium <250 staff). Headcount-led.
+- **World Bank:** no single standard; applies a **~$2M revenue threshold** for Thailand — broadly consistent
+  with OSMEP's Small band.
+- → All three agree on the *shape* (micro→small→medium by revenue+staff); OSMEP is our binding version.
+
+**How DHL operationalizes it (the practical map):**
+| Signal DHL has | Maps to | Used for |
+|---|---|---|
+| SME/retail/ServicePoint account flag | "small" (Micro+Small) | SizeBoost = +15% |
+| Corporate/contract account | Medium+Large | SizeBoost = 0 |
+| Shipment volume (fallback) | proxy when flag missing | low volume → likely SME |
+
+**Pitch-safe statement:** *"Small = Thailand's legal OSMEP definition (≤฿300M revenue / 100 staff for trade),
+which matches EU and World Bank norms. DHL already tags accounts this way, so we apply it directly — no
+guessing, and it's auditable."*
+
 ---
 
 ## 3. THE TIER CUTOFFS
@@ -198,3 +230,7 @@ participation** — so show the *ladder and the prizes*, hide the *engine*.
 > *"We rank shippers by the greenness of their choices, not the size of their wallet — so a home seller in
 > Chiang Mai who ships green every week can wear Gold while a giant corporation sits at Bronze. The tier
 > protects the little guy by design — it's in the math."*
+
+
+---
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.

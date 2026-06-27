@@ -186,3 +186,7 @@ ARCHITECTURE · TEAM-feedback · CHEAT-SHEET · WHERE-TO-STUDY · graph/
 
 **Design rule:** ≤ 6 words of text per on-stage slide where possible. The DECK carries images; YOU carry
 the words. Detail lives in back-ups and in _CRITICAL.md.
+
+
+---
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.

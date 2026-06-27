@@ -86,3 +86,7 @@ One wrong number in Q&A costs more than ten right ones gain.
 - `DHL-RESEARCH-deepdive.md` — competitive/regulatory/consumer (97% already corrected)
 - `graph/graph.html` — interactive knowledge graph (open in browser)
 - Repo branch: `dhl-case-import` · PR: github.com/oksoimcodingnow/atlas/pull/1
+
+
+---
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.

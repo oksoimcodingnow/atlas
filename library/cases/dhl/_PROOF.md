@@ -101,3 +101,7 @@
 - SAF cost/supply — WEF: https://www.weforum.org/stories/2025/07/the-cost-of-sustainable-aviation-fuel/
 - SAF lifecycle by feedstock — ICCT: https://theicct.org/understanding-the-ghg-emissions-of-different-saf-pathways-sept25/
 - FedEx TH EV (confirms 12, 2040 goal): https://newsroom.fedex.com/newsroom/amea/fedex-grows-thailand-ev-fleet-to-support-global-2040-carbon-neutral-operations-goal
+
+
+---
+↩ **[Back to Atlas case library](https://github.com/oksoimcodingnow/atlas/tree/dhl-case-import/library/cases)** · part of the Atlas project.
