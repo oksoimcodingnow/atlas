@@ -6,6 +6,30 @@
 
 ---
 
+## 0. ⚠️ FORMAT & SUBMISSION (read first)
+- **Judges accept PDF only.** Final artifact = **PowerPoint → Export → PDF.** The `SLIDES.html` deck is a
+  visual *reference*, not submittable. The live `.xlsx` is a working tool, not submittable as-is (screenshot
+  a table into a slide if you want the budget seen).
+- A ready PDF already exists: **`graph/DHL-Slides.pdf`** (23 pages, exported from our HTML deck) — use as a
+  fallback or a layout reference.
+- **Current deck = 17 main + 6 appendix = 23 slides** (the HTML/PDF is the source of truth; this doc's older
+  §2 table lists the original 10 — the live deck is bigger now; see §2c for the current list).
+
+### Building in PowerPoint (point "Claude in PowerPoint" here)
+- Feed PowerPoint-Claude THIS file. It has every slide's headline + body + spoken line + colors.
+- Brand: DHL **yellow #FFCC00 / red #D40511**, UOB **blue #005BAC**, accent green #1F8A4C. 16:9.
+- Design rules: **action-title sentences** (not labels), ≤6 words body per main slide, one message per slide,
+  progress indicator, appendix after a divider. Then **Export → PDF** to submit.
+
+### §2c — CURRENT 23-slide order (matches the HTML/PDF)
+MAIN: 1 Title · 2 Emotion · 3 Gap (83%) · 4 Insight · 5 Big Idea · 6 System loop · 7 Feel · 8 Carry+Belong ·
+9 Spread · 10 Tier · 11 Numbers · 12 Precedent ("it worked before") · 13 Budget · 14 Finance justified ·
+15 Ecosystem · 16 Why we win · 17 Close.
+APPENDIX: A1 Competitive moat · A2 Tier formula+SME def · A3 Numbers sourced · A4 Book-and-claim · A5
+Customer journey · A6 Risks & guardrails.
+
+---
+
 ## 1. THE PITCH AT A GLANCE (the spine)
 
 ```
