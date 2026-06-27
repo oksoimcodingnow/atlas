@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proof That Travels — DHL × UOB WonderLab 2026</title>
+<style>
+  :root{
+    --yellow:#FFCC00; --red:#D40511; --ink:#141414; --ink2:#3a3a3a;
+    --blue:#005BAC; --green:#1f8a4c; --bg:#ffffff; --bg2:#f4f5f7;
+    --line:#e3e5e9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:var(--ink);}
+  #deck{height:100vh;width:100vw;overflow:hidden;position:relative;}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;padding:7vh 7vw 9vh;background:var(--bg);}
+  .slide.active{display:flex;animation:in .4s cubic-bezier(.16,1,.3,1);}
+  @keyframes in{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){.slide.active{animation:none;}}
+  .tag{font-size:1.05vw;font-weight:700;color:var(--red);margin-bottom:1.4vh;}
+  .tag.apx{color:var(--blue);}
+  /* ACTION TITLE = the takeaway sentence */
+  h1{font-size:4.3vw;line-height:1.04;font-weight:900;letter-spacing:-.025em;text-wrap:balance;max-width:90%;}
+  h1.big{font-size:6vw;}
+  .body{font-size:1.65vw;color:var(--ink2);margin-top:3vh;line-height:1.5;max-width:62ch;}
+  .say{margin-top:auto;font-size:1.05vw;color:#6a6a6a;font-style:italic;padding-left:1vw;border-left:2px solid var(--yellow);max-width:70ch;}
+  .foot{position:absolute;bottom:3.2vh;left:7vw;right:7vw;display:flex;justify-content:space-between;font-size:.85vw;color:#9a9aa0;border-top:1px solid var(--line);padding-top:1.4vh;}
+  .topbar{height:1.2vh;background:var(--yellow);position:absolute;top:0;left:0;right:0;}
+  .topbar.apx{background:var(--blue);}
+  .red{color:var(--red);} .blue{color:var(--blue);} .grn{color:var(--green);}
+  .lead{background:var(--bg2);}
+  .heroline{font-size:2.4vw;font-weight:800;margin-top:2.5vh;}
+  .th{font-size:1.4vw;color:#666;margin-top:1vh;}
+  /* number tiles */
+  .tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:1.4vw;margin-top:4.5vh;}
+  .tile{background:var(--bg2);border-radius:12px;padding:3vh 1vw;text-align:center;border:1px solid var(--line);}
+  .tile .n{font-size:2.5vw;font-weight:900;color:var(--red);}
+  .tile .l{font-size:.82vw;color:var(--ink2);margin-top:1.2vh;line-height:1.35;}
+  /* system loop */
+  .loop{display:flex;align-items:center;gap:.8vw;margin-top:4.5vh;}
+  .node{flex:1;background:var(--bg);border:2.5px solid var(--green);border-radius:14px;padding:2.6vh 1vw;text-align:center;}
+  .node .ic{font-size:2.4vw;} .node .t{font-weight:900;font-size:1.25vw;margin-top:.8vh;color:var(--ink);} .node .d{font-size:.8vw;color:var(--ink2);margin-top:.6vh;}
+  .arr{font-size:1.8vw;color:var(--green);font-weight:900;}
+  .ret{margin-top:3vh;text-align:center;font-size:1.25vw;font-weight:800;color:var(--red);}
+  .ret small{display:block;font-size:.85vw;color:var(--ink2);font-weight:500;margin-top:.5vh;}
+  /* tier ladder */
+  .tiers{display:flex;gap:1vw;margin-top:4vh;align-items:flex-end;}
+  .tier{flex:1;border-radius:12px 12px 0 0;padding:1.8vh 1vw;text-align:center;font-weight:800;color:#fff;}
+  .tier .tn{font-size:1.3vw;} .tier .tx{font-size:.8vw;font-weight:500;margin-top:.7vh;}
+  .ts{background:#5fa83f;height:13vh;} .tb{background:#a96a2c;height:17vh;}
+  .tsi{background:#6f7782;height:22vh;} .tg{background:#caa200;height:28vh;color:var(--ink);}
+  .vs{margin-top:3vh;font-size:1.4vw;text-align:center;font-weight:800;}
+  /* budget */
+  .plan{display:flex;gap:4vw;margin-top:4vh;}
+  .bars{flex:1.2;} .bar{display:flex;align-items:center;gap:.8vw;margin:1.2vh 0;font-size:.95vw;color:var(--ink2);}
+  .bar b{width:11vw;display:inline-block;color:var(--ink);} .bar .fill{height:2.3vh;background:var(--yellow);border-radius:4px;}
+  .phases{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.4vh;}
+  .phase{background:var(--bg2);border:1px solid var(--line);padding:1.6vh 1.2vw;border-radius:10px;font-size:.95vw;}
+  .phase b{color:var(--blue);}
+  /* generic two-col + bullets */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:3vw;margin-top:4vh;}
+  ul.pts{margin-top:3.5vh;list-style:none;} ul.pts li{font-size:1.5vw;color:var(--ink2);margin:1.8vh 0;padding-left:2.4vw;position:relative;line-height:1.4;}
+  ul.pts li::before{content:"";position:absolute;left:0;top:.7vh;width:1.1vw;height:1.1vw;background:var(--yellow);border-radius:3px;}
+  table.cmp{margin-top:4vh;border-collapse:collapse;width:100%;font-size:1.05vw;}
+  table.cmp th,table.cmp td{border:1px solid var(--line);padding:1.5vh 1.2vw;text-align:left;}
+  table.cmp th{background:var(--bg2);font-weight:800;} table.cmp .win{color:var(--green);font-weight:800;}
+  .nav{position:fixed;bottom:1.6vh;right:1.6vw;font-size:.8vw;color:#777;z-index:10;}
+  .prog{position:fixed;top:0;left:0;height:4px;background:var(--red);z-index:11;transition:width .3s cubic-bezier(.16,1,.3,1);}
+  .atlas{position:fixed;bottom:1.6vh;left:1.6vw;font-size:.8vw;z-index:12;text-decoration:none;
+    color:var(--blue);font-weight:700;background:#fff;border:1px solid var(--line);border-radius:20px;
+    padding:.5vh 1vw;opacity:.85;transition:opacity .2s;}
+  .atlas:hover{opacity:1;}
+
+/* ---- STATIC / NO-ANIMATION OVERRIDES (for manual Canva copy) ---- */
+html,body{height:auto!important;overflow:auto!important;background:#666!important;}
+#deck{height:auto!important;overflow:visible!important;position:static!important;}
+.slide{
+  display:flex!important;position:relative!important;inset:auto!important;
+  width:1280px!important;height:720px!important;margin:24px auto!important;
+  box-shadow:0 4px 24px rgba(0,0,0,.4)!important;animation:none!important;
+  border:1px solid #999;
+}
+.slide.active{animation:none!important;}
+.prog,.nav,.atlas{display:none!important;}
+.slidenum{position:absolute;top:-22px;left:0;color:#fff;font-size:13px;font-weight:700;font-family:sans-serif;}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<a class="atlas" href="https://github.com/oksoimcodingnow/atlas/tree/main/library/cases" title="Back to the Atlas case library">↩ Back to Atlas</a>
+<div id="deck">
+
+<!-- ===== MAIN 1–17 ===== -->
+
+<!-- 1 TITLE -->
+<section class="slide active lead"><div class="slidenum">— slide 1 —</div>
+  <div class="topbar"></div>
+  <div class="tag">DHL Express × UOB · WonderLab 2026</div>
+  <h1 class="big">Proof That <span class="red">Travels</span></h1>
+  <div class="heroline">Ship Love. Ship Light.</div>
+  <div class="th">ส่งความรัก ส่งอย่างรักษ์โลก</div>
+  <div class="say">🎤 "Every parcel already carries love across borders. We make it carry proof of something more."</div>
+  <div class="foot"><span>Team · Paphangkorn Onrueang &amp; team · KMITL</span><span>1 / 17</span></div>
+</section>
+
+<!-- 2 EMOTION -->
+<section class="slide"><div class="slidenum">— slide 2 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The moment</div>
+  <h1>Every parcel is already carrying <span class="red">someone's love</span> abroad.</h1>
+  <div class="body">A mother in Chiang Mai ships a gift to her daughter overseas. The box carries her love. Now it can carry proof she shipped it greener.</div>
+  <div class="say">🎤 (20-sec story) Open warm, the Thai way. Land on: "that box can carry proof too."</div>
+  <div class="foot"><span>Proof That Travels</span><span>2 / 17</span></div>
+</section>
+
+<!-- 3 GAP -->
+<section class="slide"><div class="slidenum">— slide 3 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The problem</div>
+  <h1>83% love DHL, yet almost none know <span class="red">it's already green</span>.</h1>
+  <div class="body">DHL does real, expensive, first-mover green work. At the ServicePoint counter, it's invisible, so customers have no idea they're part of it.</div>
+  <div class="say">🎤 "High satisfaction, near-zero sustainability awareness. That's the gap we close."</div>
+  <div class="foot"><span>Proof That Travels</span><span>3 / 17</span></div>
+</section>
+
+<!-- 4 INSIGHT -->
+<section class="slide"><div class="slidenum">— slide 4 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The insight</div>
+  <h1>Thais care, but won't act, so we reward the choice <span class="grn">they already make</span>.</h1>
+  <div class="body">The value-action gap kills green behaviour. Our move: don't ask anyone to pay more or do more. Show them they're already helping, for free, every time they ship.</div>
+  <div class="say">🎤 "We remove the cost and the effort. The good is already happening, we just make it felt."</div>
+  <div class="foot"><span>Proof That Travels</span><span>4 / 17</span></div>
+</section>
+
+<!-- 5 BIG IDEA -->
+<section class="slide lead"><div class="slidenum">— slide 5 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The big idea</div>
+  <h1 class="big">Proof That <span class="red">Travels</span></h1>
+  <div class="body">One honest act of good, made <b>felt, visible, shareable, and collective</b>, at the exact moment of shipping. The proof rides the parcel across the border.</div>
+  <div class="say">🎤 "Onto the box, across the border, onto a national map, into the seller's shop. Ship Love. Ship Light."</div>
+  <div class="foot"><span>Proof That Travels</span><span>5 / 17</span></div>
+</section>
+
+<!-- 6 SYSTEM -->
+<section class="slide"><div class="slidenum">— slide 6 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The strategy</div>
+  <h1>Four pieces that feed each other into <span class="grn">one repeating loop</span>.</h1>
+  <div class="loop">
+    <div class="node"><div class="ic">🧾</div><div class="t">① FEEL</div><div class="d">Green Receipt<br>"you cut X kg"</div></div>
+    <div class="arr">→</div>
+    <div class="node"><div class="ic">📦</div><div class="t">② CARRY</div><div class="d">Green Stamp<br>crosses borders</div></div>
+    <div class="arr">→</div>
+    <div class="node"><div class="ic">🗺️</div><div class="t">③ BELONG</div><div class="d">Green Map<br>national total</div></div>
+    <div class="arr">→</div>
+    <div class="node"><div class="ic">🏷️</div><div class="t">④ SPREAD</div><div class="d">Seller Badge<br>the multiplier</div></div>
+  </div>
+  <div class="ret">🏅 The Green Shipper Tier returns the loop<small>status makes you ship green again</small></div>
+  <div class="foot"><span>Proof That Travels</span><span>6 / 17</span></div>
+</section>
+
+<!-- 7 FEEL (deep) -->
+<section class="slide"><div class="slidenum">— slide 7 —</div>
+  <div class="topbar"></div>
+  <div class="tag">① Feel</div>
+  <h1>A receipt turns an invisible cut into <span class="red">proof you can hold</span>.</h1>
+  <ul class="pts">
+    <li>Every GoGreen Plus shipment prints: "You funded a verified cut of X kg CO₂ ≈ Y km not driven."</li>
+    <li>QR explains the how (SAF / insetting), book-and-claim correct.</li>
+    <li>Principle: transparency = trust (Patagonia) + normalize the number (Allbirds).</li>
+  </ul>
+  <div class="say">🎤 "The felt moment. You don't tell them it's green, you hand them the number they made."</div>
+  <div class="foot"><span>Proof That Travels</span><span>7 / 17</span></div>
+</section>
+
+<!-- 8 CARRY + BELONG -->
+<section class="slide"><div class="slidenum">— slide 8 —</div>
+  <div class="topbar"></div>
+  <div class="tag">② Carry · ③ Belong</div>
+  <h1>The proof crosses the border, then joins <span class="grn">a national total</span>.</h1>
+  <div class="cols">
+    <ul class="pts">
+      <li><b>Carry:</b> a green stamp on the box, the receiver abroad sees it, free cross-border earned media.</li>
+    </ul>
+    <ul class="pts">
+      <li><b>Belong:</b> DHL's real GoGreen Dashboard, localized into Thailand's Green Shipping Map across 36 branches.</li>
+    </ul>
+  </div>
+  <div class="say">🎤 "The parcel literally crosses borders, so the proof does too, and every shipper sees the country's total climb."</div>
+  <div class="foot"><span>Proof That Travels</span><span>8 / 17</span></div>
+</section>
+
+<!-- 9 SPREAD -->
+<section class="slide"><div class="slidenum">— slide 9 —</div>
+  <div class="topbar"></div>
+  <div class="tag">④ Spread</div>
+  <h1>SME sellers turn their green choice into a <span class="red">badge buyers trust</span>.</h1>
+  <ul class="pts">
+    <li>Ship green → unlock a shareable "Ships Greener with DHL" badge in LINE.</li>
+    <li>Their overseas buyers see it → DHL's green spreads through sellers' own audiences.</li>
+    <li>Mirrors UOB's Sustainability Compass for SMEs, the B2B2C multiplier.</li>
+  </ul>
+  <div class="say">🎤 "The little guy becomes the broadcaster. That's the multiplier, and the UOB mirror."</div>
+  <div class="foot"><span>Proof That Travels</span><span>9 / 17</span></div>
+</section>
+
+<!-- 10 TIER -->
+<section class="slide"><div class="slidenum">— slide 10 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The repeat engine</div>
+  <h1>We rank by <span class="grn">greenness, not bigness</span>, so SMEs can win.</h1>
+  <div class="tiers">
+    <div class="tier ts"><div class="tn">🌱 Sprout</div><div class="tx">1st green ship</div></div>
+    <div class="tier tb"><div class="tn">🥉 Bronze</div><div class="tx">badge + on map</div></div>
+    <div class="tier tsi"><div class="tn">🥈 Silver</div><div class="tx">featured + stamp</div></div>
+    <div class="tier tg"><div class="tn">🥇 Gold</div><div class="tx">spotlight story</div></div>
+  </div>
+  <div class="vs"><span class="grn">Nong's Crafts · 40 parcels → GOLD</span> beats <span style="color:#a96a2c">MegaCorp · 8,000 → BRONZE</span></div>
+  <div class="say">🎤 "Ranked by the greenness of your choices, not your size. A home seller wears Gold while a corporation sits at Bronze. We protect SMEs by design, it's in the math."</div>
+  <div class="foot"><span>Proof That Travels</span><span>10 / 17</span></div>
+</section>
+
+<!-- 11 NUMBERS -->
+<section class="slide"><div class="slidenum">— slide 11 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The evidence</div>
+  <h1>The demand is already real, and the market is <span class="red">a trillion baht</span>.</h1>
+  <div class="tiles">
+    <div class="tile"><div class="n">12,000+</div><div class="l">APAC customers use GoGreen Plus</div></div>
+    <div class="tile"><div class="n">฿1T+</div><div class="l">Thai e-commerce · ~30% cross-border</div></div>
+    <div class="tile"><div class="n">~10%</div><div class="l">conservative opt-in (proven 10–30%)</div></div>
+    <div class="tile"><div class="n">1,600+</div><div class="l">SMEs on UOB's Compass</div></div>
+    <div class="tile"><div class="n">43 vs 12</div><div class="l">EVs, DHL vs FedEx in Thailand</div></div>
+  </div>
+  <div class="say">🎤 "Not hypothetical. Every number is sourced. (Avoid the landmines in _CRITICAL §1.)"</div>
+  <div class="foot"><span>Proof That Travels</span><span>11 / 17</span></div>
+</section>
+
+<!-- 12 PRECEDENT -->
+<section class="slide"><div class="slidenum">— slide 12 —</div>
+  <div class="topbar"></div>
+  <div class="tag">It has worked before</div>
+  <h1>Honesty-led green campaigns <span class="grn">measurably move people</span>.</h1>
+  <div class="tiles" style="grid-template-columns:repeat(3,1fr);">
+    <div class="tile"><div class="n">+30%</div><div class="l">Patagonia "Don't Buy This Jacket" — honesty drove sales</div></div>
+    <div class="tile"><div class="n">20×</div><div class="l">Lavazza film — purchase intent vs market norm (Amazon Ads brand-lift)</div></div>
+    <div class="tile"><div class="n">75%</div><div class="l">say IKEA's sustainability improves how they see the brand</div></div>
+  </div>
+  <div class="vs" style="font-size:1.15vw;">DHL's own Thai SMEs already do this: <span class="grn">Kasikornbank</span> &amp; <span class="grn">The Board Factory</span> ship on GoGreen Plus</div>
+  <div class="say">🎤 "We're not guessing. Honesty-led green campaigns lift real metrics, and DHL's own Thai customers already prove the demand. We just make it felt at scale."</div>
+  <div class="foot"><span>Proof That Travels</span><span>12 / 17</span></div>
+</section>
+
+<!-- 13 BUDGET -->
+<section class="slide"><div class="slidenum">— slide 13 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The ฿5M plan</div>
+  <h1>฿5M buys awareness; <span class="grn">customers fund the carbon</span>.</h1>
+  <div class="plan">
+    <div class="bars">
+      <div class="bar"><b>In-branch 30%</b><div class="fill" style="width:11vw"></div></div>
+      <div class="bar"><b>Digital 20%</b><div class="fill" style="width:7.4vw"></div></div>
+      <div class="bar"><b>Seller/SME 18%</b><div class="fill" style="width:6.6vw"></div></div>
+      <div class="bar"><b>Content 15%</b><div class="fill" style="width:5.5vw"></div></div>
+      <div class="bar"><b>Measure 7%</b><div class="fill" style="width:2.6vw"></div></div>
+      <div class="bar"><b>Staff 5%</b><div class="fill" style="width:1.9vw"></div></div>
+      <div class="bar"><b>Buffer 5%</b><div class="fill" style="width:1.9vw"></div></div>
+    </div>
+    <div class="phases">
+      <div class="phase"><b>Phase 1 · wk 1–3</b><br>Build &amp; baseline survey</div>
+      <div class="phase"><b>Phase 2 · wk 4–8</b><br>Launch across 36 ServicePoints</div>
+      <div class="phase"><b>Phase 3 · wk 9–12</b><br>Spread &amp; prove (ROI readout)</div>
+    </div>
+  </div>
+  <div class="say">🎤 "Measured by a pre/post survey, the same method DHL used to get the 83%."</div>
+  <div class="foot"><span>Proof That Travels</span><span>13 / 17</span></div>
+</section>
+
+<!-- 13 FINANCE JUSTIFICATION -->
+<section class="slide"><div class="slidenum">— slide 14 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The money, justified</div>
+  <h1>Every baht is costed from <span class="grn">real Thai market rates</span>.</h1>
+  <ul class="pts">
+    <li>In-branch ฿1.5M ≈ ฿41.7k/branch × 36 — signage + print at Gogoprint/Octopus scale.</li>
+    <li>Video ฿750k ← ฿20k/day studio floor (Bangkok production rate) × shoot + edit.</li>
+    <li>Measurement ฿350k ← 2 survey waves × 200+ respondents (valid-tracking minimum).</li>
+  </ul>
+  <div class="say">🎤 "We costed bottom-up from real rates, then added a 5% contingency. Indicative, but every line has a derivation — not a guess."</div>
+  <div class="foot"><span>Proof That Travels</span><span>14 / 17</span></div>
+</section>
+
+<!-- 14 ECOSYSTEM -->
+<section class="slide"><div class="slidenum">— slide 15 —</div>
+  <div class="topbar"></div>
+  <div class="tag">The ecosystem</div>
+  <h1>Our promise sits on a real, <span class="grn">audited supply chain</span>.</h1>
+  <div class="loop">
+    <div class="node"><div class="ic">⛽</div><div class="t">SAF Suppliers</div><div class="d">BP · Neste<br>World Energy · Cosmo</div></div>
+    <div class="arr">→</div>
+    <div class="node"><div class="ic">✅</div><div class="t">Verified</div><div class="d">GLEC v3.2<br>ISO 14083</div></div>
+    <div class="arr">→</div>
+    <div class="node"><div class="ic">📦</div><div class="t">GoGreen Plus</div><div class="d">certificate<br>per shipment</div></div>
+    <div class="arr">→</div>
+    <div class="node"><div class="ic">🤝</div><div class="t">UOB + SMEs</div><div class="d">our campaign<br>activates it</div></div>
+  </div>
+  <div class="ret">We don't build the chain — we build the awareness layer on top of it<small>audited to ISO 14083; customers finally see the chain they're part of</small></div>
+  <div class="foot"><span>Proof That Travels</span><span>15 / 17</span></div>
+</section>
+
+<!-- 15 WHY WINS -->
+<section class="slide"><div class="slidenum">— slide 16 —</div>
+  <div class="topbar"></div>
+  <div class="tag">Why we win</div>
+  <h1>Precise enough to <span class="red">survive 2026's rules</span>, built around UOB.</h1>
+  <ul class="pts">
+    <li><b>Green-Claims mastery:</b> "you funded a verified reduction," never "your parcel flew on SAF." Book-and-claim, survives EmpCo 2026.</li>
+    <li><b>Compliance-first:</b> LINE is opt-in under Thai PDPA; every claim is Consumer-Protection-Act safe. Precision is our legal shield.</li>
+    <li><b>The UOB mirror:</b> the Compass starts the SME journey; Ship Light lets them prove it.</li>
+  </ul>
+  <div class="say">🎤 "That precision is why our campaign is bullet-proof, legally and commercially, and why it mirrors the bank in the room."</div>
+  <div class="foot"><span>Proof That Travels</span><span>16 / 17</span></div>
+</section>
+
+<!-- 14 CLOSE -->
+<section class="slide lead" style="background:#eaf3fb;">
+  <div class="topbar apx"></div>
+  <div class="tag apx">The close</div>
+  <h1 class="big">X tonnes cut, and a country that <span class="blue">knows it shipped them</span>.</h1>
+  <div class="heroline">Ship Love. Ship Light.</div>
+  <div class="say">🎤 "We don't tell people DHL is green, we hand them proof they helped, and let it travel. Thank you."</div>
+  <div class="foot"><span>DHL Express × UOB WonderLab 2026</span><span>17 / 17</span></div>
+</section>
+
+<!-- ===== APPENDIX A1–A6 (Q&A only) ===== -->
+
+<section class="slide"><div class="slidenum">— slide 17 —</div>
+  <div class="topbar apx"></div>
+  <div class="tag apx">Appendix A1 · Competitive moat</div>
+  <h1>On the ground in Thailand, DHL <span class="grn">already leads</span>.</h1>
+  <table class="cmp">
+    <tr><th></th><th>DHL Express TH</th><th>FedEx TH</th><th>UPS</th></tr>
+    <tr><td>EVs in Thailand</td><td class="win">43 (18.9% of fleet)</td><td>12</td><td>minimal</td></tr>
+    <tr><td>SAF use</td><td class="win">~10% of fuel, top-3 buyer</td><td>2 US airports</td><td>goal 30% by 2030</td></tr>
+    <tr><td>Usable green product</td><td class="win">GoGreen Plus at counter</td><td>carbon-neutral opt</td><td>carbon-neutral opt</td></tr>
+  </table>
+  <div class="foot"><span>Appendix</span><span>A1</span></div>
+</section>
+
+<section class="slide"><div class="slidenum">— slide 18 —</div>
+  <div class="topbar apx"></div>
+  <div class="tag apx">Appendix A2 · Tier formula</div>
+  <h1>How the score works, and how we <span class="grn">define "small"</span>.</h1>
+  <ul class="pts">
+    <li>Score = 100 × [0.50·GreenRate + 0.20·Consistency + 0.20·Momentum + 0.10·Depth] × Credibility × SizeBoost</li>
+    <li>"Small" = DHL's own SME/ServicePoint account flag, aligned to Thailand's OSMEP definition (≤฿300M / 100 staff).</li>
+    <li>Credibility floor (~5 shipments) blocks the "100% from 1 parcel" trick.</li>
+  </ul>
+  <div class="foot"><span>Appendix</span><span>A2</span></div>
+</section>
+
+<section class="slide"><div class="slidenum">— slide 19 —</div>
+  <div class="topbar apx"></div>
+  <div class="tag apx">Appendix A3 · The numbers, sourced</div>
+  <h1>Every figure traces to a <span class="red">named source</span>.</h1>
+  <ul class="pts">
+    <li>9.7% global WTP / ~11% APAC — PwC 2024 Voice of the Consumer.</li>
+    <li>12,000+ / 2,800 / 2,000 GoGreen Plus — DHL press 2024.</li>
+    <li>185kt SAF, ~10%, top-3 — GreenAir 2026. UOB ฿33.96B — Digital Banker / Bangkok Post.</li>
+  </ul>
+  <div class="foot"><span>Appendix</span><span>A3</span></div>
+</section>
+
+<section class="slide"><div class="slidenum">— slide 20 —</div>
+  <div class="topbar apx"></div>
+  <div class="tag apx">Appendix A4 · Book-and-claim</div>
+  <h1>Why our SAF claim is <span class="grn">compliant, not greenwashing</span>.</h1>
+  <ul class="pts">
+    <li>GoGreen Plus is book-and-claim: the parcel may not physically fly on SAF.</li>
+    <li>DHL buys certified SAF in its network; the customer gets a verified reduction certificate.</li>
+    <li>We say "you funded a verified reduction," never "your parcel flew on SAF." Insetting, not offsetting.</li>
+  </ul>
+  <div class="foot"><span>Appendix</span><span>A4</span></div>
+</section>
+
+<section class="slide"><div class="slidenum">— slide 21 —</div>
+  <div class="topbar apx"></div>
+  <div class="tag apx">Appendix A5 · Customer journey</div>
+  <h1>One walk-in becomes a <span class="red">self-spreading loop</span>.</h1>
+  <ul class="pts">
+    <li>Walk in → staff one-liner → choose GoGreen Plus → Green Receipt prints (FEEL).</li>
+    <li>Box leaves with the Green Stamp (CARRY) → receiver abroad scans it.</li>
+    <li>National Map ticks up (BELONG) → SME unlocks Seller Badge (SPREAD) → repeat.</li>
+  </ul>
+  <div class="foot"><span>Appendix</span><span>A5</span></div>
+</section>
+
+<section class="slide"><div class="slidenum">— slide 22 —</div>
+  <div class="topbar apx"></div>
+  <div class="tag apx">Appendix A6 · Risks &amp; guardrails</div>
+  <h1>The questions we <span class="grn">already answered</span>.</h1>
+  <ul class="pts">
+    <li>"Why only 36 branches?" → pilot footprint; scales to DHL TH's full 71.</li>
+    <li>"Won't big firms dominate the tier?" → rate-based scoring; see A2.</li>
+    <li>"Is awareness measurable?" → pre/post survey, DHL's own 83% method.</li>
+  </ul>
+  <div class="foot"><span>Appendix</span><span>A6</span></div>
+</section>
+
+</div>
+<div class="nav">← → / Space / click · F = fullscreen</div>
+
+</body>
+</html>
