@@ -49,3 +49,11 @@
   + footers in docs. If you wanted something different (e.g. a link inside Atlas back to here), tell me.
 - Added 2 slides (now 16 main). If you want to keep it at 14, cut Finance or Ecosystem from main → appendix.
 - Did NOT merge to main, did NOT touch anything outside the branch. PR #1 still open.
+
+## ROUND 2 (after you got back, 26 Jun)
+- ✅ DHL-RESEARCH-round2.md — Thai consumer depth, carbon math (1kg≈6km), DHL precedent (Kasikornbank,
+  Board Factory), competitor proof (Patagonia +30%, Lavazza brand-lift 20×, IKEA 75%).
+- ⚠️ **97% CORRECTION:** "97% of Thais concerned" is actually SOURCED (TGM/PwC TH) — un-killed it in
+  _PROOF.md and _CRITICAL.md. You CAN use it now (pair with 79% EV for the value-action gap).
+- ✅ DHL-STRESS-TEST.md — red-team: 8 hardest judge questions + best answers + our 3 thinnest spots.
+- ✅ SLIDES.html — added "It has worked before" precedent slide (now 17 main + 6 appendix = 23).

@@ -76,7 +76,7 @@
 ---
 
 ## 🔴 DO NOT USE (killed in fact-audit)
-- ❌ "97% of Thais concerned about climate" — unsourced. Use "79% interested in EVs" (PwC TH).
+- ✅ UPDATE (26 Jun, round 2): "97% of Thais concerned about climate" is **CONFIRMED sourced** (TGM Research / PwC TH 2024) — no longer killed. Safe to use, but pair with "79% interested in EVs" to make the value-action-gap point rather than quoting 97% alone.
 - ❌ "your parcel flew on SAF" — false (book-and-claim). Say "you funded a verified reduction via SAF."
 - ❌ "9.7% in Thailand" — that's the global figure; TH is in the ~11% APAC band.
 - ❌ blanket "SAF cuts 80%" — only waste-based; crop ~55%.

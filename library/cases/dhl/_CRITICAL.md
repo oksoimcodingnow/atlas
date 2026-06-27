@@ -20,7 +20,7 @@
 
 | ❌ DON'T say | ✅ DO say | Why |
 |---|---|---|
-| "97% of Thais concerned about climate" | **DROP IT** → "79% interested in EVs" (PwC TH) | 97% is unsourced |
+| "97% of Thais concerned about climate" (alone) | ✅ now OK to use, but **pair with "79% interested in EVs"** | 97% IS sourced (TGM/PwC TH) — use it to set up the value-action gap, not as a standalone |
 | "9.7% WTP premium in Thailand" | "**APAC ~11%**, above the 9.7% global avg" | TH is in APAC, not the global figure |
 | "SAF cuts up to 80%" (blanket) | "up to ~80% **on waste-based** SAF" | crop-based is only ~55% |
 | "your parcel flew on SAF" | "**you funded a verified reduction via SAF**" | book-and-claim — this is our TRUMP CARD |
