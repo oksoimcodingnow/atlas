@@ -22,6 +22,7 @@ SAF SUPPLIERS ──► DHL NETWORK ──► CERTIFICATION ──► GoGreen Pl
 |---|---|---|---|
 | **SAF suppliers** | **BP, Neste, World Energy, Cosmo Energy** | Sell DHL certified SAF. World Energy: 7-yr / 667M-litre deal (2024). Cosmo: 7,200 kL/yr, Asia's first regular SAF cargo service | Sustainability Mag / ESG Dive |
 | **Standards bodies** | **GHG Protocol · GLEC Framework v3.2 · ISO 14083** | Define how the CO₂ cut is measured/reported — the "verified" in our claim | DHL Reporting Hub |
+| **Book-and-claim registry** | **ISCC Credit Transfer System** | The named system that secures + traces the SAF sustainability claim downstream (ISCC + OMV + Airbus pilot). The *mechanism* behind "verified reduction." | ISCC System |
 | **The product** | **GoGreen Plus** | Customer pays → DHL allocates SAF → certificate issued (supplier, feedstock, reduction amount) | DHL |
 | **Tech/decarb partners** | **Google, Envision** | Co-decarbonization partnerships; Google is a GoGreen Plus customer | ESG Dive |
 | **The bank** | **UOB** | SME sustainability financing/advisory (Compass, U-Solar) — the partner in the room | UOB |
