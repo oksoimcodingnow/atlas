@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Income vs. NAV Erosion · Fin-Eng Studio</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../icons/atlas-favicon.png">
+<link rel="apple-touch-icon" href="../icons/atlas-192.png">
+<meta name="theme-color" content="#0a0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#0a0a14; --bg-2:#11112a; --panel:#0e0e1d; --text:#f1efe6; --muted:#9a9ab8; --faint:#6b6b78;
+    --rule:rgba(241,239,230,0.14); --accent:#b8c0ff; --gold:#f3d59a; --green:#5fd39a; --pink:#ff8db3;
+    --gutter:clamp(16px,4vw,40px);
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  html,body{background:var(--bg);color:var(--text);}
+  body{font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  a{color:inherit;text-decoration:none;} ::selection{background:var(--accent);color:var(--bg);}
+  /* keep page content above the atlas-fx 3D background canvas (z-index:0) */
+  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 380px at 70% -8%, rgba(184,192,255,0.08), transparent 65%);}
+  .top-bar{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gutter);border-bottom:1px solid var(--rule);}
+  .brand{font-weight:600;font-size:15px;} .brand span{color:var(--accent);}
+  .back{font-size:12px;color:var(--muted);padding:8px 14px;border:1px solid var(--rule);border-radius:999px;transition:.2s;}
+  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
+  .wrap{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,34px) var(--gutter) 80px;}
+  .eyebrow{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,6vw,54px);line-height:1;letter-spacing:-0.01em;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .lede{color:var(--muted);max-width:660px;margin-top:12px;font-size:15px;}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:24px;}
+  @media(min-width:880px){ .grid{grid-template-columns:1.3fr 1fr;align-items:start;} }
+
+  .card{border:1px solid var(--rule);border-radius:16px;background:#0b0b16;padding:18px;}
+  .card h2{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  canvas{display:block;width:100%;height:auto;border-radius:10px;background:var(--panel);}
+
+  /* controls */
+  .sl{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);margin:9px 0;}
+  .sl input[type=range]{flex:1;max-width:150px;}
+  .sl .v{font-family:var(--mono);font-size:12px;color:var(--text);min-width:52px;text-align:right;}
+  .sl small{display:block;font-size:11px;color:var(--faint);}
+  input[type=range]{accent-color:var(--accent);}
+  #distC input[type=range]{accent-color:var(--gold);}
+  #earnC input[type=range]{accent-color:var(--green);}
+
+  /* readout */
+  .read{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px;}
+  .stat{border:1px solid var(--rule);border-radius:10px;padding:11px 13px;background:var(--panel);}
+  .stat .k{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;}
+  .stat .n{font-family:var(--mono);font-size:19px;font-weight:500;margin-top:3px;}
+  .stat .n.good{color:var(--green);} .stat .n.bad{color:var(--pink);} .stat .n.gold{color:var(--gold);}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;font-size:11.5px;color:var(--muted);margin-top:10px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:12px;height:3px;border-radius:2px;display:inline-block;}
+
+  .verdict{margin-top:12px;font-size:13px;line-height:1.5;border:1px solid var(--rule);border-radius:10px;padding:11px 13px;background:var(--panel);color:#ded6ea;}
+  .verdict b{color:var(--gold);}
+
+  .note{margin-top:22px;border:1px solid var(--rule);border-radius:14px;background:var(--bg-2);padding:16px 18px;font-size:13.5px;color:#ded6ea;line-height:1.6;}
+  .note b{color:var(--accent);} .note code{font-family:var(--mono);font-size:12.5px;color:var(--gold);background:rgba(243,213,154,0.08);padding:1px 5px;border-radius:4px;}
+  .formula{font-family:var(--mono);font-size:12.5px;color:var(--gold);background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;margin-top:10px;overflow-x:auto;}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="brand">Fin-Eng · <span>Income vs. NAV Erosion</span></div><a class="back" href="index.html">&larr; Studio</a></div>
+
+<div class="wrap">
+  <div class="eyebrow">Fund Mechanics · High-Yield Distributions</div>
+  <h1>Is that yield <em>real,</em> or your own money?</h1>
+  <p class="lede">A covered-call or high-dividend fund pays you a fat "yield." But a distribution can only come from two places: the fund's real <em>earnings</em>, or its own <em>capital</em> — draining the NAV. Set a payout rate and how much the fund actually earns, then watch the bucket over time. When the gold line sinks, you're being paid with your own money.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>NAV &amp; total value over time</h2>
+      <canvas id="cv" width="640" height="480"></canvas>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>NAV per share (the bucket)</span>
+        <span><i style="background:var(--accent)"></i>NAV + distributions collected</span>
+        <span><i style="background:var(--faint)"></i>Starting NAV ($100)</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" id="distC" style="margin-bottom:14px">
+        <div class="h" style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;margin-bottom:8px"><span style="width:11px;height:11px;border-radius:50%;background:var(--gold)"></span>Distribution rate</div>
+        <div class="sl">Annual payout <input id="dist" type="range" min="0" max="60" step="0.5" value="12"><span class="v" id="distv">12%</span></div>
+        <small style="color:var(--faint)">What the fund pays out, as a % of NAV per year. YieldMax funds advertise 40–50%; QYLD ~12%.</small>
+      </div>
+      <div class="card" id="earnC" style="margin-bottom:14px">
+        <div class="h" style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;margin-bottom:8px"><span style="width:11px;height:11px;border-radius:50%;background:var(--green)"></span>What the fund really earns</div>
+        <div class="sl">Total return / yr <input id="earn" type="range" min="-20" max="30" step="0.5" value="7"><span class="v" id="earnv">7%</span></div>
+        <small style="color:var(--faint)">Price gains + option premium the fund actually generates, <em>before</em> paying you. Can be negative.</small>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="sl" style="margin:2px 0">Expense ratio <input id="fee" type="range" min="0" max="1.5" step="0.05" value="0.35"><span class="v" id="feev">0.35%</span></div>
+        <div class="sl" style="margin:8px 0 2px">Years held <input id="yrs" type="range" min="1" max="25" step="1" value="10"><span class="v" id="yrsv">10</span></div>
+      </div>
+
+      <div class="card">
+        <h2>After <span id="yrLbl">10</span> years, per $100 invested</h2>
+        <div class="read">
+          <div class="stat"><div class="k">Ending NAV</div><div class="n gold" id="navOut">–</div></div>
+          <div class="stat"><div class="k">Cash collected</div><div class="n" id="distOut">–</div></div>
+          <div class="stat"><div class="k">Total value</div><div class="n" id="tvOut">–</div></div>
+          <div class="stat"><div class="k">Return of capital</div><div class="n bad" id="rocOut">–</div></div>
+        </div>
+        <div class="verdict" id="verdict">–</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>What you're looking at.</b> Each year the fund earns something and pays something. The one rule that decides everything:
+    <div class="formula">NAV<sub>next</sub> = NAV + (earnings − fees) − distribution</div>
+    If the <b style="color:var(--green)">distribution</b> is bigger than what the fund <b>earned</b>, the gap is paid out of the NAV itself — that's <b>return of capital</b>, and the <b style="color:var(--gold)">gold line sinks</b>. You still get cash, but each share is now worth less, so the fund must pay you even more next time just to keep the same headline yield. The <b style="color:var(--accent)">blue line</b> (NAV + all the cash you collected) is the honest scoreboard: it's your <em>total return</em>. A sky-high yield with a flat blue line means you gained nothing — the fund just shuffled your own money back to you and charged a fee to do it. That is exactly the QYLD / YieldMax pattern.
+    <div style="margin-top:8px;font-size:12.5px;color:var(--muted)">Return of capital % = <code>capital paid out ÷ total cash collected</code>. Above ~50% is a red flag.</div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;gap:10px;margin-top:26px">
+    <a class="back" href="portfolio.html">&larr; Portfolio</a>
+    <a class="back" href="index.html">Studio &rarr;</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var ids = ['dist','earn','fee','yrs'];
+  function val(id){ return parseFloat(document.getElementById(id).value); }
+
+  // ── the fund, month by month (compounding within the year) ──
+  // Each step: fund earns (return − fee), pays out (distRate), remainder is NAV.
+  // "Return of capital" is the slice of a distribution that the earnings didn't cover.
+  function simulate(distR, earnR, feeR, years){
+    var NAV = 100, cumDist = 0, cumROC = 0;
+    var steps = years * 12;
+    var navPath = [NAV], tvPath = [NAV];
+    for (var m = 1; m <= steps; m++){
+      var earn = NAV * (earnR - feeR) / 12;   // what the fund made this month (net of fees)
+      var dist = NAV * distR / 12;            // what it paid you this month
+      if (dist > NAV + earn) dist = Math.max(0, NAV + earn); // can't pay more than the bucket holds
+      var roc  = Math.max(0, dist - Math.max(earn, 0));      // uncovered part = your own capital
+      NAV = NAV + earn - dist;
+      if (NAV < 0) NAV = 0;
+      cumDist += dist; cumROC += roc;
+      navPath.push(NAV); tvPath.push(NAV + cumDist);
+    }
+    return { NAV:NAV, cumDist:cumDist, cumROC:cumROC, totalValue:NAV+cumDist, navPath:navPath, tvPath:tvPath };
+  }
+
+  var W = 640, H = 480, pad = 46;
+
+  function draw(){
+    var distR = val('dist')/100, earnR = val('earn')/100, feeR = val('fee')/100, years = val('yrs');
+    document.getElementById('distv').textContent = val('dist')+'%';
+    document.getElementById('earnv').textContent = val('earn')+'%';
+    document.getElementById('feev').textContent = val('fee').toFixed(2)+'%';
+    document.getElementById('yrsv').textContent = years;
+    document.getElementById('yrLbl').textContent = years;
+
+    var s = simulate(distR, earnR, feeR, years);
+
+    // y-axis: 0 up to a little above the highest of the two lines (and the $100 line)
+    var maxY = Math.max(100, s.totalValue, Math.max.apply(null, s.navPath), Math.max.apply(null, s.tvPath)) * 1.08;
+    var n = s.navPath.length - 1;
+    function X(i){ return pad + (i/n)*(W-pad-16); }
+    function Y(v){ return H-pad - (v/maxY)*(H-pad-16); }
+
+    ctx.clearRect(0,0,W,H);
+    // grid + axes
+    ctx.strokeStyle='rgba(241,239,230,0.08)'; ctx.lineWidth=1; ctx.fillStyle='#6b6b78'; ctx.font='11px JetBrains Mono, monospace';
+    for(var g=0; g<=5; g++){
+      var gx=pad+(g/5)*(W-pad-16); ctx.beginPath(); ctx.moveTo(gx,16); ctx.lineTo(gx,H-pad); ctx.stroke();
+      ctx.fillText(((g/5)*years).toFixed(0)+'y', gx-8, H-pad+16);
+    }
+    for(var h=0; h<=4; h++){
+      var gy=16+(h/4)*(H-pad-16); ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-16,gy); ctx.stroke();
+      var yv=(maxY-(h/4)*maxY); ctx.fillText('$'+yv.toFixed(0), 4, gy+4);
+    }
+
+    // starting-NAV reference line at $100
+    ctx.strokeStyle='rgba(107,107,120,0.7)'; ctx.setLineDash([5,5]); ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(pad,Y(100)); ctx.lineTo(W-16,Y(100)); ctx.stroke(); ctx.setLineDash([]);
+
+    function line(path, col){
+      ctx.beginPath();
+      for(var i=0;i<path.length;i++){ var x=X(i),y=Y(path[i]); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); }
+      ctx.strokeStyle=col; ctx.lineWidth=2.4; ctx.stroke();
+    }
+    line(s.tvPath, '#b8c0ff');   // total value (NAV + cash)
+    line(s.navPath, '#f3d59a');  // NAV (the bucket)
+
+    // readout
+    var rocPct = s.cumDist > 0 ? (s.cumROC/s.cumDist*100) : 0;
+    document.getElementById('navOut').textContent = '$'+s.NAV.toFixed(2);
+    document.getElementById('distOut').textContent = '$'+s.cumDist.toFixed(2);
+    document.getElementById('tvOut').textContent = '$'+s.totalValue.toFixed(2);
+    document.getElementById('rocOut').textContent = rocPct.toFixed(0)+'%';
+
+    // colour total value good/bad vs the $100 you put in
+    var tvN = document.getElementById('tvOut');
+    tvN.className = 'n ' + (s.totalValue >= 100 ? 'good' : 'bad');
+
+    // plain-language verdict
+    var v = document.getElementById('verdict');
+    var navDrop = 100 - s.NAV;
+    if (rocPct >= 50 && s.totalValue < 101){
+      v.innerHTML = '<b>Mostly your own money.</b> About '+rocPct.toFixed(0)+'% of the "income" was return of capital. NAV fell to $'+s.NAV.toFixed(2)+', and your total value ($'+s.totalValue.toFixed(2)+') is barely above — or below — the $100 you started with. The yield was an illusion.';
+    } else if (s.NAV < 95 && s.totalValue >= 101){
+      v.innerHTML = '<b>NAV eroded, but you came out ahead.</b> The bucket shrank to $'+s.NAV.toFixed(2)+', yet the cash collected more than made up for it — total value $'+s.totalValue.toFixed(2)+'. Sustainable only while earnings stay this high.';
+    } else if (s.NAV >= 100){
+      v.innerHTML = '<b>Genuinely covered.</b> The fund earned at least as much as it paid, so NAV held at $'+s.NAV.toFixed(2)+' and every dollar of distribution was real income. This is the healthy case.';
+    } else {
+      v.innerHTML = 'NAV drifted to $'+s.NAV.toFixed(2)+' ('+(navDrop>0?'down $'+navDrop.toFixed(2):'up')+'). Return of capital ran about '+rocPct.toFixed(0)+'% of distributions. Total value: $'+s.totalValue.toFixed(2)+' per $100 in.';
+    }
+  }
+
+  ids.forEach(function(id){ document.getElementById(id).addEventListener('input', draw); });
+
+  // Size the canvas to its CSS box, sharp on hi-DPI (same setup as the frontier page).
+  function setup(){
+    var rect = cv.getBoundingClientRect();
+    var dpr = window.devicePixelRatio || 1;
+    W = Math.max(rect.width, 280);
+    H = Math.min(Math.max(W * 0.74, 300), 520);
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    cv.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+  window.addEventListener('resize', setup);
+  setup();
+})();
+</script>
+<script src="../lib/atlas-fx.js"></script>
+</body>
+</html>
