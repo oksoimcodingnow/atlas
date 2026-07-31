@@ -1,183 +1,244 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>SETScout · หุ้นไทยที่น่าศึกษาต่อวันนี้</title>
+<title>SETScout</title>
 <meta name="theme-color" content="#f6f7f9">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   :root{
-    --bg:#f6f7f9;--card:#fff;--ink:#141b2d;--muted:#6b7280;--faint:#9aa1ac;--line:#e7e9ef;--accent:#4f46e5;
-    --buy:#0f9d6b;--buyb:#e7f6ef;--wait:#c98a00;--waitb:#fdf4e3;--avoid:#d64545;--avoidb:#fbecec;
-    --sans:'Inter','Noto Sans Thai',-apple-system,sans-serif;--mono:'Inter',monospace;
+    --bg:#f6f7f9;--card:#fff;--ink:#141b2d;--muted:#6b7280;--faint:#9aa1ac;--line:#e7e9ef;--soft:#f7f8fa;--accent:#4f46e5;
+    --buy:#0f9d6b;--buyb:#e7f6ef;--wait:#c98a00;--waitb:#fdf4e3;--avoid:#d64545;--avoidb:#fbecec;--shadow:rgba(20,27,45,.06);
   }
-  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.45;}
-  body{padding:max(18px,env(safe-area-inset-top)) 16px 60px;}
+  [data-theme="dark"]{
+    --bg:#0e1015;--card:#171a21;--ink:#e9ebf2;--muted:#9aa1ac;--faint:#6b7280;--line:#262a33;--soft:#1c2029;--accent:#8b93ff;
+    --buy:#2dd4a0;--buyb:#0f2a22;--wait:#e0a94a;--waitb:#2a2213;--avoid:#f27171;--avoidb:#2c1717;--shadow:rgba(0,0,0,.35);
+  }
+  html,body{background:var(--bg);color:var(--ink);font-family:'Inter','Noto Sans Thai',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.45;transition:background .2s,color .2s;}
+  body{padding:max(16px,env(safe-area-inset-top)) 16px 60px;}
   .wrap{max-width:1080px;margin:0 auto;}
-  /* header */
   .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .logo{font-size:20px;font-weight:800;letter-spacing:-.02em;} .logo b{color:var(--accent);}
-  .pill{font-size:11px;font-weight:600;color:#7a5c00;background:#fdf4e3;border:1px solid #f0e2bb;border-radius:999px;padding:4px 10px;}
-  h1{font-size:clamp(20px,4.5vw,28px);font-weight:800;letter-spacing:-.02em;margin:16px 0 4px;}
-  .sub{color:var(--muted);font-size:14px;}
-  .sub b{color:var(--ink);font-weight:600;}
-  /* filters */
-  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 14px;}
+  .tools{display:flex;gap:6px;align-items:center;}
+  .tbtn{font-size:13px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 11px;cursor:pointer;}
+  .tbtn:hover{border-color:var(--faint);}
+  .pill{font-size:11px;font-weight:600;color:var(--wait);background:var(--waitb);border:1px solid var(--line);border-radius:999px;padding:4px 10px;}
+  h1{font-size:clamp(20px,4.5vw,28px);font-weight:800;letter-spacing:-.02em;margin:14px 0 4px;}
+  .sub{color:var(--muted);font-size:14px;} .sub b{color:var(--ink);font-weight:600;}
+  .meta{color:var(--faint);font-size:12.5px;margin-top:4px;}
+  .prow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;flex:1;}
   .chip{font-size:13px;font-weight:600;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;transition:.12s;}
-  .chip:hover{border-color:#cfd3dc;} .chip.on{color:#fff;background:var(--ink);border-color:var(--ink);}
-  /* grid */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:.14s;position:relative;}
-  .card:hover{border-color:#cfd3dc;transform:translateY(-2px);box-shadow:0 10px 26px rgba(20,27,45,.06);}
+  .chip.on{color:var(--bg);background:var(--ink);border-color:var(--ink);}
+  .pbtn{font-size:13px;font-weight:700;color:var(--accent);background:var(--card);border:1px solid var(--accent);border-radius:999px;padding:8px 14px;cursor:pointer;white-space:nowrap;}
+  .pbanner{display:none;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:10px 14px;margin:12px 0 0;font-size:13px;}
+  .pbanner.on{display:flex;} .pbanner a{color:var(--muted);cursor:pointer;text-decoration:underline;margin-left:8px;font-size:12px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px;margin-top:14px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:.14s;}
+  .card:hover{border-color:var(--faint);transform:translateY(-2px);box-shadow:0 10px 26px var(--shadow);}
   .c-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
-  .rank{font-size:11px;font-weight:700;color:var(--faint);font-variant-numeric:tabular-nums;}
-  .tkr{font-size:15px;font-weight:800;letter-spacing:-.01em;}
+  .rank{font-size:11px;font-weight:700;color:var(--faint);} .tkr{font-size:15px;font-weight:800;}
   .badge{font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap;}
   .badge.buy{color:var(--buy);background:var(--buyb);} .badge.wait{color:var(--wait);background:var(--waitb);} .badge.avoid{color:var(--avoid);background:var(--avoidb);}
   .nm{font-size:14px;font-weight:700;margin-top:9px;} .nm-en{font-size:12px;color:var(--faint);font-weight:500;}
-  .bar{height:6px;background:#eef0f4;border-radius:6px;margin:12px 0 8px;overflow:hidden;}
-  .bar i{display:block;height:100%;border-radius:6px;}
+  .bar{height:6px;background:var(--soft);border-radius:6px;margin:12px 0 8px;overflow:hidden;} .bar i{display:block;height:100%;border-radius:6px;}
   .risk{font-size:12.5px;color:var(--muted);}
   .c-bot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
-  .px{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;}
-  .chg{font-size:12px;font-weight:700;} .chg.up{color:var(--buy);} .chg.dn{color:var(--avoid);}
-  /* modal */
-  .ov{position:fixed;inset:0;background:rgba(20,27,45,.42);backdrop-filter:blur(2px);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0;}
+  .px{font-size:13px;font-weight:700;} .chg{font-size:12px;font-weight:700;} .chg.up{color:var(--buy);} .chg.dn{color:var(--avoid);}
+  .ov{position:fixed;inset:0;background:rgba(10,12,18,.5);backdrop-filter:blur(2px);display:none;align-items:flex-end;justify-content:center;z-index:50;}
   .ov.on{display:flex;} @media(min-width:640px){.ov{align-items:center;padding:20px;}}
   .sheet{background:var(--card);width:100%;max-width:540px;max-height:92vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:22px 20px calc(24px + env(safe-area-inset-bottom));}
   @media(min-width:640px){.sheet{border-radius:20px;}}
   .m-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-  .m-tkr{font-size:22px;font-weight:800;letter-spacing:-.02em;} .m-nm{font-size:14px;color:var(--muted);margin-top:2px;}
-  .x{font-size:20px;color:var(--faint);background:#f0f1f5;border:0;border-radius:10px;width:34px;height:34px;flex:none;cursor:pointer;}
+  .m-tkr{font-size:22px;font-weight:800;} .m-nm{font-size:14px;color:var(--muted);margin-top:2px;}
+  .x{font-size:18px;color:var(--muted);background:var(--soft);border:0;border-radius:10px;width:34px;height:34px;flex:none;cursor:pointer;}
   .m-badge{font-size:15px;font-weight:800;border-radius:999px;padding:8px 16px;display:inline-block;margin:14px 0 4px;}
   .block{border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-top:10px;}
-  .block .k{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);}
-  .block .v{font-size:14.5px;margin-top:5px;color:var(--ink);} .block .v b{font-weight:700;}
+  .block .k{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);}
+  .block .v{font-size:14.5px;margin-top:5px;} .foryou{color:var(--accent);font-weight:600;margin-top:6px;font-size:13.5px;}
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
-  .stat{background:#f7f8fa;border-radius:12px;padding:10px;text-align:center;}
-  .stat .sv{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;} .stat .sk{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .stat{background:var(--soft);border-radius:12px;padding:10px;text-align:center;}
+  .stat .sv{font-size:17px;font-weight:800;} .stat .sk{font-size:10.5px;color:var(--muted);margin-top:2px;}
   .m-disc{font-size:11.5px;color:var(--faint);margin-top:14px;text-align:center;line-height:1.5;}
-  /* footer */
-  .foot{margin-top:30px;text-align:center;font-size:11.5px;color:var(--faint);line-height:1.7;}
-  .foot b{color:var(--muted);}
-  .empty{grid-column:1/-1;text-align:center;color:var(--faint);padding:40px 0;font-size:14px;}
+  .foot{margin-top:30px;text-align:center;font-size:11.5px;color:var(--faint);line-height:1.7;} .foot b{color:var(--muted);}
+  .empty,.err{grid-column:1/-1;text-align:center;color:var(--faint);padding:40px 0;font-size:14px;}
+  /* quiz */
+  .q{margin-top:6px;} .q h4{font-size:14px;font-weight:700;margin:16px 0 8px;}
+  .qopts{display:flex;flex-direction:column;gap:6px;}
+  .qopt{font-size:13.5px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--muted);}
+  .qopt.on{border-color:var(--accent);color:var(--ink);background:var(--soft);font-weight:600;}
+  .qgo{width:100%;margin-top:18px;font-size:15px;font-weight:800;color:var(--bg);background:var(--accent);border:0;border-radius:999px;padding:12px;cursor:pointer;}
+  .qgo:disabled{opacity:.4;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="brand">
     <div class="logo">SET<b>Scout</b></div>
-    <span class="pill">เพื่อการศึกษา · ไม่ใช่คำแนะนำการลงทุน</span>
+    <div class="tools">
+      <button class="tbtn" id="langBtn">EN</button>
+      <button class="tbtn" id="themeBtn">🌙</button>
+      <span class="pill" id="pill"></span>
+    </div>
   </div>
-  <h1>หุ้นไทยที่น่าศึกษาต่อ วันนี้</h1>
-  <div class="sub">ระบบช่วย<b>ค้นหา</b>หุ้นที่ควรไปศึกษาต่อ พร้อมบอก<b>ความเสี่ยง</b>อย่างตรงไปตรงมา · <span id="meta"></span></div>
+  <h1 id="h1"></h1>
+  <div class="sub" id="sub"></div>
+  <div class="meta" id="meta"></div>
 
-  <div class="filters" id="filters"></div>
-  <div class="grid" id="grid"></div>
-
-  <div class="foot">
-    <b>SETScout</b> · Explainable Investment Decision Support · SET50<br>
-    เพื่อการศึกษาและงานวิจัยเท่านั้น ไม่ใช่คำแนะนำซื้อ/ขาย · ผลย้อนหลังไม่รับประกันอนาคต · ปรึกษาผู้แนะนำการลงทุนที่มีใบอนุญาต
+  <div class="prow">
+    <div class="filters" id="filters"></div>
+    <button class="pbtn" id="pbtn"></button>
   </div>
+  <div class="pbanner" id="pbanner"></div>
+
+  <div class="grid" id="grid"><div class="empty">…</div></div>
+  <div class="foot" id="foot"></div>
 </div>
 
-<!-- detail sheet -->
-<div class="ov" id="ov">
-  <div class="sheet" id="sheet"></div>
-</div>
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
 
 <script>
 (function(){
-  // The real webapp fetches outputs/today.json (Contract C). Inlined here so the
-  // demo runs on any device with no server. Same shape as setscout/today.json.
-  const DATA = {"generated":"2026-07-31","universe":"SET50",
-    "disclaimer":"เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน · ไม่รับประกันผลตอบแทน",
-    "stocks":[
-    {"ticker":"ADVANC.BK","name":"Advanced Info Service","name_th":"เอไอเอส","sector":"ICT","score":0.81,"verdict":"BUY","risk_month_pct":-9,"max_weight":0.34,"p_win":0.61,"because":["กำไรสม่ำเสมอ ผันผวนต่ำ","ราคายืนเหนือค่าเฉลี่ยระยะยาว"],"last":285.0,"chg_pct":0.7},
-    {"ticker":"SCB.BK","name":"SCB X","name_th":"เอสซีบี เอกซ์","sector":"Banking","score":0.80,"verdict":"BUY","risk_month_pct":-12,"max_weight":0.29,"p_win":0.60,"because":["ราคาถูกเทียบมูลค่าพื้นฐาน","ปันผลสูง"],"last":118.0,"chg_pct":0.6},
-    {"ticker":"KBANK.BK","name":"Kasikornbank","name_th":"กสิกรไทย","sector":"Banking","score":0.79,"verdict":"BUY","risk_month_pct":-13,"max_weight":0.28,"p_win":0.59,"because":["ราคาถูกเทียบมูลค่าพื้นฐาน","กำไรแข็งแรง"],"last":152.0,"chg_pct":0.9},
-    {"ticker":"CPALL.BK","name":"CP All","name_th":"ซีพี ออลล์","sector":"Commerce","score":0.77,"verdict":"BUY","risk_month_pct":-11,"max_weight":0.30,"p_win":0.58,"because":["ยอดขายโตต่อเนื่อง","ราคาฟื้นเหนือค่าเฉลี่ย"],"last":58.0,"chg_pct":1.4},
-    {"ticker":"MINT.BK","name":"Minor International","name_th":"ไมเนอร์ อินเตอร์เนชั่นแนล","sector":"Tourism","score":0.75,"verdict":"BUY","risk_month_pct":-17,"max_weight":0.20,"p_win":0.56,"because":["ธุรกิจท่องเที่ยวฟื้นตัว","ราคายืนเหนือค่าเฉลี่ย"],"last":29.5,"chg_pct":1.7},
-    {"ticker":"DELTA.BK","name":"Delta Electronics","name_th":"เดลต้า อีเลคโทรนิคส์","sector":"Electronics","score":0.74,"verdict":"WAIT","risk_month_pct":-18,"max_weight":0.19,"p_win":0.53,"because":["ราคายืนเหนือค่าเฉลี่ยระยะยาว","แต่เพิ่งวิ่งแรง เสี่ยงย่อตัว"],"last":82.0,"chg_pct":1.1},
-    {"ticker":"BDMS.BK","name":"Bangkok Dusit Medical","name_th":"กรุงเทพดุสิตเวชการ","sector":"Healthcare","score":0.68,"verdict":"WAIT","risk_month_pct":-10,"max_weight":0.31,"p_win":0.54,"because":["ธุรกิจมั่นคง ผันผวนต่ำ","แต่โมเมนตัมยังไม่มา"],"last":26.0,"chg_pct":0.2},
-    {"ticker":"PTT.BK","name":"PTT","name_th":"ปตท.","sector":"Energy","score":0.66,"verdict":"WAIT","risk_month_pct":-12,"max_weight":0.27,"p_win":0.52,"because":["ปันผลดี","แต่โมเมนตัมยังนิ่ง"],"last":33.5,"chg_pct":-0.3},
-    {"ticker":"GULF.BK","name":"Gulf Development","name_th":"กัลฟ์ ดีเวลลอปเมนท์","sector":"Utilities","score":0.63,"verdict":"WAIT","risk_month_pct":-15,"max_weight":0.24,"p_win":0.51,"because":["เติบโตดี","แต่ราคาแพงเทียบมูลค่า"],"last":48.0,"chg_pct":0.5},
-    {"ticker":"SCC.BK","name":"Siam Cement","name_th":"ปูนซิเมนต์ไทย","sector":"Materials","score":0.44,"verdict":"AVOID","risk_month_pct":-19,"max_weight":0.13,"p_win":0.47,"because":["อุปสงค์อ่อนแอ","โมเมนตัมเป็นขาลง"],"last":178.0,"chg_pct":-1.1},
-    {"ticker":"AOT.BK","name":"Airports of Thailand","name_th":"ท่าอากาศยานไทย","sector":"Transportation","score":0.41,"verdict":"AVOID","risk_month_pct":-22,"max_weight":0.11,"p_win":0.46,"because":["ราคาต่ำกว่าค่าเฉลี่ยระยะยาว","โมเมนตัมอ่อนแรง"],"last":38.5,"chg_pct":-1.8},
-    {"ticker":"CPF.BK","name":"CP Foods","name_th":"ซีพีเอฟ","sector":"Food","score":0.38,"verdict":"AVOID","risk_month_pct":-24,"max_weight":0.10,"p_win":0.44,"because":["กำไรผันผวน หนี้สูง","ราคาต่ำกว่าค่าเฉลี่ย"],"last":21.0,"chg_pct":-0.9}
-  ]};
-
-  // ── the "translator": raw numbers → 4 plain Thai sentences (templates, no LLM) ──
-  const V = {
-    BUY:  {th:"น่าสนใจ",        emoji:"✅", cls:"buy"},
-    WAIT: {th:"รอก่อน",         emoji:"🟡", cls:"wait"},
-    AVOID:{th:"ยังไม่ใช่ตอนนี้", emoji:"🔴", cls:"avoid"},
-  };
-  const col = {buy:'var(--buy)',wait:'var(--wait)',avoid:'var(--avoid)'};
-  const bg  = {buy:'var(--buyb)',wait:'var(--waitb)',avoid:'var(--avoidb)'};
-  const riskSentence = s => `เดือนแย่ ๆ ราคาอาจลงราว <b>${Math.abs(s.risk_month_pct)}%</b> · จึงควรใส่ไม่เกิน <b>${Math.round(s.max_weight*100)} บาท</b> ต่อทุก 100 บาท`;
-  const becauseSentence = s => 'เพราะ' + s.because.join(' และ ');
-  const trustLabel = s => `ทดสอบกับข้อมูลย้อนหลัง 10 ปี · เวลาเราบอก <b>${Math.round(s.p_win*100)}%</b> มักเกิดขึ้นจริงราว ๆ นั้น · เราไม่รับประกันกำไร บอกแค่ความเสี่ยง`;
-
   const $=s=>document.querySelector(s);
-  let filter='ALL';
-  const stocks = DATA.stocks.slice().sort((a,b)=>b.score-a.score);
+  const REASON = {
+    "value:pos":{th:"ราคาถูกเทียบมูลค่าพื้นฐาน",en:"cheap vs fundamentals"},"value:neg":{th:"ราคาแพงเทียบมูลค่า",en:"expensive vs fundamentals"},
+    "quality:pos":{th:"กำไรแข็งแรง ผันผวนต่ำ",en:"strong, stable earnings"},"quality:neg":{th:"กำไรผันผวน",en:"volatile earnings"},
+    "momentum:pos":{th:"ราคายืนเหนือค่าเฉลี่ยระยะยาว",en:"price above its long average"},"momentum:neg":{th:"โมเมนตัมยังเป็นขาลง",en:"momentum still weak"},
+    "growth:pos":{th:"ธุรกิจเติบโตต่อเนื่อง",en:"steady business growth"},"growth:neg":{th:"การเติบโตชะลอ",en:"slowing growth"},
+    "health:pos":{th:"งบการเงินแข็งแรง หนี้ต่ำ",en:"solid balance sheet, low debt"},"health:neg":{th:"หนี้สูง งบเปราะ",en:"high debt, fragile"},
+  };
+  const PROFILES = { cons:{riskAv:0.6,sizeMult:0.6}, bal:{riskAv:0.3,sizeMult:1.0}, agg:{riskAv:0.1,sizeMult:1.35} };
+  const T = {
+   th:{ lang:"EN", title:"หุ้นไทยที่น่าศึกษาต่อ วันนี้",
+     sub:'ระบบช่วย<b>ค้นหา</b>หุ้นที่ควรไปศึกษาต่อ พร้อมบอก<b>ความเสี่ยง</b>อย่างตรงไปตรงมา',
+     pill:"เพื่อการศึกษา · ไม่ใช่คำแนะนำการลงทุน",
+     meta:(d,u,n)=>`ข้อมูลวันที่ ${d} · จาก ${u} · ${n} หุ้น`,
+     f:{ALL:"ทั้งหมด",BUY:"✅ น่าสนใจ",WAIT:"🟡 รอก่อน",AVOID:"🔴 ยังไม่ใช่"},
+     v:{BUY:"น่าสนใจ",WAIT:"รอก่อน",AVOID:"ยังไม่ใช่ตอนนี้"},
+     riskCard:(r,w)=>`เสี่ยง <b>${r}%</b> · สูงสุด ${w} บาท/100`, empty:"ไม่มีหุ้นในกลุ่มนี้",
+     dRisk:"ความเสี่ยง (เป็นบาท)",dWhy:"เพราะอะไร",dTrust:"เชื่อได้แค่ไหน",sScore:"คะแนนรวม /100",sWin:"โอกาสเข้าทาง",sLast:"ราคาล่าสุด",
+     riskS:(r,w)=>`เดือนแย่ ๆ ราคาอาจลงราว <b>${r}%</b> · จึงควรใส่ไม่เกิน <b>${w} บาท</b> ต่อทุก 100 บาท`,
+     bPfx:"เพราะ",bJoin:" และ ", trust:p=>`ทดสอบกับข้อมูลย้อนหลัง 10 ปี · เวลาเราบอก <b>${p}%</b> มักเกิดขึ้นจริงราว ๆ นั้น · ไม่รับประกันกำไร บอกแค่ความเสี่ยง`,
+     forYou:(l,w)=>`สำหรับคุณ (${l}): ควรใส่ไม่เกิน <b>${w} บาท</b> ต่อ 100`,
+     pbtn:"ปรับให้เหมาะกับฉัน", banner:l=>`ปรับรายการให้เหมาะกับความเสี่ยงของคุณแล้ว · <b>${l}</b>`, redo:"ทำใหม่", clear:"ล้าง",
+     disc:'SETScout ชี้ให้ไป “ศึกษาต่อ” ไม่ได้บอกให้ซื้อ/ขาย',
+     foot:'<b>SETScout</b> · Explainable Investment Decision Support · SET100<br>เพื่อการศึกษาและงานวิจัยเท่านั้น ไม่ใช่คำแนะนำซื้อ/ขาย · ผลย้อนหลังไม่รับประกันอนาคต · ปรึกษาผู้แนะนำการลงทุนที่มีใบอนุญาต',
+     pTitle:"ปรับให้เหมาะกับคุณ", pSub:"ตอบ 5 ข้อ เราจะจัดอันดับและปรับขนาดการลงทุนให้เหมาะกับความเสี่ยงที่คุณรับได้", see:"ดูผล",
+     prof:{cons:"สายระมัดระวัง",bal:"สายสมดุล",agg:"สายบุก"},
+     quiz:[
+      ["ถ้าหุ้นที่ถือลง 20% ใน 1 เดือน คุณจะ:",[["ซื้อเพิ่ม",2],["ถือไว้",1],["ขายบางส่วน",0],["ขายทั้งหมด",-1]]],
+      ["เงินก้อนนี้ต้องใช้เมื่อไร:",[["ภายใน 1 ปี",-1],["1–5 ปี",1],["5 ปีขึ้นไป",2]]],
+      ["อะไรสำคัญกว่ากัน:",[["ปกป้องเงินต้น",-1],["สมดุล",1],["โตเร็ว",2]]],
+      ["ประสบการณ์ลงทุน:",[["มือใหม่",-1],["พอมีบ้าง",1],["ช่ำชอง",2]]],
+      ["ลงหุ้นได้กี่ % ของเงินออม:",[["ไม่เกิน 10%",-1],["10–30%",1],["เกิน 30%",2]]],
+     ] },
+   en:{ lang:"ไทย", title:"Thai stocks worth a look, today",
+     sub:'Finds Thai stocks worth <b>researching</b> — and tells you the <b>risk</b>, honestly.',
+     pill:"Educational · not investment advice",
+     meta:(d,u,n)=>`Data ${d} · from ${u} · ${n} stocks`,
+     f:{ALL:"All",BUY:"✅ Worth a look",WAIT:"🟡 Wait",AVOID:"🔴 Not now"},
+     v:{BUY:"Worth a look",WAIT:"Wait",AVOID:"Not now"},
+     riskCard:(r,w)=>`risk <b>${r}%</b> · max ฿${w}/100`, empty:"No stocks in this group",
+     dRisk:"Risk (in baht)",dWhy:"Why",dTrust:"How much to trust",sScore:"Score /100",sWin:"Hit rate",sLast:"Last price",
+     riskS:(r,w)=>`A normal-bad month could drop ~<b>${r}%</b> · so put at most <b>฿${w}</b> of every 100`,
+     bPfx:"Because ",bJoin:" and ", trust:p=>`Tested on 10 yrs of data · when we say <b>${p}%</b> it happened ~that often · we don't promise profit, we tell you risk`,
+     forYou:(l,w)=>`For you (${l}): put at most <b>฿${w}</b> per 100`,
+     pbtn:"Personalize", banner:l=>`Ranked & sized to your risk comfort · <b>${l}</b>`, redo:"Redo", clear:"Clear",
+     disc:'SETScout points you to “research,” it does not tell you to buy/sell',
+     foot:'<b>SETScout</b> · Explainable Investment Decision Support · SET100<br>For education & research only · not a buy/sell recommendation · past performance ≠ future results · consult a licensed adviser',
+     pTitle:"Personalize to you", pSub:"5 quick questions — we rank & size the list to the risk you can handle.", see:"See results",
+     prof:{cons:"Conservative",bal:"Balanced",agg:"Aggressive"},
+     quiz:[
+      ["A stock you own drops 20% in a month, you:",[["Buy more",2],["Hold",1],["Sell some",0],["Sell all",-1]]],
+      ["When do you need this money:",[["Within 1 yr",-1],["1–5 yrs",1],["5+ yrs",2]]],
+      ["What matters more:",[["Protect capital",-1],["Balanced",1],["Grow fast",2]]],
+      ["Experience:",[["Beginner",-1],["Some",1],["Experienced",2]]],
+      ["Max % of savings in stocks:",[["Under 10%",-1],["10–30%",1],["Over 30%",2]]],
+     ] },
+  };
 
-  $('#meta').textContent = `ข้อมูลวันที่ ${DATA.generated} · จาก ${DATA.universe} · ${stocks.length} หุ้น`;
+  let lang = localStorage.getItem('ss_lang')||'th';
+  let theme = localStorage.getItem('ss_theme')||'light';
+  let risk = null; try{risk=JSON.parse(localStorage.getItem('ss_risk'))}catch{}
+  let filter='ALL', DATA=null;
+  const tr=()=>T[lang];
 
-  // filters
-  const FILTERS=[['ALL','ทั้งหมด'],['BUY','✅ น่าสนใจ'],['WAIT','🟡 รอก่อน'],['AVOID','🔴 ยังไม่ใช่']];
-  $('#filters').innerHTML = FILTERS.map(([k,l])=>`<button class="chip${k===filter?' on':''}" data-f="${k}">${l}</button>`).join('');
-  $('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filter=b.dataset.f;
-    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.f===filter));render();});
+  function applyTheme(){ document.documentElement.setAttribute('data-theme',theme); $('#themeBtn').textContent=theme==='light'?'🌙':'☀️'; }
+  function paintStatic(){
+    document.documentElement.lang=lang;
+    $('#langBtn').textContent=tr().lang; $('#pill').textContent=tr().pill;
+    $('#h1').textContent=tr().title; $('#sub').innerHTML=tr().sub; $('#pbtn').textContent=tr().pbtn; $('#foot').innerHTML=tr().foot;
+    if(DATA) $('#meta').textContent=tr().meta(DATA.generated,DATA.universe,DATA.stocks.length);
+    $('#filters').innerHTML=['ALL','BUY','WAIT','AVOID'].map(k=>`<button class="chip${k===filter?' on':''}" data-f="${k}">${tr().f[k]}</button>`).join('');
+  }
+  const vcls={BUY:'buy',WAIT:'wait',AVOID:'avoid'}, vemo={BUY:'✅',WAIT:'🟡',AVOID:'🔴'};
+  const col={buy:'var(--buy)',wait:'var(--wait)',avoid:'var(--avoid)'}, bgc={buy:'var(--buyb)',wait:'var(--waitb)',avoid:'var(--avoidb)'};
+  const pweight=s=>{ let w=s.max_weight*(risk?PROFILES[risk.key].sizeMult:1); return Math.round(Math.max(0.05,Math.min(0.6,w))*100); };
+  const pscore=s=> risk ? s.score - PROFILES[risk.key].riskAv*(Math.abs(s.risk_month_pct)/100) : s.score;
 
   function render(){
-    const list = stocks.filter(s=>filter==='ALL'||s.verdict===filter);
-    if(!list.length){ $('#grid').innerHTML='<div class="empty">ไม่มีหุ้นในกลุ่มนี้วันนี้</div>'; return; }
-    $('#grid').innerHTML = list.map(s=>{
-      const v=V[s.verdict], up=s.chg_pct>=0;
-      return `<div class="card" data-t="${s.ticker}">
-        <div class="c-top"><div><span class="rank">#${stocks.indexOf(s)+1}</span> <span class="tkr">${s.ticker.replace('.BK','')}</span></div>
-          <span class="badge ${v.cls}">${v.emoji} ${v.th}</span></div>
+    if(!DATA)return;
+    let list=DATA.stocks.filter(s=>filter==='ALL'||s.verdict===filter).sort((a,b)=>pscore(b)-pscore(a));
+    // personalization banner
+    const pb=$('#pbanner');
+    if(risk){ pb.classList.add('on'); pb.innerHTML=`<span>${tr().banner(tr().prof[risk.key])}</span><span><a id="redoQ">${tr().redo}</a><a id="clrQ">${tr().clear}</a></span>`;
+      $('#redoQ').onclick=openQuiz; $('#clrQ').onclick=()=>{risk=null;localStorage.removeItem('ss_risk');render();}; }
+    else pb.classList.remove('on');
+    if(!list.length){ $('#grid').innerHTML=`<div class="empty">${tr().empty}</div>`; return; }
+    $('#grid').innerHTML=list.map((s,i)=>{const c=vcls[s.verdict],up=s.chg_pct>=0;
+      return `<div class="card" data-t="${s.ticker}"><div class="c-top"><div><span class="rank">#${i+1}</span> <span class="tkr">${s.ticker.replace('.BK','')}</span></div>
+        <span class="badge ${c}">${vemo[s.verdict]} ${tr().v[s.verdict]}</span></div>
         <div class="nm">${s.name_th} <span class="nm-en">· ${s.sector}</span></div>
-        <div class="bar"><i style="width:${Math.round(s.score*100)}%;background:${col[v.cls]}"></i></div>
-        <div class="risk">เสี่ยง <b>${Math.abs(s.risk_month_pct)}%</b> · สูงสุด ${Math.round(s.max_weight*100)} บาท/100</div>
+        <div class="bar"><i style="width:${Math.round(s.score*100)}%;background:${col[c]}"></i></div>
+        <div class="risk">${tr().riskCard(Math.abs(s.risk_month_pct),pweight(s))}</div>
         <div class="c-bot"><span class="px">฿${s.last.toLocaleString(undefined,{minimumFractionDigits:2})}</span>
-          <span class="chg ${up?'up':'dn'}">${up?'▲':'▼'} ${Math.abs(s.chg_pct).toFixed(1)}%</span></div>
-      </div>`;
+        <span class="chg ${up?'up':'dn'}">${up?'▲':'▼'} ${Math.abs(s.chg_pct).toFixed(1)}%</span></div></div>`;
     }).join('');
   }
-  $('#grid').addEventListener('click',e=>{const c=e.target.closest('[data-t]');if(c)openSheet(c.dataset.t);});
-
-  function openSheet(t){
-    const s=stocks.find(x=>x.ticker===t), v=V[s.verdict];
-    $('#sheet').innerHTML = `
-      <div class="m-top">
-        <div><div class="m-tkr">${s.ticker.replace('.BK','')}</div><div class="m-nm">${s.name_th} · ${s.name} · ${s.sector}</div></div>
-        <button class="x" id="xbtn">✕</button>
-      </div>
-      <div class="m-badge" style="color:${col[v.cls]};background:${bg[v.cls]}">${v.emoji} ${v.th}</div>
-      <div class="block"><div class="k">ความเสี่ยง (เป็นบาท)</div><div class="v">${riskSentence(s)}</div></div>
-      <div class="block"><div class="k">เพราะอะไร</div><div class="v">${becauseSentence(s)}</div></div>
-      <div class="block"><div class="k">เชื่อได้แค่ไหน</div><div class="v">${trustLabel(s)}</div></div>
-      <div class="stats">
-        <div class="stat"><div class="sv">${Math.round(s.score*100)}</div><div class="sk">คะแนนรวม /100</div></div>
-        <div class="stat"><div class="sv">${Math.round(s.p_win*100)}%</div><div class="sk">โอกาสเข้าทาง</div></div>
-        <div class="stat"><div class="sv">฿${s.last.toLocaleString()}</div><div class="sk">ราคาล่าสุด</div></div>
-      </div>
-      <div class="m-disc">${DATA.disclaimer}<br>SETScout ชี้ให้ไป “ศึกษาต่อ” ไม่ได้บอกให้ซื้อ/ขาย</div>`;
-    $('#ov').classList.add('on'); document.body.style.overflow='hidden';
-    $('#xbtn').addEventListener('click',close);
+  const becauseS=s=>tr().bPfx+s.because.map(c=>REASON[c][lang]).join(tr().bJoin);
+  function openSheet(t){const s=DATA.stocks.find(x=>x.ticker===t),c=vcls[s.verdict];
+    $('#sheet').innerHTML=`<div class="m-top"><div><div class="m-tkr">${s.ticker.replace('.BK','')}</div><div class="m-nm">${s.name_th} · ${s.name} · ${s.sector}</div></div><button class="x" id="xb">✕</button></div>
+      <div class="m-badge" style="color:${col[c]};background:${bgc[c]}">${vemo[s.verdict]} ${tr().v[s.verdict]}</div>
+      <div class="block"><div class="k">${tr().dRisk}</div><div class="v">${tr().riskS(Math.abs(s.risk_month_pct),pweight(s))}</div>${risk?`<div class="foryou">${tr().forYou(tr().prof[risk.key],pweight(s))}</div>`:''}</div>
+      <div class="block"><div class="k">${tr().dWhy}</div><div class="v">${becauseS(s)}</div></div>
+      <div class="block"><div class="k">${tr().dTrust}</div><div class="v">${tr().trust(Math.round(s.p_win*100))}</div></div>
+      <div class="stats"><div class="stat"><div class="sv">${Math.round(s.score*100)}</div><div class="sk">${tr().sScore}</div></div>
+        <div class="stat"><div class="sv">${Math.round(s.p_win*100)}%</div><div class="sk">${tr().sWin}</div></div>
+        <div class="stat"><div class="sv">฿${s.last.toLocaleString()}</div><div class="sk">${tr().sLast}</div></div></div>
+      <div class="m-disc">${DATA.disclaimer}<br>${tr().disc}</div>`;
+    $('#ov').classList.add('on');document.body.style.overflow='hidden';$('#xb').onclick=close;
   }
-  function close(){ $('#ov').classList.remove('on'); document.body.style.overflow=''; }
-  $('#ov').addEventListener('click',e=>{ if(e.target===$('#ov')) close(); });
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+  function close(){$('#ov').classList.remove('on');document.body.style.overflow='';}
 
-  render();
+  // quiz
+  function openQuiz(){
+    const ans=new Array(tr().quiz.length).fill(null);
+    $('#sheet').innerHTML=`<div class="m-top"><div><div class="m-tkr" style="font-size:19px">${tr().pTitle}</div><div class="m-nm">${tr().pSub}</div></div><button class="x" id="xb">✕</button></div>
+      <div class="q" id="qbody">${tr().quiz.map((q,qi)=>`<h4>${qi+1}. ${q[0]}</h4><div class="qopts">${q[1].map((o,oi)=>`<div class="qopt" data-q="${qi}" data-o="${oi}" data-p="${o[1]}">${o[0]}</div>`).join('')}</div>`).join('')}
+      <button class="qgo" id="qgo" disabled>${tr().see}</button></div>`;
+    $('#ov').classList.add('on');document.body.style.overflow='hidden';$('#xb').onclick=close;
+    $('#qbody').addEventListener('click',e=>{const o=e.target.closest('.qopt');if(!o)return;const qi=+o.dataset.q;
+      document.querySelectorAll(`.qopt[data-q="${qi}"]`).forEach(x=>x.classList.remove('on'));o.classList.add('on');ans[qi]=+o.dataset.p;
+      $('#qgo').disabled=ans.includes(null);});
+    $('#qgo').onclick=()=>{const sum=ans.reduce((a,b)=>a+b,0);const key=sum<=2?'cons':sum>=7?'agg':'bal';
+      risk={key,sum};localStorage.setItem('ss_risk',JSON.stringify(risk));close();render();};
+  }
+
+  // events
+  $('#themeBtn').onclick=()=>{theme=theme==='light'?'dark':'light';localStorage.setItem('ss_theme',theme);applyTheme();};
+  $('#langBtn').onclick=()=>{lang=lang==='th'?'en':'th';localStorage.setItem('ss_lang',lang);paintStatic();render();};
+  $('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filter=b.dataset.f;paintStatic();render();});
+  $('#pbtn').onclick=openQuiz;
+  $('#grid').addEventListener('click',e=>{const c=e.target.closest('[data-t]');if(c)openSheet(c.dataset.t);});
+  $('#ov').addEventListener('click',e=>{if(e.target===$('#ov'))close();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+
+  applyTheme(); paintStatic();
+  fetch('today.json').then(r=>r.json()).then(d=>{DATA=d;paintStatic();render();})
+    .catch(()=>{$('#grid').innerHTML='<div class="err">Could not load today.json — open via the hosted link.</div>';});
 })();
 </script>
 </body>
