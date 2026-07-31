@@ -1,0 +1,19 @@
+{
+  "generated": "2026-07-31",
+  "universe": "SET50",
+  "disclaimer": "เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน · ไม่รับประกันผลตอบแทน",
+  "stocks": [
+    {"ticker":"ADVANC.BK","name":"Advanced Info Service","name_th":"เอไอเอส","sector":"ICT","score":0.81,"verdict":"BUY","risk_month_pct":-9,"max_weight":0.34,"p_win":0.61,"because":["กำไรสม่ำเสมอ ผันผวนต่ำ","ราคายืนเหนือค่าเฉลี่ยระยะยาว"],"last":285.0,"chg_pct":0.7},
+    {"ticker":"SCB.BK","name":"SCB X","name_th":"เอสซีบี เอกซ์","sector":"Banking","score":0.80,"verdict":"BUY","risk_month_pct":-12,"max_weight":0.29,"p_win":0.60,"because":["ราคาถูกเทียบมูลค่าพื้นฐาน","ปันผลสูง"],"last":118.0,"chg_pct":0.6},
+    {"ticker":"KBANK.BK","name":"Kasikornbank","name_th":"กสิกรไทย","sector":"Banking","score":0.79,"verdict":"BUY","risk_month_pct":-13,"max_weight":0.28,"p_win":0.59,"because":["ราคาถูกเทียบมูลค่าพื้นฐาน","กำไรแข็งแรง"],"last":152.0,"chg_pct":0.9},
+    {"ticker":"CPALL.BK","name":"CP All","name_th":"ซีพี ออลล์","sector":"Commerce","score":0.77,"verdict":"BUY","risk_month_pct":-11,"max_weight":0.30,"p_win":0.58,"because":["ยอดขายโตต่อเนื่อง","ราคาฟื้นเหนือค่าเฉลี่ย"],"last":58.0,"chg_pct":1.4},
+    {"ticker":"MINT.BK","name":"Minor International","name_th":"ไมเนอร์ อินเตอร์เนชั่นแนล","sector":"Tourism","score":0.75,"verdict":"BUY","risk_month_pct":-17,"max_weight":0.20,"p_win":0.56,"because":["ธุรกิจท่องเที่ยวฟื้นตัว","ราคายืนเหนือค่าเฉลี่ย"],"last":29.5,"chg_pct":1.7},
+    {"ticker":"DELTA.BK","name":"Delta Electronics","name_th":"เดลต้า อีเลคโทรนิคส์","sector":"Electronics","score":0.74,"verdict":"WAIT","risk_month_pct":-18,"max_weight":0.19,"p_win":0.53,"because":["ราคายืนเหนือค่าเฉลี่ยระยะยาว","แต่เพิ่งวิ่งแรง เสี่ยงย่อตัว"],"last":82.0,"chg_pct":1.1},
+    {"ticker":"BDMS.BK","name":"Bangkok Dusit Medical","name_th":"กรุงเทพดุสิตเวชการ","sector":"Healthcare","score":0.68,"verdict":"WAIT","risk_month_pct":-10,"max_weight":0.31,"p_win":0.54,"because":["ธุรกิจมั่นคง ผันผวนต่ำ","แต่โมเมนตัมยังไม่มา"],"last":26.0,"chg_pct":0.2},
+    {"ticker":"PTT.BK","name":"PTT","name_th":"ปตท.","sector":"Energy","score":0.66,"verdict":"WAIT","risk_month_pct":-12,"max_weight":0.27,"p_win":0.52,"because":["ปันผลดี","แต่โมเมนตัมยังนิ่ง"],"last":33.5,"chg_pct":-0.3},
+    {"ticker":"GULF.BK","name":"Gulf Development","name_th":"กัลฟ์ ดีเวลลอปเมนท์","sector":"Utilities","score":0.63,"verdict":"WAIT","risk_month_pct":-15,"max_weight":0.24,"p_win":0.51,"because":["เติบโตดี","แต่ราคาแพงเทียบมูลค่า"],"last":48.0,"chg_pct":0.5},
+    {"ticker":"SCC.BK","name":"Siam Cement","name_th":"ปูนซิเมนต์ไทย","sector":"Materials","score":0.44,"verdict":"AVOID","risk_month_pct":-19,"max_weight":0.13,"p_win":0.47,"because":["อุปสงค์อ่อนแอ","โมเมนตัมเป็นขาลง"],"last":178.0,"chg_pct":-1.1},
+    {"ticker":"AOT.BK","name":"Airports of Thailand","name_th":"ท่าอากาศยานไทย","sector":"Transportation","score":0.41,"verdict":"AVOID","risk_month_pct":-22,"max_weight":0.11,"p_win":0.46,"because":["ราคาต่ำกว่าค่าเฉลี่ยระยะยาว","โมเมนตัมอ่อนแรง"],"last":38.5,"chg_pct":-1.8},
+    {"ticker":"CPF.BK","name":"CP Foods","name_th":"ซีพีเอฟ","sector":"Food","score":0.38,"verdict":"AVOID","risk_month_pct":-24,"max_weight":0.10,"p_win":0.44,"because":["กำไรผันผวน หนี้สูง","ราคาต่ำกว่าค่าเฉลี่ย"],"last":21.0,"chg_pct":-0.9}
+  ]
+}

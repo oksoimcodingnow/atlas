@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SETScout · หุ้นไทยที่น่าศึกษาต่อวันนี้</title>
+<meta name="theme-color" content="#f6f7f9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  :root{
+    --bg:#f6f7f9;--card:#fff;--ink:#141b2d;--muted:#6b7280;--faint:#9aa1ac;--line:#e7e9ef;--accent:#4f46e5;
+    --buy:#0f9d6b;--buyb:#e7f6ef;--wait:#c98a00;--waitb:#fdf4e3;--avoid:#d64545;--avoidb:#fbecec;
+    --sans:'Inter','Noto Sans Thai',-apple-system,sans-serif;--mono:'Inter',monospace;
+  }
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.45;}
+  body{padding:max(18px,env(safe-area-inset-top)) 16px 60px;}
+  .wrap{max-width:1080px;margin:0 auto;}
+  /* header */
+  .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .logo{font-size:20px;font-weight:800;letter-spacing:-.02em;} .logo b{color:var(--accent);}
+  .pill{font-size:11px;font-weight:600;color:#7a5c00;background:#fdf4e3;border:1px solid #f0e2bb;border-radius:999px;padding:4px 10px;}
+  h1{font-size:clamp(20px,4.5vw,28px);font-weight:800;letter-spacing:-.02em;margin:16px 0 4px;}
+  .sub{color:var(--muted);font-size:14px;}
+  .sub b{color:var(--ink);font-weight:600;}
+  /* filters */
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 14px;}
+  .chip{font-size:13px;font-weight:600;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;transition:.12s;}
+  .chip:hover{border-color:#cfd3dc;} .chip.on{color:#fff;background:var(--ink);border-color:var(--ink);}
+  /* grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:.14s;position:relative;}
+  .card:hover{border-color:#cfd3dc;transform:translateY(-2px);box-shadow:0 10px 26px rgba(20,27,45,.06);}
+  .c-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .rank{font-size:11px;font-weight:700;color:var(--faint);font-variant-numeric:tabular-nums;}
+  .tkr{font-size:15px;font-weight:800;letter-spacing:-.01em;}
+  .badge{font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap;}
+  .badge.buy{color:var(--buy);background:var(--buyb);} .badge.wait{color:var(--wait);background:var(--waitb);} .badge.avoid{color:var(--avoid);background:var(--avoidb);}
+  .nm{font-size:14px;font-weight:700;margin-top:9px;} .nm-en{font-size:12px;color:var(--faint);font-weight:500;}
+  .bar{height:6px;background:#eef0f4;border-radius:6px;margin:12px 0 8px;overflow:hidden;}
+  .bar i{display:block;height:100%;border-radius:6px;}
+  .risk{font-size:12.5px;color:var(--muted);}
+  .c-bot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+  .px{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;}
+  .chg{font-size:12px;font-weight:700;} .chg.up{color:var(--buy);} .chg.dn{color:var(--avoid);}
+  /* modal */
+  .ov{position:fixed;inset:0;background:rgba(20,27,45,.42);backdrop-filter:blur(2px);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0;}
+  .ov.on{display:flex;} @media(min-width:640px){.ov{align-items:center;padding:20px;}}
+  .sheet{background:var(--card);width:100%;max-width:540px;max-height:92vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:22px 20px calc(24px + env(safe-area-inset-bottom));}
+  @media(min-width:640px){.sheet{border-radius:20px;}}
+  .m-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .m-tkr{font-size:22px;font-weight:800;letter-spacing:-.02em;} .m-nm{font-size:14px;color:var(--muted);margin-top:2px;}
+  .x{font-size:20px;color:var(--faint);background:#f0f1f5;border:0;border-radius:10px;width:34px;height:34px;flex:none;cursor:pointer;}
+  .m-badge{font-size:15px;font-weight:800;border-radius:999px;padding:8px 16px;display:inline-block;margin:14px 0 4px;}
+  .block{border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-top:10px;}
+  .block .k{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);}
+  .block .v{font-size:14.5px;margin-top:5px;color:var(--ink);} .block .v b{font-weight:700;}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+  .stat{background:#f7f8fa;border-radius:12px;padding:10px;text-align:center;}
+  .stat .sv{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;} .stat .sk{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .m-disc{font-size:11.5px;color:var(--faint);margin-top:14px;text-align:center;line-height:1.5;}
+  /* footer */
+  .foot{margin-top:30px;text-align:center;font-size:11.5px;color:var(--faint);line-height:1.7;}
+  .foot b{color:var(--muted);}
+  .empty{grid-column:1/-1;text-align:center;color:var(--faint);padding:40px 0;font-size:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <div class="logo">SET<b>Scout</b></div>
+    <span class="pill">เพื่อการศึกษา · ไม่ใช่คำแนะนำการลงทุน</span>
+  </div>
+  <h1>หุ้นไทยที่น่าศึกษาต่อ วันนี้</h1>
+  <div class="sub">ระบบช่วย<b>ค้นหา</b>หุ้นที่ควรไปศึกษาต่อ พร้อมบอก<b>ความเสี่ยง</b>อย่างตรงไปตรงมา · <span id="meta"></span></div>
+
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="foot">
+    <b>SETScout</b> · Explainable Investment Decision Support · SET50<br>
+    เพื่อการศึกษาและงานวิจัยเท่านั้น ไม่ใช่คำแนะนำซื้อ/ขาย · ผลย้อนหลังไม่รับประกันอนาคต · ปรึกษาผู้แนะนำการลงทุนที่มีใบอนุญาต
+  </div>
+</div>
+
+<!-- detail sheet -->
+<div class="ov" id="ov">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+(function(){
+  // The real webapp fetches outputs/today.json (Contract C). Inlined here so the
+  // demo runs on any device with no server. Same shape as setscout/today.json.
+  const DATA = {"generated":"2026-07-31","universe":"SET50",
+    "disclaimer":"เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน · ไม่รับประกันผลตอบแทน",
+    "stocks":[
+    {"ticker":"ADVANC.BK","name":"Advanced Info Service","name_th":"เอไอเอส","sector":"ICT","score":0.81,"verdict":"BUY","risk_month_pct":-9,"max_weight":0.34,"p_win":0.61,"because":["กำไรสม่ำเสมอ ผันผวนต่ำ","ราคายืนเหนือค่าเฉลี่ยระยะยาว"],"last":285.0,"chg_pct":0.7},
+    {"ticker":"SCB.BK","name":"SCB X","name_th":"เอสซีบี เอกซ์","sector":"Banking","score":0.80,"verdict":"BUY","risk_month_pct":-12,"max_weight":0.29,"p_win":0.60,"because":["ราคาถูกเทียบมูลค่าพื้นฐาน","ปันผลสูง"],"last":118.0,"chg_pct":0.6},
+    {"ticker":"KBANK.BK","name":"Kasikornbank","name_th":"กสิกรไทย","sector":"Banking","score":0.79,"verdict":"BUY","risk_month_pct":-13,"max_weight":0.28,"p_win":0.59,"because":["ราคาถูกเทียบมูลค่าพื้นฐาน","กำไรแข็งแรง"],"last":152.0,"chg_pct":0.9},
+    {"ticker":"CPALL.BK","name":"CP All","name_th":"ซีพี ออลล์","sector":"Commerce","score":0.77,"verdict":"BUY","risk_month_pct":-11,"max_weight":0.30,"p_win":0.58,"because":["ยอดขายโตต่อเนื่อง","ราคาฟื้นเหนือค่าเฉลี่ย"],"last":58.0,"chg_pct":1.4},
+    {"ticker":"MINT.BK","name":"Minor International","name_th":"ไมเนอร์ อินเตอร์เนชั่นแนล","sector":"Tourism","score":0.75,"verdict":"BUY","risk_month_pct":-17,"max_weight":0.20,"p_win":0.56,"because":["ธุรกิจท่องเที่ยวฟื้นตัว","ราคายืนเหนือค่าเฉลี่ย"],"last":29.5,"chg_pct":1.7},
+    {"ticker":"DELTA.BK","name":"Delta Electronics","name_th":"เดลต้า อีเลคโทรนิคส์","sector":"Electronics","score":0.74,"verdict":"WAIT","risk_month_pct":-18,"max_weight":0.19,"p_win":0.53,"because":["ราคายืนเหนือค่าเฉลี่ยระยะยาว","แต่เพิ่งวิ่งแรง เสี่ยงย่อตัว"],"last":82.0,"chg_pct":1.1},
+    {"ticker":"BDMS.BK","name":"Bangkok Dusit Medical","name_th":"กรุงเทพดุสิตเวชการ","sector":"Healthcare","score":0.68,"verdict":"WAIT","risk_month_pct":-10,"max_weight":0.31,"p_win":0.54,"because":["ธุรกิจมั่นคง ผันผวนต่ำ","แต่โมเมนตัมยังไม่มา"],"last":26.0,"chg_pct":0.2},
+    {"ticker":"PTT.BK","name":"PTT","name_th":"ปตท.","sector":"Energy","score":0.66,"verdict":"WAIT","risk_month_pct":-12,"max_weight":0.27,"p_win":0.52,"because":["ปันผลดี","แต่โมเมนตัมยังนิ่ง"],"last":33.5,"chg_pct":-0.3},
+    {"ticker":"GULF.BK","name":"Gulf Development","name_th":"กัลฟ์ ดีเวลลอปเมนท์","sector":"Utilities","score":0.63,"verdict":"WAIT","risk_month_pct":-15,"max_weight":0.24,"p_win":0.51,"because":["เติบโตดี","แต่ราคาแพงเทียบมูลค่า"],"last":48.0,"chg_pct":0.5},
+    {"ticker":"SCC.BK","name":"Siam Cement","name_th":"ปูนซิเมนต์ไทย","sector":"Materials","score":0.44,"verdict":"AVOID","risk_month_pct":-19,"max_weight":0.13,"p_win":0.47,"because":["อุปสงค์อ่อนแอ","โมเมนตัมเป็นขาลง"],"last":178.0,"chg_pct":-1.1},
+    {"ticker":"AOT.BK","name":"Airports of Thailand","name_th":"ท่าอากาศยานไทย","sector":"Transportation","score":0.41,"verdict":"AVOID","risk_month_pct":-22,"max_weight":0.11,"p_win":0.46,"because":["ราคาต่ำกว่าค่าเฉลี่ยระยะยาว","โมเมนตัมอ่อนแรง"],"last":38.5,"chg_pct":-1.8},
+    {"ticker":"CPF.BK","name":"CP Foods","name_th":"ซีพีเอฟ","sector":"Food","score":0.38,"verdict":"AVOID","risk_month_pct":-24,"max_weight":0.10,"p_win":0.44,"because":["กำไรผันผวน หนี้สูง","ราคาต่ำกว่าค่าเฉลี่ย"],"last":21.0,"chg_pct":-0.9}
+  ]};
+
+  // ── the "translator": raw numbers → 4 plain Thai sentences (templates, no LLM) ──
+  const V = {
+    BUY:  {th:"น่าสนใจ",        emoji:"✅", cls:"buy"},
+    WAIT: {th:"รอก่อน",         emoji:"🟡", cls:"wait"},
+    AVOID:{th:"ยังไม่ใช่ตอนนี้", emoji:"🔴", cls:"avoid"},
+  };
+  const col = {buy:'var(--buy)',wait:'var(--wait)',avoid:'var(--avoid)'};
+  const bg  = {buy:'var(--buyb)',wait:'var(--waitb)',avoid:'var(--avoidb)'};
+  const riskSentence = s => `เดือนแย่ ๆ ราคาอาจลงราว <b>${Math.abs(s.risk_month_pct)}%</b> · จึงควรใส่ไม่เกิน <b>${Math.round(s.max_weight*100)} บาท</b> ต่อทุก 100 บาท`;
+  const becauseSentence = s => 'เพราะ' + s.because.join(' และ ');
+  const trustLabel = s => `ทดสอบกับข้อมูลย้อนหลัง 10 ปี · เวลาเราบอก <b>${Math.round(s.p_win*100)}%</b> มักเกิดขึ้นจริงราว ๆ นั้น · เราไม่รับประกันกำไร บอกแค่ความเสี่ยง`;
+
+  const $=s=>document.querySelector(s);
+  let filter='ALL';
+  const stocks = DATA.stocks.slice().sort((a,b)=>b.score-a.score);
+
+  $('#meta').textContent = `ข้อมูลวันที่ ${DATA.generated} · จาก ${DATA.universe} · ${stocks.length} หุ้น`;
+
+  // filters
+  const FILTERS=[['ALL','ทั้งหมด'],['BUY','✅ น่าสนใจ'],['WAIT','🟡 รอก่อน'],['AVOID','🔴 ยังไม่ใช่']];
+  $('#filters').innerHTML = FILTERS.map(([k,l])=>`<button class="chip${k===filter?' on':''}" data-f="${k}">${l}</button>`).join('');
+  $('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filter=b.dataset.f;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.f===filter));render();});
+
+  function render(){
+    const list = stocks.filter(s=>filter==='ALL'||s.verdict===filter);
+    if(!list.length){ $('#grid').innerHTML='<div class="empty">ไม่มีหุ้นในกลุ่มนี้วันนี้</div>'; return; }
+    $('#grid').innerHTML = list.map(s=>{
+      const v=V[s.verdict], up=s.chg_pct>=0;
+      return `<div class="card" data-t="${s.ticker}">
+        <div class="c-top"><div><span class="rank">#${stocks.indexOf(s)+1}</span> <span class="tkr">${s.ticker.replace('.BK','')}</span></div>
+          <span class="badge ${v.cls}">${v.emoji} ${v.th}</span></div>
+        <div class="nm">${s.name_th} <span class="nm-en">· ${s.sector}</span></div>
+        <div class="bar"><i style="width:${Math.round(s.score*100)}%;background:${col[v.cls]}"></i></div>
+        <div class="risk">เสี่ยง <b>${Math.abs(s.risk_month_pct)}%</b> · สูงสุด ${Math.round(s.max_weight*100)} บาท/100</div>
+        <div class="c-bot"><span class="px">฿${s.last.toLocaleString(undefined,{minimumFractionDigits:2})}</span>
+          <span class="chg ${up?'up':'dn'}">${up?'▲':'▼'} ${Math.abs(s.chg_pct).toFixed(1)}%</span></div>
+      </div>`;
+    }).join('');
+  }
+  $('#grid').addEventListener('click',e=>{const c=e.target.closest('[data-t]');if(c)openSheet(c.dataset.t);});
+
+  function openSheet(t){
+    const s=stocks.find(x=>x.ticker===t), v=V[s.verdict];
+    $('#sheet').innerHTML = `
+      <div class="m-top">
+        <div><div class="m-tkr">${s.ticker.replace('.BK','')}</div><div class="m-nm">${s.name_th} · ${s.name} · ${s.sector}</div></div>
+        <button class="x" id="xbtn">✕</button>
+      </div>
+      <div class="m-badge" style="color:${col[v.cls]};background:${bg[v.cls]}">${v.emoji} ${v.th}</div>
+      <div class="block"><div class="k">ความเสี่ยง (เป็นบาท)</div><div class="v">${riskSentence(s)}</div></div>
+      <div class="block"><div class="k">เพราะอะไร</div><div class="v">${becauseSentence(s)}</div></div>
+      <div class="block"><div class="k">เชื่อได้แค่ไหน</div><div class="v">${trustLabel(s)}</div></div>
+      <div class="stats">
+        <div class="stat"><div class="sv">${Math.round(s.score*100)}</div><div class="sk">คะแนนรวม /100</div></div>
+        <div class="stat"><div class="sv">${Math.round(s.p_win*100)}%</div><div class="sk">โอกาสเข้าทาง</div></div>
+        <div class="stat"><div class="sv">฿${s.last.toLocaleString()}</div><div class="sk">ราคาล่าสุด</div></div>
+      </div>
+      <div class="m-disc">${DATA.disclaimer}<br>SETScout ชี้ให้ไป “ศึกษาต่อ” ไม่ได้บอกให้ซื้อ/ขาย</div>`;
+    $('#ov').classList.add('on'); document.body.style.overflow='hidden';
+    $('#xbtn').addEventListener('click',close);
+  }
+  function close(){ $('#ov').classList.remove('on'); document.body.style.overflow=''; }
+  $('#ov').addEventListener('click',e=>{ if(e.target===$('#ov')) close(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
