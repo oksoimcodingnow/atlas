@@ -203,7 +203,9 @@
   const vcls={BUY:'buy',WAIT:'wait',AVOID:'avoid'}, vemo={BUY:'✅',WAIT:'🟡',AVOID:'🔴'};
   const col={buy:'var(--buy)',wait:'var(--wait)',avoid:'var(--avoid)'}, bgc={buy:'var(--buyb)',wait:'var(--waitb)',avoid:'var(--avoidb)'};
   const pweight=s=>{ let w=s.max_weight*(risk?PROFILES[risk.key].sizeMult:1); return Math.round(Math.max(0.05,Math.min(0.6,w))*100); };
-  const pscore=s=> risk ? s.score - PROFILES[risk.key].riskAv*(Math.abs(s.risk_month_pct)/100) : s.score;
+  // personalization = serve the matching risk-profile engine's OWN ranked list
+  const PMAP={cons:'conservative',bal:'balanced',agg:'aggressive'};
+  const activeList=()=> (risk && DATA && DATA.profiles && DATA.profiles[PMAP[risk.key]]) ? DATA.profiles[PMAP[risk.key]] : (DATA?DATA.stocks:[]);
 
   function populateSectors(){
     if(!DATA)return;
@@ -213,7 +215,7 @@
   }
   function render(){
     if(!DATA)return;
-    let list=DATA.stocks.filter(s=>(filter==='ALL'||s.verdict===filter)&&(sector==='ALL'||s.sector===sector)).sort((a,b)=>pscore(b)-pscore(a));
+    let list=activeList().filter(s=>(filter==='ALL'||s.verdict===filter)&&(sector==='ALL'||s.sector===sector)).sort((a,b)=>b.score-a.score);
     // personalization banner
     const pb=$('#pbanner');
     if(risk){ pb.classList.add('on'); pb.innerHTML=`<span>${tr().banner(tr().prof[risk.key])}</span><span><a id="redoQ">${tr().redo}</a><a id="clrQ">${tr().clear}</a></span>`;
@@ -231,7 +233,7 @@
     }).join('');
   }
   const becauseS=s=>tr().bPfx+s.because.map(c=>REASON[c][lang]).join(tr().bJoin);
-  function openSheet(t){const s=DATA.stocks.find(x=>x.ticker===t),c=vcls[s.verdict];
+  function openSheet(t){const s=activeList().find(x=>x.ticker===t),c=vcls[s.verdict];
     $('#sheet').innerHTML=`<div class="m-top"><div><div class="m-tkr">${s.ticker.replace('.BK','')}</div><div class="m-nm">${s.name_th} · ${s.name} · ${s.sector}</div></div><button class="x" id="xb">✕</button></div>
       <div class="m-badge" style="color:${col[c]};background:${bgc[c]}">${vemo[s.verdict]} ${tr().v[s.verdict]}</div>
       <div class="block"><div class="k">${tr().dRisk}</div><div class="v">${tr().riskS(Math.abs(s.risk_month_pct),pweight(s))}</div>${risk?`<div class="foryou">${tr().forYou(tr().prof[risk.key],pweight(s))}</div>`:''}</div>

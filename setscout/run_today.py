@@ -16,14 +16,25 @@ Scoring (less biased): each factor is winsorized + z-scored, then
 SECTOR-NEUTRALIZED — a stock is judged against its SECTOR PEERS, not the whole
 market — so one low-vol sector (e.g. banks) can no longer dominate the top.
 Composite = weighted z-score; final score = its percentile across the market.
-Factor WEIGHTS below are placeholders until the AHP expert survey sets them.
+
+PERSONALIZATION: the same factors are combined with THREE weight sets, one per
+risk profile, so the website's risk quiz can serve a matching list:
+  conservative -> safety factors ·  balanced -> even ·  aggressive -> momentum.
+Factor WEIGHTS are placeholders until the AHP expert survey sets them.
 """
 import json, os
 import numpy as np, pandas as pd, yfinance as yf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FILE = os.path.join(HERE, "today.json")
-W = {"quality": 0.28, "value": 0.24, "momentum": 0.20, "health": 0.16, "growth": 0.12}
+FACTORS = ["momentum", "growth", "value", "quality", "health"]
+
+# one weight set per risk profile (AHP survey will replace these numbers)
+PROFILES = {
+    "conservative": {"quality": .40, "health": .30, "value": .20, "momentum": .05, "growth": .05},
+    "balanced":     {"quality": .28, "value": .24, "momentum": .20, "health": .16, "growth": .12},
+    "aggressive":   {"momentum": .40, "growth": .30, "value": .15, "quality": .10, "health": .05},
+}
 
 
 def main():
@@ -40,67 +51,62 @@ def main():
         s = px[t].dropna() if t in px.columns else pd.Series(dtype=float)
         if len(s) < 130:
             continue
-        ret6 = s.iloc[-1] / s.iloc[-126] - 1
-        ret12 = s.iloc[-1] / s.iloc[max(0, len(s) - 252)] - 1
-        cheap = -(s.iloc[-1] / s.tail(200).mean() - 1)
-        dvol = s.pct_change().tail(252).std()
-        eq = s.tail(252)
-        mdd = (eq / eq.cummax() - 1).min()
-        rows[t] = dict(momentum=ret6, growth=ret12, value=cheap,
-                       quality=-dvol * np.sqrt(252), health=mdd,
-                       last=round(float(s.iloc[-1]), 2),
-                       chg=round(float(s.pct_change().iloc[-1] * 100), 1), dvol=dvol)
+        rows[t] = dict(
+            momentum=s.iloc[-1] / s.iloc[-126] - 1,
+            growth=s.iloc[-1] / s.iloc[max(0, len(s) - 252)] - 1,
+            value=-(s.iloc[-1] / s.tail(200).mean() - 1),
+            quality=-s.pct_change().tail(252).std() * np.sqrt(252),
+            health=(s.tail(252) / s.tail(252).cummax() - 1).min(),
+            last=round(float(s.iloc[-1]), 2),
+            chg=round(float(s.pct_change().iloc[-1] * 100), 1),
+            dvol=s.pct_change().tail(252).std())
     df = pd.DataFrame(rows).T
-    FACTORS = ["momentum", "growth", "value", "quality", "health"]
     df["sector"] = [meta[t]["sector"] for t in df.index]
 
-    # 1. winsorized z-score each factor across the universe (robust, avoids ties)
-    def zscore(s):
-        s = s.astype(float); sd = s.std(ddof=0)
-        return ((s - s.mean()) / (sd if sd > 0 else 1.0)).clip(-3, 3)
+    # winsorized z-score, then sector-neutralize (judge vs sector peers)
+    def z(c):
+        c = c.astype(float); sd = c.std(ddof=0)
+        return ((c - c.mean()) / (sd if sd > 0 else 1.0)).clip(-3, 3)
     for f in FACTORS:
-        df[f + "_z"] = zscore(df[f])
-
-    # 2. SECTOR-NEUTRALIZE: subtract each factor's sector mean, so a stock is
-    #    scored vs its sector PEERS (kills the "banks are low-vol -> banks win"
-    #    bias). Only for sectors with >=3 names; tiny sectors keep the market z.
+        df[f + "_z"] = z(df[f])
     big = set(df["sector"].value_counts().loc[lambda c: c >= 3].index)
     in_big = df["sector"].isin(big)
     for f in FACTORS:
         smean = df.groupby("sector")[f + "_z"].transform("mean")
         df[f + "_adj"] = df[f + "_z"] - smean.where(in_big, 0.0)
 
-    # 3. composite = weighted sum of sector-adjusted z-scores
-    df["composite"] = sum(W[f] * df[f + "_adj"] for f in FACTORS)
-    # 4. final score = percentile of the composite (0-1, well spread)
-    df["score01"] = df["composite"].rank(pct=True)
+    def build_list(W):
+        score01 = sum(W[f] * df[f + "_adj"] for f in FACTORS).rank(pct=True)
+        out = []
+        for t in df.index:
+            r = df.loc[t]; s01 = float(score01[t])
+            verdict = "BUY" if s01 >= 0.80 else "WAIT" if s01 >= 0.45 else "AVOID"
+            risk = -int(round(min(max(1.645 * r["dvol"] * np.sqrt(21) * 100, 6), 35)))
+            mw = round(float(min(0.40, max(0.08, 0.42 * (1 - abs(risk) / 32)))), 2)
+            adjv = {f: r[f + "_adj"] for f in FACTORS}
+            keys = sorted(adjv, key=lambda k: adjv[k], reverse=True)
+            because = [keys[0] + ":pos", keys[1] + ":pos"] if verdict == "BUY" \
+                else [keys[0] + ":pos", keys[-1] + ":neg"]
+            m = meta[t]
+            out.append(dict(ticker=t, name=m["name"], name_th=m["name_th"],
+                sector=m["sector"], score=round(s01, 2), verdict=verdict,
+                risk_month_pct=risk, max_weight=mw, p_win=round(0.44 + s01 * 0.22, 2),
+                because=because, last=r["last"], chg_pct=r["chg"]))
+        out.sort(key=lambda s: s["score"], reverse=True)
+        return out
 
-    stocks = []
-    for t, r in df.iterrows():
-        s01 = float(r["score01"])
-        # verdict by percentile band: top 20% BUY, next 35% WAIT, rest AVOID
-        verdict = "BUY" if s01 >= 0.80 else "WAIT" if s01 >= 0.45 else "AVOID"
-        var_m = 1.645 * r["dvol"] * np.sqrt(21)
-        risk = -int(round(min(max(var_m * 100, 6), 35)))
-        mw = round(float(min(0.40, max(0.08, 0.42 * (1 - abs(risk) / 32)))), 2)
-        # reasons = the sector-adjusted factors that set it apart from its peers
-        adjv = {f: r[f + "_adj"] for f in FACTORS}
-        keys = sorted(adjv, key=lambda k: adjv[k], reverse=True)
-        because = [keys[0] + ":pos", keys[1] + ":pos"] if verdict == "BUY" \
-            else [keys[0] + ":pos", keys[-1] + ":neg"]
-        m = meta[t]
-        stocks.append(dict(ticker=t, name=m["name"], name_th=m["name_th"],
-            sector=m["sector"], score=round(s01, 2), verdict=verdict,
-            risk_month_pct=risk, max_weight=mw, p_win=round(0.44 + s01 * 0.22, 2),
-            because=because, last=r["last"], chg_pct=r["chg"]))
-    stocks.sort(key=lambda s: s["score"], reverse=True)
-
+    profiles = {name: build_list(W) for name, W in PROFILES.items()}
     out = {"generated": str(pd.Timestamp.today().date()), "universe": uni["universe"],
-           "disclaimer": uni["disclaimer"], "stocks": stocks}
+           "disclaimer": uni["disclaimer"],
+           "stocks": profiles["balanced"],   # backward-compatible default
+           "profiles": profiles}
     json.dump(out, open(FILE, "w", encoding="utf-8"), ensure_ascii=False)
-    n = {v: sum(s["verdict"] == v for s in stocks) for v in ("BUY", "WAIT", "AVOID")}
-    print(f"wrote {len(stocks)} stocks -> today.json  "
-          f"(BUY {n['BUY']} / WAIT {n['WAIT']} / AVOID {n['AVOID']})")
+
+    print(f"wrote {len(df)} stocks x 3 profiles -> today.json")
+    for name, lst in profiles.items():
+        n = {v: sum(s["verdict"] == v for s in lst) for v in ("BUY", "WAIT", "AVOID")}
+        top = ", ".join(s["ticker"].replace(".BK", "") for s in lst[:5])
+        print(f"  {name:<13} BUY {n['BUY']:>2}/WAIT {n['WAIT']:>2}/AVOID {n['AVOID']:>2}  | top5: {top}")
 
 
 if __name__ == "__main__":
