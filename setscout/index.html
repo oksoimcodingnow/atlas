@@ -142,7 +142,7 @@
      prof:{cons:"สายระมัดระวัง",bal:"สายสมดุล",agg:"สายบุก"},
      method:{title:"วิธีให้คะแนน",intro:"เราให้คะแนนหุ้นทุกตัวจาก 5 ปัจจัย (คำนวณจากราคาจริงย้อนหลัง 2 ปี)",
        factors:[["📈","โมเมนตัม","ผลตอบแทน 6 เดือน — ราคากำลังไปได้ดีไหม"],["🌱","การเติบโต","ผลตอบแทน 12 เดือน — แนวโน้มระยะยาว"],["⚖️","ราคาเทียบค่าเฉลี่ยตัวเอง","ต่ำกว่าค่าเฉลี่ย 200 วัน = มีโอกาสเด้ง (mean-reversion)"],["🛡️","คุณภาพ","ความผันผวนต่ำ — ราคานิ่ง ไม่หวือหวา"],["❤️","สุขภาพ","ขาดทุนสูงสุดน้อย — ทนตลาดขาลงได้"]],
-       wLabel:"การถ่วงน้ำหนัก",weights:"คุณภาพ 28% · ราคาเทียบค่าเฉลี่ย 24% · โมเมนตัม 20% · สุขภาพ 16% · เติบโต 12%",
+       wLabel:"การถ่วงน้ำหนัก",weights:"คุณภาพ 28% · ราคาเทียบค่าเฉลี่ย 24% · โมเมนตัม 20% · สุขภาพ 16% · เติบโต 12%",wNote:"น้ำหนักเปลี่ยนตามโปรไฟล์ความเสี่ยงของคุณ (ทำแบบทดสอบเพื่อเปลี่ยน)",
        vLabel:"ตัดสินอย่างไร",verdict:"คะแนนรวม ≥ 62 → น่าสนใจ ✅ · ≥ 48 → รอก่อน 🟡 · ต่ำกว่านั้น → ยังไม่ใช่ 🔴",
        rLabel:"ความเสี่ยง",risk:"คำนวณจาก VaR รายเดือน (โอกาสขาดทุนในเดือนแย่ ๆ) แล้วแปลงเป็นขนาดลงทุนสูงสุดที่แนะนำ",
        cLabel:"⚠️ หมายเหตุซื่อสัตย์",caveats:["น้ำหนักยังเป็นค่าตั้งต้น — รอผลสำรวจผู้เชี่ยวชาญ (AHP)","ยังไม่ผ่านการทดสอบย้อนหลัง (backtest)","ปัจจัยเป็น proxy จากราคา — v2 จะเพิ่มปัจจัยพื้นฐาน (P/E, ROE)","เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน"]},
@@ -172,7 +172,7 @@
      prof:{cons:"Conservative",bal:"Balanced",agg:"Aggressive"},
      method:{title:"How we score",intro:"Every stock is scored on 5 factors (from 2 years of real prices)",
        factors:[["📈","Momentum","6-month return — is the price doing well?"],["🌱","Growth","12-month return — the longer trend"],["⚖️","Price vs its own average","below its 200-day average = room to bounce (mean-reversion)"],["🛡️","Quality","low volatility — calm, not wild"],["❤️","Health","small max-drawdown — survives bad markets"]],
-       wLabel:"Weighting",weights:"Quality 28% · Price-vs-avg 24% · Momentum 20% · Health 16% · Growth 12%",
+       wLabel:"Weighting",weights:"Quality 28% · Price-vs-avg 24% · Momentum 20% · Health 16% · Growth 12%",wNote:"Weights change with your risk profile — take the quiz to switch.",
        vLabel:"How the verdict is decided",verdict:"Total score ≥ 62 → Worth a look ✅ · ≥ 48 → Wait 🟡 · below → Not now 🔴",
        rLabel:"Risk",risk:"From monthly VaR (how bad a bad month could be), converted to the max position size we suggest",
        cLabel:"⚠️ Honest notes",caveats:["Weights are preliminary — pending the AHP expert survey","Not yet backtested","Factors are price proxies — v2 adds fundamentals (P/E, ROE)","Educational, not investment advice"]},
@@ -206,6 +206,15 @@
   // personalization = serve the matching risk-profile engine's OWN ranked list
   const PMAP={cons:'conservative',bal:'balanced',agg:'aggressive'};
   const activeList=()=> (risk && DATA && DATA.profiles && DATA.profiles[PMAP[risk.key]]) ? DATA.profiles[PMAP[risk.key]] : (DATA?DATA.stocks:[]);
+  // "How we score" reads the ACTIVE profile's weights from today.json (single source of truth)
+  const FLABEL={th:{quality:"คุณภาพ",value:"ราคาเทียบค่าเฉลี่ย",momentum:"โมเมนตัม",health:"สุขภาพ",growth:"เติบโต"},
+               en:{quality:"Quality",value:"Price-vs-avg",momentum:"Momentum",health:"Health",growth:"Growth"}};
+  const profName=()=> risk?tr().prof[risk.key]:tr().prof.bal;
+  function weightsStr(){
+    const w=DATA&&DATA.profile_weights&&DATA.profile_weights[risk?PMAP[risk.key]:'balanced'];
+    if(!w) return tr().method.weights;
+    return Object.entries(w).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${FLABEL[lang][k]} ${Math.round(v*100)}%`).join(' · ');
+  }
 
   function populateSectors(){
     if(!DATA)return;
@@ -265,7 +274,7 @@
     const m=tr().method;
     $('#sheet').innerHTML=`<div class="m-top"><div><div class="m-tkr" style="font-size:19px">ⓘ ${m.title}</div><div class="m-nm">${m.intro}</div></div><button class="x" id="xb">✕</button></div>
       ${m.factors.map(f=>`<div class="block"><div class="v"><b>${f[0]} ${f[1]}</b> — <span style="color:var(--muted)">${f[2]}</span></div></div>`).join('')}
-      <div class="block"><div class="k">${m.wLabel}</div><div class="v">${m.weights}</div></div>
+      <div class="block"><div class="k">${m.wLabel} — ${profName()}</div><div class="v">${weightsStr()}</div><div style="font-size:12px;color:var(--muted);margin-top:6px">${m.wNote}</div></div>
       <div class="block"><div class="k">${m.vLabel}</div><div class="v">${m.verdict}</div></div>
       <div class="block"><div class="k">${m.rLabel}</div><div class="v">${m.risk}</div></div>
       <div class="block" style="border-left:3px solid var(--wait)"><div class="k" style="color:var(--wait)">${m.cLabel}</div><div class="v" style="font-size:13px;color:var(--muted)">${m.caveats.map(c=>'• '+c).join('<br>')}</div></div>`;

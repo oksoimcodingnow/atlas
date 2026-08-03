@@ -99,7 +99,8 @@ def main():
     out = {"generated": str(pd.Timestamp.today().date()), "universe": uni["universe"],
            "disclaimer": uni["disclaimer"],
            "stocks": profiles["balanced"],   # backward-compatible default
-           "profiles": profiles}
+           "profiles": profiles,
+           "profile_weights": PROFILES}       # single source of truth for "How we score"
     json.dump(out, open(FILE, "w", encoding="utf-8"), ensure_ascii=False)
 
     print(f"wrote {len(df)} stocks x 3 profiles -> today.json")
