@@ -1,0 +1,34 @@
+name: Refresh SETScout data
+
+# Auto-runs the engine daily so today.json is never stale.
+on:
+  schedule:
+    - cron: "0 11 * * *"     # 11:00 UTC ≈ 18:00 Thailand (after SET close)
+  workflow_dispatch:          # ...and lets you run it manually from the Actions tab
+
+permissions:
+  contents: write             # allow committing the refreshed today.json
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install --quiet pandas numpy yfinance
+
+      - name: Run the engine
+        run: python setscout/run_today.py
+
+      - name: Commit refreshed data (only if it changed)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add setscout/today.json
+          git diff --staged --quiet || git commit -m "chore(setscout): daily data refresh"
+          git push
