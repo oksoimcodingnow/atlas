@@ -317,7 +317,7 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
 
   applyTheme(); paintStatic();
-  fetch('today.json').then(r=>r.json()).then(d=>{DATA=d;paintStatic();populateSectors();render();})
+  fetch('today.json?v='+Date.now()).then(r=>r.json()).then(d=>{DATA=d;paintStatic();populateSectors();render();})
     .catch(()=>{$('#grid').innerHTML='<div class="err">Could not load today.json — open via the hosted link.</div>';});
 })();
 </script>
