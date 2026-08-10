@@ -15,16 +15,31 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   #bg-canvas{display:none!important;}   /* no 3D constellation on this reading page — keep it calm */
   :root{
-    --bg:#0b0b13; --panel:#12121f; --text:#eef0ea; --muted:#9a9ab0; --faint:#70707e;
+    /* dark — Atlas default */
+    --bg:#0b0b13; --panel:#12121f; --text:#eef0ea; --strong:#ffffff; --muted:#9a9ab0; --faint:#70707e;
     --rule:rgba(238,240,234,0.12); --accent:#b8c0ff; --gold:#f0d3a0; --green:#66d6a2;
+    --fx-bg:rgba(184,192,255,0.06); --note-bg:rgba(240,211,160,0.08);
     --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,'Segoe UI',sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
+  }
+  @media (prefers-color-scheme:light){ :root:not([data-theme="dark"]){
+    --bg:#f4f6fb; --panel:#ffffff; --text:#1a1b28; --strong:#0d0e18; --muted:#545872; --faint:#6f7389;
+    --rule:rgba(25,26,38,0.14); --accent:#4a53b6; --gold:#8a651c; --green:#0f7a5e;
+    --fx-bg:#edeffb; --note-bg:#f8f1e1;
+  }}
+  :root[data-theme="light"]{
+    --bg:#f4f6fb; --panel:#ffffff; --text:#1a1b28; --strong:#0d0e18; --muted:#545872; --faint:#6f7389;
+    --rule:rgba(25,26,38,0.14); --accent:#4a53b6; --gold:#8a651c; --green:#0f7a5e;
+    --fx-bg:#edeffb; --note-bg:#f8f1e1;
   }
   html,body{background:var(--bg);color:var(--text);}
   body{font-family:var(--sans);font-size:17.5px;line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
   ::selection{background:var(--accent);color:var(--bg);}
   a{color:var(--accent);text-decoration:none;}
-  .top{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:15px clamp(20px,5vw,44px);background:rgba(11,11,19,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);}
+  .top{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:15px clamp(20px,5vw,44px);background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);}
   .brand{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted);}
+  .tools{display:flex;gap:10px;align-items:center;}
+  .tgl{font-size:13px;color:var(--muted);background:none;border:1px solid var(--rule);border-radius:999px;width:31px;height:31px;line-height:1;cursor:pointer;}
+  .tgl:hover{color:var(--text);border-color:var(--accent);}
   .back{font-size:12px;color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:6px 13px;}
   .back:hover{color:var(--text);border-color:var(--accent);}
   .wrap{max-width:680px;margin:0 auto;padding:clamp(34px,6vw,60px) clamp(20px,5vw,28px) 130px;}
@@ -42,15 +57,15 @@
   h2{font-family:var(--serif);font-weight:500;font-size:clamp(27px,5vw,38px);line-height:1.05;margin-bottom:14px;text-wrap:balance;}
   p{margin:0 0 16px;}
   p:last-child{margin-bottom:0;}
-  strong{font-weight:600;color:#fff;}
+  strong{font-weight:600;color:var(--strong);}
   em.t{font-style:normal;color:var(--accent);}
   .lead{color:var(--text);}
   /* formula — quiet, centered, breathing room */
-  .fx{font-family:var(--mono);font-size:16px;line-height:1.9;color:#dfe0f2;background:rgba(184,192,255,0.05);border-radius:12px;padding:18px 20px;margin:22px 0;overflow-x:auto;}
+  .fx{font-family:var(--mono);font-size:16px;line-height:1.9;color:var(--text);background:var(--fx-bg);border-radius:12px;padding:18px 20px;margin:22px 0;overflow-x:auto;}
   .fx .v{color:var(--gold);}
   .fx .c{color:var(--faint);font-size:13.5px;}
-  /* one note style only */
-  .note{margin:22px 0;padding-left:18px;border-left:2px solid var(--accent);color:var(--muted);font-size:16px;}
+  /* one note style — tinted panel, no side-stripe */
+  .note{margin:22px 0;padding:14px 16px;background:var(--note-bg);border-radius:10px;color:var(--muted);font-size:16px;}
   .note b{color:var(--gold);font-weight:600;}
   /* symbols table */
   .sym{margin:22px 0;}
@@ -82,12 +97,17 @@
   details .ans .fx{margin:12px 0;}
   footer{margin-top:70px;padding-top:26px;border-top:1px solid var(--rule);font-size:14px;color:var(--faint);}
   @media(max-width:520px){.sym .row{grid-template-columns:60px 1fr;gap:12px;}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
 </style>
+<script>try{var t=localStorage.getItem('exam-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head>
 <body>
 <div class="top">
   <div class="brand">Atlas · Portfolio Exam Prep</div>
-  <a class="back" href="index.html">← Fin-Eng</a>
+  <div class="tools">
+    <button class="tgl" id="tgl" aria-label="Switch between light and dark">☀</button>
+    <a class="back" href="index.html">← Fin-Eng</a>
+  </div>
 </div>
 
 <div class="wrap">
@@ -336,6 +356,21 @@
 
   <footer>Atlas · Fin-Eng Studio · Portfolio Analysis 01526228 · Elton &amp; Gruber ch1–4. Companion to <a href="portfolio.html">the interactive frontier tool</a>.</footer>
 </div>
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('tgl');
+  if(!btn) return;
+  function effective(){ var t=root.getAttribute('data-theme'); return t || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); }
+  function paint(){ btn.textContent = effective()==='dark' ? '☀' : '☾'; }   // show what a click switches TO
+  btn.addEventListener('click', function(){
+    var next = effective()==='dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try{ localStorage.setItem('exam-theme', next); }catch(e){}
+    paint();
+  });
+  paint();
+})();
+</script>
 <script src="../lib/atlas-fx.js"></script>
 </body>
 </html>
