@@ -10,341 +10,330 @@
 <meta name="theme-color" content="#0a0a14">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg:#0a0a14; --bg-2:#11112a; --bg-3:#15152e; --text:#f1efe6; --muted:#8a8aa8; --faint:#6b6b78;
-    --rule:rgba(241,239,230,0.16); --accent:#b8c0ff; --accent-2:#f3d59a; --green:#5fd39a; --rose:#f0a0a0;
-    --max:840px; --gutter:clamp(20px,5vw,48px);
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#0b0b13; --panel:#12121f; --text:#eef0ea; --muted:#9a9ab0; --faint:#70707e;
+    --rule:rgba(238,240,234,0.12); --accent:#b8c0ff; --gold:#f0d3a0; --green:#66d6a2;
     --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter Tight',-apple-system,'Segoe UI',sans-serif; --mono:'JetBrains Mono',Consolas,monospace;
   }
   html,body{background:var(--bg);color:var(--text);}
-  body{font-family:var(--sans);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;}
+  body{font-family:var(--sans);font-size:17.5px;line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
   ::selection{background:var(--accent);color:var(--bg);}
-  ::-webkit-scrollbar{width:7px;} ::-webkit-scrollbar-thumb{background:rgba(184,192,255,0.25);}
-  body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 380px at 72% -8%,rgba(184,192,255,0.10),transparent 65%);}
-  a{color:var(--accent);}
-  .top-bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:16px var(--gutter);background:rgba(10,10,20,0.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);}
-  .brand{font-family:var(--serif);font-style:italic;font-size:16px;}
-  .back{font-size:12px;color:var(--muted);text-decoration:none;padding:7px 13px;border:1px solid var(--rule);border-radius:999px;transition:all .2s;}
-  .back:hover{color:var(--text);border-color:var(--accent);background:rgba(184,192,255,0.08);}
-  .wrap{position:relative;z-index:2;max-width:var(--max);margin:0 auto;padding:clamp(30px,5vw,54px) var(--gutter) 120px;}
-  .eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent-2);font-weight:700;margin-bottom:16px;}
-  h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,8vw,80px);line-height:.94;letter-spacing:-.02em;margin-bottom:18px;}
+  a{color:var(--accent);text-decoration:none;}
+  .top{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:15px clamp(20px,5vw,44px);background:rgba(11,11,19,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);}
+  .brand{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted);}
+  .back{font-size:12px;color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:6px 13px;}
+  .back:hover{color:var(--text);border-color:var(--accent);}
+  .wrap{max-width:680px;margin:0 auto;padding:clamp(34px,6vw,60px) clamp(20px,5vw,28px) 130px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(42px,9vw,72px);line-height:0.98;letter-spacing:-.01em;margin:.28em 0 .32em;}
   h1 em{font-style:italic;color:var(--accent);}
-  .lede{font-family:var(--serif);font-size:clamp(18px,2.2vw,24px);line-height:1.45;max-width:640px;margin-bottom:10px;}
-  .note{font-size:13px;color:var(--muted);max-width:600px;margin-bottom:36px;}
+  .sub{font-family:var(--serif);font-size:clamp(19px,2.4vw,23px);line-height:1.5;color:var(--muted);max-width:34ch;}
   /* contents */
-  nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:0 0 12px;padding:18px;background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;}
-  nav.toc a{font-size:13px;color:var(--text);text-decoration:none;padding:6px 8px;border-radius:8px;display:flex;gap:9px;transition:background .15s;}
-  nav.toc a:hover{background:var(--bg-3);}
-  nav.toc a span{font-family:var(--mono);color:var(--accent-2);font-size:11px;}
-  section{padding-top:46px;scroll-margin-top:64px;}
-  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,4vw,36px);line-height:1.05;margin-bottom:6px;}
-  h2 .n{font-family:var(--mono);font-size:14px;color:var(--accent);vertical-align:middle;margin-right:12px;}
-  h3{font-family:var(--sans);font-weight:600;font-size:16px;margin:26px 0 8px;color:var(--accent-2);}
-  p{margin:0 0 12px;max-width:66ch;}
-  .rule{height:1px;background:var(--rule);border:0;margin:8px 0 0;}
-  strong{color:#fff;font-weight:600;}
-  em.term{font-style:normal;color:var(--accent);font-weight:600;}
-  /* formula box */
-  .fx{font-family:var(--mono);font-size:14.5px;line-height:1.7;background:#080810;border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:10px;padding:14px 16px;margin:14px 0;overflow-x:auto;color:#dfe0f5;}
-  .fx b{color:var(--accent-2);font-weight:500;}
-  .fx .c{color:var(--muted);}
-  .plain{background:rgba(184,192,255,0.06);border:1px solid rgba(184,192,255,0.22);border-radius:10px;padding:13px 16px;margin:14px 0;}
-  .plain .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;display:block;margin-bottom:5px;}
-  .plain p{margin:0;}
-  .tip{background:rgba(243,213,154,0.07);border:1px solid rgba(243,213,154,0.28);border-radius:10px;padding:13px 16px;margin:14px 0;font-size:14.5px;}
-  .tip .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-2);font-weight:700;display:block;margin-bottom:5px;}
-  .tip p{margin:0;}
-  ul{margin:8px 0 12px;padding-left:20px;} li{margin:5px 0;max-width:64ch;}
-  /* tables */
-  .tw{overflow-x:auto;margin:14px 0;border:1px solid var(--rule);border-radius:10px;}
-  table{border-collapse:collapse;width:100%;font-size:13.5px;background:var(--bg-2);}
-  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--rule);}
-  th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);font-weight:500;background:#0d0d1e;}
+  nav{margin:44px 0 0;font-size:15px;}
+  nav a{display:block;padding:9px 0;border-bottom:1px solid var(--rule);color:var(--text);display:flex;gap:14px;}
+  nav a:hover{color:var(--accent);}
+  nav a b{font-family:var(--mono);font-size:12px;color:var(--faint);font-weight:400;min-width:22px;}
+  /* section */
+  section{padding-top:60px;scroll-margin-top:58px;}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(27px,5vw,38px);line-height:1.05;margin-bottom:14px;text-wrap:balance;}
+  p{margin:0 0 16px;}
+  p:last-child{margin-bottom:0;}
+  strong{font-weight:600;color:#fff;}
+  em.t{font-style:normal;color:var(--accent);}
+  .lead{color:var(--text);}
+  /* formula — quiet, centered, breathing room */
+  .fx{font-family:var(--mono);font-size:16px;line-height:1.9;color:#dfe0f2;background:rgba(184,192,255,0.05);border-radius:12px;padding:18px 20px;margin:22px 0;overflow-x:auto;}
+  .fx .v{color:var(--gold);}
+  .fx .c{color:var(--faint);font-size:13.5px;}
+  /* one note style only */
+  .note{margin:22px 0;padding-left:18px;border-left:2px solid var(--accent);color:var(--muted);font-size:16px;}
+  .note b{color:var(--gold);font-weight:600;}
+  /* symbols table */
+  .sym{margin:22px 0;}
+  .sym .grp{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:26px 0 10px;}
+  .sym .grp:first-child{margin-top:0;}
+  .sym .row{display:grid;grid-template-columns:76px 1fr;gap:16px;padding:9px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .sym .s{font-family:var(--mono);font-size:17px;color:var(--accent);}
+  .sym .m{font-size:15.5px;color:var(--text);line-height:1.5;}
+  .sym .m em{font-style:normal;color:var(--muted);}
+  /* plain tables */
+  .tw{overflow-x:auto;margin:22px 0;}
+  table{border-collapse:collapse;width:100%;font-size:15px;}
+  th,td{text-align:left;padding:10px 14px 10px 0;border-bottom:1px solid var(--rule);vertical-align:top;}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);font-weight:400;}
   td.mono,th.mono{font-family:var(--mono);}
   tbody tr:last-child td{border-bottom:none;}
-  .good{color:var(--green);} .warn{color:var(--rose);}
+  ul{margin:14px 0 16px;padding-left:20px;} li{margin:8px 0;}
   /* mock exam */
-  .q{background:var(--bg-2);border:1px solid var(--rule);border-radius:12px;padding:16px 18px;margin:12px 0;}
-  .q .ql{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em;}
-  .q p.stem{margin:6px 0 4px;font-weight:500;color:#fff;}
-  details{margin-top:8px;border-top:1px dashed var(--rule);padding-top:8px;}
-  details summary{cursor:pointer;font-size:13px;color:var(--accent-2);list-style:none;user-select:none;}
+  .q{padding:22px 0;border-bottom:1px solid var(--rule);}
+  .q:first-of-type{border-top:1px solid var(--rule);}
+  .q .tag{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--faint);}
+  .q .stem{margin:8px 0 0;color:var(--text);}
+  details{margin-top:12px;}
+  details summary{cursor:pointer;font-size:14px;color:var(--gold);list-style:none;}
   details summary::-webkit-details-marker{display:none;}
-  details summary::before{content:'▸ ';color:var(--accent);}
-  details[open] summary::before{content:'▾ ';}
-  details .ans{margin-top:9px;font-size:14.5px;color:var(--text);}
-  details .ans .fx{margin:8px 0;}
-  .foot{margin-top:60px;padding-top:26px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);}
-  @media(max-width:600px){nav.toc{grid-template-columns:1fr 1fr;}}
+  details summary::before{content:'show answer';border:1px solid var(--rule);border-radius:999px;padding:4px 12px;transition:.15s;}
+  details[open] summary::before{content:'hide answer';border-color:var(--gold);}
+  details .ans{margin-top:14px;color:var(--muted);font-size:16px;}
+  details .ans .fx{margin:12px 0;}
+  footer{margin-top:70px;padding-top:26px;border-top:1px solid var(--rule);font-size:14px;color:var(--faint);}
+  @media(max-width:520px){.sym .row{grid-template-columns:60px 1fr;gap:12px;}}
 </style>
 </head>
 <body>
-<div class="top-bar">
-  <div class="brand">Atlas · <span style="font-style:italic;">Portfolio Exam Prep</span></div>
+<div class="top">
+  <div class="brand">Atlas · Portfolio Exam Prep</div>
   <a class="back" href="index.html">← Fin-Eng</a>
 </div>
 
 <div class="wrap">
-  <div class="eyebrow">01526228 · Portfolio Analysis &amp; Management · exam in ~2 weeks</div>
+  <p class="eyebrow">01526228 · exam in ~2 weeks</p>
   <h1>Everything the exam <em>will ask.</em></h1>
-  <p class="lede">The whole course, broken into bite-size pieces — each with the plain idea, the formula, a worked number, and what they trap you on. Then a full mock exam to test yourself.</p>
-  <p class="note">Based on Elton &amp; Gruber (Prof. Tanachote), ch1–4. Numbers in the worked examples use your own group portfolio where it helps. Read top-to-bottom once, then live in the mock exam.</p>
+  <p class="sub">The whole course in plain language — first the symbols, then each idea, then a mock exam.</p>
 
-  <nav class="toc">
-    <a href="#map"><span>00</span>The exam map</a>
-    <a href="#returns"><span>01</span>Returns</a>
-    <a href="#risk"><span>02</span>Risk (variance)</a>
-    <a href="#cov"><span>03</span>Covariance &amp; correlation</a>
-    <a href="#two"><span>04</span>Two-asset portfolio</a>
-    <a href="#div"><span>05</span>Diversification</a>
-    <a href="#sysun"><span>06</span>Systematic vs unsystematic</a>
-    <a href="#beta"><span>07</span>Beta</a>
-    <a href="#capm"><span>08</span>CAPM &amp; SML</a>
-    <a href="#frontier"><span>09</span>Frontier · MVP · Tangency</a>
-    <a href="#cal"><span>10</span>CAL / CML &amp; Sharpe</a>
-    <a href="#emh"><span>11</span>Market efficiency</a>
-    <a href="#choice"><span>12</span>Choice &amp; risk aversion</a>
-    <a href="#cheat"><span>13</span>Formula cheat-sheet</a>
-    <a href="#mock"><span>★</span>MOCK EXAM</a>
-    <a href="#traps"><span>!!</span>Common traps</a>
+  <nav>
+    <a href="#symbols"><b>—</b>What every symbol means</a>
+    <a href="#returns"><b>01</b>Returns</a>
+    <a href="#risk"><b>02</b>Risk &amp; variance</a>
+    <a href="#cov"><b>03</b>Covariance &amp; correlation</a>
+    <a href="#two"><b>04</b>Two-asset portfolio</a>
+    <a href="#div"><b>05</b>Diversification</a>
+    <a href="#sysun"><b>06</b>Systematic vs unsystematic</a>
+    <a href="#beta"><b>07</b>Beta</a>
+    <a href="#capm"><b>08</b>CAPM &amp; the SML</a>
+    <a href="#frontier"><b>09</b>Frontier · MVP · Tangency</a>
+    <a href="#cal"><b>10</b>CAL / CML &amp; Sharpe</a>
+    <a href="#emh"><b>11</b>Market efficiency</a>
+    <a href="#choice"><b>12</b>Choice &amp; risk aversion</a>
+    <a href="#cheat"><b>ƒ</b>Formula cheat-sheet</a>
+    <a href="#mock"><b>★</b>Mock exam</a>
+    <a href="#traps"><b>!</b>Common traps</a>
   </nav>
 
-  <section id="map">
-    <h2><span class="n">00</span>The exam map</h2>
-    <p>Four chapters, but the marks cluster in <strong>ch4 (the math)</strong>. Know these cold and you cover most of the paper:</p>
-    <div class="tw"><table>
-      <thead><tr><th>Chapter</th><th>What it is</th><th>Exam weight</th></tr></thead>
-      <tbody>
-        <tr><td>ch1 — Theory of choice</td><td>utility, risk aversion, indifference curves</td><td>light (concept Qs)</td></tr>
-        <tr><td>ch2 — Securities &amp; markets</td><td>asset classes, risk levels 1–8</td><td>light</td></tr>
-        <tr><td>ch3 — Market efficiency</td><td>EMH forms, anomalies</td><td>medium (concept)</td></tr>
-        <tr><td>ch4 — Portfolio math</td><td>return, risk, cov, beta, CAPM, frontier, CAL, diversification</td><td class="warn">HEAVY — most marks</td></tr>
-      </tbody>
-    </table></div>
-    <div class="tip"><span class="k">Strategy</span><p>Master the ch4 calculations (they're mechanical — same formulas every year), then bank the ch1–3 concept questions as free marks. The mock exam below is weighted the same way.</p></div>
+  <section id="symbols">
+    <h2>What every symbol means</h2>
+    <p>The formulas look scary only because of the Greek letters. Here's the whole alphabet — keep it open while you read the rest.</p>
+    <div class="sym">
+      <div class="grp">Returns</div>
+      <div class="row"><div class="s">R</div><div class="m">a return — the % you gained <em>(R = gain ÷ starting price)</em></div></div>
+      <div class="row"><div class="s">E(R)</div><div class="m">expected return — the average return you anticipate</div></div>
+      <div class="row"><div class="s">μ</div><div class="m">"mu" — the mean return (same thing as E(R))</div></div>
+      <div class="row"><div class="s">P₀ P₁</div><div class="m">price at the start (P₀) and end (P₁) of the period</div></div>
+      <div class="row"><div class="s">D</div><div class="m">dividend paid during the period</div></div>
+
+      <div class="grp">Weights &amp; counting</div>
+      <div class="row"><div class="s">w</div><div class="m">weight — the fraction of your money in one asset <em>(all w's add to 1)</em></div></div>
+      <div class="row"><div class="s">Σ</div><div class="m">"sigma" (capital) — "add all of these up"</div></div>
+      <div class="row"><div class="s">n · N</div><div class="m">a count — number of stocks (n) or data points (N)</div></div>
+
+      <div class="grp">Risk</div>
+      <div class="row"><div class="s">σ</div><div class="m">"sigma" — standard deviation = <strong>risk</strong> (how much returns swing)</div></div>
+      <div class="row"><div class="s">σ²</div><div class="m">variance = σ squared (risk, before you take the root)</div></div>
+      <div class="row"><div class="s">σ_ij<br>σ_AB</div><div class="m">covariance — do two assets move <em>together</em> (+) or opposite (−)?</div></div>
+      <div class="row"><div class="s">ρ</div><div class="m">"rho" — correlation, the same idea rescaled to −1 … +1</div></div>
+      <div class="row"><div class="s">σ_ε</div><div class="m">"sigma-epsilon" — the leftover (unsystematic) risk</div></div>
+
+      <div class="grp">Market &amp; CAPM</div>
+      <div class="row"><div class="s">β</div><div class="m">"beta" — how hard a stock swings when the market moves</div></div>
+      <div class="row"><div class="s">R_f</div><div class="m">the risk-free rate <em>(yours: 1.57%)</em></div></div>
+      <div class="row"><div class="s">R_M</div><div class="m">the market's return (the SET index)</div></div>
+      <div class="row"><div class="s">R²</div><div class="m">"R-squared" — the share of a stock's risk that's market-driven</div></div>
+      <div class="row"><div class="s">A</div><div class="m">risk-aversion coefficient — how much you hate risk</div></div>
+
+      <div class="grp">The three lines</div>
+      <div class="row"><div class="s">CAL</div><div class="m">Capital Allocation Line — cash + a risky portfolio; its slope = Sharpe</div></div>
+      <div class="row"><div class="s">CML</div><div class="m">Capital Market Line — the best CAL, through the tangency portfolio</div></div>
+      <div class="row"><div class="s">SML</div><div class="m">Security Market Line — return plotted against beta (CAPM's line)</div></div>
+    </div>
   </section>
 
   <section id="returns">
-    <h2><span class="n">01</span>Returns</h2>
-    <p>A <em class="term">return</em> is a percentage gain. The one-period (holding-period) return:</p>
-    <div class="fx">R = ( <b>P₁ − P₀ + D</b> ) / <b>P₀</b><br><span class="c"># end price − start price + dividend, over start price</span></div>
-    <h3>Expected return of a portfolio</h3>
-    <p>Just the <strong>weighted average</strong> of the assets' expected returns:</p>
-    <div class="fx">E(R_p) = <b>Σ wᵢ · E(Rᵢ)</b><span class="c">   (weights wᵢ sum to 1)</span></div>
-    <h3>Arithmetic vs geometric</h3>
-    <ul>
-      <li><strong>Arithmetic mean</strong> = simple average of periodic returns. Used as the <em>expected</em> return going forward.</li>
-      <li><strong>Geometric mean (CAGR)</strong> = the actual compounded growth rate. Always ≤ arithmetic. Used to describe <em>realised</em> performance.</li>
-    </ul>
-    <div class="fx">annualise monthly: E(R)_year = <b>E(R)_month × 12</b><span class="c">   (returns scale linearly)</span></div>
-    <div class="tip"><span class="k">Trap</span><p>Returns scale by <strong>×12</strong>, but risk (SD) scales by <strong>×√12</strong>. Mix these up and every downstream number is wrong.</p></div>
+    <h2>Returns</h2>
+    <p class="lead">A <em class="t">return</em> is a percentage gain. The one-period version:</p>
+    <div class="fx">R = ( <span class="v">P₁ − P₀ + D</span> ) ÷ <span class="v">P₀</span></div>
+    <p>A portfolio's expected return is just the <strong>weighted average</strong> of its assets:</p>
+    <div class="fx">E(R_p) = <span class="v">Σ wᵢ · E(Rᵢ)</span></div>
+    <p class="note"><b>Trap.</b> To annualise, returns scale by <strong>×12</strong>, but risk scales by <strong>×√12</strong>. Never the same number.</p>
   </section>
 
   <section id="risk">
-    <h2><span class="n">02</span>Risk = variance / standard deviation</h2>
-    <p><em class="term">Variance</em> measures how far returns swing from their mean. <em class="term">Standard deviation (SD)</em> = √variance, in the same units as return.</p>
-    <div class="fx">σ² = <b>Σ (Rᵢ − R̄)²</b> / <b>N</b>   <span class="c">← population (÷N)</span><br>σ² = <b>Σ (Rᵢ − R̄)²</b> / <b>(N−1)</b>   <span class="c">← sample (÷N−1)</span><br>SD = σ = √σ²</div>
-    <div class="plain"><span class="k">Population vs sample</span><p>Your project uses <strong>population</strong> SD (Excel <span style="font-family:var(--mono)">STDEVP</span>, ÷N) because the prof defines the 5-year window as the whole relevant dataset. Sample (÷N−1) is only slightly larger. Know which one the question wants.</p></div>
-    <div class="fx">annualise SD: σ_year = <b>σ_month × √12</b></div>
+    <h2>Risk &amp; variance</h2>
+    <p><em class="t">Variance</em> measures how far returns swing from their average. <em class="t">Standard deviation</em> (σ) is its square root — the number we call "risk."</p>
+    <div class="fx">σ² = <span class="v">Σ (Rᵢ − R̄)²</span> ÷ N<br><span class="c">÷ N = population (what your project uses) · ÷ (N−1) = sample</span></div>
+    <p class="note"><b>Know which.</b> Your project uses <strong>population</strong> σ (Excel STDEVP, ÷N) because the 5-year window is treated as the whole dataset.</p>
   </section>
 
   <section id="cov">
-    <h2><span class="n">03</span>Covariance &amp; correlation</h2>
-    <p><em class="term">Covariance</em> = do two assets move together (+) or opposite (−)? <em class="term">Correlation</em> = the same idea, rescaled to −1…+1 so it's comparable.</p>
-    <div class="fx">Cov(A,B) = σ_AB = <b>Σ (R_A−R̄_A)(R_B−R̄_B)</b> / N<br>Corr(A,B) = ρ_AB = <b>σ_AB / (σ_A · σ_B)</b>   <span class="c"># −1 to +1</span></div>
-    <div class="tip"><span class="k">Why it's the heart of it all</span><p><strong>Low correlation is the fuel of diversification.</strong> The lower ρ between your assets, the more risk cancels when you combine them. ρ = +1 → no diversification benefit at all.</p></div>
+    <h2>Covariance &amp; correlation</h2>
+    <p><em class="t">Covariance</em> asks: do two assets move together? <em class="t">Correlation</em> (ρ) is the same, rescaled to −1…+1 so it's comparable.</p>
+    <div class="fx">σ_AB = <span class="v">Σ (R_A−R̄_A)(R_B−R̄_B)</span> ÷ N<br>ρ_AB = σ_AB ÷ (σ_A · σ_B)</div>
+    <p class="note"><b>The whole game.</b> Low correlation is the fuel of diversification — the lower ρ, the more risk cancels when you combine assets.</p>
   </section>
 
   <section id="two">
-    <h2><span class="n">04</span>Two-asset portfolio</h2>
-    <p>The exam <em>loves</em> this. Two assets A and B with weights w and (1−w):</p>
-    <div class="fx"><b>Return:</b>  E(R_p) = w·E(R_A) + (1−w)·E(R_B)<br><br><b>Variance:</b>  σ²_p = w²σ²_A + (1−w)²σ²_B + 2·w(1−w)·<b>σ_AB</b><br><span class="c"># the last term uses covariance; = 2·w(1−w)·ρ_AB·σ_A·σ_B</span><br><br><b>SD:</b>  σ_p = √σ²_p</div>
-    <h3>Minimum-variance weight (2-asset)</h3>
-    <div class="fx">w*_A = ( σ²_B − σ_AB ) / ( σ²_A + σ²_B − 2σ_AB )</div>
-    <div class="tip"><span class="k">Trap</span><p>The covariance term is <strong>added</strong> and it can be negative (if ρ&lt;0), which <em>lowers</em> portfolio risk below either asset alone. Don't drop the "2·" in front, and don't forget to square the weights.</p></div>
+    <h2>Two-asset portfolio</h2>
+    <p>Two assets, weights w and (1−w). The exam loves this one:</p>
+    <div class="fx">E(R_p) = <span class="v">w·E(R_A) + (1−w)·E(R_B)</span><br><br>σ²_p = <span class="v">w²σ²_A + (1−w)²σ²_B + 2·w(1−w)·σ_AB</span></div>
+    <p class="note"><b>Trap.</b> Keep the <strong>2·</strong> on the covariance term, and square the weights. Covariance can be negative — that <em>lowers</em> the portfolio's risk below either asset alone.</p>
   </section>
 
   <section id="div">
-    <h2><span class="n">05</span>Diversification (n assets)</h2>
-    <p>For an equally-weighted (naïve, 1/n) portfolio, total variance splits into two pieces:</p>
-    <div class="fx">σ²_p = <b>(1/n)·σ̄²</b>  +  <b>((n−1)/n)·σ̄_ij</b><br><span class="c">   ↑ avg variance term        ↑ avg covariance term</span></div>
-    <ul>
-      <li><strong>First term</strong> (avg variance ÷ n) → shrinks to <strong>0</strong> as n grows. This is the <em>diversifiable</em> (unsystematic) part.</li>
-      <li><strong>Second term</strong> → rises toward the <strong>average covariance</strong>. This is the <em>undiversifiable</em> (systematic) part — the floor you can't remove.</li>
-    </ul>
-    <div class="plain"><span class="k">Your portfolio</span><p>With your 10 stocks, diversifiable risk fell from ~83% of total (at n=2) to ~36% (at n=10), while undiversifiable rose from ~17% to ~64%. Total risk fell and <strong>levelled off at the average covariance</strong> — exactly the ch4 story.</p></div>
-    <div class="tip"><span class="k">One-liner</span><p>"As you add stocks, portfolio risk falls toward the average <strong>covariance</strong> — you can diversify away company risk, never market risk."</p></div>
+    <h2>Diversification</h2>
+    <p>For an equally-weighted (naïve) portfolio, total variance splits in two:</p>
+    <div class="fx">σ²_p = <span class="v">(1/n)·σ̄²</span> + <span class="v">((n−1)/n)·σ̄_ij</span><br><span class="c">avg-variance term (→0)      avg-covariance term (→ the floor)</span></div>
+    <p>As you add stocks, the first term shrinks to zero — that's the <strong>diversifiable</strong> risk vanishing. The second rises to the average covariance — the <strong>undiversifiable</strong> floor.</p>
+    <p class="note"><b>One line.</b> Portfolio risk falls toward the average <strong>covariance</strong> — you can diversify away company risk, never market risk.</p>
   </section>
 
   <section id="sysun">
-    <h2><span class="n">06</span>Systematic vs unsystematic risk</h2>
+    <h2>Systematic vs unsystematic</h2>
     <div class="tw"><table>
       <thead><tr><th></th><th>Systematic</th><th>Unsystematic</th></tr></thead>
       <tbody>
-        <tr><td>a.k.a.</td><td>market / undiversifiable</td><td>specific / diversifiable</td></tr>
-        <tr><td>affects</td><td>all stocks</td><td>one company</td></tr>
-        <tr><td>examples</td><td>rates, recession, elections</td><td>CEO scandal, recall, lawsuit</td></tr>
-        <tr><td>diversify away?</td><td class="warn">No</td><td class="good">Yes</td></tr>
-        <tr><td>measured by</td><td>beta (β)</td><td>residual</td></tr>
-        <tr><td>rewarded by CAPM?</td><td class="good">Yes</td><td class="warn">No</td></tr>
+        <tr><td>also called</td><td>market · undiversifiable</td><td>specific · diversifiable</td></tr>
+        <tr><td>example</td><td>a rate hike</td><td>a product recall</td></tr>
+        <tr><td>diversify away?</td><td>no</td><td>yes</td></tr>
+        <tr><td>measured by</td><td>beta (β)</td><td>the leftover (σ_ε)</td></tr>
+        <tr><td>CAPM rewards it?</td><td>yes</td><td>no</td></tr>
       </tbody>
     </table></div>
-    <div class="fx">Total variance:  σ²ᵢ = <b>β²ᵢ·σ²_M</b>  +  <b>σ²_ε</b><br><span class="c">                      systematic       unsystematic</span><br>Systematic share = <b>R²</b>   (= β²σ²_M / σ²ᵢ)</div>
-    <div class="tip"><span class="k">Key insight</span><p>CAPM pays you <strong>only</strong> for systematic risk (β). Bearing unsystematic risk earns nothing extra — you could have diversified it away for free. And note: <strong>1 − R²</strong> gives the unsystematic share, and it is algebraically identical to the variance/covariance method.</p></div>
+    <div class="fx">σ²ᵢ = <span class="v">β²ᵢ·σ²_M</span> + <span class="v">σ²_ε</span><br>systematic share = R²</div>
+    <p class="note"><b>Key.</b> CAPM pays you only for systematic risk. And <strong>1 − R²</strong> = the unsystematic share — algebraically identical to the covariance method.</p>
   </section>
 
   <section id="beta">
-    <h2><span class="n">07</span>Beta</h2>
-    <p><em class="term">Beta</em> = how much a stock moves when the market moves. β=1 moves with the market; β&gt;1 amplifies; β&lt;1 dampens.</p>
-    <div class="fx">βᵢ = <b>Cov(Rᵢ, R_M) / Var(R_M)</b><span class="c">   (= slope of stock-vs-market regression, Excel SLOPE)</span></div>
-    <div class="fx">Portfolio beta = <b>Σ wᵢ·βᵢ</b>   <span class="c"># just the weighted average of the betas</span></div>
-    <div class="tip"><span class="k">Trap</span><p>Beta is a <strong>weighted average</strong> across a portfolio, but variance is <strong>not</strong> (variance needs the covariance terms). Only beta averages simply.</p></div>
+    <h2>Beta</h2>
+    <p><em class="t">Beta</em> is how much a stock moves when the market moves. β=1 tracks it; β&gt;1 amplifies; β&lt;1 dampens.</p>
+    <div class="fx">βᵢ = <span class="v">Cov(Rᵢ, R_M) ÷ Var(R_M)</span>   <span class="c">(Excel: SLOPE)</span><br>Portfolio β = <span class="v">Σ wᵢ·βᵢ</span></div>
+    <p class="note"><b>Trap.</b> Beta averages simply across a portfolio; variance does <em>not</em> (it needs the covariances). Only beta is a clean weighted average.</p>
   </section>
 
   <section id="capm">
-    <h2><span class="n">08</span>CAPM &amp; the SML</h2>
-    <p>The <em class="term">Capital Asset Pricing Model</em> gives the return an asset <em>should</em> earn for its systematic risk:</p>
-    <div class="fx">E(Rᵢ) = <b>R_f + βᵢ·( E(R_M) − R_f )</b><br><span class="c">   required = risk-free + beta × market risk premium</span></div>
-    <ul>
-      <li><strong>R_f</strong> = risk-free rate (your project: 1.57%, Thai 5-yr govt bond, ThaiBMA).</li>
-      <li><strong>E(R_M) − R_f</strong> = equity risk premium (your project: 7%, Damodaran Thailand).</li>
-      <li><strong>SML (Security Market Line)</strong> = the plot of E(R) against β. Every fairly-priced asset sits <em>on</em> it. Above the line = underpriced (buy); below = overpriced (sell).</li>
-    </ul>
-    <div class="fx"><b>Jensen's alpha</b> = actual return − CAPM required return<br><span class="c"># positive alpha = beat the model = skill (or luck)</span></div>
-    <div class="tip"><span class="k">SML vs CML — don't confuse them</span><p><strong>SML</strong>: x-axis = <em>beta</em> (systematic risk), applies to <em>any</em> asset. <strong>CML</strong>: x-axis = <em>total SD</em>, applies only to <em>efficient</em> portfolios. Different x-axis, different scope.</p></div>
+    <h2>CAPM &amp; the SML</h2>
+    <p>CAPM gives the return an asset <em>should</em> earn for its systematic risk:</p>
+    <div class="fx">E(Rᵢ) = <span class="v">R_f + βᵢ·( R_M − R_f )</span><br><span class="c">yours:  1.57% + β · 7%</span></div>
+    <p>Plot that against beta and you get the <em class="t">SML</em> — every fairly-priced asset sits on it. Beating it is <strong>alpha</strong> (skill or luck).</p>
+    <p class="note"><b>Don't confuse.</b> SML's x-axis is <strong>beta</strong> (any asset). CML's x-axis is <strong>total σ</strong> (efficient portfolios only).</p>
   </section>
 
   <section id="frontier">
-    <h2><span class="n">09</span>Efficient frontier · MVP · Tangency</h2>
-    <p>Plot every possible portfolio as a dot (x = risk, y = return). The upper-left edge is the <em class="term">efficient frontier</em> — the best return for each risk level.</p>
+    <h2>Frontier · MVP · Tangency</h2>
+    <p>Plot every portfolio (x = risk, y = return). The upper-left edge is the <em class="t">efficient frontier</em>.</p>
     <ul>
-      <li><strong>Minimum-Variance Portfolio (MVP)</strong> — the leftmost point (lowest possible risk). Objective: <span style="font-family:var(--mono)">minimise wᵀΣw</span> s.t. Σw=1.</li>
-      <li><strong>Tangency portfolio</strong> — the point where a line from R_f just touches the frontier. It has the <strong>highest Sharpe ratio</strong> — the "optimal risky portfolio." Objective: <span style="font-family:var(--mono)">maximise (Rᵖ−R_f)/σᵖ</span>.</li>
-      <li><strong>Efficient</strong> = on the upper edge. Anything below/inside is dominated (worse return for the same risk).</li>
+      <li><strong>MVP</strong> — the leftmost point, lowest possible risk. Minimises variance.</li>
+      <li><strong>Tangency</strong> — where a line from R_f just touches the frontier. Highest Sharpe — the optimal risky portfolio.</li>
     </ul>
-    <div class="plain"><span class="k">Constraint matters</span><p><strong>Unconstrained</strong> optimisation allows <em>short-selling</em> (negative weights). <strong>Long-only</strong> forbids it (w ≥ 0, via Solver). Your project uses long-only, so no negatives. Same objective, one extra constraint.</p></div>
+    <p class="note"><b>Long-only.</b> Your project forbids short-selling (weights ≥ 0). Same objective, one extra constraint — so no negative weights.</p>
   </section>
 
   <section id="cal">
-    <h2><span class="n">10</span>CAL / CML &amp; the Sharpe ratio</h2>
-    <p>The <em class="term">Capital Allocation Line (CAL)</em> is the straight line from the risk-free asset through a risky portfolio. Its <strong>slope = the Sharpe ratio</strong>.</p>
-    <div class="fx">Sharpe = <b>( E(Rᵖ) − R_f ) / σᵖ</b>   <span class="c"># return per unit of total risk</span></div>
-    <ul>
-      <li>The <strong>CML (Capital Market Line)</strong> is the special CAL that runs through the <em>tangency</em> portfolio — the steepest possible line, the best risk-return trade-off available.</li>
-      <li>Higher Sharpe = steeper CAL = a better deal. It's the single best "is this portfolio good?" number.</li>
-    </ul>
-    <div class="tip"><span class="k">Combining with the risk-free asset</span><p>Any point on the CAL = mix of R_f and the risky portfolio. Left of the tangency point = lending (holding some cash); right of it = borrowing (leverage). The <em>risky mix</em> stays the same — you just change how much cash vs. risky you hold.</p></div>
+    <h2>CAL / CML &amp; Sharpe</h2>
+    <p>The <em class="t">CAL</em> is the line from the risk-free asset through a risky portfolio. Its <strong>slope is the Sharpe ratio</strong>:</p>
+    <div class="fx">Sharpe = <span class="v">( E(Rᵖ) − R_f ) ÷ σᵖ</span></div>
+    <p>The <em class="t">CML</em> is the steepest possible CAL — the one through the tangency portfolio. Higher Sharpe = steeper line = a better deal.</p>
   </section>
 
   <section id="emh">
-    <h2><span class="n">11</span>Market efficiency (ch3)</h2>
-    <p>The <em class="term">Efficient Market Hypothesis</em>: prices already reflect available information, so you can't consistently beat the market. Three forms:</p>
+    <h2>Market efficiency</h2>
+    <p>The <em class="t">Efficient Market Hypothesis</em>: prices already reflect the information, so you can't reliably beat the market. Three forms:</p>
     <div class="tw"><table>
-      <thead><tr><th>Form</th><th>Prices reflect…</th><th>So you can't profit from…</th></tr></thead>
+      <thead><tr><th>Form</th><th>Reflects…</th><th>So no edge from…</th></tr></thead>
       <tbody>
-        <tr><td><strong>Weak</strong></td><td>past prices</td><td>technical analysis (charts)</td></tr>
-        <tr><td><strong>Semi-strong</strong></td><td>all public info</td><td>fundamental analysis on public data</td></tr>
-        <tr><td><strong>Strong</strong></td><td>all info, incl. private</td><td>even insider info</td></tr>
+        <tr><td>Weak</td><td>past prices</td><td>chart / technical analysis</td></tr>
+        <tr><td>Semi-strong</td><td>all public info</td><td>fundamentals on public data</td></tr>
+        <tr><td>Strong</td><td>all info, even private</td><td>insider info too</td></tr>
       </tbody>
     </table></div>
-    <p><strong>Anomalies</strong> (evidence against EMH): the <em>P/E effect</em> (low-P/E stocks beat), <em>P/BV / value effect</em>, <em>size effect</em> (small caps beat), <em>January effect</em>, <em>momentum</em>.</p>
-    <div class="tip"><span class="k">Concept-Q gold</span><p>If markets are semi-strong efficient, then researching public financials <em>won't</em> beat the market — but you also can't lose systematically. It's an argument <em>for</em> passive/diversified investing.</p></div>
+    <p><strong>Anomalies</strong> (evidence against it): the P/E effect, value (P/BV), size (small caps), January, momentum.</p>
   </section>
 
   <section id="choice">
-    <h2><span class="n">12</span>Theory of choice &amp; risk aversion (ch1)</h2>
+    <h2>Choice &amp; risk aversion</h2>
     <ul>
-      <li><strong>Risk-averse</strong> investor: prefers less risk for the same return; needs a <em>premium</em> to take on risk. (This is the standard assumption.)</li>
-      <li><strong>Utility</strong>: a common form is <span style="font-family:var(--mono)">U = E(R) − ½·A·σ²</span>, where <strong>A</strong> = risk-aversion coefficient. Higher A → penalise risk more → hold safer portfolios.</li>
-      <li><strong>Indifference curves</strong>: combinations of risk/return giving equal utility. Steeper curves = more risk-averse. The best portfolio = where the highest indifference curve <em>touches</em> the CAL.</li>
+      <li><strong>Risk-averse</strong> investors need a premium to take on risk — the standard assumption.</li>
+      <li><strong>Utility</strong>: U = E(R) − ½·A·σ². Higher A (more risk-averse) → penalise risk more → hold safer mixes.</li>
+      <li><strong>Indifference curves</strong>: equal-utility combos of risk and return. The best portfolio is where the highest one touches the CAL.</li>
     </ul>
-    <div class="fx">Optimal risky/cash mix:  w* = <b>( E(R_p) − R_f ) / ( A · σ²_p )</b><span class="c">   # more risk-averse (big A) → less in the risky portfolio</span></div>
+    <div class="fx">optimal cash/risky mix:  w* = <span class="v">( E(R_p) − R_f ) ÷ ( A · σ²_p )</span></div>
   </section>
 
   <section id="cheat">
-    <h2><span class="n">13</span>Formula cheat-sheet</h2>
+    <h2>Formula cheat-sheet</h2>
     <div class="tw"><table>
       <thead><tr><th>Quantity</th><th class="mono">Formula</th></tr></thead>
       <tbody>
-        <tr><td>Return</td><td class="mono">(P₁−P₀+D)/P₀</td></tr>
+        <tr><td>Return</td><td class="mono">(P₁−P₀+D) ÷ P₀</td></tr>
         <tr><td>Portfolio E(R)</td><td class="mono">Σ wᵢE(Rᵢ)</td></tr>
-        <tr><td>Variance (pop)</td><td class="mono">Σ(Rᵢ−R̄)²/N</td></tr>
-        <tr><td>Covariance</td><td class="mono">Σ(R_A−R̄_A)(R_B−R̄_B)/N</td></tr>
-        <tr><td>Correlation</td><td class="mono">σ_AB/(σ_Aσ_B)</td></tr>
-        <tr><td>2-asset variance</td><td class="mono">w²σ²_A+(1−w)²σ²_B+2w(1−w)σ_AB</td></tr>
+        <tr><td>Variance (pop.)</td><td class="mono">Σ(Rᵢ−R̄)² ÷ N</td></tr>
+        <tr><td>Covariance</td><td class="mono">Σ(R_A−R̄_A)(R_B−R̄_B) ÷ N</td></tr>
+        <tr><td>Correlation</td><td class="mono">σ_AB ÷ (σ_A σ_B)</td></tr>
+        <tr><td>2-asset variance</td><td class="mono">w²σ²_A + (1−w)²σ²_B + 2w(1−w)σ_AB</td></tr>
         <tr><td>Diversification</td><td class="mono">(1/n)σ̄² + ((n−1)/n)σ̄_ij</td></tr>
-        <tr><td>Beta</td><td class="mono">Cov(i,M)/Var(M)</td></tr>
-        <tr><td>Portfolio beta</td><td class="mono">Σ wᵢβᵢ</td></tr>
-        <tr><td>Systematic var</td><td class="mono">β²σ²_M  (share = R²)</td></tr>
-        <tr><td>CAPM</td><td class="mono">R_f + β(E(R_M)−R_f)</td></tr>
-        <tr><td>Jensen alpha</td><td class="mono">actual − CAPM</td></tr>
-        <tr><td>Sharpe (CAL slope)</td><td class="mono">(E(Rᵖ)−R_f)/σᵖ</td></tr>
-        <tr><td>Annualise return / SD</td><td class="mono">×12  /  ×√12</td></tr>
+        <tr><td>Beta</td><td class="mono">Cov(i,M) ÷ Var(M)</td></tr>
+        <tr><td>Systematic var.</td><td class="mono">β²σ²_M   (share = R²)</td></tr>
+        <tr><td>CAPM</td><td class="mono">R_f + β(R_M − R_f)</td></tr>
+        <tr><td>Sharpe</td><td class="mono">(E(Rᵖ) − R_f) ÷ σᵖ</td></tr>
+        <tr><td>Annualise</td><td class="mono">return ×12 · risk ×√12</td></tr>
       </tbody>
     </table></div>
   </section>
 
   <section id="mock">
-    <h2><span class="n">★</span>Mock exam</h2>
-    <p class="note" style="margin-bottom:18px;">Try each before opening the answer. Bring a calculator; the numbers are round-ish on purpose.</p>
+    <h2>Mock exam</h2>
+    <p>Try each before revealing. Bring a calculator.</p>
 
-    <div class="q"><div class="ql">Q1 · concept</div><p class="stem">Define systematic and unsystematic risk, and state which one CAPM rewards. Give one real example of each.</p>
-      <details><summary>Answer</summary><div class="ans"><p><strong>Systematic</strong> = market-wide, undiversifiable risk (e.g. an interest-rate hike). <strong>Unsystematic</strong> = company-specific, diversifiable risk (e.g. a product recall). CAPM rewards <strong>only systematic risk</strong> (measured by beta), because unsystematic risk can be diversified away for free.</p></div></details></div>
+    <div class="q"><p class="tag">Q1 · concept</p><p class="stem">Define systematic and unsystematic risk, and say which one CAPM rewards.</p>
+      <details><summary></summary><div class="ans"><p><strong>Systematic</strong> = market-wide, undiversifiable (e.g. a rate hike). <strong>Unsystematic</strong> = company-specific, diversifiable (e.g. a recall). CAPM rewards <strong>only systematic</strong> risk — you could diversify the other away for free.</p></div></details></div>
 
-    <div class="q"><div class="ql">Q2 · calc · returns</div><p class="stem">A stock rises from ฿40 to ฿44 and pays a ฿2 dividend. What's the holding-period return?</p>
-      <details><summary>Answer</summary><div class="ans"><div class="fx">R = (44 − 40 + 2)/40 = 6/40 = <b>15%</b></div></div></details></div>
+    <div class="q"><p class="tag">Q2 · returns</p><p class="stem">A stock goes ฿40 → ฿44 and pays a ฿2 dividend. Holding-period return?</p>
+      <details><summary></summary><div class="ans"><div class="fx">R = (44 − 40 + 2) ÷ 40 = <span class="v">15%</span></div></div></details></div>
 
-    <div class="q"><div class="ql">Q3 · calc · 2-asset</div><p class="stem">Assets A (E(R)=10%, σ=20%) and B (E(R)=16%, σ=30%), correlation ρ=0.2, weights 50/50. Find the portfolio return and SD.</p>
-      <details><summary>Answer</summary><div class="ans"><div class="fx">E(R_p) = 0.5·10 + 0.5·16 = <b>13%</b><br><br>σ_AB = ρσ_Aσ_B = 0.2·0.20·0.30 = 0.012<br>σ²_p = 0.5²·0.20² + 0.5²·0.30² + 2·0.5·0.5·0.012<br>    = 0.010 + 0.0225 + 0.006 = 0.0385<br>σ_p = √0.0385 = <b>19.6%</b></div><p>Note the SD (19.6%) is <em>below</em> the simple average of 25% — that's the diversification benefit from ρ&lt;1.</p></div></details></div>
+    <div class="q"><p class="tag">Q3 · two-asset</p><p class="stem">A: E(R)=10%, σ=20%. B: E(R)=16%, σ=30%. ρ=0.2, weights 50/50. Find return and σ.</p>
+      <details><summary></summary><div class="ans"><div class="fx">E(R) = 0.5·10 + 0.5·16 = <span class="v">13%</span><br><br>σ_AB = 0.2·0.20·0.30 = 0.012<br>σ²_p = 0.25·0.04 + 0.25·0.09 + 2·0.25·0.012 = 0.0385<br>σ_p = √0.0385 = <span class="v">19.6%</span></div><p>Below the 25% simple average — that's the diversification benefit.</p></div></details></div>
 
-    <div class="q"><div class="ql">Q4 · calc · beta &amp; CAPM</div><p class="stem">R_f = 1.57%, market premium = 7%. A stock has β = 1.3. What return does CAPM require? If it actually returned 12%, what's Jensen's alpha?</p>
-      <details><summary>Answer</summary><div class="ans"><div class="fx">CAPM = 1.57% + 1.3·7% = 1.57 + 9.10 = <b>10.67%</b><br>alpha = 12% − 10.67% = <b>+1.33%</b>   (beat the model)</div></div></details></div>
+    <div class="q"><p class="tag">Q4 · CAPM</p><p class="stem">R_f=1.57%, premium=7%, β=1.3. CAPM required return? If it earned 12%, the alpha?</p>
+      <details><summary></summary><div class="ans"><div class="fx">CAPM = 1.57 + 1.3·7 = <span class="v">10.67%</span><br>alpha = 12 − 10.67 = <span class="v">+1.33%</span></div></div></details></div>
 
-    <div class="q"><div class="ql">Q5 · concept · EMH</div><p class="stem">Under semi-strong efficiency, can you beat the market by studying a company's published financial statements? Explain.</p>
-      <details><summary>Answer</summary><div class="ans"><p><strong>No.</strong> Semi-strong efficiency means prices already reflect <em>all public information</em>, including published financials — so fundamental analysis on public data gives no edge. (You'd need private/inside info, and that's the strong form.)</p></div></details></div>
+    <div class="q"><p class="tag">Q5 · EMH</p><p class="stem">Under semi-strong efficiency, can studying published financials beat the market?</p>
+      <details><summary></summary><div class="ans"><p><strong>No.</strong> Semi-strong means prices already reflect all <em>public</em> info, so fundamental analysis on public data gives no edge.</p></div></details></div>
 
-    <div class="q"><div class="ql">Q6 · calc · Sharpe</div><p class="stem">A portfolio returns 16% with SD 17%. R_f = 1.57%. What's its Sharpe ratio? What does it represent geometrically?</p>
-      <details><summary>Answer</summary><div class="ans"><div class="fx">Sharpe = (16 − 1.57)/17 = 14.43/17 = <b>0.85</b></div><p>It's the <strong>slope of the CAL</strong> — return earned per unit of total risk. Higher = steeper line = a better risk-return deal.</p></div></details></div>
+    <div class="q"><p class="tag">Q6 · Sharpe</p><p class="stem">Portfolio: 16% return, 17% σ, R_f=1.57%. Sharpe ratio? What is it, geometrically?</p>
+      <details><summary></summary><div class="ans"><div class="fx">Sharpe = (16 − 1.57) ÷ 17 = <span class="v">0.85</span></div><p>The <strong>slope of the CAL</strong> — return earned per unit of total risk.</p></div></details></div>
 
-    <div class="q"><div class="ql">Q7 · calc · systematic split</div><p class="stem">A stock has total variance 0.09 and R² (vs the market) of 0.30. Split its risk into systematic and unsystematic variance.</p>
-      <details><summary>Answer</summary><div class="ans"><div class="fx">Systematic = R²·total = 0.30·0.09 = <b>0.027</b><br>Unsystematic = (1−R²)·total = 0.70·0.09 = <b>0.063</b></div><p>So 30% of its risk is market-driven, 70% is company-specific (diversifiable).</p></div></details></div>
+    <div class="q"><p class="tag">Q7 · risk split</p><p class="stem">Total variance 0.09, R² = 0.30. Split into systematic and unsystematic variance.</p>
+      <details><summary></summary><div class="ans"><div class="fx">systematic = 0.30 · 0.09 = <span class="v">0.027</span><br>unsystematic = 0.70 · 0.09 = <span class="v">0.063</span></div><p>30% market-driven, 70% company-specific.</p></div></details></div>
 
-    <div class="q"><div class="ql">Q8 · concept · frontier</div><p class="stem">What is the tangency portfolio, and why is it special? How does it differ from the minimum-variance portfolio?</p>
-      <details><summary>Answer</summary><div class="ans"><p>The <strong>tangency portfolio</strong> is where a line from the risk-free rate just touches the efficient frontier — it has the <strong>highest Sharpe ratio</strong>, so it's the optimal risky portfolio (every investor should hold this mix of risky assets, then adjust risk with cash/leverage). The <strong>MVP</strong> is the lowest-risk point on the frontier — it minimises variance regardless of return, so it usually has a lower Sharpe than the tangency.</p></div></details></div>
+    <div class="q"><p class="tag">Q8 · frontier</p><p class="stem">What is the tangency portfolio, and how does it differ from the MVP?</p>
+      <details><summary></summary><div class="ans"><p><strong>Tangency</strong> = highest-Sharpe portfolio (where a line from R_f touches the frontier) — the optimal risky mix. <strong>MVP</strong> = lowest-risk point, minimises variance regardless of return, usually a lower Sharpe.</p></div></details></div>
 
-    <div class="q"><div class="ql">Q9 · calc · diversification</div><p class="stem">Average single-stock variance = 0.008, average covariance = 0.002. For a naïve 10-stock portfolio, find total variance and the % that is undiversifiable.</p>
-      <details><summary>Answer</summary><div class="ans"><div class="fx">Total = (1/10)·0.008 + (9/10)·0.002 = 0.0008 + 0.0018 = <b>0.0026</b><br>Undiversifiable share = 0.0018 / 0.0026 = <b>69%</b></div><p>As n→∞, the first term →0 and total → 0.002 (the average covariance).</p></div></details></div>
+    <div class="q"><p class="tag">Q9 · diversification</p><p class="stem">Avg variance 0.008, avg covariance 0.002. Naïve 10-stock total variance, and the undiversifiable %?</p>
+      <details><summary></summary><div class="ans"><div class="fx">total = (1/10)·0.008 + (9/10)·0.002 = <span class="v">0.0026</span><br>undiversifiable = 0.0018 ÷ 0.0026 = <span class="v">69%</span></div></div></details></div>
 
-    <div class="q"><div class="ql">Q10 · concept</div><p class="stem">Why does portfolio beta average simply (Σwᵢβᵢ) but portfolio variance does not?</p>
-      <details><summary>Answer</summary><div class="ans"><p>Beta is a <em>linear</em> measure of co-movement with one factor (the market), so weighting and adding is exact. Variance involves <strong>covariances between every pair of assets</strong> (the cross terms), which don't vanish — so you must use the full <span style="font-family:var(--mono)">wᵀΣw</span> formula, not a simple average.</p></div></details></div>
+    <div class="q"><p class="tag">Q10 · concept</p><p class="stem">Why does portfolio beta average simply, but variance doesn't?</p>
+      <details><summary></summary><div class="ans"><p>Beta is linear co-movement with one factor, so it weights and adds exactly. Variance carries <strong>covariances between every pair</strong> — the cross terms don't vanish, so you need the full formula.</p></div></details></div>
 
-    <div class="q"><div class="ql">Q11 · concept · risk aversion</div><p class="stem">Two investors face the same CAL. One is more risk-averse (higher A). Who holds more of the risky portfolio, and where do they sit on the line?</p>
-      <details><summary>Answer</summary><div class="ans"><p>The <strong>less</strong> risk-averse investor holds more of the risky portfolio (bigger w*), sitting further <em>right</em> on the CAL (possibly borrowing/leveraging). The more risk-averse one holds more cash, sitting <em>left</em>, closer to R_f. Same risky mix (the tangency) — just a different cash split.</p></div></details></div>
-
-    <div class="q"><div class="ql">Q12 · concept · your project</div><p class="stem">Your group used long-only optimisation. Explain what that means and why the unconstrained "tangency" had a higher Sharpe.</p>
-      <details><summary>Answer</summary><div class="ans"><p><strong>Long-only</strong> = weights must be ≥ 0 (no short-selling). The <strong>unconstrained</strong> version is allowed to short stocks (negative weights), which gives it more freedom and thus a mathematically higher Sharpe — but short-selling isn't permitted for us, and it over-fits the sample. Long-only is the realistic, defensible choice, so we use it even though its Sharpe is a bit lower.</p></div></details></div>
+    <div class="q"><p class="tag">Q11 · your project</p><p class="stem">Explain long-only optimisation, and why the unconstrained tangency had a higher Sharpe.</p>
+      <details><summary></summary><div class="ans"><p><strong>Long-only</strong> = weights ≥ 0 (no short-selling). The <strong>unconstrained</strong> version may go negative (short), giving it more freedom and a higher — but unrealistic and over-fit — Sharpe. Long-only is the honest, defensible choice.</p></div></details></div>
   </section>
 
   <section id="traps">
-    <h2><span class="n">!!</span>Common traps (read the night before)</h2>
+    <h2>Common traps</h2>
     <ul>
-      <li>Returns scale <strong>×12</strong>; SD scales <strong>×√12</strong>. Never the same.</li>
-      <li>2-asset variance: keep the <strong>2·w(1−w)·σ_AB</strong> term, and square the weights.</li>
-      <li>Covariance can be <strong>negative</strong> — that <em>lowers</em> portfolio risk. Don't force it positive.</li>
-      <li><strong>SML</strong> uses beta (any asset); <strong>CML</strong> uses total SD (efficient portfolios only).</li>
-      <li>Portfolio <strong>beta</strong> averages simply; portfolio <strong>variance</strong> does not.</li>
-      <li>Systematic share = <strong>R²</strong>; unsystematic = 1−R². They're the same as the var/cov method.</li>
-      <li>Sharpe uses <strong>total SD</strong>; Treynor uses <strong>beta</strong>. Don't swap the denominator.</li>
-      <li>Diversification removes company (unsystematic) risk only — the <strong>average covariance</strong> is the floor.</li>
-      <li>Know your project constants cold: <strong>R_f = 1.57%</strong> (ThaiBMA 5-yr), <strong>ERP = 7%</strong> (Damodaran), <strong>population SD</strong>, <strong>long-only</strong>.</li>
+      <li>Returns scale ×12; risk (σ) scales ×√12. Never the same.</li>
+      <li>2-asset variance: keep the 2·w(1−w)·σ_AB term, and square the weights.</li>
+      <li>Covariance can be negative — that <em>lowers</em> portfolio risk.</li>
+      <li>SML uses beta (any asset); CML uses total σ (efficient portfolios only).</li>
+      <li>Portfolio beta averages simply; portfolio variance does not.</li>
+      <li>Systematic share = R²; unsystematic = 1 − R² (same as the covariance method).</li>
+      <li>Sharpe uses total σ; Treynor uses beta. Don't swap the denominator.</li>
+      <li>Your constants: R_f = 1.57% (ThaiBMA), premium = 7% (Damodaran), population σ, long-only.</li>
     </ul>
   </section>
 
-  <div class="foot">Atlas · Fin-Eng Studio · Portfolio Analysis 01526228. Study companion to <a href="portfolio.html">the interactive frontier tool</a>. Elton &amp; Gruber, ch1–4.</div>
+  <footer>Atlas · Fin-Eng Studio · Portfolio Analysis 01526228 · Elton &amp; Gruber ch1–4. Companion to <a href="portfolio.html">the interactive frontier tool</a>.</footer>
 </div>
 <script src="../lib/atlas-fx.js"></script>
 </body>
