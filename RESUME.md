@@ -1,8 +1,34 @@
 # RESUME — where we are, for any new session
 
 > **Purpose:** If this terminal/session is lost, read this file first. It says what's done,
-> what's in flight, and the one true path. Last updated: 2026-06-11 (early AM).
+> what's in flight, and the one true path. Last updated: 2026-08-31.
 
+
+## ✅ Done 2026-08-31: SETScout honesty pass + pre-registered blind test
+
+**Full detail: `setscout/CHANGELOG.md`. Nothing pushed — all staged for review.**
+
+- **`p_win` stopped being fake.** It was `0.44 + 0.22 × score` — a straight line off the
+  ranking, shown to beginners as "Hit rate". `backtest.py` had already measured the truth
+  into `calibration.json` on 2 Aug and it was never wired in. Now it reads that file: the
+  real up-rate is **flat ~47% across every score decile**, so the score does not predict
+  direction — and the website says so.
+- **`universe.json` split out.** The engine used to read its ticker list from `today.json`,
+  the file it overwrites, so one failed download deleted a stock forever (4 were lost).
+  Now read-only. Recovered BANPU, fixed two wrong symbols (BGRIM2→BCPG, ORIGIN→ORI),
+  retired INTUCH (delisted, merged into GULF). **92 → 95 stocks.**
+- **Daily refresh fails loudly** (`verify_today.py`). It had been dead since 9 Aug and said
+  nothing — the site served 3-week-old prices. Still to diagnose *why*: check the Actions
+  tab, likely Yahoo blocking GitHub's IPs.
+- **All 5 backtests now write `reports/*.md`** via `reportlib.py`. Their numbers previously
+  existed only in terminal scrollback — uncitable for the report.
+- **BLIND TEST (`blind_test.py`) — the headline.** After ~15 looks at 2016–2026 we saw the
+  *aggressive* profile beat buy-and-hold with a 96% luck bar. Pre-registered a one-shot test
+  on 1999–2014, a period never examined alone. **It did not replicate: 81% luck bar (bar was
+  90%; 96.6% after correcting for 3 profiles), and it beat B&H in only 2/5 three-year blocks.**
+  A finding we half-believed was refuted by our own protocol. That is the result to present.
+  Caveat stated up front: sealed-period buy-and-hold averages +41%/yr, which is survivorship
+  bias — compare rows, never quote levels.
 
 ## ✅ Done 2026-06-13: finance suite + PC speedup + name canary
 

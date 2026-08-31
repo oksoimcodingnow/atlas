@@ -140,7 +140,9 @@ The **"shop window"** (webapp layer), fully working:
     "sector": "ICT", "score": 0.81, "verdict": "BUY",         // BUY | WAIT | AVOID
     "risk_month_pct": -9,       // Monte-Carlo normal-bad month (%)
     "max_weight": 0.34,         // position-size cap (fraction of 100)
-    "p_win": 0.61,              // calibrated hit-rate → trust label
+    "p_win": 0.47,              // MEASURED up-rate for this score decile (calibration.json).
+                                // Flat ~44-50% across ALL deciles: the score does not predict
+                                // direction. Was a fabricated 0.44+0.22*score until 30 Aug 2026.
     "because": ["quality:pos","momentum:pos"],   // factor:dir codes
     "last": 285.0, "chg_pct": 0.7
   }]
