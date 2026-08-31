@@ -1,3 +1,12 @@
+> **STATUS 1 Sep 2026** - this document is the original design brief and is kept
+> for the architecture and rationale. For what the system actually does *now*,
+> read in this order: `CHANGELOG.md` (what changed and why) -> `REPORT.md` (the
+> findings) -> `CONTINUE.md` (current state) -> `NEXT.md` (what to do next).
+>
+> Superseded since this was written: `p_win` is now measured, not invented; the
+> universe lives in `universe.json` (95 stocks, read-only); every backtest writes
+> to `reports/`; and a pre-registered blind test refuted the apparent edge.
+
 # 🧭 SETScout — Project Handoff
 
 > Everything a new teammate needs to carry this project onward. Read top-to-bottom once,

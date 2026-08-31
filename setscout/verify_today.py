@@ -5,8 +5,13 @@
 Run by .github/workflows/refresh-setscout.yml immediately after run_today.py and
 BEFORE the commit step. Why it exists: the workflow's commit step is
 `git diff --staged --quiet || git commit`, so a crashed engine committed nothing
-and reported nothing. The site quietly served stale data from 9 Aug to 30 Aug 2026
-and no one was told. A non-zero exit here fails the job, which GitHub emails about.
+and report nothing - a silent failure path with no alarm on it. A non-zero exit
+here fails the job, which GitHub emails about.
+
+(An earlier version of this docstring claimed the Action had been dead 9-30 Aug.
+That was wrong: it ran every day, 22 commits. The diagnosis came from a local git
+log that had never been fetched. This guard closes a real hole, but a hypothetical
+one - not an observed outage.)
 
 No third-party dependencies on purpose - this must still run when the engine's
 own dependencies are what broke.

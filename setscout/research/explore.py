@@ -32,7 +32,8 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+# scripts live in research/, but the data and reports live one level up
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(HERE, ".price_cache.csv")
 IDX_CACHE = os.path.join(HERE, ".index_cache.csv")
 FACT = ["momentum", "growth", "value", "quality", "health"]

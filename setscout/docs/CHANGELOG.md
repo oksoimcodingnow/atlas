@@ -194,7 +194,9 @@ The real up-rate is **flat at ~47.2%** across every decile, spread 4.5pp, with n
 
 ### 2. The daily workflow now fails loudly
 
-**Why.** `.github/workflows/refresh-setscout.yml` runs daily at 11:00 UTC. It ran six times — 5, 5, 6, 7, 8, 9 August — and then stopped. **`today.json` sat at 2026-08-09 for 21 days** and nothing said so.
+**Why.** `.github/workflows/refresh-setscout.yml` runs daily at 11:00 UTC. The commit step is conditional, so a crashed engine would commit nothing and report nothing — a silent failure path with no alarm on it.
+
+> **Correction, 1 Sep 2026.** This entry originally claimed the Action had been dead since 9 August and that the site served stale data for 21 days. **That was wrong.** It ran every single day, 10–31 August, 22 commits. The diagnosis came from a local git log that was 22 commits behind because it had never been fetched. What *was* true: the live site ran the **old engine** (92 stocks, fabricated `p_win: 0.66`) until the 1 Sep push. The guard below is still worth having, but it closes a hypothetical hole rather than an observed outage.
 
 The commit step is `git diff --staged --quiet || git commit`. If the engine crashes, there's nothing staged, so the workflow "succeeds" with no commit, no error, and no notification. The site just keeps serving stale data forever.
 

@@ -20,7 +20,8 @@ import datetime
 import os
 import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+# scripts live in research/, but the data and reports live one level up
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPORTS = os.path.join(HERE, "reports")
 
 

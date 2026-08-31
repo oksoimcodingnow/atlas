@@ -5,6 +5,21 @@
 
 ---
 
+## 🔴 Read this before touching anything (1 Sep 2026)
+
+- **The daily GitHub Action has always worked.** It committed every day 10-31 Aug
+  (22 refreshes). An earlier note claiming it died on 9 Aug was wrong - that came
+  from a local git log that was 22 commits behind because it had never been fetched.
+  **Always `git fetch` before diagnosing anything about the workflow.**
+- **The live site now runs the new engine** (pushed 1 Sep): 95 stocks, calibrated
+  `p_win`, corrected thresholds. Before that it served 92 stocks and a fabricated
+  `p_win` of 0.66.
+- **`REPORT.md` is the primary report.** `quant-project/REPORT-draft.md` (13 Jul)
+  predates the SETScout framing - merge or retire it, decision not yet made.
+- **Never quote these numbers**: sealed-period returns, +41.1% sealed buy&hold,
+  full-window CAGR, +164% net 10y. All survivorship-inflated. See `REPORT.md`
+  Appendix B for the full list and what to say instead.
+
 ## ✅ Where we are (all working)
 - **`index.html`** — the website (SET100 shop-window): verdict + 4 sentences · filter by **verdict + sector** · **TH/EN** · **light/dark** · **risk-quiz personalization** · **"ⓘ How we score"** method panel · **💰 DCA calculator**.
 - **`universe.json`** — **the canonical stock list (read-only for the engine).** Edit here to add/remove a stock. Added 30 Aug 2026 so a failed fetch can no longer delete a ticker forever.
@@ -13,7 +28,7 @@
 - **`verify_today.py`** — health check run by the GitHub Action before it commits; fails loudly instead of silently serving stale data.
 - **`CHANGELOG.md`** — **what changed and why. Read this first if something looks different.**
 - **`gen_today.js`** — mock-data generator (build the website without running the engine).
-- **`research/`** — `expert-ahp.md` (AHP factor-weight questionnaire) + `investor-survey.md`. **Not sent yet.**
+- **`research/`** — all analysis scripts (backtests, blind test, sizing test, explorer). **Note:** `expert-ahp.md` and `investor-survey.md` are referenced elsewhere but **were never actually written** — they do not exist on disk.
 
 ## ⚠️ The honest finding (this shapes the whole story — read it)
 The backtest showed the v1 factor strategy **does NOT beat buy-and-hold** (+6.7% vs +40% over 7y), **beats only 7% of random portfolios**, and the score **doesn't predict 1-month returns** (calibration flat ~47% across all deciles, spread only 4.5pp).
@@ -31,8 +46,8 @@ Then:
 ```bash
 # NOTE: the default `python` on this machine has NO pandas. Use the venv:
 C:\Users\HOME\.venvs\quant-project\Scripts\python.exe run_today.py   # refresh today.json
-C:\Users\HOME\.venvs\quant-project\Scripts\python.exe backtest.py    # honesty check → calibration.json
-C:\Users\HOME\.venvs\quant-project\Scripts\python.exe explore.py --years  # bias, year by year
+C:\Users\HOME\.venvs\quant-project\Scripts\python.exe research/backtest.py    # honesty check → calibration.json
+C:\Users\HOME\.venvs\quant-project\Scripts\python.exe research/explore.py --years  # bias, year by year
 ```
 Git flow: `git pull` → work → `git add -A && git commit -m "…" && git push`
 

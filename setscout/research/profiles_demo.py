@@ -8,7 +8,8 @@ the multi-engine idea is real.
 import json, os
 import numpy as np, pandas as pd, yfinance as yf
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+# scripts live in research/, but the data and reports live one level up
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 uni = json.load(open(os.path.join(HERE, "today.json"), encoding="utf-8"))
 meta = {s["ticker"]: {"name": s["name"], "sector": s["sector"]} for s in uni["stocks"]}
 tickers = list(meta)

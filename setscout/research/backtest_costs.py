@@ -12,7 +12,8 @@ from reportlib import capture, load_universe
 capture("backtest_costs", "Cost stress test - does the edge survive trading costs?",
         {"rebalance": "yearly per profile", "costs": "Thai round-trip", "reports": "gross vs net + turnover"})
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+# scripts live in research/, but the data and reports live one level up
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 meta, _uni_src = load_universe()
 tickers = list(meta)
 print(f"universe: {len(tickers)} tickers from {_uni_src}")

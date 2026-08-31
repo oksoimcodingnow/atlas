@@ -13,13 +13,13 @@
 ## ✅ Done 30 Aug 2026 (see `CHANGELOG.md` for the full why)
 - ~~Re-run backtest as "buy & HOLD"~~ → `backtest_hold.py`
 - ~~Wire real `p_win` from `calibration.json`~~ → **done.** It now shows the *measured* up-rate (flat ~47% across every decile), and the UI says the score doesn't predict direction
-- **Daily workflow now fails loudly** (`verify_today.py`) — it had silently served stale data for 21 days
+- **Daily workflow now fails loudly** (`verify_today.py`) — closes a silent-failure path. (The Action itself was never broken; an earlier note saying so came from an unfetched local clone.)
 - **`universe.json` split out** — engine can no longer lose tickers by overwriting its own input (92 → 95 stocks)
 
 ## ▶️ Do FIRST (next session)
-1. **AHP survey** — finalize `research/expert-ahp.md`, send to 6–10 experts. **The long pole: it depends on other people, so start it before anything else.** Gives real weights *and*, via bootstrap, a defensible confidence number.
-2. **Check the Actions tab** — find out *why* the daily refresh stopped on 9 Aug. Likely Yahoo rate-limiting the runner; add retry+backoff once the log confirms.
-3. **Write the report.** Biggest grade component. Every number is now on disk in `reports/`, and the story is strong: 15 looks produced an apparent edge → we pre-registered one test on a period we'd never seen → it failed → and the benchmark itself was 4× inflated.
+1. **AHP survey** — `research/expert-ahp.md` **does not exist** (this file used to say "finalize" it; it was never written). Write it, then send to 6–10 experts. **The long pole: it depends on other people, so start it before anything else.** Gives real weights *and*, via bootstrap, a defensible confidence number.
+2. **Legal pages** — Terms of Use, cookie/storage notice, privacy. The site is public and gives stock verdicts; PDPA applies the moment the survey collects names.
+3. **Finish the report.** `REPORT.md` v1 drafted 1 Sep — needs team review, real names/IDs, and a decision on whether `quant-project/REPORT-draft.md` merges in or retires.
 4. ~~Fix the verdict thresholds~~ → done 31 Aug (now stated as percentiles).
 5. ~~Save backtest numbers to `reports/`~~ → done 31 Aug via `reportlib.py`; all 5 backtests + `blind_test.py` write there now.
 
