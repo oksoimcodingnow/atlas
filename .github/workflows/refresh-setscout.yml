@@ -25,6 +25,14 @@ jobs:
       - name: Run the engine
         run: python setscout/run_today.py
 
+      # Fail LOUDLY, before the commit step. The commit is conditional
+      # (`git diff --staged --quiet || git commit`), so a crashed engine used to
+      # commit nothing and say nothing - the site served stale data from
+      # 9 Aug to 30 Aug 2026 with no signal. A non-zero exit fails the job,
+      # and GitHub emails the repo owner.
+      - name: Verify the refresh is healthy
+        run: python setscout/verify_today.py
+
       - name: Commit refreshed data (only if it changed)
         run: |
           git config user.name  "github-actions[bot]"

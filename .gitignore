@@ -3,3 +3,16 @@
 # workspace files churn on every click, and plugin configs can leak
 # local paths. Notes themselves are normal files and stay tracked.
 .obsidian/
+
+# Python bytecode from the setscout engine/backtests
+__pycache__/
+*.pyc
+
+# derived price caches for explore.py
+.price_cache.csv
+.index_cache.csv
+
+# local scratch: crash dumps, screenshots, tool scratch dirs
+*.stackdump
+_*.png
+.impeccable/
