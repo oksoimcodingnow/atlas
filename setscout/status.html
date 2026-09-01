@@ -153,6 +153,55 @@
   .hnote{color:var(--muted);font-size:13.5px;margin-top:14px}
   .hnote b{color:var(--text)} .hnote code{font-family:var(--mono);font-size:12.5px}
 
+  /* ---------- mobile: the answer first, the pipeline as a list ---------- */
+  .nodelist{display:none;padding:6px;overflow-x:visible}
+  .nl{
+    display:grid;grid-template-columns:auto 1fr auto;gap:0 12px;align-items:center;
+    width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--rule);
+    padding:13px 10px;cursor:pointer;color:inherit;font-family:inherit;min-height:52px;
+  }
+  .nl:last-child{border-bottom:0}
+  .nl:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:8px}
+  .nl .d{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+  .nl .n{font-size:14px;font-weight:600}
+  .nl .r{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+  .nl .s{grid-column:2/4;font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--muted);margin-top:2px}
+  .nl.mon{border-top:1px dashed var(--border);margin-top:4px}
+  .nl.mon .n{color:var(--accent-2)}
+
+  @media (max-width:760px){
+    .wrap{padding:18px 18px 70px}
+    .verdict{padding:30px 0 24px;gap:16px}
+    .verdict h1{font-size:clamp(28px,8vw,38px);max-width:none}
+    .verdict .side{margin-left:0;text-align:left;width:100%;display:grid;
+      grid-template-columns:repeat(3,1fr);gap:10px;min-width:0}
+    .verdict .side dd{margin:2px 0 0}
+    section{margin-top:40px}
+    /* the SVG is desktop-only; the list below carries the same data */
+    .graph{display:none}
+    .nodelist{display:block}
+    .chk{flex-wrap:wrap;gap:0 12px;padding:13px 2px}
+    .chk .nm{min-width:0;flex:1 1 auto}
+    .chk .rt{margin-left:auto}
+    .chk .de{flex:1 1 100%;margin-top:3px}
+    .btn{padding:12px 16px;min-height:44px;display:inline-flex;align-items:center}
+    .acts{flex:1 1 100%}
+    .acts .btn{flex:1;justify-content:center}
+    .strip{height:40px}
+    .detail{padding:16px 17px}
+  }
+  @media (max-width:400px){
+    .verdict .side{grid-template-columns:repeat(2,1fr)}
+    .brand .t{display:none}
+  }
+
+  .skip{
+    position:absolute;left:-9999px;top:8px;z-index:70;
+    background:var(--bg-2);color:var(--text);border:1px solid var(--border-hi);
+    border-radius:8px;padding:11px 16px;font-size:13px;font-weight:600;text-decoration:none;
+  }
+  .skip:focus{left:16px}
+
   .tip{
     position:fixed;z-index:var(--z-tip);pointer-events:none;opacity:0;transition:opacity .12s;
     background:var(--bg-2);border:1px solid var(--border-hi);color:var(--text);
@@ -164,6 +213,7 @@
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to status</a>
 <div class="wrap" id="root">
 
   <div class="bar">
@@ -173,11 +223,12 @@
       <span class="t">Signal path</span>
     </a>
     <div class="acts">
-      <button class="btn" id="again">Re-check now</button>
+      <button class="btn" id="again">Run the checks again</button>
       <a class="btn" href="index.html">Back to app</a>
     </div>
   </div>
 
+  <main id="content">
   <div class="verdict">
     <div class="beacon"></div>
     <h1 id="hl">Tracing the <i>signal</i>…</h1>
@@ -200,7 +251,8 @@
     <div class="graph">
       <svg id="graph" viewBox="0 0 1012 268" role="img" aria-label="Pipeline node graph from Yahoo Finance through to the visitor's browser"></svg>
     </div>
-    <div class="detail" id="detail"><p class="hint">Select a node above.</p></div>
+    <div class="graph nodelist" id="nodelist" role="list" aria-label="Pipeline stages"></div>
+    <div class="detail" id="detail"><p class="hint">Pick any stage above to see what it does and how it fails.</p></div>
   </section>
 
   <section>
@@ -224,6 +276,8 @@
     <div class="axis"><span id="axL">—</span><span>now</span></div>
     <p class="hnote" id="hnote"></p>
   </section>
+
+  </main>
 
   <div class="foot">
     <span>Probe runs client-side &middot; history from GitHub Actions</span>
@@ -257,9 +311,9 @@
      risk:"Rate-limits cloud IP ranges. If the site ever fetched per visitor instead of once a day, this is what would break first."},
     {id:"cron", nm:"GitHub cron", sub:"scheduler", 
      what:"Fires the refresh workflow at 11:00 UTC, ninety minutes after the SET close so prices are final.",
-     risk:"Best-effort scheduling with no guarantee. Measured drift on this repo reaches 10.3 hours, and nothing raises an alarm when it slips."},
+     risk:"GitHub runs scheduled jobs when it has capacity, not at the minute you asked. Measured lateness here reaches 10.3 hours, and nothing raises an alarm when it slips."},
     {id:"engine", nm:"run_today.py", sub:"engine", 
-     what:"Pulls two years of prices for 95 tickers, computes five factors, sector-neutralises, and ranks under three weightings.",
+     what:"Pulls two years of prices for 95 stocks, computes five factors, judges each stock against its own sector rather than the whole market, then ranks it three times for the three risk profiles.",
      risk:"Ten seconds of work. Never the bottleneck; optimising it would change nothing."},
     {id:"gate", nm:"verify_today.py", sub:"gate", 
      what:"Refuses to let a broken refresh reach the site. Checks coverage, the generated date, all three profiles, and the calibration block.",
@@ -281,6 +335,9 @@
   var MON={x:421,y:170,w:170,h:56};
 
   NODES.forEach(function(n,i){ n.x = NX0 + i*(NW+NGAP); });
+  var MONITOR={id:"monitor", nm:"Monitor", sub:"observer",
+    what:"Every thirty minutes, a job on GitHub's own machines loads the site, checks it, and files the result on a separate branch.",
+    risk:"Runs on different infrastructure to the site it watches. A monitor hosted on Firebase could not report Firebase being down, which is the whole reason it lives elsewhere."};
 
   var probe={};                     /* filled by run() */
 
@@ -357,29 +414,62 @@
         d:"M "+(MON.x+MON.w/2)+" "+MON.y+" C "+(MON.x+MON.w/2)+" "+(MON.y-34)+", "+
           (n.x+NW/2)+" "+(NY+NH+40)+", "+(n.x+NW/2)+" "+(NY+NH)}));
     });
+    drawList();
     var pl=svg("text",{x:MON.x+MON.w/2,y:MON.y+MON.h+18,"text-anchor":"middle",class:"glabel"});
     pl.setAttribute("fill","var(--accent-2)");pl.setAttribute("fill-opacity",".72");
     pl.textContent="probes from outside Firebase";g.appendChild(pl);
   }
 
+  /* Same nodes, a form that fits a narrow screen. Buttons, not divs, so they
+     are reachable by keyboard and announced correctly. */
+  function drawList(){
+    var el=document.getElementById("nodelist"); if(!el) return;
+    var rows=NODES.map(function(n){
+      var st=nodeState(n.id);
+      return '<button class="nl" role="listitem" data-id="'+n.id+'">'+
+        '<span class="d" style="background:'+COL[st]+'"></span>'+
+        '<span class="n">'+n.nm+'</span>'+
+        '<span class="r" style="color:'+COL[st]+'">'+VAL[n.id]()+'</span>'+
+        '<span class="s">'+n.sub.toUpperCase()+'</span></button>';
+    }).join("");
+    rows+='<button class="nl mon" data-id="monitor" role="listitem">'+
+      '<span class="d" style="background:var(--accent-2)"></span>'+
+      '<span class="n">Monitor</span>'+
+      '<span class="r" style="color:var(--accent-2)">30 min</span>'+
+      '<span class="s">GITHUB ACTIONS, OUTSIDE FIREBASE</span></button>';
+    el.innerHTML=rows;
+    el.addEventListener("click",function(e){
+      var b=e.target.closest(".nl"); if(b) select(b.dataset.id);
+    });
+  }
+
   function select(id){
-    var n=NODES.filter(function(x){return x.id===id;})[0]; if(!n)return;
-    var st=nodeState(id);
+    var n=id==="monitor"?MONITOR:NODES.filter(function(x){return x.id===id;})[0];
+    if(!n)return;
+    var st=id==="monitor"?"ok":nodeState(id);
     var word={ok:"Healthy",warn:"Degraded",bad:"Failing",idle:"Checking"}[st];
     $("#detail").innerHTML=
       '<div class="dh"><h3>'+n.nm+'</h3><span class="st" style="color:'+COL[st]+'">'+word+'</span></div>'+
       '<p>'+n.what+'</p>'+
       '<div class="kv"><div><dt>Role</dt><dd>'+n.sub+'</dd></div>'+
-      '<div><dt>Reading</dt><dd style="color:'+COL[st]+'">'+VAL[n.id]()+'</dd></div></div>'+
+      '<div><dt>Reading</dt><dd style="color:'+COL[st]+'">'+(id==="monitor"?"every 30 min":VAL[n.id]())+'</dd></div></div>'+
       '<p style="margin-top:13px">'+n.risk+'</p>';
   }
 
   /* ---------------- live probe ---------------- */
-  async function timed(url,opt){
-    var t0=performance.now();
-    try{var r=await fetch(url,Object.assign({cache:"no-store"},opt||{}));
-      return {ok:r.ok,code:r.status,ms:Math.round(performance.now()-t0),res:r};}
-    catch(err){return {ok:false,code:0,ms:Math.round(performance.now()-t0),err:String(err.message||err)};}
+  /* Every request is bounded. Without a timeout a hung connection left the page
+     saying "Tracing the signal" indefinitely, which is worse than saying it failed. */
+  async function timed(url,opt,ms){
+    var t0=performance.now(), ctl=new AbortController();
+    var kill=setTimeout(function(){ctl.abort();},ms||12000);
+    try{
+      var r=await fetch(url,Object.assign({cache:"no-store",signal:ctl.signal},opt||{}));
+      return {ok:r.ok,code:r.status,ms:Math.round(performance.now()-t0),res:r};
+    }catch(err){
+      var to=err&&err.name==="AbortError";
+      return {ok:false,code:0,ms:Math.round(performance.now()-t0),
+        err:to?"timed out after "+((ms||12000)/1000)+"s":String(err.message||err)};
+    }finally{clearTimeout(kill);}
   }
 
   async function run(){
@@ -402,8 +492,9 @@
       probe.scored=data.scored||(data.stocks?data.stocks.length:0);
       probe.calibrated=data.calibration!=null;
       probe.coverageOk=probe.scored>=86;
-      if(data.generated){
-        probe.ageH=(Date.now()-Date.parse(data.generated+"T00:00:00Z"))/36e5;
+      var gts=data.generated?Date.parse(data.generated+"T00:00:00Z"):NaN;
+      if(data.generated&&!isNaN(gts)){
+        probe.ageH=(Date.now()-gts)/36e5;
         probe.stale=probe.ageH>=36; probe.late=probe.ageH>=26&&probe.ageH<36;
         checks.push({s:probe.stale?"no":(probe.late?"mid":"ok"),nm:"Freshness",
           de:"generated "+data.generated+", "+probe.ageH.toFixed(1)+" hours old",
@@ -415,20 +506,28 @@
           why:"Data is "+probe.ageH.toFixed(1)+" hours old, so one cycle was missed or delayed.",
           fix:"Almost always cron drift. It self-heals on the next run; no action needed below 36 hours."});
       }
+      else{
+        checks.push({s:"no",nm:"Freshness",
+          de:"the generated date is missing or unreadable, so age cannot be established",
+          rt:"unknown"});
+        problems.push({sev:"critical",h:"Cannot tell how old the data is",
+          why:"today.json has no readable <code>generated</code> date, so there is no way to know whether visitors are seeing today's prices.",
+          fix:"Re-run the engine. If it persists, today.json is malformed and should be regenerated from scratch."});
+      }
       checks.push({s:probe.coverageOk?"ok":"mid",nm:"Coverage",
         de:probe.scored+" of 95 stocks scored",rt:probe.coverageOk?"full":"partial"});
       if(!probe.coverageOk) problems.push({sev:"warning",h:"Partial coverage",
         why:"Only "+probe.scored+" of 95 stocks scored, so names are missing from the list.",
         fix:"Yahoo most likely rate-limited the runner. Re-run the refresh; the health check should have blocked this."});
       checks.push({s:probe.calibrated?"ok":"mid",nm:"Calibration",
-        de:probe.calibrated?("measured "+data.calibration.generated+" over "+data.calibration.months+" months"):"absent, so the trust label renders blank",
+        de:probe.calibrated?("measured "+(data.calibration.generated||"date unknown")+" over "+(data.calibration.months||"?")+" months"):"absent, so the trust label renders blank",
         rt:probe.calibrated?"present":"missing"});
       if(!probe.calibrated) problems.push({sev:"warning",h:"No calibration block",
         why:"today.json carries no calibration, so every card shows a dash where the measured up-rate belongs.",
         fix:"Run <code>research/backtest.py</code> to regenerate calibration.json, then re-run the engine."});
     }
     var pg=await timed("https://oksoimcodingnow.github.io/atlas/setscout/today.json",{mode:"no-cors"});
-    checks.push({s:"ok",nm:"Pages mirror",de:"reachable; the response is opaque cross-origin so its status is not visible",rt:pg.ms+" ms"});
+    checks.push({s:"ok",nm:"Pages mirror",de:"answered, though the browser hides the status code for requests to another domain",rt:pg.ms+" ms"});
 
     probe.pending=false;
     var crit=problems.filter(function(p){return p.sev==="critical";}).length;
@@ -462,8 +561,12 @@
       if(!r.ok) throw 0;
       var h=await r.json(), s=h.samples||[];
       if(!s.length) throw 0;
-      $("#strip").innerHTML=s.map(function(x,i){return '<div class="bar '+x.status+'" data-i="'+i+'"></div>';}).join("");
-      $("#axL").textContent=new Date(s[0].t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+      /* 672 samples in ~900px is under 1.4px each. Show the most recent 200
+         so each bar stays hoverable; the summary still counts all of them. */
+      var shown=s.slice(-200), off=s.length-shown.length;
+      $("#strip").innerHTML=shown.map(function(x,i){
+        return '<div class="bar '+x.status+'" data-i="'+(i+off)+'"></div>';}).join("");
+      $("#axL").textContent=new Date(shown[0].t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
       var up=s.filter(function(x){return x.status==="up";}).length;
       $("#hnote").innerHTML="<b>"+((up/s.length)*100).toFixed(1)+"%</b> of "+s.length+
         " samples fully healthy. Updated "+new Date(h.updated).toLocaleString()+".";
@@ -481,8 +584,18 @@
     }
   }
 
-  $("#again").addEventListener("click",run);
-  drawGraph(); run(); history();
+  function safeRun(){
+    run().catch(function(err){
+      root.className="is-bad";
+      $("#hl").innerHTML='The check itself <i>failed</i>.';
+      $("#checks").innerHTML='<div class="chk no"><span class="g"></span>'+
+        '<span class="nm">Probe error</span><span class="de">'+
+        String(err&&err.message||err)+'</span><span class="rt">aborted</span></div>';
+      $("#again").removeAttribute("aria-busy");
+    });
+  }
+  $("#again").addEventListener("click",safeRun);
+  drawGraph(); safeRun(); history();
 })();
 </script>
 </body>
