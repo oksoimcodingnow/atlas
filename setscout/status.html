@@ -87,8 +87,8 @@
   .lede{color:var(--muted);font-size:14.5px;max-width:68ch;margin-top:6px}
 
   /* ---------- the graph ---------- */
-  .graph{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto;padding:8px 4px}
-  .graph svg{display:block;min-width:900px;width:100%;height:auto}
+  .graph{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto;padding:10px}
+  .graph svg{display:block;min-width:960px;width:100%;height:auto}
   .nd rect{transition:stroke .3s,fill .3s}
   .nd{cursor:pointer}
   .nd:focus-visible{outline:none}
@@ -252,7 +252,7 @@
     </div>
 
     <div class="graph">
-      <svg id="graph" viewBox="0 0 1012 268" role="img" aria-label="Pipeline node graph from Yahoo Finance through to the visitor's browser"></svg>
+      <svg id="graph" viewBox="0 0 1073 286" role="img" aria-label="Pipeline node graph from Yahoo Finance through to the visitor's browser"></svg>
     </div>
     <div class="graph nodelist" id="nodelist" role="list" aria-label="Pipeline stages"></div>
     <div class="detail" id="detail"><p class="hint">Pick any stage above to see what it does and how it fails.</p></div>
@@ -334,8 +334,8 @@
   // 18px margin + 7 nodes at 126 + 6 gaps at 15 = 1008 in a 1012 box.
   // Monitor is centred under the chain with room for its own label BELOW it,
   // because placing that label beside the box made the two collide.
-  var NX0=18, NW=129, NH=78, NGAP=15, NY=54;
-  var MON={x:421,y:170,w:170,h:56};
+  var NX0=40, NW=129, NH=78, NGAP=15, NY=64;
+  var MON={x:451, y:186, w:170, h:56};
 
   NODES.forEach(function(n,i){ n.x = NX0 + i*(NW+NGAP); });
   var MONITOR={id:"monitor", nm:"Monitor", sub:"observer",
