@@ -1,0 +1,163 @@
+name: Monitor SETScout
+
+# The prober. Runs on GitHub's infrastructure, NOT Firebase - so when Firebase
+# is the thing that is down, this still runs and records it. A status page
+# hosted on the service it monitors cannot report that service being down.
+#
+# Writes samples to the `status-data` branch, not main, so the main history
+# stays readable. status.html fetches that branch over raw.githubusercontent.com.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"      # every 30 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monitor-setscout
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe every endpoint and diagnose
+        id: probe
+        run: |
+          python - <<'PY'
+          import json, os, time, urllib.request, urllib.error, datetime
+
+          TARGETS = {
+              "firebase": "https://setscout-th.web.app/",
+              "firebase_data": "https://setscout-th.web.app/today.json",
+              "pages": "https://oksoimcodingnow.github.io/atlas/setscout/",
+          }
+
+          def probe(url):
+              t0 = time.time()
+              try:
+                  req = urllib.request.Request(url, headers={"User-Agent": "setscout-monitor"})
+                  with urllib.request.urlopen(req, timeout=20) as r:
+                      body = r.read()
+                      return {"ok": True, "code": r.status,
+                              "ms": round((time.time() - t0) * 1000),
+                              "bytes": len(body), "body": body}
+              except urllib.error.HTTPError as e:
+                  return {"ok": False, "code": e.code, "ms": round((time.time() - t0) * 1000),
+                          "err": f"HTTP {e.code}"}
+              except Exception as e:
+                  return {"ok": False, "code": 0, "ms": round((time.time() - t0) * 1000),
+                          "err": type(e).__name__}
+
+          now = datetime.datetime.now(datetime.timezone.utc)
+          res = {k: probe(u) for k, u in TARGETS.items()}
+
+          # --- data freshness + integrity, the checks that actually matter ---
+          data = {"fresh": None, "age_h": None, "scored": None, "calibrated": None,
+                  "generated": None}
+          d = res["firebase_data"]
+          if d.get("ok"):
+              try:
+                  j = json.loads(d["body"])
+                  gen = j.get("generated")
+                  data["generated"] = gen
+                  data["scored"] = j.get("scored") or len(j.get("stocks") or [])
+                  data["calibrated"] = j.get("calibration") is not None
+                  if gen:
+                      g = datetime.datetime.strptime(gen, "%Y-%m-%d").replace(
+                          tzinfo=datetime.timezone.utc)
+                      age = (now - g).total_seconds() / 3600
+                      data["age_h"] = round(age, 1)
+                      data["fresh"] = age < 36        # one missed run is tolerable
+              except Exception as e:
+                  data["parse_error"] = type(e).__name__
+
+          # --- diagnosis: not just "down", but WHY ---
+          problems = []
+          if not res["firebase"]["ok"]:
+              problems.append({"sev": "critical", "what": "Site unreachable",
+                               "why": f"setscout-th.web.app returned {res['firebase'].get('err', res['firebase']['code'])}",
+                               "fix": "Check Firebase Hosting status and the last deploy"})
+          if not res["pages"]["ok"]:
+              problems.append({"sev": "warning", "what": "GitHub Pages mirror unreachable",
+                               "why": f"pages returned {res['pages'].get('err', res['pages']['code'])}",
+                               "fix": "Non-urgent - Firebase is the canonical host"})
+          if not d.get("ok"):
+              problems.append({"sev": "critical", "what": "Data file unreachable",
+                               "why": "today.json did not load - the app will show an error",
+                               "fix": "Re-deploy, or check the last refresh commit"})
+          elif data["fresh"] is False:
+              problems.append({"sev": "critical", "what": "Data is stale",
+                               "why": f"today.json is {data['age_h']}h old (generated {data['generated']})",
+                               "fix": "The daily refresh has not run. Check Actions - GitHub cron drifts by up to 10h"})
+          elif data["age_h"] is not None and data["age_h"] > 26:
+              problems.append({"sev": "warning", "what": "Refresh running late",
+                               "why": f"data is {data['age_h']}h old - one cycle missed or delayed",
+                               "fix": "Usually cron drift. Self-heals on the next run"})
+          if data["scored"] is not None and data["scored"] < 86:
+              problems.append({"sev": "warning", "what": "Partial coverage",
+                               "why": f"only {data['scored']} of 95 stocks scored",
+                               "fix": "Yahoo likely rate-limited the runner. Check the refresh log"})
+          if data["calibrated"] is False:
+              problems.append({"sev": "warning", "what": "No calibration",
+                               "why": "today.json has no calibration block - p_win renders blank",
+                               "fix": "Run research/backtest.py to regenerate calibration.json"})
+
+          up = res["firebase"]["ok"] and d.get("ok") and data["fresh"] is not False
+          status = "up" if up and not problems else ("degraded" if up else "down")
+
+          sample = {
+              "t": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "status": status,
+              "firebase": {"ok": res["firebase"]["ok"], "code": res["firebase"]["code"],
+                           "ms": res["firebase"]["ms"]},
+              "pages": {"ok": res["pages"]["ok"], "code": res["pages"]["code"],
+                        "ms": res["pages"]["ms"]},
+              "data": {k: v for k, v in data.items() if k != "body"},
+              "problems": problems,
+          }
+          os.makedirs("out", exist_ok=True)
+          json.dump(sample, open("out/sample.json", "w"), indent=1)
+          print(json.dumps(sample, indent=1)[:1400])
+          # surface it on the Actions run page too
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write(f"## SETScout: **{status.upper()}**\n\n")
+              f.write(f"- site {res['firebase']['code']} in {res['firebase']['ms']}ms\n")
+              f.write(f"- data {data['generated']} ({data['age_h']}h old), "
+                      f"{data['scored']} stocks\n")
+              for p in problems:
+                  f.write(f"- **{p['sev']}** {p['what']} - {p['why']}\n")
+          PY
+
+      - name: Append the sample to the status-data branch
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin status-data --depth=1 2>/dev/null || true
+          if git rev-parse --verify origin/status-data >/dev/null 2>&1; then
+            git checkout -q -B status-data origin/status-data
+          else
+            git checkout -q --orphan status-data
+            git rm -rq --cached . 2>/dev/null || true
+            echo '{"samples":[]}' > history.json
+          fi
+          python - <<'PY'
+          import json, os
+          hist = {"samples": []}
+          if os.path.exists("history.json"):
+              try:
+                  hist = json.load(open("history.json", encoding="utf-8"))
+              except Exception:
+                  pass
+          hist["samples"].append(json.load(open("out/sample.json", encoding="utf-8")))
+          hist["samples"] = hist["samples"][-672:]     # 14 days at 30-min spacing
+          hist["updated"] = hist["samples"][-1]["t"]
+          json.dump(hist, open("history.json", "w"), separators=(",", ":"))
+          print(f"history now holds {len(hist['samples'])} samples")
+          PY
+          rm -rf out
+          git add history.json
+          git commit -qm "monitor: $(python -c "import json;print(json.load(open('history.json'))['samples'][-1]['status'])")" || exit 0
+          git push -q origin status-data

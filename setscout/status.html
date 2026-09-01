@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SETScout — Status</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#f6f7f9">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#f6f7f9;--card:#fff;--surf:#f7f8fa;--ink:#141b2d;--muted:#5b6472;--faint:#98a0ac;
+    --line:#e7e9ef;--line2:#d6dae3;--accent:#4f46e5;
+    --good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#d03b3b;
+  }
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --bg:#0e1015;--card:#171a21;--surf:#1c2029;--ink:#e9ebf2;--muted:#9aa3b0;--faint:#6b7280;
+    --line:#262a33;--line2:#333945;--accent:#6f78e6;
+  }}
+  [data-theme="dark"]{
+    --bg:#0e1015;--card:#171a21;--surf:#1c2029;--ink:#e9ebf2;--muted:#9aa3b0;--faint:#6b7280;
+    --line:#262a33;--line2:#333945;--accent:#6f78e6;
+  }
+  body{background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 18px 70px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+  .logo{font-size:19px;font-weight:800;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+  .logo b{color:var(--accent)}
+  .tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+  .btn{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:7px 13px;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:9px;cursor:pointer}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* headline */
+  .hero{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--faint);border-radius:16px;padding:22px 24px;display:flex;gap:18px;align-items:center}
+  .hero.up{border-left-color:var(--good)} .hero.degraded{border-left-color:var(--warning)}
+  .hero.down{border-left-color:var(--critical)} .hero.checking{border-left-color:var(--accent)}
+  .dot{width:16px;height:16px;border-radius:50%;background:var(--faint);flex:none;position:relative}
+  .hero.up .dot{background:var(--good)} .hero.degraded .dot{background:var(--warning)}
+  .hero.down .dot{background:var(--critical)} .hero.checking .dot{background:var(--accent)}
+  .hero.up .dot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--good);opacity:.35;animation:pulse 2.4s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(.7);opacity:.5}100%{transform:scale(1.5);opacity:0}}
+  @media(prefers-reduced-motion:reduce){.hero.up .dot::after{animation:none}}
+  .hero h1{font-size:23px;font-weight:800;letter-spacing:-.02em}
+  .hero p{color:var(--muted);font-size:14px;margin-top:3px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-top:16px}
+  .cell{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+  .cell .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+  .cell .v{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:5px;font-variant-numeric:tabular-nums}
+  .cell .s{font-size:12px;color:var(--muted);margin-top:2px}
+  .v.good{color:var(--good)} .v.warning{color:var(--warning)} .v.critical{color:var(--critical)}
+
+  h2{font-size:16px;font-weight:700;margin:30px 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:13.5px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:12px}
+
+  .chk{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .chk:last-child{border-bottom:none}
+  .chk .ic{font-size:15px;line-height:1.35;flex:none;width:18px}
+  .chk .nm{font-weight:600;font-size:14px}
+  .chk .de{color:var(--muted);font-size:12.5px;margin-top:1px}
+  .chk .rt{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--faint);white-space:nowrap;padding-left:10px}
+
+  .prob{border-radius:11px;padding:13px 15px;margin-top:9px;border:1px solid var(--line)}
+  .prob.critical{border-left:3px solid var(--critical);background:rgba(208,59,59,.06)}
+  .prob.warning{border-left:3px solid var(--warning);background:rgba(250,178,25,.07)}
+  .prob .w{font-weight:700;font-size:14px}
+  .prob .y{color:var(--muted);font-size:13px;margin-top:3px}
+  .prob .f{font-size:13px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+  .prob .f b{color:var(--accent)}
+
+  /* uptime strip */
+  .strip{display:flex;gap:2px;align-items:flex-end;height:44px;margin-top:12px;overflow:hidden}
+  .bar{flex:1 1 auto;min-width:3px;border-radius:2px;background:var(--line2);height:100%;cursor:pointer}
+  .bar.up{background:var(--good)} .bar.degraded{background:var(--warning)} .bar.down{background:var(--critical)}
+  .bar:hover{outline:2px solid var(--accent);outline-offset:1px}
+  .axis{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--faint);margin-top:6px}
+
+  .empty{color:var(--muted);font-size:13.5px;padding:14px 0}
+  .empty code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surf);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  a{color:var(--accent)}
+  .tip{position:fixed;pointer-events:none;z-index:60;opacity:0;transition:opacity .1s;background:var(--ink);color:var(--bg);border-radius:8px;padding:7px 10px;font-size:12px;line-height:1.4}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div style="display:flex;align-items:center;gap:10px">
+      <a class="logo" href="index.html">SET<b>Scout</b></a>
+      <span class="tag">status</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="again">Re-check</button>
+      <a class="btn" href="index.html" style="text-decoration:none">← App</a>
+    </div>
+  </div>
+
+  <div class="hero checking" id="hero">
+    <div class="dot"></div>
+    <div>
+      <h1 id="hTitle">Checking…</h1>
+      <p id="hSub">Probing the live site from your browser</p>
+    </div>
+  </div>
+
+  <div class="grid" id="tiles"></div>
+
+  <h2>What was checked, just now</h2>
+  <p class="sub">Run live from this page, so it reflects the site as you see it — not a cached result.</p>
+  <div class="panel" id="checks"></div>
+
+  <div id="probWrap" style="display:none">
+    <h2>What is wrong, and what to do</h2>
+    <p class="sub">Each problem names its cause and the fix.</p>
+    <div id="problems"></div>
+  </div>
+
+  <h2>History — 14 days</h2>
+  <p class="sub">Collected every 30 minutes by a GitHub Actions prober, which runs <em>outside</em> Firebase — so it still reports when Firebase itself is the thing that is down.</p>
+  <div class="panel">
+    <div class="strip" id="strip"></div>
+    <div class="axis"><span id="axL">—</span><span id="axR">now</span></div>
+    <div id="histNote" class="empty"></div>
+  </div>
+
+  <div class="foot">
+    <span>probe runs in your browser · history from GitHub Actions</span>
+    <span id="stamp">—</span>
+  </div>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+(function(){
+  "use strict";
+  var HIST="https://raw.githubusercontent.com/oksoimcodingnow/atlas/status-data/history.json";
+  var $=function(s){return document.querySelector(s);};
+  try{var t=localStorage.getItem("ss_theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}
+
+  function ic(ok){return ok?"✅":"❌";}
+  function icw(s){return s==="good"?"✅":s==="warning"?"⚠️":"❌";}
+
+  async function timed(url,opts){
+    var t0=performance.now();
+    try{
+      var r=await fetch(url,Object.assign({cache:"no-store"},opts||{}));
+      return {ok:r.ok,code:r.status,ms:Math.round(performance.now()-t0),res:r};
+    }catch(err){
+      return {ok:false,code:0,ms:Math.round(performance.now()-t0),err:String(err.message||err)};
+    }
+  }
+
+  async function run(){
+    $("#hero").className="hero checking";
+    $("#hTitle").textContent="Checking…";
+    $("#hSub").textContent="Probing the live site from your browser";
+
+    var checks=[],problems=[],tiles=[];
+
+    // 1. the data file - the single most informative probe
+    var d=await timed("today.json?t="+Date.now());
+    var data=null;
+    if(d.ok){ try{ data=await d.res.json(); }catch(e){ d.ok=false; d.err="bad JSON"; } }
+
+    checks.push({ok:d.ok,nm:"Data file loads",
+      de:d.ok?"today.json fetched and parsed":"today.json failed — "+(d.err||("HTTP "+d.code)),
+      rt:d.ms+" ms"});
+    if(!d.ok){
+      problems.push({sev:"critical",w:"Data file unreachable",
+        y:"today.json did not load, so the app shows an error instead of stocks.",
+        f:"Re-deploy with <code>firebase deploy --only hosting</code>, or check the last refresh commit."});
+    }
+
+    // 2. freshness
+    var ageH=null,gen="—";
+    if(data&&data.generated){
+      gen=data.generated;
+      ageH=(Date.now()-Date.parse(data.generated+"T00:00:00Z"))/3600000;
+      var freshOk=ageH<36, lateish=ageH>=26&&ageH<36;
+      checks.push({ok:freshOk,nm:"Data is current",
+        de:"generated "+gen+" · "+ageH.toFixed(1)+" h old"+(lateish?" (a cycle late)":""),
+        rt:freshOk?(lateish?"late":"fresh"):"STALE"});
+      if(!freshOk){
+        problems.push({sev:"critical",w:"Data is stale",
+          y:"today.json is "+ageH.toFixed(1)+" hours old. Visitors are seeing prices from "+gen+".",
+          f:"The daily refresh has not run. Check <b>Actions → Refresh SETScout data</b>. GitHub cron has drifted by up to 10.3 h on this repo, so it may simply be late."});
+      }else if(lateish){
+        problems.push({sev:"warning",w:"Refresh running late",
+          y:"Data is "+ageH.toFixed(1)+" h old — one cycle missed or delayed.",
+          f:"Usually cron drift. It self-heals on the next run; no action needed unless it passes 36 h."});
+      }
+    }
+
+    // 3. coverage
+    if(data){
+      var n=data.scored||(data.stocks?data.stocks.length:0);
+      var covOk=n>=86;
+      checks.push({ok:covOk,nm:"Stock coverage",
+        de:n+" of 95 scored"+(covOk?"":" — partial run"),rt:covOk?"full":"PARTIAL"});
+      if(!covOk){
+        problems.push({sev:"warning",w:"Partial coverage",
+          y:"Only "+n+" of 95 stocks scored, so some names are missing from the list.",
+          f:"Yahoo most likely rate-limited the runner. Re-run the refresh; the health check should have caught this."});
+      }
+      // 4. calibration
+      var cal=data.calibration!=null;
+      checks.push({ok:cal,nm:"Calibration present",
+        de:cal?("measured "+data.calibration.generated+" over "+data.calibration.months+" months"):"missing — p_win renders blank",
+        rt:cal?"ok":"MISSING"});
+      if(!cal){
+        problems.push({sev:"warning",w:"No calibration block",
+          y:"today.json has no calibration, so the trust label shows a dash.",
+          f:"Run <code>research/backtest.py</code> to regenerate calibration.json, then re-run the engine."});
+      }
+      tiles.push({k:"Stocks scored",v:n,s:"of 95 in the universe",c:covOk?"good":"warning"});
+      tiles.push({k:"Data age",v:ageH==null?"—":ageH.toFixed(1)+" h",s:"generated "+gen,
+        c:ageH==null?"":(ageH<26?"good":ageH<36?"warning":"critical")});
+    }
+
+    // 5. the pages mirror (cross-origin; opaque, so we can only see reachability)
+    var pg=await timed("https://oksoimcodingnow.github.io/atlas/setscout/today.json",{mode:"no-cors"});
+    checks.push({ok:true,nm:"GitHub Pages mirror",
+      de:"reachable (opaque cross-origin response — status not visible to the browser)",
+      rt:pg.ms+" ms"});
+
+    tiles.push({k:"Data fetch",v:d.ms+" ms",s:"from this browser",c:d.ms<600?"good":"warning"});
+
+    // ---- verdict ----
+    var crit=problems.filter(function(p){return p.sev==="critical";}).length;
+    var st=crit?"down":(problems.length?"degraded":"up");
+    $("#hero").className="hero "+st;
+    $("#hTitle").textContent=st==="up"?"All systems normal":st==="degraded"?"Degraded":"Down";
+    $("#hSub").textContent=st==="up"
+      ? "Site reachable, data current, coverage full."
+      : problems.length+" issue"+(problems.length>1?"s":"")+" found — see below.";
+    tiles.unshift({k:"Status",v:st==="up"?"UP":st==="degraded"?"DEGRADED":"DOWN",s:"live probe",c:st==="up"?"good":st==="degraded"?"warning":"critical"});
+
+    $("#tiles").innerHTML=tiles.map(function(t){
+      return '<div class="cell"><span class="k">'+t.k+'</span><span class="v '+(t.c||"")+'">'+
+        t.v+'</span><span class="s">'+t.s+'</span></div>';}).join("");
+
+    $("#checks").innerHTML=checks.map(function(c){
+      return '<div class="chk"><span class="ic">'+ic(c.ok)+'</span><div><div class="nm">'+
+        c.nm+'</div><div class="de">'+c.de+'</div></div><span class="rt">'+c.rt+'</span></div>';}).join("");
+
+    $("#probWrap").style.display=problems.length?"block":"none";
+    $("#problems").innerHTML=problems.map(function(p){
+      return '<div class="prob '+p.sev+'"><div class="w">'+icw(p.sev==="critical"?"bad":"warning")+
+        " "+p.w+'</div><div class="y">'+p.y+'</div><div class="f"><b>Fix:</b> '+p.f+'</div></div>';}).join("");
+
+    $("#stamp").textContent="checked "+new Date().toLocaleTimeString();
+  }
+
+  // ---- history strip ----
+  var tip=$("#tip");
+  async function history(){
+    try{
+      var r=await fetch(HIST,{cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      var h=await r.json();
+      var s=h.samples||[];
+      if(!s.length) throw new Error("empty");
+      $("#strip").innerHTML=s.map(function(x,i){
+        return '<div class="bar '+x.status+'" data-i="'+i+'"></div>';}).join("");
+      $("#axL").textContent=new Date(s[0].t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+      var up=s.filter(function(x){return x.status==="up";}).length;
+      $("#histNote").innerHTML="<b>"+((up/s.length)*100).toFixed(1)+"%</b> of "+s.length+
+        " samples fully healthy · updated "+new Date(h.updated).toLocaleString();
+      $("#strip").addEventListener("mousemove",function(e){
+        var b=e.target.closest(".bar"); if(!b){tip.style.opacity=0;return;}
+        var x=s[+b.dataset.i], p=(x.problems||[]);
+        tip.innerHTML="<b>"+x.status.toUpperCase()+"</b> "+new Date(x.t).toLocaleString()+
+          (p.length?"<br>"+p.map(function(q){return "· "+q.what;}).join("<br>"):"");
+        tip.style.opacity=1;tip.style.left=(e.clientX+13)+"px";tip.style.top=(e.clientY+13)+"px";
+      });
+      $("#strip").addEventListener("mouseleave",function(){tip.style.opacity=0;});
+    }catch(err){
+      $("#strip").innerHTML="";
+      $("#histNote").innerHTML="No history yet. The prober writes its first sample within 30 minutes of "+
+        "the workflow being enabled — or trigger it now from <b>Actions → Monitor SETScout → Run workflow</b>. "+
+        "It publishes to the <code>status-data</code> branch.";
+    }
+  }
+
+  $("#again").addEventListener("click",run);
+  run(); history();
+})();
+</script>
+</body>
+</html>
