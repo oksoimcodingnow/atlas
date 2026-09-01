@@ -91,6 +91,24 @@
   .qopt.on{border-color:var(--accent);color:var(--ink);background:var(--soft);font-weight:600;}
   .qgo{width:100%;margin-top:18px;font-size:15px;font-weight:800;color:var(--bg);background:var(--accent);border:0;border-radius:999px;padding:12px;cursor:pointer;}
   .qgo:disabled{opacity:.4;}
+  /* first-visit notice - NOT a cookie wall. We set no cookies; this states what
+     actually happens, which is a different and shorter claim. */
+  .notice{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:0 12px 12px;
+    display:none;justify-content:center;pointer-events:none;}
+  .notice.on{display:flex;}
+  .notice-in{pointer-events:auto;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;box-shadow:0 10px 34px var(--shadow);padding:14px 16px;
+    max-width:640px;display:flex;gap:13px;align-items:flex-start;}
+  .notice .ni{font-size:17px;line-height:1.3;flex:none;}
+  .notice p{font-size:12.8px;color:var(--muted);line-height:1.5;}
+  .notice p b{color:var(--ink);font-weight:600;}
+  .notice .nb{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap;}
+  .notice button,.notice a.nlink{font-size:12px;font-weight:700;border-radius:9px;
+    padding:6px 12px;cursor:pointer;border:1px solid var(--line);background:var(--card);
+    color:var(--muted);text-decoration:none;display:inline-block;}
+  .notice button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .notice a.nlink:hover,.notice button:hover{border-color:var(--faint);}
+  @media(max-width:520px){.notice-in{flex-direction:column;gap:9px;}}
 </style>
 </head>
 <body>
@@ -121,6 +139,7 @@
   <div class="foot" id="foot"></div>
 </div>
 
+<div class="notice" id="notice"><div class="notice-in"><span class="ni">🔒</span><div><p id="noticeTxt"></p><div class="nb"><button class="primary" id="noticeOk"></button><a class="nlink" href="legal.html" id="noticeMore"></a></div></div></div></div>
 <div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
 
 <script>
@@ -151,6 +170,7 @@
      disc:'SETScout ชี้ให้ไป “ศึกษาต่อ” ไม่ได้บอกให้ซื้อ/ขาย',
      foot:'<b>SETScout</b> · Explainable Investment Decision Support · SET100<br>เพื่อการศึกษาและงานวิจัยเท่านั้น ไม่ใช่คำแนะนำซื้อ/ขาย · ผลย้อนหลังไม่รับประกันอนาคต · ปรึกษาผู้แนะนำการลงทุนที่มีใบอนุญาต<br><a href="legal.html" style="color:var(--muted)">ข้อกำหนดการใช้งานและความเป็นส่วนตัว</a> · <a href="onboard.html" style="color:var(--muted)">วิธีทำงาน</a>',
      pTitle:"ปรับให้เหมาะกับคุณ", pSub:"ตอบ 5 ข้อ เราจะจัดอันดับและปรับขนาดการลงทุนให้เหมาะกับความเสี่ยงที่คุณรับได้", see:"ดูผล",
+     notice:{t:"<b>เว็บนี้ไม่ใช้คุกกี้ และไม่มีการติดตามผู้ใช้</b> เราเก็บแค่ภาษา ธีม และผลแบบทดสอบความเสี่ยง ไว้ในเครื่องของคุณเอง ไม่เคยส่งมาหาเรา · ฟอนต์โหลดจาก Google ซึ่งจะเห็นหมายเลข IP ของคุณตามนโยบายของ Google",ok:"เข้าใจแล้ว",more:"รายละเอียด"},
      prof:{cons:"สายระมัดระวัง",bal:"สายสมดุล",agg:"สายบุก"},
      method:{title:"วิธีให้คะแนน",intro:"เราให้คะแนนหุ้นทุกตัวจาก 5 ปัจจัย (คำนวณจากราคาจริงย้อนหลัง 2 ปี)",
        factors:[["📈","โมเมนตัม","ผลตอบแทน 6 เดือน — ราคากำลังไปได้ดีไหม"],["🌱","การเติบโต","ผลตอบแทน 12 เดือน — แนวโน้มระยะยาว"],["⚖️","ราคาเทียบค่าเฉลี่ยตัวเอง","ต่ำกว่าค่าเฉลี่ย 200 วัน = มีโอกาสเด้ง (mean-reversion)"],["🛡️","คุณภาพ","ความผันผวนต่ำ — ราคานิ่ง ไม่หวือหวา"],["❤️","สุขภาพ","ขาดทุนสูงสุดน้อย — ทนตลาดขาลงได้"]],
@@ -181,6 +201,7 @@
      disc:'SETScout points you to “research,” it does not tell you to buy/sell',
      foot:'<b>SETScout</b> · Explainable Investment Decision Support · SET100<br>For education & research only · not a buy/sell recommendation · past performance ≠ future results · consult a licensed adviser<br><a href="legal.html" style="color:var(--muted)">Terms &amp; Privacy</a> · <a href="onboard.html" style="color:var(--muted)">How it works</a>',
      pTitle:"Personalize to you", pSub:"5 quick questions — we rank & size the list to the risk you can handle.", see:"See results",
+     notice:{t:"<b>No cookies, and no tracking of any kind.</b> Your language, theme and quiz result stay on your own device and are never sent to us · Fonts load from Google, which sees your IP address under its own policy.",ok:"Got it",more:"Details"},
      prof:{cons:"Conservative",bal:"Balanced",agg:"Aggressive"},
      method:{title:"How we score",intro:"Every stock is scored on 5 factors (from 2 years of real prices)",
        factors:[["📈","Momentum","6-month return — is the price doing well?"],["🌱","Growth","12-month return — the longer trend"],["⚖️","Price vs its own average","below its 200-day average = room to bounce (mean-reversion)"],["🛡️","Quality","low volatility — calm, not wild"],["❤️","Health","small max-drawdown — survives bad markets"]],
@@ -318,7 +339,7 @@
 
   // events
   $('#themeBtn').onclick=()=>{theme=theme==='light'?'dark':'light';localStorage.setItem('ss_theme',theme);applyTheme();};
-  $('#langBtn').onclick=()=>{lang=lang==='th'?'en':'th';localStorage.setItem('ss_lang',lang);paintStatic();render();};
+  $('#langBtn').onclick=()=>{lang=lang==='th'?'en':'th';localStorage.setItem('ss_lang',lang);paintStatic();render();if($('#notice').classList.contains('on'))paintNotice();};
   $('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;filter=b.dataset.f;paintStatic();render();});
   $('#sectorSel').addEventListener('change',e=>{sector=e.target.value;render();});
   $('#pbtn').onclick=openQuiz;
@@ -328,7 +349,26 @@
   $('#ov').addEventListener('click',e=>{if(e.target===$('#ov'))close();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
 
-  applyTheme(); paintStatic();
+  // First-visit notice. Non-blocking: the app is fully usable behind it, because
+  // nothing here requires consent - we set no cookies and run no trackers. It
+  // exists so the Google Fonts request is disclosed rather than discovered.
+  function paintNotice(){
+    const n=tr().notice; if(!n) return;
+    $('#noticeTxt').innerHTML=n.t; $('#noticeOk').textContent=n.ok;
+    $('#noticeMore').textContent=n.more+' →';
+  }
+  function initNotice(){
+    let seen=false; try{seen=localStorage.getItem('ss_notice')==='1';}catch{}
+    if(seen) return;
+    paintNotice();
+    $('#notice').classList.add('on');
+    $('#noticeOk').onclick=()=>{
+      try{localStorage.setItem('ss_notice','1');}catch{}
+      $('#notice').classList.remove('on');
+    };
+  }
+
+  applyTheme(); paintStatic(); initNotice();
   fetch('today.json?v='+Date.now()).then(r=>r.json()).then(d=>{DATA=d;paintStatic();populateSectors();render();})
     .catch(()=>{$('#grid').innerHTML='<div class="err">Could not load today.json — open via the hosted link.</div>';});
 })();

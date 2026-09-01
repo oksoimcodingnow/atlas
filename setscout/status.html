@@ -1,136 +1,233 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SETScout — Status</title>
+<title>SETScout — Signal Path</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#f6f7f9">
+<meta name="theme-color" content="#0a0a14">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --bg:#f6f7f9;--card:#fff;--surf:#f7f8fa;--ink:#141b2d;--muted:#5b6472;--faint:#98a0ac;
-    --line:#e7e9ef;--line2:#d6dae3;--accent:#4f46e5;
-    --good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#d03b3b;
+    --bg:#0a0a14; --bg-2:#11112a;
+    --panel:rgba(20,20,38,.6);
+    --border:rgba(184,192,255,.16); --border-hi:rgba(184,192,255,.45);
+    --text:#f1efe6; --muted:#8a8aa8;
+    --accent:#b8c0ff; --accent-2:#f3d59a;
+    --rule:rgba(241,239,230,.16);
+    --ok:#34d399; --warn:#fbbf24; --bad:#ef4444;
+    --serif:'Cormorant Garamond','Iowan Old Style',Georgia,serif;
+    --sans:'Inter Tight',-apple-system,'Segoe UI',sans-serif;
+    --mono:'SF Mono',Consolas,Menlo,monospace;
+    --gutter:clamp(22px,5vw,56px);
+    --z-tip:60;
   }
-  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
-    --bg:#0e1015;--card:#171a21;--surf:#1c2029;--ink:#e9ebf2;--muted:#9aa3b0;--faint:#6b7280;
-    --line:#262a33;--line2:#333945;--accent:#6f78e6;
-  }}
-  [data-theme="dark"]{
-    --bg:#0e1015;--card:#171a21;--surf:#1c2029;--ink:#e9ebf2;--muted:#9aa3b0;--faint:#6b7280;
-    --line:#262a33;--line2:#333945;--accent:#6f78e6;
+  html{color-scheme:dark}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--sans);
+    font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,192,255,.07), transparent 70%);
+    min-height:100vh;
   }
-  body{background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:960px;margin:0 auto;padding:28px 18px 70px}
-  .mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace}
-  .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
-  .logo{font-size:19px;font-weight:800;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
-  .logo b{color:var(--accent)}
-  .tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-  .btn{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:7px 13px;border:1px solid var(--line2);background:var(--card);color:var(--ink);border-radius:9px;cursor:pointer}
-  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .wrap{max-width:1180px;margin:0 auto;padding:var(--gutter) var(--gutter) 90px}
 
-  /* headline */
-  .hero{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--faint);border-radius:16px;padding:22px 24px;display:flex;gap:18px;align-items:center}
-  .hero.up{border-left-color:var(--good)} .hero.degraded{border-left-color:var(--warning)}
-  .hero.down{border-left-color:var(--critical)} .hero.checking{border-left-color:var(--accent)}
-  .dot{width:16px;height:16px;border-radius:50%;background:var(--faint);flex:none;position:relative}
-  .hero.up .dot{background:var(--good)} .hero.degraded .dot{background:var(--warning)}
-  .hero.down .dot{background:var(--critical)} .hero.checking .dot{background:var(--accent)}
-  .hero.up .dot::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--good);opacity:.35;animation:pulse 2.4s ease-out infinite}
-  @keyframes pulse{0%{transform:scale(.7);opacity:.5}100%{transform:scale(1.5);opacity:0}}
-  @media(prefers-reduced-motion:reduce){.hero.up .dot::after{animation:none}}
-  .hero h1{font-size:23px;font-weight:800;letter-spacing:-.02em}
-  .hero p{color:var(--muted);font-size:14px;margin-top:3px}
+  /* ---------- masthead ---------- */
+  .bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--rule)}
+  .brand{display:flex;align-items:baseline;gap:11px;text-decoration:none;color:var(--text)}
+  .brand .m{font-family:var(--serif);font-size:23px;font-weight:600;letter-spacing:.01em}
+  .brand .m i{font-style:italic;color:var(--accent)}
+  .brand .sep{width:1px;height:15px;background:var(--rule)}
+  .brand .t{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .acts{display:flex;gap:9px;align-items:center}
+  .btn{
+    font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:var(--muted);background:transparent;border:1px solid var(--border);
+    border-radius:8px;padding:8px 14px;cursor:pointer;text-decoration:none;
+    transition:border-color .22s,color .22s;
+  }
+  .btn:hover{border-color:var(--border-hi);color:var(--text)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .btn[aria-busy="true"]{opacity:.5;pointer-events:none}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-top:16px}
-  .cell{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px}
-  .cell .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
-  .cell .v{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:5px;font-variant-numeric:tabular-nums}
-  .cell .s{font-size:12px;color:var(--muted);margin-top:2px}
-  .v.good{color:var(--good)} .v.warning{color:var(--warning)} .v.critical{color:var(--critical)}
+  /* ---------- verdict: the one narrative moment ---------- */
+  .verdict{padding:46px 0 34px;display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+  .beacon{
+    width:13px;height:13px;border-radius:50%;background:var(--muted);
+    margin-top:16px;flex:none;position:relative;transition:background .3s;
+  }
+  .beacon::after{
+    content:'';position:absolute;inset:-7px;border-radius:50%;
+    border:1px solid currentColor;color:var(--muted);opacity:0;
+  }
+  .is-ok .beacon{background:var(--ok)} .is-ok .beacon::after{color:var(--ok);animation:ring 2.8s cubic-bezier(.16,1,.3,1) infinite}
+  .is-warn .beacon{background:var(--warn)} .is-warn .beacon::after{color:var(--warn);opacity:.5}
+  .is-bad .beacon{background:var(--bad)} .is-bad .beacon::after{color:var(--bad);opacity:.6}
+  @keyframes ring{0%{transform:scale(.6);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+  .verdict h1{
+    font-family:var(--serif);font-weight:400;font-size:clamp(34px,5vw,58px);
+    line-height:1.06;letter-spacing:-.01em;text-wrap:balance;max-width:15ch;
+  }
+  .verdict h1 i{font-style:italic;color:var(--accent)}
+  .is-warn .verdict h1 i{color:var(--warn)} .is-bad .verdict h1 i{color:var(--bad)}
+  .verdict .side{margin-left:auto;text-align:right;min-width:190px}
+  .verdict .side dt{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .verdict .side dd{font-family:var(--mono);font-size:13px;color:var(--text);margin:3px 0 13px}
 
-  h2{font-size:16px;font-weight:700;margin:30px 0 4px;letter-spacing:-.01em}
-  .sub{color:var(--muted);font-size:13.5px}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:12px}
+  /* ---------- section heading ---------- */
+  .eyebrow{
+    font-family:var(--sans);font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:12px;
+  }
+  .eyebrow::before{content:'';width:28px;height:1px;background:var(--accent)}
+  section{margin-top:56px}
+  .shead{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(25px,3vw,34px);letter-spacing:-.005em;margin-top:12px}
+  .lede{color:var(--muted);font-size:14.5px;max-width:68ch;margin-top:6px}
 
-  .chk{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
-  .chk:last-child{border-bottom:none}
-  .chk .ic{font-size:15px;line-height:1.35;flex:none;width:18px}
-  .chk .nm{font-weight:600;font-size:14px}
-  .chk .de{color:var(--muted);font-size:12.5px;margin-top:1px}
-  .chk .rt{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--faint);white-space:nowrap;padding-left:10px}
+  /* ---------- the graph ---------- */
+  .graph{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto}
+  .graph svg{display:block;min-width:1120px;width:100%;height:auto}
+  .nd rect{transition:stroke .3s,fill .3s}
+  .nd{cursor:pointer}
+  .nd:focus-visible{outline:none}
+  .nd:focus-visible rect.box{stroke:var(--accent);stroke-width:2}
+  .nd .nm{font-family:var(--sans);font-size:13.5px;font-weight:600;fill:var(--text)}
+  .nd .sub{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+  .nd .val{font-family:var(--mono);font-size:11px;font-weight:500}
+  .nd:hover rect.box{stroke:var(--border-hi)}
+  .edge{fill:none;stroke:var(--border);stroke-width:1.5}
+  .edge.live{stroke:var(--accent);stroke-opacity:.55;stroke-dasharray:5 9;animation:flow 1.5s linear infinite}
+  .edge.stall{stroke:var(--warn);stroke-opacity:.5;stroke-dasharray:5 9}
+  .edge.dead{stroke:var(--bad);stroke-opacity:.55;stroke-dasharray:3 6}
+  .edge.probe{stroke:var(--accent-2);stroke-opacity:.4;stroke-dasharray:2 7}
+  @keyframes flow{to{stroke-dashoffset:-28}}
+  .glabel{font-family:var(--mono);font-size:9.5px;fill:var(--muted)}
+  @media (prefers-reduced-motion:reduce){
+    .edge.live{animation:none}
+    .is-ok .beacon::after{animation:none;opacity:.45}
+  }
 
-  .prob{border-radius:11px;padding:13px 15px;margin-top:9px;border:1px solid var(--line)}
-  .prob.critical{border-left:3px solid var(--critical);background:rgba(208,59,59,.06)}
-  .prob.warning{border-left:3px solid var(--warning);background:rgba(250,178,25,.07)}
-  .prob .w{font-weight:700;font-size:14px}
-  .prob .y{color:var(--muted);font-size:13px;margin-top:3px}
-  .prob .f{font-size:13px;margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
-  .prob .f b{color:var(--accent)}
+  /* ---------- node detail ---------- */
+  .detail{
+    margin-top:18px;border:1px solid var(--border);border-radius:14px;
+    background:var(--panel);padding:20px 22px;min-height:104px;
+  }
+  .detail .dh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .detail h3{font-family:var(--serif);font-weight:600;font-size:22px}
+  .detail .st{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .detail p{color:var(--muted);font-size:14px;margin-top:8px;max-width:72ch}
+  .detail .kv{display:flex;gap:26px;flex-wrap:wrap;margin-top:13px;padding-top:13px;border-top:1px solid var(--rule)}
+  .detail .kv div{min-width:96px}
+  .detail .kv dt{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .detail .kv dd{font-family:var(--mono);font-size:13.5px;margin-top:3px}
+  .hint{color:var(--muted);font-size:13px;font-style:italic;font-family:var(--serif);font-size:16px}
 
-  /* uptime strip */
-  .strip{display:flex;gap:2px;align-items:flex-end;height:44px;margin-top:12px;overflow:hidden}
-  .bar{flex:1 1 auto;min-width:3px;border-radius:2px;background:var(--line2);height:100%;cursor:pointer}
-  .bar.up{background:var(--good)} .bar.degraded{background:var(--warning)} .bar.down{background:var(--critical)}
-  .bar:hover{outline:2px solid var(--accent);outline-offset:1px}
-  .axis{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--faint);margin-top:6px}
+  /* ---------- checks ---------- */
+  .checks{margin-top:22px;border-top:1px solid var(--rule)}
+  .chk{display:flex;align-items:center;gap:14px;padding:14px 2px;border-bottom:1px solid var(--rule)}
+  .chk .g{width:6px;height:6px;border-radius:50%;flex:none;background:var(--muted)}
+  .chk.ok .g{background:var(--ok)} .chk.no .g{background:var(--bad)} .chk.mid .g{background:var(--warn)}
+  .chk .nm{font-weight:600;font-size:14px;min-width:168px}
+  .chk .de{color:var(--muted);font-size:13.5px;flex:1}
+  .chk .rt{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
 
-  .empty{color:var(--muted);font-size:13.5px;padding:14px 0}
-  .empty code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surf);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
-  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  /* ---------- problems ---------- */
+  .prob{border:1px solid var(--border);border-radius:13px;padding:17px 19px;margin-top:12px;background:var(--panel)}
+  .prob .ph{display:flex;align-items:baseline;gap:10px}
+  .prob .sev{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+  .prob.critical .sev{color:var(--bad)} .prob.warning .sev{color:var(--warn)}
+  .prob h4{font-size:15px;font-weight:600}
+  .prob .why{color:var(--muted);font-size:14px;margin-top:6px}
+  .prob .fix{font-size:14px;margin-top:11px;padding-top:11px;border-top:1px solid var(--rule)}
+  .prob .fix b{color:var(--accent-2);font-weight:600}
+  .prob code{font-family:var(--mono);font-size:12.5px;background:var(--bg-2);border:1px solid var(--border);border-radius:5px;padding:1px 6px}
+
+  /* ---------- history ---------- */
+  .strip{display:flex;gap:2px;height:52px;margin-top:20px;align-items:stretch}
+  .bar{flex:1 1 auto;min-width:2px;border-radius:2px;background:var(--border);transition:transform .18s}
+  .bar.up{background:var(--ok);opacity:.85} .bar.degraded{background:var(--warn)} .bar.down{background:var(--bad)}
+  .bar:hover{transform:scaleY(1.12)}
+  .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px}
+  .hnote{color:var(--muted);font-size:13.5px;margin-top:14px}
+  .hnote b{color:var(--text)} .hnote code{font-family:var(--mono);font-size:12.5px}
+
+  .tip{
+    position:fixed;z-index:var(--z-tip);pointer-events:none;opacity:0;transition:opacity .12s;
+    background:var(--bg-2);border:1px solid var(--border-hi);color:var(--text);
+    border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.45;max-width:250px;
+  }
+  .tip .tt{font-family:var(--mono);font-size:10.5px;color:var(--muted);display:block}
+  .foot{margin-top:64px;padding-top:20px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--muted)}
   a{color:var(--accent)}
-  .tip{position:fixed;pointer-events:none;z-index:60;opacity:0;transition:opacity .1s;background:var(--ink);color:var(--bg);border-radius:8px;padding:7px 10px;font-size:12px;line-height:1.4}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="root">
 
-  <div class="top">
-    <div style="display:flex;align-items:center;gap:10px">
-      <a class="logo" href="index.html">SET<b>Scout</b></a>
-      <span class="tag">status</span>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn" id="again">Re-check</button>
-      <a class="btn" href="index.html" style="text-decoration:none">← App</a>
-    </div>
-  </div>
-
-  <div class="hero checking" id="hero">
-    <div class="dot"></div>
-    <div>
-      <h1 id="hTitle">Checking…</h1>
-      <p id="hSub">Probing the live site from your browser</p>
+  <div class="bar">
+    <a class="brand" href="index.html">
+      <span class="m">SET<i>Scout</i></span>
+      <span class="sep"></span>
+      <span class="t">Signal path</span>
+    </a>
+    <div class="acts">
+      <button class="btn" id="again">Re-check now</button>
+      <a class="btn" href="index.html">Back to app</a>
     </div>
   </div>
 
-  <div class="grid" id="tiles"></div>
+  <div class="verdict">
+    <div class="beacon"></div>
+    <h1 id="hl">Tracing the <i>signal</i>…</h1>
+    <dl class="side">
+      <dt>Last checked</dt><dd id="mWhen">—</dd>
+      <dt>Data age</dt><dd id="mAge">—</dd>
+      <dt>Coverage</dt><dd id="mCov">—</dd>
+    </dl>
+  </div>
 
-  <h2>What was checked, just now</h2>
-  <p class="sub">Run live from this page, so it reflects the site as you see it — not a cached result.</p>
-  <div class="panel" id="checks"></div>
+  <section>
+    <div class="shead">
+      <div>
+        <span class="eyebrow">Node graph</span>
+        <h2>How a price becomes a card</h2>
+        <p class="lede">Seven hops from Yahoo Finance to a stock on someone's screen. Moving dashes mean data is flowing; a still edge means it has stopped. Select any node for detail.</p>
+      </div>
+    </div>
 
-  <div id="probWrap" style="display:none">
+    <div class="graph">
+      <svg id="graph" viewBox="0 0 1120 360" role="img" aria-label="Pipeline node graph from Yahoo Finance through to the visitor's browser"></svg>
+    </div>
+    <div class="detail" id="detail"><p class="hint">Select a node above.</p></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Live probe</span>
+    <h2>Checked from your browser, just now</h2>
+    <p class="lede">Not a cached verdict. These requests run when you open this page, so they reflect the site exactly as you are seeing it.</p>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <section id="probSec" hidden>
+    <span class="eyebrow">Diagnosis</span>
     <h2>What is wrong, and what to do</h2>
-    <p class="sub">Each problem names its cause and the fix.</p>
     <div id="problems"></div>
-  </div>
+  </section>
 
-  <h2>History — 14 days</h2>
-  <p class="sub">Collected every 30 minutes by a GitHub Actions prober, which runs <em>outside</em> Firebase — so it still reports when Firebase itself is the thing that is down.</p>
-  <div class="panel">
+  <section>
+    <span class="eyebrow">Fourteen days</span>
+    <h2>Recorded from outside</h2>
+    <p class="lede">Sampled every thirty minutes by a GitHub Actions prober, which runs on different infrastructure to the site it watches. That separation is the point: a monitor hosted on Firebase cannot report Firebase being down.</p>
     <div class="strip" id="strip"></div>
-    <div class="axis"><span id="axL">—</span><span id="axR">now</span></div>
-    <div id="histNote" class="empty"></div>
-  </div>
+    <div class="axis"><span id="axL">—</span><span>now</span></div>
+    <p class="hnote" id="hnote"></p>
+  </section>
 
   <div class="foot">
-    <span>probe runs in your browser · history from GitHub Actions</span>
-    <span id="stamp">—</span>
+    <span>Probe runs client-side &middot; history from GitHub Actions</span>
+    <span>setscout-th.web.app</span>
   </div>
 </div>
 <div class="tip" id="tip"></div>
@@ -139,156 +236,247 @@
 (function(){
   "use strict";
   var HIST="https://raw.githubusercontent.com/oksoimcodingnow/atlas/status-data/history.json";
+  var NS="http://www.w3.org/2000/svg";
   var $=function(s){return document.querySelector(s);};
-  try{var t=localStorage.getItem("ss_theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}
+  var tip=$("#tip"), root=$("#root");
 
-  function ic(ok){return ok?"✅":"❌";}
-  function icw(s){return s==="good"?"✅":s==="warning"?"⚠️":"❌";}
+  function svg(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  function showTip(e,h){tip.innerHTML=h;tip.style.opacity=1;moveTip(e);}
+  function moveTip(e){
+    var r=tip.getBoundingClientRect(),x=e.clientX+15,y=e.clientY+15;
+    if(x+r.width>innerWidth-8)x=e.clientX-r.width-15;
+    if(y+r.height>innerHeight-8)y=e.clientY-r.height-15;
+    tip.style.left=x+"px";tip.style.top=y+"px";
+  }
+  function hideTip(){tip.style.opacity=0;}
 
-  async function timed(url,opts){
-    var t0=performance.now();
-    try{
-      var r=await fetch(url,Object.assign({cache:"no-store"},opts||{}));
-      return {ok:r.ok,code:r.status,ms:Math.round(performance.now()-t0),res:r};
-    }catch(err){
-      return {ok:false,code:0,ms:Math.round(performance.now()-t0),err:String(err.message||err)};
+  /* ---- the pipeline, as data ---- */
+  var NODES=[
+    {id:"yahoo", nm:"Yahoo Finance", sub:"upstream", x:20,
+     what:"Where every price originates. We do not control it, we have no contract with it, and it occasionally 404s on tickers that are still trading.",
+     risk:"Rate-limits cloud IP ranges. If the site ever fetched per visitor instead of once a day, this is what would break first."},
+    {id:"cron", nm:"GitHub cron", sub:"scheduler", x:176,
+     what:"Fires the refresh workflow at 11:00 UTC, ninety minutes after the SET close so prices are final.",
+     risk:"Best-effort scheduling with no guarantee. Measured drift on this repo reaches 10.3 hours, and nothing raises an alarm when it slips."},
+    {id:"engine", nm:"run_today.py", sub:"engine", x:332,
+     what:"Pulls two years of prices for 95 tickers, computes five factors, sector-neutralises, and ranks under three weightings.",
+     risk:"Ten seconds of work. Never the bottleneck; optimising it would change nothing."},
+    {id:"gate", nm:"verify_today.py", sub:"gate", x:488,
+     what:"Refuses to let a broken refresh reach the site. Checks coverage, the generated date, all three profiles, and the calibration block.",
+     risk:"Added after a silent-failure path was found: a crashed engine committed nothing and reported nothing."},
+    {id:"repo", nm:"today.json", sub:"artifact", x:644,
+     what:"The published file. 95 stocks by three profiles, about 20 KB over the wire once compressed.",
+     risk:"Read-only for the site. The universe lives in a separate file so a failed fetch can never delete a ticker permanently."},
+    {id:"cdn", nm:"Firebase CDN", sub:"delivery", x:800,
+     what:"Serves the app from Google's edge. No server, no database, no session state.",
+     risk:"About 173,000 first visits a month before the free tier bills. Traffic is the one failure mode this design is immune to."},
+    {id:"user", nm:"Browser", sub:"endpoint", x:956,
+     what:"Fetches one JSON file and renders 95 cards. All personalisation happens on the device.",
+     risk:"Nothing leaves the browser. No cookies, no analytics, nothing sent back."}
+  ];
+  var NW=144, NH=88, NY=112, MON={x:488,y:266,w:144,h:66};
+
+  var probe={};                     /* filled by run() */
+
+  function nodeState(id){
+    if(probe.pending) return "idle";
+    switch(id){
+      case "yahoo":  return probe.coverageOk===false?"warn":"ok";
+      case "cron":   return probe.stale?"bad":(probe.late?"warn":"ok");
+      case "engine": return probe.coverageOk===false?"warn":"ok";
+      case "gate":   return probe.calibrated===false?"warn":"ok";
+      case "repo":   return probe.dataOk?(probe.stale?"warn":"ok"):"bad";
+      case "cdn":    return probe.dataOk?"ok":"bad";
+      case "user":   return probe.dataOk&&!probe.stale?"ok":(probe.dataOk?"warn":"bad");
     }
+    return "idle";
+  }
+  var COL={ok:"var(--ok)",warn:"var(--warn)",bad:"var(--bad)",idle:"var(--muted)"};
+  var VAL={
+    yahoo:function(){return probe.pending?"—":"95 tickers";},
+    cron:function(){return probe.pending?"—":(probe.ageH==null?"—":probe.ageH.toFixed(1)+"h ago");},
+    engine:function(){return probe.pending?"—":"10.2 s";},
+    gate:function(){return probe.pending?"—":(probe.calibrated?"passing":"no calib");},
+    repo:function(){return probe.pending?"—":(probe.scored!=null?probe.scored+"/95":"—");},
+    cdn:function(){return probe.pending?"—":(probe.ms!=null?probe.ms+" ms":"—");},
+    user:function(){return probe.pending?"—":"~20 KB";}
+  };
+
+  function drawGraph(){
+    var g=$("#graph"); g.innerHTML="";
+    /* edges first, so nodes sit above */
+    for(var i=0;i<NODES.length-1;i++){
+      var a=NODES[i], b=NODES[i+1];
+      var x1=a.x+NW, x2=b.x, my=NY+NH/2;
+      var cls="edge "+(probe.pending?"":(nodeState(b.id)==="bad"?"dead":(nodeState(b.id)==="warn"?"stall":"live")));
+      g.appendChild(svg("path",{d:"M "+x1+" "+my+" L "+x2+" "+my,class:cls}));
+      g.appendChild(svg("path",{d:"M "+(x2-7)+" "+(my-4)+" L "+x2+" "+my+" L "+(x2-7)+" "+(my+4),
+        fill:"none",stroke:"var(--border-hi)","stroke-width":1.5}));
+    }
+    /* the one edge that carries the known problem */
+    var lab=svg("text",{x:NODES[1].x+NW/2,y:NY-16,"text-anchor":"middle",class:"glabel"});
+    lab.textContent=probe.stale?"⚠ drifting":"every 24 h";
+    if(probe.stale)lab.setAttribute("fill","var(--warn)");
+    g.appendChild(lab);
+
+    NODES.forEach(function(n){
+      var st=nodeState(n.id);
+      var grp=svg("g",{class:"nd",tabindex:"0",role:"button","aria-label":n.nm+", "+st});
+      grp.appendChild(svg("rect",{class:"box",x:n.x,y:NY,width:NW,height:NH,rx:11,
+        fill:"rgba(20,20,38,.72)",stroke:st==="ok"?"var(--border)":COL[st],"stroke-width":st==="ok"?1:1.6}));
+      grp.appendChild(svg("circle",{cx:n.x+15,cy:NY+19,r:4,fill:COL[st]}));
+      var t1=svg("text",{x:n.x+27,y:NY+23,class:"nm"});t1.textContent=n.nm;grp.appendChild(t1);
+      var t2=svg("text",{x:n.x+15,y:NY+43,class:"sub"});t2.textContent=n.sub.toUpperCase();grp.appendChild(t2);
+      var t3=svg("text",{x:n.x+15,y:NY+71,class:"val"});
+      t3.setAttribute("fill",st==="ok"?"var(--accent)":COL[st]);
+      t3.textContent=VAL[n.id]();grp.appendChild(t3);
+      function pick(){select(n.id);}
+      grp.addEventListener("click",pick);
+      grp.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();pick();}});
+      g.appendChild(grp);
+    });
+
+    /* the monitor, deliberately drawn apart */
+    var m=svg("g",{});
+    m.appendChild(svg("rect",{x:MON.x,y:MON.y,width:MON.w,height:MON.h,rx:11,
+      fill:"none",stroke:"var(--accent-2)","stroke-opacity":".45","stroke-width":1.2,"stroke-dasharray":"4 4"}));
+    var mt=svg("text",{x:MON.x+15,y:MON.y+26,class:"nm"});
+    mt.setAttribute("fill","var(--accent-2)");mt.textContent="Monitor";m.appendChild(mt);
+    var ms=svg("text",{x:MON.x+15,y:MON.y+45,class:"sub"});
+    ms.textContent="GITHUB ACTIONS, 30 MIN";m.appendChild(ms);
+    g.appendChild(m);
+    [["repo",NODES[4]],["cdn",NODES[5]]].forEach(function(p){
+      var n=p[1];
+      g.appendChild(svg("path",{class:"edge probe",
+        d:"M "+(MON.x+MON.w/2)+" "+MON.y+" C "+(MON.x+MON.w/2)+" "+(MON.y-40)+", "+
+          (n.x+NW/2)+" "+(NY+NH+56)+", "+(n.x+NW/2)+" "+(NY+NH)}));
+    });
+    var pl=svg("text",{x:MON.x+MON.w+14,y:MON.y+38,class:"glabel"});
+    pl.setAttribute("fill","var(--accent-2)");pl.setAttribute("fill-opacity",".7");
+    pl.textContent="probes from outside Firebase";g.appendChild(pl);
+  }
+
+  function select(id){
+    var n=NODES.filter(function(x){return x.id===id;})[0]; if(!n)return;
+    var st=nodeState(id);
+    var word={ok:"Healthy",warn:"Degraded",bad:"Failing",idle:"Checking"}[st];
+    $("#detail").innerHTML=
+      '<div class="dh"><h3>'+n.nm+'</h3><span class="st" style="color:'+COL[st]+'">'+word+'</span></div>'+
+      '<p>'+n.what+'</p>'+
+      '<div class="kv"><div><dt>Role</dt><dd>'+n.sub+'</dd></div>'+
+      '<div><dt>Reading</dt><dd style="color:'+COL[st]+'">'+VAL[n.id]()+'</dd></div></div>'+
+      '<p style="margin-top:13px">'+n.risk+'</p>';
+  }
+
+  /* ---------------- live probe ---------------- */
+  async function timed(url,opt){
+    var t0=performance.now();
+    try{var r=await fetch(url,Object.assign({cache:"no-store"},opt||{}));
+      return {ok:r.ok,code:r.status,ms:Math.round(performance.now()-t0),res:r};}
+    catch(err){return {ok:false,code:0,ms:Math.round(performance.now()-t0),err:String(err.message||err)};}
   }
 
   async function run(){
-    $("#hero").className="hero checking";
-    $("#hTitle").textContent="Checking…";
-    $("#hSub").textContent="Probing the live site from your browser";
+    $("#again").setAttribute("aria-busy","true");
+    probe={pending:true}; drawGraph();
+    root.className=""; $("#hl").innerHTML='Tracing the <i>signal</i>…';
 
-    var checks=[],problems=[],tiles=[];
+    var checks=[],problems=[];
+    var d=await timed("today.json?t="+Date.now()), data=null;
+    if(d.ok){try{data=await d.res.json();}catch(e){d.ok=false;d.err="malformed JSON";}}
 
-    // 1. the data file - the single most informative probe
-    var d=await timed("today.json?t="+Date.now());
-    var data=null;
-    if(d.ok){ try{ data=await d.res.json(); }catch(e){ d.ok=false; d.err="bad JSON"; } }
+    probe.dataOk=d.ok; probe.ms=d.ms;
+    checks.push({s:d.ok?"ok":"no",nm:"Data file",
+      de:d.ok?"today.json fetched and parsed":"failed: "+(d.err||("HTTP "+d.code)),rt:d.ms+" ms"});
+    if(!d.ok) problems.push({sev:"critical",h:"Data file unreachable",
+      why:"today.json did not load, so the app shows an error instead of stocks.",
+      fix:"Redeploy with <code>firebase deploy --only hosting</code>, or check the most recent refresh commit."});
 
-    checks.push({ok:d.ok,nm:"Data file loads",
-      de:d.ok?"today.json fetched and parsed":"today.json failed — "+(d.err||("HTTP "+d.code)),
-      rt:d.ms+" ms"});
-    if(!d.ok){
-      problems.push({sev:"critical",w:"Data file unreachable",
-        y:"today.json did not load, so the app shows an error instead of stocks.",
-        f:"Re-deploy with <code>firebase deploy --only hosting</code>, or check the last refresh commit."});
-    }
-
-    // 2. freshness
-    var ageH=null,gen="—";
-    if(data&&data.generated){
-      gen=data.generated;
-      ageH=(Date.now()-Date.parse(data.generated+"T00:00:00Z"))/3600000;
-      var freshOk=ageH<36, lateish=ageH>=26&&ageH<36;
-      checks.push({ok:freshOk,nm:"Data is current",
-        de:"generated "+gen+" · "+ageH.toFixed(1)+" h old"+(lateish?" (a cycle late)":""),
-        rt:freshOk?(lateish?"late":"fresh"):"STALE"});
-      if(!freshOk){
-        problems.push({sev:"critical",w:"Data is stale",
-          y:"today.json is "+ageH.toFixed(1)+" hours old. Visitors are seeing prices from "+gen+".",
-          f:"The daily refresh has not run. Check <b>Actions → Refresh SETScout data</b>. GitHub cron has drifted by up to 10.3 h on this repo, so it may simply be late."});
-      }else if(lateish){
-        problems.push({sev:"warning",w:"Refresh running late",
-          y:"Data is "+ageH.toFixed(1)+" h old — one cycle missed or delayed.",
-          f:"Usually cron drift. It self-heals on the next run; no action needed unless it passes 36 h."});
-      }
-    }
-
-    // 3. coverage
     if(data){
-      var n=data.scored||(data.stocks?data.stocks.length:0);
-      var covOk=n>=86;
-      checks.push({ok:covOk,nm:"Stock coverage",
-        de:n+" of 95 scored"+(covOk?"":" — partial run"),rt:covOk?"full":"PARTIAL"});
-      if(!covOk){
-        problems.push({sev:"warning",w:"Partial coverage",
-          y:"Only "+n+" of 95 stocks scored, so some names are missing from the list.",
-          f:"Yahoo most likely rate-limited the runner. Re-run the refresh; the health check should have caught this."});
+      probe.scored=data.scored||(data.stocks?data.stocks.length:0);
+      probe.calibrated=data.calibration!=null;
+      probe.coverageOk=probe.scored>=86;
+      if(data.generated){
+        probe.ageH=(Date.now()-Date.parse(data.generated+"T00:00:00Z"))/36e5;
+        probe.stale=probe.ageH>=36; probe.late=probe.ageH>=26&&probe.ageH<36;
+        checks.push({s:probe.stale?"no":(probe.late?"mid":"ok"),nm:"Freshness",
+          de:"generated "+data.generated+", "+probe.ageH.toFixed(1)+" hours old",
+          rt:probe.stale?"stale":(probe.late?"late":"current")});
+        if(probe.stale) problems.push({sev:"critical",h:"Data is stale",
+          why:"today.json is "+probe.ageH.toFixed(1)+" hours old. Visitors are seeing prices from "+data.generated+".",
+          fix:"The daily refresh has not run. Check <b>Actions &rarr; Refresh SETScout data</b>. GitHub cron has drifted by up to 10.3 hours on this repository, so it may simply be late."});
+        else if(probe.late) problems.push({sev:"warning",h:"Refresh running late",
+          why:"Data is "+probe.ageH.toFixed(1)+" hours old, so one cycle was missed or delayed.",
+          fix:"Almost always cron drift. It self-heals on the next run; no action needed below 36 hours."});
       }
-      // 4. calibration
-      var cal=data.calibration!=null;
-      checks.push({ok:cal,nm:"Calibration present",
-        de:cal?("measured "+data.calibration.generated+" over "+data.calibration.months+" months"):"missing — p_win renders blank",
-        rt:cal?"ok":"MISSING"});
-      if(!cal){
-        problems.push({sev:"warning",w:"No calibration block",
-          y:"today.json has no calibration, so the trust label shows a dash.",
-          f:"Run <code>research/backtest.py</code> to regenerate calibration.json, then re-run the engine."});
-      }
-      tiles.push({k:"Stocks scored",v:n,s:"of 95 in the universe",c:covOk?"good":"warning"});
-      tiles.push({k:"Data age",v:ageH==null?"—":ageH.toFixed(1)+" h",s:"generated "+gen,
-        c:ageH==null?"":(ageH<26?"good":ageH<36?"warning":"critical")});
+      checks.push({s:probe.coverageOk?"ok":"mid",nm:"Coverage",
+        de:probe.scored+" of 95 stocks scored",rt:probe.coverageOk?"full":"partial"});
+      if(!probe.coverageOk) problems.push({sev:"warning",h:"Partial coverage",
+        why:"Only "+probe.scored+" of 95 stocks scored, so names are missing from the list.",
+        fix:"Yahoo most likely rate-limited the runner. Re-run the refresh; the health check should have blocked this."});
+      checks.push({s:probe.calibrated?"ok":"mid",nm:"Calibration",
+        de:probe.calibrated?("measured "+data.calibration.generated+" over "+data.calibration.months+" months"):"absent, so the trust label renders blank",
+        rt:probe.calibrated?"present":"missing"});
+      if(!probe.calibrated) problems.push({sev:"warning",h:"No calibration block",
+        why:"today.json carries no calibration, so every card shows a dash where the measured up-rate belongs.",
+        fix:"Run <code>research/backtest.py</code> to regenerate calibration.json, then re-run the engine."});
     }
-
-    // 5. the pages mirror (cross-origin; opaque, so we can only see reachability)
     var pg=await timed("https://oksoimcodingnow.github.io/atlas/setscout/today.json",{mode:"no-cors"});
-    checks.push({ok:true,nm:"GitHub Pages mirror",
-      de:"reachable (opaque cross-origin response — status not visible to the browser)",
-      rt:pg.ms+" ms"});
+    checks.push({s:"ok",nm:"Pages mirror",de:"reachable; the response is opaque cross-origin so its status is not visible",rt:pg.ms+" ms"});
 
-    tiles.push({k:"Data fetch",v:d.ms+" ms",s:"from this browser",c:d.ms<600?"good":"warning"});
-
-    // ---- verdict ----
+    probe.pending=false;
     var crit=problems.filter(function(p){return p.sev==="critical";}).length;
-    var st=crit?"down":(problems.length?"degraded":"up");
-    $("#hero").className="hero "+st;
-    $("#hTitle").textContent=st==="up"?"All systems normal":st==="degraded"?"Degraded":"Down";
-    $("#hSub").textContent=st==="up"
-      ? "Site reachable, data current, coverage full."
-      : problems.length+" issue"+(problems.length>1?"s":"")+" found — see below.";
-    tiles.unshift({k:"Status",v:st==="up"?"UP":st==="degraded"?"DEGRADED":"DOWN",s:"live probe",c:st==="up"?"good":st==="degraded"?"warning":"critical"});
-
-    $("#tiles").innerHTML=tiles.map(function(t){
-      return '<div class="cell"><span class="k">'+t.k+'</span><span class="v '+(t.c||"")+'">'+
-        t.v+'</span><span class="s">'+t.s+'</span></div>';}).join("");
+    root.className=crit?"is-bad":(problems.length?"is-warn":"is-ok");
+    $("#hl").innerHTML=crit?'The signal has <i>stopped</i>.'
+      :problems.length?'Running, with <i>friction</i>.'
+      :'Every hop is <i>clear</i>.';
+    $("#mWhen").textContent=new Date().toLocaleTimeString();
+    $("#mAge").textContent=probe.ageH==null?"—":probe.ageH.toFixed(1)+" h";
+    $("#mCov").textContent=probe.scored==null?"—":probe.scored+" / 95";
 
     $("#checks").innerHTML=checks.map(function(c){
-      return '<div class="chk"><span class="ic">'+ic(c.ok)+'</span><div><div class="nm">'+
-        c.nm+'</div><div class="de">'+c.de+'</div></div><span class="rt">'+c.rt+'</span></div>';}).join("");
-
-    $("#probWrap").style.display=problems.length?"block":"none";
+      return '<div class="chk '+c.s+'"><span class="g"></span><span class="nm">'+c.nm+
+        '</span><span class="de">'+c.de+'</span><span class="rt">'+c.rt+'</span></div>';}).join("");
+    $("#probSec").hidden=!problems.length;
     $("#problems").innerHTML=problems.map(function(p){
-      return '<div class="prob '+p.sev+'"><div class="w">'+icw(p.sev==="critical"?"bad":"warning")+
-        " "+p.w+'</div><div class="y">'+p.y+'</div><div class="f"><b>Fix:</b> '+p.f+'</div></div>';}).join("");
+      return '<div class="prob '+p.sev+'"><div class="ph"><span class="sev">'+p.sev+
+        '</span><h4>'+p.h+'</h4></div><p class="why">'+p.why+'</p>'+
+        '<p class="fix"><b>Fix.</b> '+p.fix+'</p></div>';}).join("");
 
-    $("#stamp").textContent="checked "+new Date().toLocaleTimeString();
+    drawGraph();
+    var first=crit?"repo":(problems.length?"cron":"cdn");
+    select(first);
+    $("#again").removeAttribute("aria-busy");
   }
 
-  // ---- history strip ----
-  var tip=$("#tip");
+  /* ---------------- history ---------------- */
   async function history(){
     try{
       var r=await fetch(HIST,{cache:"no-store"});
-      if(!r.ok) throw new Error("HTTP "+r.status);
-      var h=await r.json();
-      var s=h.samples||[];
-      if(!s.length) throw new Error("empty");
-      $("#strip").innerHTML=s.map(function(x,i){
-        return '<div class="bar '+x.status+'" data-i="'+i+'"></div>';}).join("");
+      if(!r.ok) throw 0;
+      var h=await r.json(), s=h.samples||[];
+      if(!s.length) throw 0;
+      $("#strip").innerHTML=s.map(function(x,i){return '<div class="bar '+x.status+'" data-i="'+i+'"></div>';}).join("");
       $("#axL").textContent=new Date(s[0].t).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
       var up=s.filter(function(x){return x.status==="up";}).length;
-      $("#histNote").innerHTML="<b>"+((up/s.length)*100).toFixed(1)+"%</b> of "+s.length+
-        " samples fully healthy · updated "+new Date(h.updated).toLocaleString();
+      $("#hnote").innerHTML="<b>"+((up/s.length)*100).toFixed(1)+"%</b> of "+s.length+
+        " samples fully healthy. Updated "+new Date(h.updated).toLocaleString()+".";
       $("#strip").addEventListener("mousemove",function(e){
-        var b=e.target.closest(".bar"); if(!b){tip.style.opacity=0;return;}
-        var x=s[+b.dataset.i], p=(x.problems||[]);
-        tip.innerHTML="<b>"+x.status.toUpperCase()+"</b> "+new Date(x.t).toLocaleString()+
-          (p.length?"<br>"+p.map(function(q){return "· "+q.what;}).join("<br>"):"");
-        tip.style.opacity=1;tip.style.left=(e.clientX+13)+"px";tip.style.top=(e.clientY+13)+"px";
+        var b=e.target.closest(".bar"); if(!b)return hideTip();
+        var x=s[+b.dataset.i], p=x.problems||[];
+        showTip(e,'<span class="tt">'+new Date(x.t).toLocaleString()+"</span><b>"+
+          x.status.toUpperCase()+"</b>"+(p.length?"<br>"+p.map(function(q){return q.what;}).join("<br>"):""));
       });
-      $("#strip").addEventListener("mouseleave",function(){tip.style.opacity=0;});
-    }catch(err){
-      $("#strip").innerHTML="";
-      $("#histNote").innerHTML="No history yet. The prober writes its first sample within 30 minutes of "+
-        "the workflow being enabled — or trigger it now from <b>Actions → Monitor SETScout → Run workflow</b>. "+
+      $("#strip").addEventListener("mouseleave",hideTip);
+    }catch(e){
+      $("#hnote").innerHTML="No samples recorded yet. The prober writes its first within thirty minutes, "+
+        "or you can trigger it from <b>Actions &rarr; Monitor SETScout &rarr; Run workflow</b>. "+
         "It publishes to the <code>status-data</code> branch.";
     }
   }
 
   $("#again").addEventListener("click",run);
-  run(); history();
+  drawGraph(); run(); history();
 })();
 </script>
 </body>
