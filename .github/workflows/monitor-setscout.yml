@@ -23,6 +23,10 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
+      # needed by the append step below - without a checkout there is no git
+      # repo on the runner and the branch write fails with "not in a git directory"
+      - uses: actions/checkout@v4
+
       - name: Probe every endpoint and diagnose
         id: probe
         run: |
