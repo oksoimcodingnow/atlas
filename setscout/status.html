@@ -31,7 +31,7 @@
     background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,192,255,.07), transparent 70%);
     min-height:100vh;
   }
-  .wrap{max-width:1180px;margin:0 auto;padding:var(--gutter) var(--gutter) 90px}
+  .wrap{max-width:1180px;margin:0 auto;padding:var(--gutter) var(--gutter) 64px}
 
   /* ---------- masthead ---------- */
   .bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--rule)}
@@ -52,7 +52,7 @@
   .btn[aria-busy="true"]{opacity:.5;pointer-events:none}
 
   /* ---------- verdict: the one narrative moment ---------- */
-  .verdict{padding:46px 0 34px;display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+  .verdict{padding:30px 0 24px;display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
   .beacon{
     width:13px;height:13px;border-radius:50%;background:var(--muted);
     margin-top:16px;flex:none;position:relative;transition:background .3s;
@@ -81,13 +81,13 @@
     color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:12px;
   }
   .eyebrow::before{content:'';width:28px;height:1px;background:var(--accent)}
-  section{margin-top:56px}
+  section{margin-top:38px}
   .shead{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:6px}
-  h2{font-family:var(--serif);font-weight:400;font-size:clamp(25px,3vw,34px);letter-spacing:-.005em;margin-top:12px}
-  .lede{color:var(--muted);font-size:14.5px;max-width:68ch;margin-top:6px}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(23px,2.6vw,30px);letter-spacing:-.005em;margin-top:9px}
+  .lede{color:var(--muted);font-size:14px;max-width:66ch;margin-top:5px}
 
   /* ---------- the graph ---------- */
-  .graph{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto;padding:10px}
+  .graph{margin-top:18px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto;padding:10px}
   .graph svg{display:block;min-width:960px;width:100%;height:auto}
   .nd rect{transition:stroke .3s,fill .3s}
   .nd{cursor:pointer}
@@ -114,8 +114,8 @@
 
   /* ---------- node detail ---------- */
   .detail{
-    margin-top:18px;border:1px solid var(--border);border-radius:14px;
-    background:var(--panel);padding:20px 22px;min-height:104px;
+    margin-top:14px;border:1px solid var(--border);border-radius:14px;
+    background:var(--panel);padding:17px 20px;
   }
   .detail .dh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   .detail h3{font-family:var(--serif);font-weight:600;font-size:22px}
@@ -128,16 +128,17 @@
   .hint{color:var(--muted);font-size:13px;font-style:italic;font-family:var(--serif);font-size:16px}
 
   /* ---------- checks ---------- */
-  .checks{margin-top:22px;border-top:1px solid var(--rule)}
-  .chk{display:flex;align-items:center;gap:14px;padding:14px 2px;border-bottom:1px solid var(--rule)}
+  /* capped: a value 700px away from its label is not related to it visually */
+  .checks{margin-top:14px;border-top:1px solid var(--rule);max-width:840px}
+  .chk{display:flex;align-items:center;gap:14px;padding:10px 2px;border-bottom:1px solid var(--rule)}
   .chk .g{width:6px;height:6px;border-radius:50%;flex:none;background:var(--muted)}
   .chk.ok .g{background:var(--ok)} .chk.no .g{background:var(--bad)} .chk.mid .g{background:var(--warn)}
-  .chk .nm{font-weight:600;font-size:14px;min-width:168px}
+  .chk .nm{font-weight:600;font-size:14px;min-width:132px}
   .chk .de{color:var(--muted);font-size:13.5px;flex:1}
   .chk .rt{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
 
   /* ---------- problems ---------- */
-  .prob{border:1px solid var(--border);border-radius:13px;padding:17px 19px;margin-top:12px;background:var(--panel)}
+  .prob{border:1px solid var(--border);border-radius:13px;padding:15px 18px;margin-top:10px;background:var(--panel);max-width:840px}
   .prob .ph{display:flex;align-items:baseline;gap:10px}
   .prob .sev{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase}
   .prob.critical .sev{color:var(--bad)} .prob.warning .sev{color:var(--warn)}
@@ -148,7 +149,7 @@
   .prob code{font-family:var(--mono);font-size:12.5px;background:var(--bg-2);border:1px solid var(--border);border-radius:5px;padding:1px 6px}
 
   /* ---------- history ---------- */
-  .strip{display:flex;gap:2px;height:52px;margin-top:20px;align-items:stretch}
+  .strip{display:flex;gap:2px;height:44px;margin-top:14px;align-items:stretch}
   .bar{flex:1 1 auto;min-width:2px;border-radius:2px;background:var(--border);transition:transform .18s}
   .bar.up{background:var(--ok);opacity:.85} .bar.degraded{background:var(--warn)} .bar.down{background:var(--bad)}
   .bar:hover{transform:scaleY(1.12)}
