@@ -88,13 +88,13 @@
 
   /* ---------- the graph ---------- */
   .graph{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto}
-  .graph svg{display:block;min-width:1120px;width:100%;height:auto}
+  .graph svg{display:block;min-width:900px;width:100%;height:auto}
   .nd rect{transition:stroke .3s,fill .3s}
   .nd{cursor:pointer}
   .nd:focus-visible{outline:none}
   .nd:focus-visible rect.box{stroke:var(--accent);stroke-width:2}
-  .nd .nm{font-family:var(--sans);font-size:13.5px;font-weight:600;fill:var(--text)}
-  .nd .sub{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+  .nd .nm{font-family:var(--sans);font-size:12px;font-weight:600;fill:var(--text)}
+  .nd .sub{font-family:var(--mono);font-size:9px;fill:var(--muted);letter-spacing:.08em}
   .nd .val{font-family:var(--mono);font-size:11px;font-weight:500}
   .nd:hover rect.box{stroke:var(--border-hi)}
   .edge{fill:none;stroke:var(--border);stroke-width:1.5}
@@ -198,7 +198,7 @@
     </div>
 
     <div class="graph">
-      <svg id="graph" viewBox="0 0 1120 360" role="img" aria-label="Pipeline node graph from Yahoo Finance through to the visitor's browser"></svg>
+      <svg id="graph" viewBox="0 0 1012 268" role="img" aria-label="Pipeline node graph from Yahoo Finance through to the visitor's browser"></svg>
     </div>
     <div class="detail" id="detail"><p class="hint">Select a node above.</p></div>
   </section>
@@ -252,29 +252,35 @@
 
   /* ---- the pipeline, as data ---- */
   var NODES=[
-    {id:"yahoo", nm:"Yahoo Finance", sub:"upstream", x:20,
+    {id:"yahoo", nm:"Yahoo Finance", sub:"upstream", 
      what:"Where every price originates. We do not control it, we have no contract with it, and it occasionally 404s on tickers that are still trading.",
      risk:"Rate-limits cloud IP ranges. If the site ever fetched per visitor instead of once a day, this is what would break first."},
-    {id:"cron", nm:"GitHub cron", sub:"scheduler", x:176,
+    {id:"cron", nm:"GitHub cron", sub:"scheduler", 
      what:"Fires the refresh workflow at 11:00 UTC, ninety minutes after the SET close so prices are final.",
      risk:"Best-effort scheduling with no guarantee. Measured drift on this repo reaches 10.3 hours, and nothing raises an alarm when it slips."},
-    {id:"engine", nm:"run_today.py", sub:"engine", x:332,
+    {id:"engine", nm:"run_today.py", sub:"engine", 
      what:"Pulls two years of prices for 95 tickers, computes five factors, sector-neutralises, and ranks under three weightings.",
      risk:"Ten seconds of work. Never the bottleneck; optimising it would change nothing."},
-    {id:"gate", nm:"verify_today.py", sub:"gate", x:488,
+    {id:"gate", nm:"verify_today.py", sub:"gate", 
      what:"Refuses to let a broken refresh reach the site. Checks coverage, the generated date, all three profiles, and the calibration block.",
      risk:"Added after a silent-failure path was found: a crashed engine committed nothing and reported nothing."},
-    {id:"repo", nm:"today.json", sub:"artifact", x:644,
+    {id:"repo", nm:"today.json", sub:"artifact", 
      what:"The published file. 95 stocks by three profiles, about 20 KB over the wire once compressed.",
      risk:"Read-only for the site. The universe lives in a separate file so a failed fetch can never delete a ticker permanently."},
-    {id:"cdn", nm:"Firebase CDN", sub:"delivery", x:800,
+    {id:"cdn", nm:"Firebase CDN", sub:"delivery", 
      what:"Serves the app from Google's edge. No server, no database, no session state.",
      risk:"About 173,000 first visits a month before the free tier bills. Traffic is the one failure mode this design is immune to."},
-    {id:"user", nm:"Browser", sub:"endpoint", x:956,
+    {id:"user", nm:"Browser", sub:"endpoint", 
      what:"Fetches one JSON file and renders 95 cards. All personalisation happens on the device.",
      risk:"Nothing leaves the browser. No cookies, no analytics, nothing sent back."}
   ];
-  var NW=144, NH=88, NY=112, MON={x:488,y:266,w:144,h:66};
+  // 18px margin + 7 nodes at 126 + 6 gaps at 15 = 1008 in a 1012 box.
+  // Monitor is centred under the chain with room for its own label BELOW it,
+  // because placing that label beside the box made the two collide.
+  var NX0=18, NW=129, NH=78, NGAP=15, NY=54;
+  var MON={x:421,y:170,w:170,h:56};
+
+  NODES.forEach(function(n,i){ n.x = NX0 + i*(NW+NGAP); });
 
   var probe={};                     /* filled by run() */
 
@@ -314,7 +320,7 @@
         fill:"none",stroke:"var(--border-hi)","stroke-width":1.5}));
     }
     /* the one edge that carries the known problem */
-    var lab=svg("text",{x:NODES[1].x+NW/2,y:NY-16,"text-anchor":"middle",class:"glabel"});
+    var lab=svg("text",{x:NODES[1].x+NW/2,y:NY-13,"text-anchor":"middle",class:"glabel"});
     lab.textContent=probe.stale?"⚠ drifting":"every 24 h";
     if(probe.stale)lab.setAttribute("fill","var(--warn)");
     g.appendChild(lab);
@@ -324,10 +330,10 @@
       var grp=svg("g",{class:"nd",tabindex:"0",role:"button","aria-label":n.nm+", "+st});
       grp.appendChild(svg("rect",{class:"box",x:n.x,y:NY,width:NW,height:NH,rx:11,
         fill:"rgba(20,20,38,.72)",stroke:st==="ok"?"var(--border)":COL[st],"stroke-width":st==="ok"?1:1.6}));
-      grp.appendChild(svg("circle",{cx:n.x+15,cy:NY+19,r:4,fill:COL[st]}));
-      var t1=svg("text",{x:n.x+27,y:NY+23,class:"nm"});t1.textContent=n.nm;grp.appendChild(t1);
-      var t2=svg("text",{x:n.x+15,y:NY+43,class:"sub"});t2.textContent=n.sub.toUpperCase();grp.appendChild(t2);
-      var t3=svg("text",{x:n.x+15,y:NY+71,class:"val"});
+      grp.appendChild(svg("circle",{cx:n.x+NW-13,cy:NY+15,r:3.5,fill:COL[st]}));
+      var t1=svg("text",{x:n.x+14,y:NY+22,class:"nm"});t1.textContent=n.nm;grp.appendChild(t1);
+      var t2=svg("text",{x:n.x+14,y:NY+40,class:"sub"});t2.textContent=n.sub.toUpperCase();grp.appendChild(t2);
+      var t3=svg("text",{x:n.x+14,y:NY+64,class:"val"});
       t3.setAttribute("fill",st==="ok"?"var(--accent)":COL[st]);
       t3.textContent=VAL[n.id]();grp.appendChild(t3);
       function pick(){select(n.id);}
@@ -340,19 +346,19 @@
     var m=svg("g",{});
     m.appendChild(svg("rect",{x:MON.x,y:MON.y,width:MON.w,height:MON.h,rx:11,
       fill:"none",stroke:"var(--accent-2)","stroke-opacity":".45","stroke-width":1.2,"stroke-dasharray":"4 4"}));
-    var mt=svg("text",{x:MON.x+15,y:MON.y+26,class:"nm"});
+    var mt=svg("text",{x:MON.x+15,y:MON.y+24,class:"nm"});
     mt.setAttribute("fill","var(--accent-2)");mt.textContent="Monitor";m.appendChild(mt);
-    var ms=svg("text",{x:MON.x+15,y:MON.y+45,class:"sub"});
-    ms.textContent="GITHUB ACTIONS, 30 MIN";m.appendChild(ms);
+    var ms=svg("text",{x:MON.x+15,y:MON.y+42,class:"sub"});
+    ms.textContent="GITHUB ACTIONS \u00B7 30 MIN";m.appendChild(ms);
     g.appendChild(m);
     [["repo",NODES[4]],["cdn",NODES[5]]].forEach(function(p){
       var n=p[1];
       g.appendChild(svg("path",{class:"edge probe",
-        d:"M "+(MON.x+MON.w/2)+" "+MON.y+" C "+(MON.x+MON.w/2)+" "+(MON.y-40)+", "+
-          (n.x+NW/2)+" "+(NY+NH+56)+", "+(n.x+NW/2)+" "+(NY+NH)}));
+        d:"M "+(MON.x+MON.w/2)+" "+MON.y+" C "+(MON.x+MON.w/2)+" "+(MON.y-34)+", "+
+          (n.x+NW/2)+" "+(NY+NH+40)+", "+(n.x+NW/2)+" "+(NY+NH)}));
     });
-    var pl=svg("text",{x:MON.x+MON.w+14,y:MON.y+38,class:"glabel"});
-    pl.setAttribute("fill","var(--accent-2)");pl.setAttribute("fill-opacity",".7");
+    var pl=svg("text",{x:MON.x+MON.w/2,y:MON.y+MON.h+18,"text-anchor":"middle",class:"glabel"});
+    pl.setAttribute("fill","var(--accent-2)");pl.setAttribute("fill-opacity",".72");
     pl.textContent="probes from outside Firebase";g.appendChild(pl);
   }
 
