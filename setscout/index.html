@@ -36,6 +36,11 @@
   @media(min-width:1240px){.wrap{max-width:1200px;}}
   @media(min-width:1500px){.wrap{max-width:1440px;}}
   @media(min-width:1800px){.wrap{max-width:1660px;}}
+  /* Hold the grid at four columns on wide screens. auto-fill kept adding a
+     fifth and sixth column as the container grew, which made the cards smaller
+     the bigger the monitor - the opposite of what the extra width is for.
+     Four columns means the space goes into card size instead. */
+  @media(min-width:1240px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
   h1,.sub,.meta{max-width:62ch;}
   .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .logo{font-size:20px;font-weight:800;letter-spacing:-.02em;} .logo b{color:var(--accent);}
