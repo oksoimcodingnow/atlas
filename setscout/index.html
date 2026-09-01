@@ -31,6 +31,12 @@
   html,body{background:var(--bg);color:var(--ink);font-family:'Inter','Noto Sans Thai',-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.45;transition:background .2s,color .2s;}
   body{padding:max(16px,env(safe-area-inset-top)) 16px 60px;}
   .wrap{max-width:1080px;margin:0 auto;}
+  /* wide screens: use the empty side space for more cards, not more gutter.
+     Prose stays capped so line length does not blow out. */
+  @media(min-width:1240px){.wrap{max-width:1200px;}}
+  @media(min-width:1500px){.wrap{max-width:1440px;}}
+  @media(min-width:1800px){.wrap{max-width:1660px;}}
+  h1,.sub,.meta{max-width:62ch;}
   .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .logo{font-size:20px;font-weight:800;letter-spacing:-.02em;} .logo b{color:var(--accent);}
   .tools{display:flex;gap:6px;align-items:center;}
@@ -55,8 +61,9 @@
   .pbtn{font-size:13px;font-weight:700;color:var(--accent);background:var(--card);border:1px solid var(--accent);border-radius:999px;padding:8px 14px;cursor:pointer;white-space:nowrap;}
   .pbanner{display:none;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:10px 14px;margin:12px 0 0;font-size:13px;}
   .pbanner.on{display:flex;} .pbanner a{color:var(--muted);cursor:pointer;text-decoration:underline;margin-left:8px;font-size:12px;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px;margin-top:14px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:.14s;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:12px;
+    margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:18px;background:var(--soft);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:border-color .18s,transform .18s,box-shadow .18s;}
   .card:hover{border-color:var(--faint);transform:translateY(-2px);box-shadow:0 10px 26px var(--shadow);}
   .c-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .rank{font-size:11px;font-weight:700;color:var(--faint);} .tkr{font-size:15px;font-weight:800;}

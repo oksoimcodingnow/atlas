@@ -87,15 +87,18 @@
   .lede{color:var(--muted);font-size:14.5px;max-width:68ch;margin-top:6px}
 
   /* ---------- the graph ---------- */
-  .graph{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto}
+  .graph{margin-top:26px;border:1px solid var(--border);border-radius:16px;background:var(--panel);overflow-x:auto;padding:8px 4px}
   .graph svg{display:block;min-width:900px;width:100%;height:auto}
   .nd rect{transition:stroke .3s,fill .3s}
   .nd{cursor:pointer}
   .nd:focus-visible{outline:none}
   .nd:focus-visible rect.box{stroke:var(--accent);stroke-width:2}
-  .nd .nm{font-family:var(--sans);font-size:12px;font-weight:600;fill:var(--text)}
-  .nd .sub{font-family:var(--mono);font-size:9px;fill:var(--muted);letter-spacing:.08em}
-  .nd .val{font-family:var(--mono);font-size:11px;font-weight:500}
+  /* scoped to the svg, NOT to .nd - the monitor group is not a .nd and was
+     inheriting the 15px body font, which overflowed its box */
+  #graph .nm{font-family:var(--sans);font-size:12px;font-weight:600;fill:var(--text)}
+  #graph .sub{font-family:var(--mono);font-size:9px;fill:var(--muted);letter-spacing:.08em}
+  #graph .val{font-family:var(--mono);font-size:11px;font-weight:500}
+  #graph text{dominant-baseline:auto}
   .nd:hover rect.box{stroke:var(--border-hi)}
   .edge{fill:none;stroke:var(--border);stroke-width:1.5}
   .edge.live{stroke:var(--accent);stroke-opacity:.55;stroke-dasharray:5 9;animation:flow 1.5s linear infinite}
@@ -403,9 +406,9 @@
     var m=svg("g",{});
     m.appendChild(svg("rect",{x:MON.x,y:MON.y,width:MON.w,height:MON.h,rx:11,
       fill:"none",stroke:"var(--accent-2)","stroke-opacity":".45","stroke-width":1.2,"stroke-dasharray":"4 4"}));
-    var mt=svg("text",{x:MON.x+15,y:MON.y+24,class:"nm"});
+    var mt=svg("text",{x:MON.x+15,y:MON.y+24,class:"nm","font-size":"12"});
     mt.setAttribute("fill","var(--accent-2)");mt.textContent="Monitor";m.appendChild(mt);
-    var ms=svg("text",{x:MON.x+15,y:MON.y+42,class:"sub"});
+    var ms=svg("text",{x:MON.x+15,y:MON.y+42,class:"sub","font-size":"9"});
     ms.textContent="GITHUB ACTIONS \u00B7 30 MIN";m.appendChild(ms);
     g.appendChild(m);
     [["repo",NODES[4]],["cdn",NODES[5]]].forEach(function(p){
