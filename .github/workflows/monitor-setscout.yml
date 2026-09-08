@@ -37,6 +37,7 @@ jobs:
               "firebase": "https://setscout-th.web.app/",
               "firebase_data": "https://setscout-th.web.app/today.json",
               "pages": "https://oksoimcodingnow.github.io/atlas/setscout/",
+              "pages_data": "https://oksoimcodingnow.github.io/atlas/setscout/today.json",
           }
 
           def probe(url):
@@ -78,6 +79,26 @@ jobs:
               except Exception as e:
                   data["parse_error"] = type(e).__name__
 
+          # --- what the SOURCE (Pages, served straight from the repo) has ---
+          # Firebase is deployed by hand; Pages updates itself from the refresh
+          # commit. Comparing the two is what separates "the cron died" from
+          # "the cron ran and nobody redeployed".
+          src = {"generated": None, "age_h": None, "fresh": None}
+          pd = res["pages_data"]
+          if pd.get("ok"):
+              try:
+                  pj = json.loads(pd["body"])
+                  sgen = pj.get("generated")
+                  src["generated"] = sgen
+                  if sgen:
+                      sg = datetime.datetime.strptime(sgen, "%Y-%m-%d").replace(
+                          tzinfo=datetime.timezone.utc)
+                      sage = (now - sg).total_seconds() / 3600
+                      src["age_h"] = round(sage, 1)
+                      src["fresh"] = sage < 36
+              except Exception as e:
+                  src["parse_error"] = type(e).__name__
+
           # --- diagnosis: not just "down", but WHY ---
           problems = []
           if not res["firebase"]["ok"]:
@@ -92,14 +113,22 @@ jobs:
               problems.append({"sev": "critical", "what": "Data file unreachable",
                                "why": "today.json did not load - the app will show an error",
                                "fix": "Re-deploy, or check the last refresh commit"})
+          elif data["fresh"] is False and src["fresh"] is True:
+              problems.append({"sev": "critical", "what": "Firebase not redeployed",
+                               "why": f"Pages already serves {src['generated']} but Firebase still serves "
+                                      f"{data['generated']} ({data['age_h']}h old) - the refresh RAN, the deploy did not",
+                               "fix": "Run `git pull && firebase deploy --only hosting`, then add a deploy step to refresh-setscout.yml so this stops recurring"})
           elif data["fresh"] is False:
-              problems.append({"sev": "critical", "what": "Data is stale",
-                               "why": f"today.json is {data['age_h']}h old (generated {data['generated']})",
+              problems.append({"sev": "critical", "what": "Data is stale everywhere",
+                               "why": f"Firebase {data['generated']} and Pages {src['generated']} are both old "
+                                      f"({data['age_h']}h) - the refresh itself did not run",
                                "fix": "The daily refresh has not run. Check Actions - GitHub cron drifts by up to 10h"})
           elif data["age_h"] is not None and data["age_h"] > 26:
+              late_fix = ("Pages is ahead - redeploy Firebase" if src["fresh"] is True
+                          else "Usually cron drift. Self-heals on the next run")
               problems.append({"sev": "warning", "what": "Refresh running late",
                                "why": f"data is {data['age_h']}h old - one cycle missed or delayed",
-                               "fix": "Usually cron drift. Self-heals on the next run"})
+                               "fix": late_fix})
           if data["scored"] is not None and data["scored"] < 86:
               problems.append({"sev": "warning", "what": "Partial coverage",
                                "why": f"only {data['scored']} of 95 stocks scored",
@@ -120,6 +149,10 @@ jobs:
               "pages": {"ok": res["pages"]["ok"], "code": res["pages"]["code"],
                         "ms": res["pages"]["ms"]},
               "data": {k: v for k, v in data.items() if k != "body"},
+              "source": src,
+              "deploy_behind": (data["generated"] != src["generated"]
+                                and src["generated"] is not None
+                                and data["generated"] is not None),
               "problems": problems,
           }
           os.makedirs("out", exist_ok=True)

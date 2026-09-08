@@ -12,6 +12,10 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    # Exposed at job level so the deploy step's `if` can test it. A step-level
+    # env is evaluated after `if`, so it cannot be used to gate the step.
+    env:
+      FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
     steps:
       - uses: actions/checkout@v4
 
@@ -39,3 +43,32 @@ jobs:
           git add setscout/today.json
           git diff --staged --quiet || git commit -m "chore(setscout): daily data refresh"
           git push
+
+      # GitHub Pages serves this repo directly, so the commit above is enough
+      # for the mirror. Firebase is a separate host and needs its own push -
+      # without this step the refresh lands in git and the live site keeps
+      # serving whatever was last deployed by hand.
+      - name: Deploy to Firebase Hosting
+        if: env.FIREBASE_SA != ''
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: setscout-th
+
+      # Say so loudly rather than silently skipping, so a missing secret does
+      # not look like a working deploy.
+      - name: Warn when the deploy secret is absent
+        if: env.FIREBASE_SA == ''
+        run: |
+          echo "::warning::FIREBASE_SERVICE_ACCOUNT is not set - data was committed but Firebase was NOT redeployed."
+          {
+            echo "## Firebase not deployed"
+            echo ""
+            echo "\`FIREBASE_SERVICE_ACCOUNT\` is missing from this repository's Actions secrets,"
+            echo "so today.json was committed but the live site was not updated."
+            echo ""
+            echo "Firebase console -> Project settings -> Service accounts -> Generate new private key,"
+            echo "then add it as a repository secret named \`FIREBASE_SERVICE_ACCOUNT\`."
+          } >> "$GITHUB_STEP_SUMMARY"

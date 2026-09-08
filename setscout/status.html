@@ -349,11 +349,11 @@
     if(probe.pending) return "idle";
     switch(id){
       case "yahoo":  return probe.coverageOk===false?"warn":"ok";
-      case "cron":   return probe.stale?"bad":(probe.late?"warn":"ok");
+      case "cron":   return probe.deployBehind?"ok":(probe.stale?"bad":(probe.late?"warn":"ok"));
       case "engine": return probe.coverageOk===false?"warn":"ok";
       case "gate":   return probe.calibrated===false?"warn":"ok";
-      case "repo":   return probe.dataOk?(probe.stale?"warn":"ok"):"bad";
-      case "cdn":    return probe.dataOk?"ok":"bad";
+      case "repo":   return probe.dataOk?((probe.stale&&!probe.deployBehind)?"warn":"ok"):"bad";
+      case "cdn":    return probe.dataOk?(probe.deployBehind?"bad":"ok"):"bad";
       case "user":   return probe.dataOk&&!probe.stale?"ok":(probe.dataOk?"warn":"bad");
     }
     return "idle";
@@ -361,11 +361,15 @@
   var COL={ok:"var(--ok)",warn:"var(--warn)",bad:"var(--bad)",idle:"var(--muted)"};
   var VAL={
     yahoo:function(){return probe.pending?"—":"95 tickers";},
-    cron:function(){return probe.pending?"—":(probe.ageH==null?"—":probe.ageH.toFixed(1)+"h ago");},
+    cron:function(){if(probe.pending)return "—";
+      var a=probe.srcAgeH!=null?probe.srcAgeH:probe.ageH;
+      return a==null?"—":a.toFixed(1)+"h ago";},
     engine:function(){return probe.pending?"—":"10.2 s";},
     gate:function(){return probe.pending?"—":(probe.calibrated?"passing":"no calib");},
     repo:function(){return probe.pending?"—":(probe.scored!=null?probe.scored+"/95":"—");},
-    cdn:function(){return probe.pending?"—":(probe.ms!=null?probe.ms+" ms":"—");},
+    cdn:function(){if(probe.pending)return "—";
+      if(probe.deployBehind)return "serving "+probe.generatedShown;
+      return probe.ms!=null?probe.ms+" ms":"—";},
     user:function(){return probe.pending?"—":"~20 KB";}
   };
 
@@ -381,9 +385,13 @@
         fill:"none",stroke:"var(--border-hi)","stroke-width":1.5}));
     }
     /* the one edge that carries the known problem */
-    var lab=svg("text",{x:NODES[1].x+NW/2,y:NY-13,"text-anchor":"middle",class:"glabel"});
-    lab.textContent=probe.stale?"⚠ drifting":"every 24 h";
-    if(probe.stale)lab.setAttribute("fill","var(--warn)");
+    var wi=1;
+    if(probe.deployBehind){
+      for(var k=0;k<NODES.length;k++){ if(NODES[k].id==="cdn"){ wi=k; break; } }
+    }
+    var lab=svg("text",{x:NODES[wi].x+NW/2,y:NY-13,"text-anchor":"middle",class:"glabel"});
+    lab.textContent=probe.deployBehind?"⚠ not redeployed":(probe.stale?"⚠ drifting":"every 24 h");
+    if(probe.stale||probe.deployBehind)lab.setAttribute("fill","var(--warn)");
     g.appendChild(lab);
 
     NODES.forEach(function(n){
@@ -486,6 +494,22 @@
     if(d.ok){try{data=await d.res.json();}catch(e){d.ok=false;d.err="malformed JSON";}}
 
     probe.dataOk=d.ok; probe.ms=d.ms;
+
+    /* What the SOURCE has. Pages serves straight from the refresh commit;
+       Firebase is deployed separately. Comparing the two is the only way to
+       tell "the cron died" from "the cron ran and nobody redeployed". */
+    try{
+      var sres=await fetch("https://oksoimcodingnow.github.io/atlas/setscout/today.json?t="+Date.now(),{cache:"no-store"});
+      if(sres.ok){
+        var sdata=await sres.json();
+        var sts=sdata.generated?Date.parse(sdata.generated+"T00:00:00Z"):NaN;
+        if(!isNaN(sts)){
+          probe.srcGenerated=sdata.generated;
+          probe.srcAgeH=(Date.now()-sts)/36e5;
+          probe.srcFresh=probe.srcAgeH<36;
+        }
+      }
+    }catch(e){ /* source unreachable - fall back to the old single-source logic */ }
     checks.push({s:d.ok?"ok":"no",nm:"Data file",
       de:d.ok?"today.json fetched and parsed":"failed: "+(d.err||("HTTP "+d.code)),rt:d.ms+" ms"});
     if(!d.ok) problems.push({sev:"critical",h:"Data file unreachable",
@@ -493,6 +517,7 @@
       fix:"Redeploy with <code>firebase deploy --only hosting</code>, or check the most recent refresh commit."});
 
     if(data){
+      probe.generatedShown=data.generated||"?";
       probe.scored=data.scored||(data.stocks?data.stocks.length:0);
       probe.calibrated=data.calibration!=null;
       probe.coverageOk=probe.scored>=86;
@@ -500,11 +525,15 @@
       if(data.generated&&!isNaN(gts)){
         probe.ageH=(Date.now()-gts)/36e5;
         probe.stale=probe.ageH>=36; probe.late=probe.ageH>=26&&probe.ageH<36;
+        probe.deployBehind=probe.srcFresh===true&&probe.stale===true;
         checks.push({s:probe.stale?"no":(probe.late?"mid":"ok"),nm:"Freshness",
           de:"generated "+data.generated+", "+probe.ageH.toFixed(1)+" hours old",
           rt:probe.stale?"stale":(probe.late?"late":"current")});
-        if(probe.stale) problems.push({sev:"critical",h:"Data is stale",
-          why:"today.json is "+probe.ageH.toFixed(1)+" hours old. Visitors are seeing prices from "+data.generated+".",
+        if(probe.deployBehind) problems.push({sev:"critical",h:"Firebase not redeployed",
+          why:"The refresh <b>ran</b>. GitHub Pages already serves "+probe.srcGenerated+", but Firebase is still on "+data.generated+" ("+probe.ageH.toFixed(1)+" hours old). Nothing deploys the refreshed data to Firebase.",
+          fix:"Now: <code>git pull &amp;&amp; firebase deploy --only hosting</code>. Permanently: add a deploy step to <b>refresh-setscout.yml</b> so every refresh reaches Firebase."});
+        else if(probe.stale) problems.push({sev:"critical",h:"Data is stale",
+          why:"today.json is "+probe.ageH.toFixed(1)+" hours old"+(probe.srcGenerated?" and the source is no newer ("+probe.srcGenerated+")":"")+". Visitors are seeing prices from "+data.generated+".",
           fix:"The daily refresh has not run. Check <b>Actions &rarr; Refresh SETScout data</b>. GitHub cron has drifted by up to 10.3 hours on this repository, so it may simply be late."});
         else if(probe.late) problems.push({sev:"warning",h:"Refresh running late",
           why:"Data is "+probe.ageH.toFixed(1)+" hours old, so one cycle was missed or delayed.",
