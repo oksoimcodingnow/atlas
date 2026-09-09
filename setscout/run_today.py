@@ -39,7 +39,15 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FILE = os.path.join(HERE, "today.json")          # OUTPUT only - never read as input
 UNIVERSE_FILE = os.path.join(HERE, "universe.json")   # INPUT - the canonical stock list
 CAL_FILE = os.path.join(HERE, "calibration.json")     # INPUT - measured up-rate per decile
-FACTORS = ["momentum", "growth", "value", "quality", "health"]
+# "value" was removed 2026-09-09. It was computed as price vs its own 200-day
+# average, which correlates -0.95 with momentum across this universe (R^2 0.86,
+# regression beta -1.00 on z-scores). It was not a fifth dimension - it was
+# momentum with the sign flipped, and it cancelled roughly half the momentum
+# weight. The consequence: the "balanced" profile shared 8 of its top 10 names
+# with "conservative" and 1 with "aggressive". After removal it sits genuinely
+# between the two. Note this was mean-reversion, not value: real value needs an
+# external anchor (earnings, book) which the engine does not have.
+FACTORS = ["momentum", "growth", "quality", "health"]
 
 
 def load_universe():
@@ -89,11 +97,13 @@ def p_win_for(s01, calib):
         return None
     return round(calib[min(9, max(0, int(s01 * 10)))], 3)
 
-# one weight set per risk profile (AHP survey will replace these numbers)
+# one weight set per risk profile (AHP survey will replace these numbers).
+# These are the previous five-factor weights with "value" removed and the
+# remainder renormalised - the same relative ordering, no new judgement added.
 PROFILES = {
-    "conservative": {"quality": .40, "health": .30, "value": .20, "momentum": .05, "growth": .05},
-    "balanced":     {"quality": .28, "value": .24, "momentum": .20, "health": .16, "growth": .12},
-    "aggressive":   {"momentum": .40, "growth": .30, "value": .15, "quality": .10, "health": .05},
+    "conservative": {"quality": .50, "health": .38, "momentum": .06, "growth": .06},
+    "balanced":     {"quality": .37, "momentum": .26, "health": .21, "growth": .16},
+    "aggressive":   {"momentum": .47, "growth": .35, "quality": .12, "health": .06},
 }
 
 
@@ -120,7 +130,6 @@ def main():
         rows[t] = dict(
             momentum=s.iloc[-1] / s.iloc[-126] - 1,
             growth=s.iloc[-1] / s.iloc[max(0, len(s) - 252)] - 1,
-            value=-(s.iloc[-1] / s.tail(200).mean() - 1),
             quality=-s.pct_change().tail(252).std() * np.sqrt(252),
             health=(s.tail(252) / s.tail(252).cummax() - 1).min(),
             last=round(float(s.iloc[-1]), 2),

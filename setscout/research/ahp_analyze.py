@@ -6,7 +6,7 @@
 
 WHAT THIS DOES
 --------------
-1. Builds each respondent's 5x5 pairwise comparison matrix.
+1. Builds each respondent's 4x4 pairwise comparison matrix.
 2. Derives their priority vector by the ROW GEOMETRIC MEAN method. (The principal
    eigenvector gives near-identical answers and is harder to defend in a viva.)
 3. Computes the Consistency Ratio and DROPS anyone above 0.10. Reports how many.
@@ -43,7 +43,8 @@ import numpy as np
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESEARCH = os.path.join(HERE, "research")
 REPORTS = os.path.join(HERE, "reports")
-FACTORS = ["momentum", "growth", "value", "quality", "health"]
+# Must match run_today.py. "value" was removed 2026-09-09 (-0.95 with momentum).
+FACTORS = ["momentum", "growth", "quality", "health"]
 N = len(FACTORS)
 RI = {3: 0.58, 4: 0.90, 5: 1.12, 6: 1.24, 7: 1.32}   # Saaty random index
 CR_LIMIT = 0.10
