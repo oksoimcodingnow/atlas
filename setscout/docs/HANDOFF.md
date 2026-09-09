@@ -1,11 +1,27 @@
-> **STATUS 1 Sep 2026** - this document is the original design brief and is kept
+> **STATUS 9 Sep 2026** - this document is the original design brief and is kept
 > for the architecture and rationale. For what the system actually does *now*,
 > read in this order: `CHANGELOG.md` (what changed and why) -> `REPORT.md` (the
 > findings) -> `CONTINUE.md` (current state) -> `NEXT.md` (what to do next).
 >
-> Superseded since this was written: `p_win` is now measured, not invented; the
-> universe lives in `universe.json` (95 stocks, read-only); every backtest writes
-> to `reports/`; and a pre-registered blind test refuted the apparent edge.
+> **Superseded since this was written:**
+>
+> - `p_win` is measured from `calibration.json`, not the invented `0.44+0.22*score`
+> - the universe lives in `universe.json` (95 stocks, read-only for the engine)
+> - every backtest writes to `reports/`, and a pre-registered blind test refuted
+>   the apparent edge
+> - **FOUR factors, not five.** `value` was removed 9 Sep: price vs its own 200-day
+>   average correlates **-0.93** with the 6-month return (beta -1.00 on z-scores).
+>   It was momentum with the sign flipped, and it made "balanced" a near-copy of
+>   "conservative" (8/10 shared names). See `CONTINUE.md` finding 2.
+> - **`gen_today.js` is deleted.** Sections below still describe it as the mock
+>   generator. It held a fourth copy of the factor formula with stale weights and
+>   three known-bad tickers (`BGRIM2`, `INTUCH`, `ORIGIN`), all already corrected
+>   in `universe.json`. The website has read real engine output since Aug.
+> - **`research/factors.py` is the single source of truth** for `FACTORS` and
+>   `PROFILES`. Pre-registered tests import a dated `FROZEN` snapshot instead of
+>   the live weights.
+> - **The daily Action deploys to Firebase.** Until 8 Sep it committed data and
+>   stopped, so the canonical site fell a day further behind every day.
 
 # 🧭 SETScout — Project Handoff
 
