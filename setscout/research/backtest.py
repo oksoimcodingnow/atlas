@@ -22,8 +22,8 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 meta, _uni_src = load_universe()
 tickers = list(meta)
 print(f"universe: {len(tickers)} tickers from {_uni_src}")
-W = {"quality": 0.28, "value": 0.24, "momentum": 0.20, "health": 0.16, "growth": 0.12}
-FACT = ["momentum", "growth", "value", "quality", "health"]
+W = {"quality": 0.37, "momentum": 0.26, "health": 0.21, "growth": 0.16}
+FACT = ["momentum", "growth", "quality", "health"]
 K = 300                      # random portfolios for the luck bar
 np.random.seed(7)
 
@@ -46,7 +46,7 @@ def score_month(i):
             continue
         eq = s.iloc[-12:]
         rows[t] = dict(momentum=s.iloc[-1] / s.iloc[-7] - 1, growth=s.iloc[-1] / s.iloc[-13] - 1,
-                       value=-(s.iloc[-1] / s.iloc[-11:].mean() - 1), quality=-r12.std() * np.sqrt(12),
+                       quality=-r12.std() * np.sqrt(12),
                        health=(eq / eq.cummax() - 1).min(), sector=meta[t])
     if len(rows) < 10:
         return None

@@ -17,11 +17,13 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 meta, _uni_src = load_universe()
 tickers = list(meta)
 print(f"universe: {len(tickers)} tickers from {_uni_src}")
-FACT = ["momentum", "growth", "value", "quality", "health"]
+FACT = ["momentum", "growth", "quality", "health"]
+# MUST match run_today.py. "value" dropped 2026-09-09 (-0.93 with momentum).
+# This is duplicated in several files; see reports/ for the desync note.
 PROFILES = {
-    "conservative": {"quality": .40, "health": .30, "value": .20, "momentum": .05, "growth": .05},
-    "balanced":     {"quality": .28, "value": .24, "momentum": .20, "health": .16, "growth": .12},
-    "aggressive":   {"momentum": .40, "growth": .30, "value": .15, "quality": .10, "health": .05},
+    "conservative": {"quality": .50, "health": .38, "momentum": .06, "growth": .06},
+    "balanced":     {"quality": .37, "momentum": .26, "health": .21, "growth": .16},
+    "aggressive":   {"momentum": .47, "growth": .35, "quality": .12, "health": .06},
 }
 # Thai retail round-trip cost scenarios (buy+sell): commission+VAT ~0.34%, +slippage
 COSTS = {"0.5% round-trip": 0.005, "1.0% round-trip": 0.010}
@@ -43,7 +45,7 @@ def adj_month(i):
             continue
         eq = s.iloc[-12:]
         rows[t] = dict(momentum=s.iloc[-1] / s.iloc[-7] - 1, growth=s.iloc[-1] / s.iloc[-13] - 1,
-                       value=-(s.iloc[-1] / s.iloc[-11:].mean() - 1), quality=-r12.std() * np.sqrt(12),
+                       quality=-r12.std() * np.sqrt(12),
                        health=(eq / eq.cummax() - 1).min(), sector=meta[t])
     if len(rows) < 10:
         return None
