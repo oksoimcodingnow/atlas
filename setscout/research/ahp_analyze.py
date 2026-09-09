@@ -39,12 +39,11 @@ import os
 import sys
 
 import numpy as np
+from factors import FACTORS                     # single source of truth
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESEARCH = os.path.join(HERE, "research")
 REPORTS = os.path.join(HERE, "reports")
-# Must match run_today.py. "value" was removed 2026-09-09 (-0.95 with momentum).
-FACTORS = ["momentum", "growth", "quality", "health"]
 N = len(FACTORS)
 RI = {3: 0.58, 4: 0.90, 5: 1.12, 6: 1.24, 7: 1.32}   # Saaty random index
 CR_LIMIT = 0.10

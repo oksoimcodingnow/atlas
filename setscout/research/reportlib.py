@@ -44,6 +44,22 @@ class _Tee:
         return getattr(self.stream, "isatty", lambda: False)()
 
 
+# Set by the hook below when the process dies from an unhandled exception.
+# atexit still fires on a crash, so without this a failed run overwrites the
+# previous good report with its own traceback - which is how the evidence for
+# backtest_profiles was destroyed on 2026-09-09.
+_crashed = {"yes": False}
+_prev_excepthook = sys.excepthook
+
+
+def _note_crash(exc_type, exc, tb):
+    _crashed["yes"] = True
+    _prev_excepthook(exc_type, exc, tb)
+
+
+sys.excepthook = _note_crash
+
+
 def capture(slug, title, params=None):
     """Start recording this script's output into reports/<slug>.md."""
     out_tee, err_tee = _Tee(sys.stdout), _Tee(sys.stderr)
@@ -75,10 +91,16 @@ def capture(slug, title, params=None):
                     "", "```", errs[:4000], "```", ""]
 
         os.makedirs(REPORTS, exist_ok=True)
-        path = os.path.join(REPORTS, f"{slug}.md")
+        # A crashed run must not clobber the last good report. Write the
+        # wreckage beside it instead, so both the evidence and the failure
+        # survive.
+        name = f"{slug}.FAILED.md" if _crashed["yes"] else f"{slug}.md"
+        path = os.path.join(REPORTS, name)
         with open(path, "w", encoding="utf-8") as f:
             f.write("\n".join(doc))
-        print(f"\n-> saved reports/{slug}.md")
+        print(f"\n-> saved reports/{name}"
+              + ("  (run FAILED - the previous report was left intact)"
+                 if _crashed["yes"] else ""))
 
     atexit.register(_save)
 

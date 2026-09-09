@@ -8,6 +8,7 @@ most). If aggressive still beats buy-and-hold after costs, the edge is real-ish.
 import json, os
 import numpy as np, pandas as pd, yfinance as yf
 from reportlib import capture, load_universe
+from factors import FACTORS as FACT, PROFILES   # single source of truth
 
 capture("backtest_costs", "Cost stress test - does the edge survive trading costs?",
         {"rebalance": "yearly per profile", "costs": "Thai round-trip", "reports": "gross vs net + turnover"})
@@ -17,14 +18,8 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 meta, _uni_src = load_universe()
 tickers = list(meta)
 print(f"universe: {len(tickers)} tickers from {_uni_src}")
-FACT = ["momentum", "growth", "quality", "health"]
 # MUST match run_today.py. "value" dropped 2026-09-09 (-0.93 with momentum).
 # This is duplicated in several files; see reports/ for the desync note.
-PROFILES = {
-    "conservative": {"quality": .50, "health": .38, "momentum": .06, "growth": .06},
-    "balanced":     {"quality": .37, "momentum": .26, "health": .21, "growth": .16},
-    "aggressive":   {"momentum": .47, "growth": .35, "quality": .12, "health": .06},
-}
 # Thai retail round-trip cost scenarios (buy+sell): commission+VAT ~0.34%, +slippage
 COSTS = {"0.5% round-trip": 0.005, "1.0% round-trip": 0.010}
 

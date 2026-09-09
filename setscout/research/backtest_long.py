@@ -9,6 +9,7 @@ lack long history (dropped early), and the universe = today's SURVIVORS
 import json, os
 import numpy as np, pandas as pd, yfinance as yf
 from reportlib import capture, load_universe
+from factors import FACTORS as FACT, PROFILES   # single source of truth
 
 capture("backtest_long", "Long-horizon backtest - 5y and 10y per profile",
         {"rebalance": "yearly, top 20% per profile", "horizons": "5y, 10y, full window", "caveat": "universe = today's survivors, so old returns are inflated"})
@@ -18,14 +19,8 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 meta, _uni_src = load_universe()
 tickers = list(meta)
 print(f"universe: {len(tickers)} tickers from {_uni_src}")
-FACT = ["momentum", "growth", "quality", "health"]
 # MUST match run_today.py. "value" dropped 2026-09-09 (-0.93 with momentum).
 # This is duplicated in several files; see reports/ for the desync note.
-PROFILES = {
-    "conservative": {"quality": .50, "health": .38, "momentum": .06, "growth": .06},
-    "balanced":     {"quality": .37, "momentum": .26, "health": .21, "growth": .16},
-    "aggressive":   {"momentum": .47, "growth": .35, "quality": .12, "health": .06},
-}
 
 print(f"{len(tickers)} tickers - fetching MAX monthly history...")
 mpx = yf.download(tickers, period="max", interval="1mo", auto_adjust=True, progress=False)["Close"]

@@ -13,6 +13,8 @@ Writes calibration.json (score -> real hit-rate) so run_today.py can stop faking
 import json, os
 import numpy as np, pandas as pd, yfinance as yf
 from reportlib import capture, load_universe
+from factors import FACTORS as FACT, PROFILES   # single source of truth
+W = PROFILES["balanced"]
 
 capture("backtest", "Monthly rotation backtest - the honesty check",
         {"rebalance": "monthly, buy top 20%", "history": "~8y monthly", "luck bar": "300 random portfolios", "outputs": "calibration.json (score decile -> real up-rate)"})
@@ -22,8 +24,6 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 meta, _uni_src = load_universe()
 tickers = list(meta)
 print(f"universe: {len(tickers)} tickers from {_uni_src}")
-W = {"quality": 0.37, "momentum": 0.26, "health": 0.21, "growth": 0.16}
-FACT = ["momentum", "growth", "quality", "health"]
 K = 300                      # random portfolios for the luck bar
 np.random.seed(7)
 
