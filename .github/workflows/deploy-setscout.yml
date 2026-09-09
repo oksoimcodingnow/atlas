@@ -1,0 +1,72 @@
+name: Deploy SETScout
+
+# Deploys whenever anything under setscout/ changes on main.
+#
+# WHY THIS EXISTS, SEPARATELY FROM refresh-setscout.yml
+# -----------------------------------------------------
+# GitHub Pages serves this repo directly, so any push updates the mirror
+# immediately. Firebase does not - it only changes when something deploys to
+# it. Until 2026-09-08 nothing did, and the canonical site fell a day further
+# behind every day.
+#
+# The refresh workflow now deploys after its own commit, which covers the
+# daily path. It does NOT cover a human pushing a change by hand: an edited
+# index.html, or a regenerated today.json committed from a laptop. That
+# happened on 2026-09-09 and left Firebase a day behind Pages until the next
+# scheduled run caught up.
+#
+# This is a separate workflow rather than a `push:` trigger on the refresh job
+# on purpose. Adding one there would re-download prices and re-run the engine,
+# which would overwrite the very file the person had just pushed.
+#
+# No loop risk: pushes made with GITHUB_TOKEN - which is what the refresh
+# workflow commits with - do not trigger further workflow runs.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "setscout/**"
+      - "firebase.json"
+      - ".firebaserc"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-setscout
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Exposed at job level so the step-level `if` can test it. A step-level env
+    # is evaluated after `if`, so it cannot be used to gate the step.
+    env:
+      FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Firebase Hosting
+        if: env.FIREBASE_SA != ''
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live
+          projectId: setscout-th
+
+      # Say so loudly rather than skipping silently, so a missing secret never
+      # looks like a working deploy.
+      - name: Warn when the deploy secret is absent
+        if: env.FIREBASE_SA == ''
+        run: |
+          echo "::warning::FIREBASE_SERVICE_ACCOUNT is not set - setscout/ changed but Firebase was NOT redeployed."
+          {
+            echo "## Firebase not deployed"
+            echo ""
+            echo "A change under \`setscout/\` was pushed, but \`FIREBASE_SERVICE_ACCOUNT\`"
+            echo "is missing from this repository's Actions secrets, so the live site"
+            echo "was not updated. GitHub Pages will have updated regardless."
+          } >> "$GITHUB_STEP_SUMMARY"
