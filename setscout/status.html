@@ -317,7 +317,7 @@
      what:"Fires the refresh workflow at 11:00 UTC, ninety minutes after the SET close so prices are final.",
      risk:"GitHub runs scheduled jobs when it has capacity, not at the minute you asked. Measured lateness here reaches 10.3 hours, and nothing raises an alarm when it slips."},
     {id:"engine", nm:"run_today.py", sub:"engine", 
-     what:"Pulls two years of prices for 95 stocks, computes five factors, judges each stock against its own sector rather than the whole market, then ranks it three times for the three risk profiles.",
+     what:"Pulls two years of prices for 95 stocks, computes four factors, judges each stock against its own sector rather than the whole market, then ranks it three times for the three risk profiles.",
      risk:"Ten seconds of work. Never the bottleneck; optimising it would change nothing."},
     {id:"gate", nm:"verify_today.py", sub:"gate", 
      what:"Refuses to let a broken refresh reach the site. Checks coverage, the generated date, all three profiles, and the calibration block.",

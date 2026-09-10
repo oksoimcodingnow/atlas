@@ -94,7 +94,7 @@
   <div class="pipe">
     <div class="stage"><div class="n">1 · DATA</div><h3>📥 Collect</h3><p>Daily prices for 95 SET100 stocks (Yahoo Finance).</p></div>
     <div class="arrow">→</div>
-    <div class="stage"><div class="n">2 · FILTER</div><h3>⚙️ Score</h3><p>5 factors per stock, compared fairly within each sector.</p></div>
+    <div class="stage"><div class="n">2 · FILTER</div><h3>⚙️ Score</h3><p>4 factors per stock, compared fairly within each sector.</p></div>
     <div class="arrow">→</div>
     <div class="stage"><div class="n">3 · ENGINES</div><h3>🎚️ 3 profiles</h3><p>Same factors, 3 weightings: safe / balanced / bold.</p></div>
     <div class="arrow">→</div>
@@ -120,20 +120,23 @@
     <div class="card t"><h3>Trust label</h3><p>How much to trust it — honestly.</p><div class="ex">not a profit promise, tells risk</div></div>
   </div>
 
-  <div class="tag" style="margin-top:26px">The 5 factors (the “score”)</div>
+  <div class="tag" style="margin-top:26px">The 4 factors (the “score”)</div>
   <div class="grid">
     <div class="card"><h3><span class="e">📈</span> Momentum</h3><p>6-month return — is it going well?</p></div>
     <div class="card"><h3><span class="e">🌱</span> Growth</h3><p>12-month return — the longer trend.</p></div>
-    <div class="card"><h3><span class="e">⚖️</span> Value</h3><p>Cheap vs its own 200-day average.</p></div>
     <div class="card"><h3><span class="e">🛡️</span> Quality</h3><p>Low volatility — calm, not wild.</p></div>
     <div class="card"><h3><span class="e">❤️</span> Health</h3><p>Small max-drawdown — survives bad markets.</p></div>
   </div>
+  <div class="note">There used to be a fifth, <b>Value</b> (price vs its own 200-day average). We removed it
+    on 9 Sep 2026 after measuring that it correlated <b>&minus;0.93</b> with Momentum — it was that factor
+    with the sign flipped, not a separate one.
+    <span class="th">· เคยมีปัจจัยที่ 5 ชื่อ Value แต่ตัดออกแล้ว เพราะซ้ำกับโมเมนตัม</span></div>
   <div class="note">Each factor is <b>z-scored</b> (put on a fair 0-centred scale) and <b>sector-neutralized</b>
     — a stock is judged against <b>its own sector peers</b>, so one calm sector (like banks) can't sweep the top.
     <span class="th">· ให้คะแนนเทียบกับหุ้นในกลุ่มเดียวกัน</span></div>
 
   <div class="tag" style="margin-top:26px">The 3 engines (personalization)</div>
-  <p>Same 5 factors, <b>three weightings</b> — one per risk appetite. Your risk-quiz answer picks which list you see.
+  <p>Same 4 factors, <b>three weightings</b> — one per risk appetite. Your risk-quiz answer picks which list you see.
     This is a <b>personalized recommender</b>: user profile → matching model.</p>
   <div class="eng">
     <div class="card c1"><h3>🛡️ Conservative</h3><div class="w">quality 40 · health 30 · value 20 · mom 5 · growth 5</div>
