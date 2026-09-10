@@ -1,6 +1,6 @@
 # Profile comparison - do the 3 risk profiles actually differ?
 
-*Run 2026-09-09 13:31 &middot; took 19s &middot; reproduce with `python backtest_profiles.py`*
+*Run 2026-09-09 13:44 &middot; took 21s &middot; reproduce with `python backtest_profiles.py`*
 
 ## Parameters
 

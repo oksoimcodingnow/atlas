@@ -4,6 +4,68 @@
 
 ---
 
+## 2026-09-01 — Own domain, uptime monitor, accessibility pass
+
+**สรุปสั้น ๆ** ขึ้นโดเมนของตัวเองที่ setscout-th.web.app แล้ว · มีระบบเฝ้าดูว่าเว็บล่มไหม (รันบน GitHub ไม่ใช่ Firebase จะได้รายงานได้ตอน Firebase ล่ม) · หน้า status ใหม่ · เพิ่มหน้าข้อกำหนด + แจ้งเตือนครั้งแรก · แก้ accessibility ทั้ง 4 หน้า
+
+### Deployed to its own domain
+
+`setscout-th.web.app` on Firebase Hosting, with the app as the **site root**
+rather than a `/atlas/setscout/` subpath. `research/`, `docs/`, `reports/` and
+all `*.py` are excluded from hosting and verified 404.
+
+SEO that was missing entirely: description, keywords, canonical, robots,
+Open Graph in th/en, `robots.txt`, `sitemap.xml`. **The canonical points at the
+Firebase copy**, which is what lets it be indexed instead of the Pages mirror.
+
+**HTML now sends `no-cache, must-revalidate`.** Firebase defaults HTML to
+`max-age=3600`, so a deploy took up to an hour to reach anyone. On a status page
+that is dangerous: a cached page could show "all good" while the site is down.
+`no-cache` still caches, it just revalidates — the ETag usually returns a 304.
+
+### Uptime monitor
+
+`.github/workflows/monitor-setscout.yml`, every 30 minutes. It runs on GitHub,
+**not Firebase** — a status page hosted on the service it watches cannot report
+that service being down. Samples go to a `status-data` branch so main stays
+readable, 672 kept (14 days).
+
+It diagnoses rather than recording up/down. Stale data, a late cycle, partial
+coverage and missing calibration each carry their own cause and fix.
+
+`status.html` is the panel: a live probe in the browser on load, a seven-node
+pipeline graph whose edges carry state, and the history strip. Below 760px the
+graph becomes a vertical list, because seven nodes across never works on a phone.
+
+### Legal and consent
+
+`legal.html` — bilingual terms, privacy, a cookie section that honestly says
+**there are no cookies**, the three localStorage keys in a table, Yahoo data
+attribution and the non-affiliation statement.
+
+The app shows a first-visit notice saying the same: no cookies, no tracking, your
+language/theme/quiz answer stay on your device, and fonts load from Google which
+sees your IP. **Not a consent wall** — there is nothing to consent to, and a fake
+"accept cookies" banner would be a lie in a project whose thesis is honesty.
+
+### Accessibility, all four pages
+
+**Zero `:focus-visible` rules existed** on index, onboard or legal. Tabbing
+through the app highlighted nothing. Fixed on all three, plus `<main>` landmarks,
+touch targets raised from 32–39px to 40–44px (PRODUCT.md asks for 40), and **8
+side-stripe borders** replaced with full borders and a tint.
+
+`onboard.html` also still said "~92 SET100 stocks" in two places. It is 95.
+
+### Layout, settled
+
+The card grid is `max-width: 1200px` = **4 columns of ~276px**. Recorded so it is
+not re-litigated: 1080 gives 3 columns of 332px, 1660 gives 4 of 399px which look
+stretched and hollow. A card holds a ticker, a Thai name, a bar, a risk line and
+a price — about 270px. Side margin on a wide monitor is the correct trade.
+
+---
+
 ## 2026-08-31 (later) — Blind test: the aggressive edge does not replicate
 
 **สรุปสั้น ๆ** เราดูข้อมูลชุดเดิมมาแล้วประมาณ 15 รอบ แล้วเจอว่า aggressive ชนะ — ซึ่งเชื่อไม่ได้ เพราะเลือกผลที่สนใจ*หลัง*เห็นข้อมูลแล้ว จึงทำ blind test: เขียนเงื่อนไขตัดสินล่วงหน้า แล้วทดสอบบนช่วง 1999–2014 ที่ไม่เคยดูแยกมาก่อน **ผล: ไม่ replicate** (luck bar 81% ต่ำกว่าเกณฑ์ 90% ที่ตั้งไว้ก่อน และชนะแค่ 2/5 ช่วง)
