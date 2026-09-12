@@ -10,7 +10,7 @@ whether it works.
 
 ## What it does
 
-Ranks ~95 SET100 stocks on five transparent, price-based factors, adapts the
+Ranks 95 SET100 stocks on four transparent, price-based factors, adapts the
 ranking to the user's risk profile, and explains every recommendation in four
 plain sentences: a verdict, the risk in baht, the reasons, and how much to
 trust it.

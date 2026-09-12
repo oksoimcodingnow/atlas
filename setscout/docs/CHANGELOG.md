@@ -4,65 +4,61 @@
 
 ---
 
-## 2026-09-01 — Own domain, uptime monitor, accessibility pass
+## 2026-09-13 — Four factors everywhere, and the docs caught up with the code
 
-**สรุปสั้น ๆ** ขึ้นโดเมนของตัวเองที่ setscout-th.web.app แล้ว · มีระบบเฝ้าดูว่าเว็บล่มไหม (รันบน GitHub ไม่ใช่ Firebase จะได้รายงานได้ตอน Firebase ล่ม) · หน้า status ใหม่ · เพิ่มหน้าข้อกำหนด + แจ้งเตือนครั้งแรก · แก้ accessibility ทั้ง 4 หน้า
+**สรุปสั้น ๆ** ตัดปัจจัย `value` ออก เพราะมันคือ `momentum` กลับเครื่องหมาย (สหสัมพันธ์ −0.93) ทำให้โปรไฟล์ "สมดุล" กลายเป็น "ปลอดภัย" แฝงตัว จากนั้นไล่แก้เอกสารทุกที่ให้ตรงกับโค้ด (4 ปัจจัย, 95 หุ้น) และพบความผิดพลาดแบบเดิมเป็นครั้งที่ 5 — เอกสารยังเขียนว่า `p_win` เป็นสูตรสมมติ ทั้งที่ต่อกับค่าที่วัดจริงไปแล้ว
 
-### Deployed to its own domain
+### What changed
 
-`setscout-th.web.app` on Firebase Hosting, with the app as the **site root**
-rather than a `/atlas/setscout/` subpath. `research/`, `docs/`, `reports/` and
-all `*.py` are excluded from hosting and verified 404.
+| Date | Change | PR |
+|---|---|---|
+| 9 Sep | **`value` removed from the engine.** It correlated **−0.93** with `momentum` (86% shared variance, beta −1.00 on z-scores): momentum negated, not a fifth dimension. It was also misnamed — price vs its own 200-day average measures mean reversion, and real value needs an external anchor (earnings, book) a price-only engine does not have. | #2 |
+| 9 Sep | **Weights renormalised** over the four survivors: conservative ÷ .80, balanced ÷ .76, aggressive ÷ .85. Each profile still sums to 1.00, checked at import by `factors.check()`. | #2 |
+| 11 Sep | **Every description of the engine updated to four factors** — `REPORT.md` §3.1/§3.3/§3.4, `HOW-IT-WORKS.md`, `START-HERE.md`, `CONTINUE.md`. | #3 |
+| 11 Sep | **`START-HERE.md` said "~92 stocks".** The universe has been **95** since the `universe.json` fix restored BANPU and corrected BGRIM2 → BCPG and ORIGIN → ORI (INTUCH retired into GULF). | #4 |
+| 13 Sep | **`HOW-IT-WORKS.md` still called `p_win` "a placeholder formula"** and listed wiring it under *Still to build* — two weeks after it was wired. Fixed, and logged as instance #5 of the failure mode below. | this entry |
+| 13 Sep | **`REPORT.md` §3.4 ranks re-derived** on the four-factor engine: PTT is **#1 conservative / #5 balanced / #77 aggressive** of 95 (before value was removed: #1 / #1 / #71). New `engine/rederive_section34.py` reproduces them from `factors.py`. | this entry |
+| 13 Sep | **Outdated wording swept.** The site's search description still said "five transparent factors"; the REPORT abstract said five; §3.1 still explained negating Value; §7 still called balanced "barely distinguishable" from conservative. Re-measured on the four-factor engine (1 Sep 2026): balanced shares **7/10** of its top 10 with conservative (was 8/10) and **3/5** of its top 5 (was identical), against 3/10 with aggressive — no longer a copy, still leaning cautious. | this entry |
 
-SEO that was missing entirely: description, keywords, canonical, robots,
-Open Graph in th/en, `robots.txt`, `sitemap.xml`. **The canonical points at the
-Firebase copy**, which is what lets it be indexed instead of the Pages mirror.
+### Why balanced was broken
 
-**HTML now sends `no-cache, must-revalidate`.** Firebase defaults HTML to
-`max-age=3600`, so a deploy took up to an hour to reach anyone. On a status page
-that is dangerous: a cached page could show "all good" while the site is down.
-`no-cache` still caches, it just revalidates — the ETag usually returns a 304.
+Because `value` outweighed `momentum` in the balanced profile (.24 vs .20), the two cancelled and
+value won the remainder. A strong riser with momentum z of +2 scored:
 
-### Uptime monitor
+```
+0.20 × (+2)  +  0.24 × (−2)  =  −0.08
+```
 
-`.github/workflows/monitor-setscout.yml`, every 30 minutes. It runs on GitHub,
-**not Firebase** — a status page hosted on the service it watches cannot report
-that service being down. Samples go to a `status-data` branch so main stays
-readable, 672 kept (14 days).
+Strong momentum erased, and pushed slightly negative. So "balanced" — the profile the quiz sends
+most users to — was **conservative wearing a different label**: 8 of its top 10 names shared with
+conservative, and **0.07** on a 0 = conservative → 1 = aggressive volatility scale.
 
-It diagnoses rather than recording up/down. Stale data, a late cycle, partial
-coverage and missing calibration each carry their own cause and fix.
+After removing value: **6/10** shared and **0.44** on that scale, and the realised 12-month returns
+finally form a ladder — conservative 2.1%, balanced 4.8%, aggressive 9.6%.
 
-`status.html` is the panel: a live probe in the browser on load, a seven-node
-pipeline graph whose edges carry state, and the history strip. Below 760px the
-graph becomes a vertical list, because seven nodes across never works on a phone.
+Equal weights would **not** have fixed it: at .20 each, momentum and value cancel exactly and the
+remaining weight sits on two defensive factors. Orthogonalising was rejected too — with 86% shared
+variance the residual is mostly noise.
 
-### Legal and consent
+### The failure mode, instance #5
 
-`legal.html` — bilingual terms, privacy, a cookie section that honestly says
-**there are no cookies**, the three localStorage keys in a table, Yahoo data
-attribution and the non-affiliation statement.
+`CONTINUE.md` now counts **five** instances of one pattern: a value recorded in one place and never
+wired to the place that uses it. This one ran in the opposite direction — the code was fixed and the
+*document* was left behind, telling readers a number was fake when it had been real since 31 Aug.
 
-The app shows a first-visit notice saying the same: no cookies, no tracking, your
-language/theme/quiz answer stay on your device, and fonts load from Google which
-sees your IP. **Not a consent wall** — there is nothing to consent to, and a fake
-"accept cookies" banner would be a lie in a project whose thesis is honesty.
+### Verify
 
-### Accessibility, all four pages
+```bash
+cd engine && python -c "from factors import FACTORS, check; print(FACTORS); check()"
+#   ['momentum', 'growth', 'quality', 'health']   and no error (check() runs at import too)
 
-**Zero `:focus-visible` rules existed** on index, onboard or legal. Tabbing
-through the app highlighted nothing. Fixed on all three, plus `<main>` landmarks,
-touch targets raised from 32–39px to 40–44px (PRODUCT.md asks for 40), and **8
-side-stripe borders** replaced with full borders and a tint.
+grep -rn "placeholder formula" docs/          # -> no match
+grep -rn "~92" START-HERE.md                  # -> no match
+python -c "import json;print(len(json.load(open('engine/universe.json'))['stocks']))"   # -> 95
 
-`onboard.html` also still said "~92 SET100 stocks" in two places. It is 95.
-
-### Layout, settled
-
-The card grid is `max-width: 1200px` = **4 columns of ~276px**. Recorded so it is
-not re-litigated: 1080 gives 3 columns of 332px, 1660 gives 4 of 399px which look
-stretched and hollow. A card holds a ticker, a Thai name, a bar, a risk line and
-a price — about 270px. Side margin on a wide monitor is the correct trade.
+cd engine && python rederive_section34.py 2026-09-01 PTT.BK
+#   PTT.BK: conservative rank #1, balanced #5, aggressive #77 of 95
+```
 
 ---
 

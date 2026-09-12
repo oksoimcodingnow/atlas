@@ -10,7 +10,7 @@
 
 ## Abstract
 
-We built SETScout, a web tool that ranks ~95 Thai large-cap stocks on five
+We built SETScout, a web tool that ranks 95 Thai large-cap stocks on four
 price-based factors, adapts the ranking to a user's risk profile, and explains
 each recommendation in four plain sentences. We then asked the question most
 student projects skip: **does it actually work?**
@@ -85,7 +85,7 @@ do not have — so we measured it instead. Section 6 reports the size.
 
 ## 3. Method
 
-### 3.1 The five factors
+### 3.1 The four factors
 
 Each is computed from price alone. This is deliberate: price data exists for
 every listed stock with no gaps, whereas fundamentals are patchy for Thai
@@ -96,13 +96,12 @@ which we state plainly in Section 7.
 |---|---|---|
 | Momentum | `price / price 126 days ago − 1` | 6-month price change |
 | Growth | `price / price 252 days ago − 1` | 12-month price change |
-| Value | `−(price / 200-day average − 1)` | Cheapness vs its own recent average |
 | Quality | `−(std of daily returns × √252)` | Annualised volatility |
 | Health | `min(price / running peak − 1)` | Worst drawdown in one year |
 
-Two conventions worth noting. **Value and quality are negated** so that higher
-always means better — the raw quantities measure expensiveness and wildness
-respectively. **Health needs no negation** because drawdowns are already
+Two conventions worth noting. **Quality is negated** so that higher always
+means better — raw volatility measures wildness, and the calmer stock should
+score higher. **Health needs no negation** because drawdowns are already
 negative, so −8% correctly outranks −35%.
 
 The `√252` in quality converts a daily standard deviation to an annual one.
@@ -125,14 +124,14 @@ market-wide.
 
 ### 3.3 Three risk profiles
 
-The same five factors are combined with three weight sets. A five-question quiz
+The same four factors are combined with three weight sets. A five-question quiz
 maps the user to one.
 
-| Profile | Momentum | Growth | Value | Quality | Health |
-|---|---|---|---|---|---|
-| Conservative | 5% | 5% | 20% | **40%** | **30%** |
-| Balanced | 20% | 12% | 24% | 28% | 16% |
-| Aggressive | **40%** | **30%** | 15% | 10% | 5% |
+| Profile | Momentum | Growth | Quality | Health |
+|---|---|---|---|---|
+| Conservative | 6% | 6% | **50%** | **38%** |
+| Balanced | 26% | 16% | 37% | 21% |
+| Aggressive | **47%** | **35%** | 12% | 6% |
 
 The composite is converted to a **percentile rank**, so a displayed score of 80
 means "top 20% of this list," not an absolute grade. Verdicts threshold that
@@ -148,22 +147,32 @@ outstanding work (Section 9).
 Taking PTT on 1 September 2026, sector-adjusted:
 
 ```
-momentum −0.63   growth −1.07   value +0.92   quality +1.70   health +1.25
+momentum −0.67   growth −1.02   quality +1.69   health +1.25
 ```
 
-| Profile | Weighted total | Rank |
+| Profile | Weighted total | Rank of 95 |
 |---|---|---|
-| Conservative | +1.15 | **#1 of 95** |
-| Balanced | +0.64 | **#1 of 95** |
-| Aggressive | −0.20 | **#71 of 95** |
+| Conservative | +1.22 | **#1** |
+| Balanced | +0.55 | #5 |
+| Aggressive | −0.39 | #77 |
 
-The same stock, the same day, ranks 1st or 71st depending only on the weights.
-GUNKUL — strong momentum, expensive, volatile — moves #65 → #1 in the other
-direction.
+> **Re-derived 2026-09-13.** Produced by `engine/rederive_section34.py`, which reproduces
+> `run_today.py`'s pipeline exactly (126/252-day windows, ≥130 days of history, winsorised
+> z-scores, sector-neutralised where a sector has ≥3 names) on prices truncated at
+> 1 Sep 2026 — 95 of 95 stocks scored. The weighted totals also follow arithmetically from
+> the z-scores and weights on this page, so they are checkable by hand. Under the
+> **old model, before `value` was removed on 9 Sep,** these ranks were #1, #1 and #71: balanced agreed with conservative,
+> which is exactly what the value/momentum cancellation produced. Balanced now lands
+> mid-field at #5. The z-scores differ in the second decimal from the earlier write-up
+> because prices are dividend-adjusted and shift slightly on re-download.
+
+The same stock, the same day, ranks **1st or 77th** depending only on the weights.
+GUNKUL — strong momentum and growth (+2.24, +2.75) but volatile — runs the other way:
+**#32 under conservative, #1 under both balanced and aggressive.**
 
 This makes the system's nature explicit: **it holds no view on which stocks will
 rise.** It has one opinion, about which *kind* of stock suits a given investor,
-and expresses it by re-weighting five fixed numbers.
+and expresses it by re-weighting four fixed numbers.
 
 ---
 
@@ -442,9 +451,15 @@ growth) is the clearest next improvement.
 look back 252 days, so a company that survived every crisis since 2008 but had
 one poor year scores below one that listed in 2024 and had a quiet ride.
 
-**Conservative and balanced are barely distinguishable.** Top-10 overlap is
-8/10, top-20 is 19/20, and they currently share an identical top five. Since the
-quiz routes most users to balanced, the middle profile does little work.
+**Balanced still leans toward conservative.** Under the original five-factor model
+the two were barely distinguishable — top-10 overlap 8/10, top-20 19/20, an
+identical top five — because value and momentum cancelled. Removing value fixed
+the worst of it. Measured on the four-factor engine at 1 Sep 2026, balanced shares
+7/10 of its top 10 and 13/20 of its top 20 with conservative, against 3/10 and 9/20
+with aggressive; conservative and aggressive share none of their top 10. Balanced
+now has its own top five (3 of 5 shared), but it sits nearer the cautious end
+because quality carries its largest weight (.37). Whether that is the right middle
+is exactly what the AHP survey should decide.
 
 **Survivorship bias is unfixable with our data**, as quantified above.
 
