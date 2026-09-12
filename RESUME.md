@@ -1,8 +1,76 @@
 # RESUME — where we are, for any new session
 
 > **Purpose:** If this terminal/session is lost, read this file first. It says what's done,
-> what's in flight, and the one true path. Last updated: 2026-08-31.
+> what's in flight, and the one true path. Last updated: 2026-09-13.
 
+
+## ✅ Done 2026-09-09 → 09-13: four factors, and every doc that describes them
+
+All four PRs on the team repo (`pakkaponpoth/datascience-equity-research`) are **merged**:
+
+| PR | What |
+|---|---|
+| #1 | Calibrated `p_win` (measured ~47%, was an invented `0.44 + 0.22 × score`), two pre-registered tests, `universe.json`, `reportlib`, full `REPORT.md` |
+| #2 | **`value` removed** — it was `momentum` negated (r = −0.93). Weights renormalised: cons ÷.80, bal ÷.76, agg ÷.85 |
+| #3 | Four-factor wording synced into REPORT §3.1/§3.3/§3.4, HOW-IT-WORKS, START-HERE, CONTINUE |
+| #4 | START-HERE said "~92 stocks"; it is 95 |
+
+**Live and healthy:** https://setscout-th.web.app — `today.json` regenerating daily (95/95 scored),
+refresh + monitor + deploy workflows all green.
+
+**Open work, in priority order:**
+1. **AHP expert survey** — the weights are still the only part of the system with no evidence behind
+   them. Primary data with reply lead time. Deadline is ~mid-Nov 2026 (Protocol, 12 Sep; unconfirmed).
+2. **`REPORT.md` §3.4 ranks** — marked *re-derive*; need a four-factor engine run.
+3. **`ahp_analyze.py` bootstrap** — still unwritten, needed once survey answers arrive.
+
+---
+
+## ✅ Done 2026-09-01: SETScout deployed to its own domain + uptime monitor + a11y pass
+
+**Live: https://setscout-th.web.app** (Firebase Hosting, project `setscout-th`).
+GitHub Pages still mirrors it; the shared canonical tag points at the Firebase copy.
+
+- **Own domain.** `firebase.json` + `.firebaserc` at repo root, `public: setscout`.
+  `research/ docs/ reports/ *.py` are excluded from hosting (verified 404). SEO
+  added: description, canonical, robots, Open Graph, `robots.txt`, `sitemap.xml`.
+  **HTML is served `no-cache, must-revalidate`** — Firebase defaults to
+  `max-age=3600`, so deploys took an hour to appear. Two rules were needed:
+  `**/*.html` does not match a bare `/`.
+- **Uptime monitor.** `.github/workflows/monitor-setscout.yml` probes every 30 min
+  from GitHub, **not** Firebase, so it still reports when Firebase is what is down.
+  Writes samples to a `status-data` branch (not main). It diagnoses rather than
+  just recording up/down: each problem carries a cause and a fix.
+- **`setscout/status.html`** — admin panel in the Atlas dialect. Live client-side
+  probe on load, a seven-node pipeline graph with state-carrying edges, and a
+  14-day history strip. Under 760px the SVG is replaced by a vertical node list.
+- **Legal + consent.** `legal.html` (bilingual terms, privacy, cookies, Yahoo
+  attribution) and an honest first-visit notice in the app: **no cookies, no
+  tracking**, only `ss_lang` / `ss_theme` / `ss_risk` in localStorage, and the
+  Google Fonts IP disclosure. Both are live.
+- **Accessibility pass on all four pages.** Focus rings (there were **zero**
+  `:focus-visible` rules on index/onboard/legal — tabbing showed nothing),
+  `<main>` landmarks, touch targets raised to 40–44px, and **8 side-stripe
+  borders** replaced with full borders plus a tint.
+- **Grid settled at `max-width:1200px`** = 4 columns of ~276px. Widening to 1660
+  made cards 399px and hollow; 1080 gives 3 columns of 332px. Do not re-litigate:
+  a card needs about 270px and side margin on a wide monitor is the right trade.
+- **Security audit.** No `.env`, no service-account keys, no tokens anywhere. The
+  Firebase Web API key in `friends.html`/`schedule.html` **is not a secret** —
+  Google documents it as a project identifier. Firestore rules were tested
+  anonymously against six collections: all `PERMISSION_DENIED`. **Do not rotate it.**
+- **PR #1 opened** on `pakkaponpoth/datascience-equity-research` (30 files, 2
+  commits, no reviews yet).
+
+**Three mistakes worth not repeating.** All the same shape: I verified my
+*intent* instead of the *rendered result*.
+1. Claimed the daily refresh had been dead since 9 Aug. It never stopped — my
+   local clone was 22 commits behind. **`git fetch` before diagnosing anything.**
+2. A monitor label overflowed because its CSS selector (`.nd .sub`) never matched
+   the element. My width arithmetic was right about a size that never applied.
+3. A 4-column rule sat *above* the rule it was meant to override. Same
+   specificity means source order decides; grepping for the string found it, but
+   it did nothing.
 
 ## ✅ Done 2026-08-31: SETScout honesty pass + pre-registered blind test
 
@@ -17,9 +85,10 @@
   the file it overwrites, so one failed download deleted a stock forever (4 were lost).
   Now read-only. Recovered BANPU, fixed two wrong symbols (BGRIM2→BCPG, ORIGIN→ORI),
   retired INTUCH (delisted, merged into GULF). **92 → 95 stocks.**
-- **Daily refresh fails loudly** (`verify_today.py`). It had been dead since 9 Aug and said
-  nothing — the site served 3-week-old prices. Still to diagnose *why*: check the Actions
-  tab, likely Yahoo blocking GitHub's IPs.
+- **Daily refresh fails loudly** (`verify_today.py`). A crashed run would commit nothing
+  and report nothing. **Correction:** an earlier note here claimed the Action had been dead
+  since 9 Aug — wrong. It ran every day, 22 commits; the local clone was simply 22 behind
+  because it had never been fetched. Always `git fetch` before diagnosing the workflow.
 - **All 5 backtests now write `reports/*.md`** via `reportlib.py`. Their numbers previously
   existed only in terminal scrollback — uncitable for the report.
 - **BLIND TEST (`blind_test.py`) — the headline.** After ~15 looks at 2016–2026 we saw the

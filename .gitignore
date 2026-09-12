@@ -16,3 +16,6 @@ __pycache__/
 *.stackdump
 _*.png
 .impeccable/
+
+# firebase deploy cache
+.firebase/
