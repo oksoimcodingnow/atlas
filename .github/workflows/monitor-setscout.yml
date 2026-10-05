@@ -60,7 +60,7 @@ jobs:
           res = {k: probe(u) for k, u in TARGETS.items()}
 
           # --- data freshness + integrity, the checks that actually matter ---
-          data = {"fresh": None, "age_h": None, "scored": None, "calibrated": None,
+          data = {"fresh": None, "age_h": None, "scored": None, "roe_ok": None,
                   "generated": None}
           d = res["firebase_data"]
           if d.get("ok"):
@@ -69,7 +69,9 @@ jobs:
                   gen = j.get("generated")
                   data["generated"] = gen
                   data["scored"] = j.get("scored") or len(j.get("stocks") or [])
-                  data["calibrated"] = j.get("calibration") is not None
+                  cov = j.get("roe_coverage") or {}
+                  # the hit rate (p_win / calibration) left the product on 16 Sep; ROE coverage is what can break now
+                  data["roe_ok"] = cov.get("with_roe", 0) >= 0.8 * (cov.get("scored") or 95)
                   if gen:
                       g = datetime.datetime.strptime(gen, "%Y-%m-%d").replace(
                           tzinfo=datetime.timezone.utc)
@@ -133,10 +135,10 @@ jobs:
               problems.append({"sev": "warning", "what": "Partial coverage",
                                "why": f"only {data['scored']} of 95 stocks scored",
                                "fix": "Yahoo likely rate-limited the runner. Check the refresh log"})
-          if data["calibrated"] is False:
-              problems.append({"sev": "warning", "what": "No calibration",
-                               "why": "today.json has no calibration block - p_win renders blank",
-                               "fix": "Run research/backtest.py to regenerate calibration.json"})
+          if data["roe_ok"] is False:
+              problems.append({"sev": "warning", "what": "ROE coverage low",
+                               "why": "today.json has a filed ROE for under 80% of stocks, or no roe_coverage block (old engine)",
+                               "fix": "Check setscout/research/roe_history.csv is present, then re-run the refresh"})
 
           up = res["firebase"]["ok"] and d.get("ok") and data["fresh"] is not False
           status = "up" if up and not problems else ("degraded" if up else "down")

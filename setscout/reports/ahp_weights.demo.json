@@ -1,0 +1,83 @@
+{
+ "weights": {
+  "conservative": {
+   "momentum": 0.094,
+   "roe": 0.074,
+   "quality": 0.492,
+   "health": 0.339
+  },
+  "balanced": {
+   "momentum": 0.216,
+   "roe": 0.19,
+   "quality": 0.387,
+   "health": 0.207
+  },
+  "aggressive": {
+   "momentum": 0.48,
+   "roe": 0.332,
+   "quality": 0.094,
+   "health": 0.094
+  }
+ },
+ "demo": true,
+ "factors": [
+  "momentum",
+  "roe",
+  "quality",
+  "health"
+ ],
+ "min_kept": 3,
+ "too_few": {},
+ "top10_stability": {
+  "conservative": {
+   "KBANK.BK": 1.0,
+   "SCB.BK": 1.0,
+   "BBL.BK": 1.0,
+   "TISCO.BK": 1.0,
+   "PTT.BK": 1.0,
+   "ADVANC.BK": 1.0,
+   "NER.BK": 1.0,
+   "TIPH.BK": 1.0,
+   "DCC.BK": 0.998,
+   "KKP.BK": 0.894,
+   "KTB.BK": 0.108
+  },
+  "balanced": {
+   "KBANK.BK": 1.0,
+   "SCB.BK": 1.0,
+   "TISCO.BK": 1.0,
+   "KKP.BK": 1.0,
+   "PTT.BK": 1.0,
+   "ADVANC.BK": 1.0,
+   "NER.BK": 1.0,
+   "TIPH.BK": 1.0,
+   "DCC.BK": 0.994,
+   "BBL.BK": 0.721,
+   "KTB.BK": 0.285
+  },
+  "aggressive": {
+   "KKP.BK": 1.0,
+   "SPRC.BK": 1.0,
+   "GUNKUL.BK": 1.0,
+   "ADVANC.BK": 1.0,
+   "KCE.BK": 1.0,
+   "COM7.BK": 1.0,
+   "TFG.BK": 1.0,
+   "AMATA.BK": 1.0,
+   "PLANB.BK": 1.0,
+   "SINGER.BK": 0.987,
+   "BH.BK": 0.013
+  }
+ },
+ "stability_draws": 1000,
+ "kept": {
+  "conservative": 8,
+  "balanced": 6,
+  "aggressive": 8
+ },
+ "dropped": {
+  "conservative": 0,
+  "balanced": 2,
+  "aggressive": 0
+ }
+}

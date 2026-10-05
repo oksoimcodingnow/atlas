@@ -320,7 +320,7 @@
      what:"Pulls two years of prices for 95 stocks, computes four factors, judges each stock against its own sector rather than the whole market, then ranks it three times for the three risk profiles.",
      risk:"Ten seconds of work. Never the bottleneck; optimising it would change nothing."},
     {id:"gate", nm:"verify_today.py", sub:"gate", 
-     what:"Refuses to let a broken refresh reach the site. Checks coverage, the generated date, all three profiles, and the calibration block.",
+     what:"Refuses to let a broken refresh reach the site. Checks coverage, the generated date, all three profiles, and ROE coverage.",
      risk:"Added after a silent-failure path was found: a crashed engine committed nothing and reported nothing."},
     {id:"repo", nm:"today.json", sub:"artifact", 
      what:"The published file. 95 stocks by three profiles, about 20 KB over the wire once compressed.",
@@ -351,7 +351,7 @@
       case "yahoo":  return probe.coverageOk===false?"warn":"ok";
       case "cron":   return probe.deployBehind?"ok":(probe.stale?"bad":(probe.late?"warn":"ok"));
       case "engine": return probe.coverageOk===false?"warn":"ok";
-      case "gate":   return probe.calibrated===false?"warn":"ok";
+      case "gate":   return probe.roeOk===false?"warn":"ok";
       case "repo":   return probe.dataOk?((probe.stale&&!probe.deployBehind)?"warn":"ok"):"bad";
       case "cdn":    return probe.dataOk?(probe.deployBehind?"bad":"ok"):"bad";
       case "user":   return probe.dataOk&&!probe.stale?"ok":(probe.dataOk?"warn":"bad");
@@ -365,7 +365,7 @@
       var a=probe.srcAgeH!=null?probe.srcAgeH:probe.ageH;
       return a==null?"—":a.toFixed(1)+"h ago";},
     engine:function(){return probe.pending?"—":"10.2 s";},
-    gate:function(){return probe.pending?"—":(probe.calibrated?"passing":"no calib");},
+    gate:function(){return probe.pending?"—":(probe.roeOk?"passing":"low ROE");},
     repo:function(){return probe.pending?"—":(probe.scored!=null?probe.scored+"/95":"—");},
     cdn:function(){if(probe.pending)return "—";
       if(probe.deployBehind)return "serving "+probe.generatedShown;
@@ -519,7 +519,7 @@
     if(data){
       probe.generatedShown=data.generated||"?";
       probe.scored=data.scored||(data.stocks?data.stocks.length:0);
-      probe.calibrated=data.calibration!=null;
+      var cov=data.roe_coverage||{}; probe.roeOk=(cov.with_roe||0)>=0.8*(cov.scored||95);
       probe.coverageOk=probe.scored>=86;
       var gts=data.generated?Date.parse(data.generated+"T00:00:00Z"):NaN;
       if(data.generated&&!isNaN(gts)){
@@ -552,12 +552,12 @@
       if(!probe.coverageOk) problems.push({sev:"warning",h:"Partial coverage",
         why:"Only "+probe.scored+" of 95 stocks scored, so names are missing from the list.",
         fix:"Yahoo most likely rate-limited the runner. Re-run the refresh; the health check should have blocked this."});
-      checks.push({s:probe.calibrated?"ok":"mid",nm:"Calibration",
-        de:probe.calibrated?("measured "+(data.calibration.generated||"date unknown")+" over "+(data.calibration.months||"?")+" months"):"absent, so the trust label renders blank",
-        rt:probe.calibrated?"present":"missing"});
-      if(!probe.calibrated) problems.push({sev:"warning",h:"No calibration block",
-        why:"today.json carries no calibration, so every card shows a dash where the measured up-rate belongs.",
-        fix:"Run <code>research/backtest.py</code> to regenerate calibration.json, then re-run the engine."});
+      checks.push({s:probe.roeOk?"ok":"mid",nm:"ROE coverage",
+        de:(cov.with_roe!=null)?((cov.with_roe)+" of "+(cov.scored)+" stocks have a filed ROE"):"no roe_coverage block, so this file came from the old engine",
+        rt:probe.roeOk?"ok":"low"});
+      if(!probe.roeOk) problems.push({sev:"warning",h:"ROE coverage low",
+        why:"Fewer than 80% of stocks have a filed ROE, or the file has no roe_coverage block, so the ROE factor is mostly filled with the median.",
+        fix:"Check that <code>research/roe_history.csv</code> is present, then re-run the engine."});
     }
     var pg=await timed("https://oksoimcodingnow.github.io/atlas/setscout/today.json",{mode:"no-cors"});
     checks.push({s:"ok",nm:"Pages mirror",de:"answered, though the browser hides the status code for requests to another domain",rt:pg.ms+" ms"});
