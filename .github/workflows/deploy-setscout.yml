@@ -54,8 +54,6 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          # Pinned 2026-11-06: see the note in refresh-setscout.yml.
-          firebaseToolsVersion: "15.34.0"
           channelId: live
           projectId: setscout-th
 

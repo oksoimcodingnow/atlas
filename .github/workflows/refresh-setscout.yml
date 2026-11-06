@@ -54,11 +54,10 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          # Pinned 2026-11-06. firebase-tools 15.34.1 (22 Oct) started checking
-          # serviceusage.services.get before deploying, which this service account
-          # lacks -> 403 every night. 15.34.0 was the last version that worked.
-          # Unpin once the account has the "Service Usage Consumer" role.
-          firebaseToolsVersion: "15.34.0"
+          # firebase-tools >= 15.34.1 checks serviceusage.services.get before
+          # deploying. The deploy account (firebase-adminsdk-fbsvc) was given the
+          # "Service Usage Consumer" role on 2026-11-06 for this. If deploys start
+          # failing with a 403 again, check that role is still there.
           channelId: live
           projectId: setscout-th
 
