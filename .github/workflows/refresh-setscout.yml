@@ -1,13 +1,27 @@
 name: Refresh SETScout data
 
 # Auto-runs the engine daily so today.json is never stale.
+#
+# WHY TWO TIMES, OFF THE HOUR (changed 2026-11-07)
+# The old single "0 11 * * *" run was started 3-9 hours late by GitHub, and a
+# run that finishes after midnight Thai time (17:00 UTC) following a trading day
+# is handed the PREVIOUS session's closes by Yahoo - 11 times between 12 Oct and
+# 6 Nov. Two earlier, off-the-hour attempts (17:17 and 20:47 Thai time) give two
+# chances to land before midnight, and the "keep newer prices" step below stops
+# a late run from replacing a good file with older closes.
 on:
   schedule:
-    - cron: "0 11 * * *"     # 11:00 UTC ≈ 18:00 Thailand (after SET close)
+    - cron: "17 10 * * *"    # 10:17 UTC = 17:17 Thailand (SET closes ~16:40)
+    - cron: "47 13 * * *"    # 13:47 UTC = 20:47 Thailand, the second chance
   workflow_dispatch:          # ...and lets you run it manually from the Actions tab
 
 permissions:
   contents: write             # allow committing the refreshed today.json
+
+# Two runs must never push at the same moment.
+concurrency:
+  group: refresh-setscout
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -24,7 +38,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install --quiet pandas numpy yfinance
+        # pandas and numpy pinned to the versions every report was run on
+        # (team repo requirements.txt). yfinance stays unpinned on purpose: it
+        # has to follow Yahoo's changes, or the daily download breaks.
+        run: pip install --quiet pandas==3.0.6 numpy==2.4.6 yfinance
 
       - name: Run the engine
         run: python setscout/run_today.py
@@ -35,6 +52,25 @@ jobs:
       # A non-zero exit fails the job, and GitHub emails the repo owner.
       - name: Verify the refresh is healthy
         run: python setscout/verify_today.py
+
+      # A run that lands after midnight Thai time can get older closes than the
+      # file already published. Keep the published file in that case.
+      - name: Keep newer prices if this run got older ones
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          new = json.load(open("setscout/today.json", encoding="utf-8")).get("prices_asof")
+          try:
+              raw = subprocess.run(["git", "show", "HEAD:setscout/today.json"],
+                                   capture_output=True, check=True).stdout
+              old = json.loads(raw.decode("utf-8-sig")).get("prices_asof")
+          except Exception:
+              old = None
+          print(f"published closes: {old}  this run: {new}")
+          if new and old and new < old:
+              print(f"::warning::this run got closes from {new}, older than the published {old}; keeping the published file")
+              subprocess.run(["git", "checkout", "--", "setscout/today.json"], check=True)
+          PY
 
       - name: Commit refreshed data (only if it changed)
         run: |
