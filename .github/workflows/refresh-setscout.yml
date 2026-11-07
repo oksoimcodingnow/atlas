@@ -55,20 +55,27 @@ jobs:
 
       # A run that lands after midnight Thai time can get older closes than the
       # file already published. Keep the published file in that case.
-      - name: Keep newer prices if this run got older ones
+      - name: Keep the published file if this run is older or scored fewer stocks
         run: |
           python - <<'PY'
           import json, subprocess
-          new = json.load(open("setscout/today.json", encoding="utf-8")).get("prices_asof")
+          cur = json.load(open("setscout/today.json", encoding="utf-8"))
+          new, new_n = cur.get("prices_asof"), cur.get("scored")
           try:
               raw = subprocess.run(["git", "show", "HEAD:setscout/today.json"],
                                    capture_output=True, check=True).stdout
-              old = json.loads(raw.decode("utf-8-sig")).get("prices_asof")
+              pub = json.loads(raw.decode("utf-8-sig"))
+              old, old_n = pub.get("prices_asof"), pub.get("scored")
           except Exception:
-              old = None
-          print(f"published closes: {old}  this run: {new}")
+              old = old_n = None
+          print(f"published: closes {old}, {old_n} scored  this run: closes {new}, {new_n} scored")
+          keep = None
           if new and old and new < old:
-              print(f"::warning::this run got closes from {new}, older than the published {old}; keeping the published file")
+              keep = f"this run got closes from {new}, older than the published {old}"
+          elif new and old and new == old and new_n and old_n and new_n < old_n:
+              keep = f"this run scored {new_n} stocks on the same closes ({new}) as the published file's {old_n}"
+          if keep:
+              print(f"::warning::{keep}; keeping the published file")
               subprocess.run(["git", "checkout", "--", "setscout/today.json"], check=True)
           PY
 
