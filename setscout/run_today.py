@@ -50,6 +50,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FILE = os.path.join(HERE, "today.json")          # OUTPUT only - never read as input
 UNIVERSE_FILE = os.path.join(HERE, "universe.json")   # INPUT - the canonical stock list
 
+# A stock needs at least 16 closes in the market's last 21 sessions to be scored.
+# Added 2026-11-23: Yahoo's 2-year history for BANPU stopped on 11 Aug, and the
+# engine kept publishing that August close (14.60, real close 13.35) under a
+# "prices as of 20 Nov" label. Counting recent bars, rather than checking only
+# the newest date, also catches the days Yahoo appends one fresh bar after the gap.
+RECENT_SESSIONS = 21
+MIN_RECENT_BARS = 16
+
 
 def load_universe():
     """Canonical ticker list. Read-only, so a failed fetch can never shrink it.
@@ -62,6 +70,11 @@ def load_universe():
         print("WARNING: universe.json missing - falling back to today.json.\n"
               "         Any ticker that fails to fetch will be lost permanently.")
         return json.load(open(FILE, encoding="utf-8")), False
+
+
+def has_stale_prices(s, sessions):
+    """True when the close series `s` is missing too many of the recent `sessions`."""
+    return int(s.reindex(sessions).notna().sum()) < MIN_RECENT_BARS
 
 
 def reasons(z, w, verdict):
@@ -103,10 +116,14 @@ def main():
     px = yf.download(tickers, period="2y", auto_adjust=True, progress=False)["Close"]
     px = px.dropna(how="all")
 
-    rows = {}
+    rows, stale = {}, []
+    recent = px.index[-RECENT_SESSIONS:]
     for t in tickers:
         s = px[t].dropna() if t in px.columns else pd.Series(dtype=float)
         if len(s) < 130:
+            continue
+        if has_stale_prices(s, recent):
+            stale.append(t)
             continue
         rows[t] = dict(
             momentum=s.iloc[-1] / s.iloc[-127] - 1,
@@ -162,7 +179,7 @@ def main():
     out = {"generated": str(pd.Timestamp.today().date()), "prices_asof": prices_asof,
            "universe": uni["universe"],
            "disclaimer": uni["disclaimer"],
-           "universe_size": len(tickers), "scored": len(df),
+           "universe_size": len(tickers), "scored": len(df), "stale": stale,
            "roe_coverage": {"with_roe": int((~no_roe).sum()), "scored": int(len(df)),
                             "note": "Stocks with no filed ROE are scored at the "
                                     "universe median on that factor, not dropped."},
@@ -175,7 +192,10 @@ def main():
                         for t in df.index}}
     json.dump(out, open(FILE, "w", encoding="utf-8"), ensure_ascii=False)
 
-    dropped = [t for t in tickers if t not in df.index]
+    if stale:
+        print(f"::warning::left out {len(stale)} ticker(s) with stale Yahoo prices: "
+              + ", ".join(t.replace('.BK', '') for t in stale))
+    dropped = [t for t in tickers if t not in df.index and t not in stale]
     if dropped:
         print(f"skipped {len(dropped)} ticker(s) this run (too little history or no data): "
               + ", ".join(t.replace('.BK', '') for t in dropped))
